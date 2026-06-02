@@ -1,0 +1,188 @@
+{
+  "@@locale": "en",
+  "appTitle": "Original Bible",
+  "continueReading": "Continue Reading",
+  "selectLanguage": "Select Your Language",
+  "next": "Next",
+  "getStarted": "Get Started",
+  "skip": "Skip",
+  
+  "onboardingWelcomeTitle": "Welcome",
+  "onboardingWelcomeDesc": "Experience the Bible in its original languages with side-by-side translations.",
+  
+  "onboardingHebrewTitle": "Hebrew - Old Testament",
+  "onboardingHebrewDesc": "The Old Testament was written in Hebrew, read from right to left. These texts were composed over 2,500 years ago and include the Torah, Psalms, and Prophets.",
+  
+  "onboardingGreekTitle": "Greek - New Testament",
+  "onboardingGreekDesc": "The New Testament was written in Greek, read left to right. The Gospels and Epistles were composed between 50-100 AD.",
+  
+  "onboardingTapTitle": "Tap Any Word",
+  "onboardingTapDesc": "Tap on any word to see its definition, pronunciation, and grammatical information. Toggle the pronunciation button to see how words are spoken.",
+  
+  "settings": "Settings",
+  "translation": "Translation",
+  "pronunciation": "Show Pronunciation",
+  "pronunciationDesc": "Display transliteration above words",
+  "fontSize": "Font Size",
+  "theme": "Theme",
+  "themeSystem": "System",
+  "themeLight": "Light",
+  "themeDark": "Dark",
+  
+  "search": "Search",
+  "searchHint": "Search in Bible text...",
+  "noResults": "No results found",
+  
+  "verseOfDay": "Verse of the Day",
+  "quickAccess": "Quick Access",
+  "home": "Home",
+  "books": "Books",
+  
+  "oldTestament": "Old Testament",
+  "newTestament": "New Testament",
+  "selectChapter": "Select Chapter",
+  "chapters": "{count} chapters",
+  "@chapters": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  
+  "translationNotAvailable": "Translation not available",
+  "noLexiconEntry": "No lexicon entry available",
+  
+  "copyVerse": "Copy verse",
+  "shareVerse": "Share verse",
+  "verseCopied": "Verse copied to clipboard",
+  "addBookmark": "Add bookmark",
+  "removeBookmark": "Remove bookmark",
+  "bookmarks": "Bookmarks",
+  "noBookmarks": "No bookmarks yet",
+  "noBookmarksDesc": "Long-press a verse and tap the bookmark icon to save it here.",
+  "removeBookmarkConfirmation": "Remove this bookmark?",
+  "bookmarkTimeYearsAgo": "{count, plural, one {# year ago} other {# years ago}}",
+  "@bookmarkTimeYearsAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarkTimeMonthsAgo": "{count, plural, one {# month ago} other {# months ago}}",
+  "@bookmarkTimeMonthsAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarkTimeDaysAgo": "{count, plural, one {# day ago} other {# days ago}}",
+  "@bookmarkTimeDaysAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarkTimeHoursAgo": "{count, plural, one {# hour ago} other {# hours ago}}",
+  "@bookmarkTimeHoursAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarkTimeMinutesAgo": "{count, plural, one {# minute ago} other {# minutes ago}}",
+  "@bookmarkTimeMinutesAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarkTimeJustNow": "Just now",
+  
+  "quickMeaning": "Quick Meaning",
+  "fullDefinition": "Full Definition",
+  "pronunciationLabel": "Pronunciation",
+  "hebrewOT": "Hebrew • Old Testament",
+  "greekNT": "Greek • New Testament",
+  "appResponsible": "App Responsible",
+  "legalNameLabel": "Legal Name",
+  "tradeNameLabel": "Trade Name",
+  "cnpjLabel": "CNPJ",
+  
+  "tryAgain": "Try Again",
+  "somethingWentWrong": "Something went wrong",
+  "error": "Error",
+  
+  "learningMode": "Learning Mode",
+  "learningModeDesc": "Passively learn original languages by seeing them in the text.",
+  "learningModeEnglishOnlyNotice": "Learning Mode currently supports English translations only.",
+  "learningSectionTitle": "Learning",
+  "loading": "Loading...",
+  "onboardingBibleLabel": "Bible: {translation}",
+  "@onboardingBibleLabel": {
+    "placeholders": {
+      "translation": {
+        "type": "String"
+      }
+    }
+  },
+  "syntaxTreeTitle": "Syntax Tree",
+  "viewSyntaxTree": "View Syntax Tree",
+  "hebrewLabel": "Hebrew",
+  "greekLabel": "Greek",
+  "syntaxTreeTapHint": "Tap any word node to see its full definition",
+  "noMorphologicalData": "No morphological data available for this verse.",
+  "posVerb": "Verb",
+  "posNoun": "Noun",
+  "posAdjectiveShort": "Adj.",
+  "posPronoun": "Pronoun",
+  "posPrepositionShort": "Prep.",
+  "posConjunctionShort": "Conj.",
+  "strongsHebrewLabel": "Hebrew {number}",
+  "@strongsHebrewLabel": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "strongsGreekLabel": "Greek {number}",
+  "@strongsGreekLabel": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "lemmaDictionaryForm": "Lemma (Dictionary Form)",
+  "grammar": "Grammar",
+  "topUsageByBook": "Top Usage by Book",
+  "failedToLoadFrequencyData": "Failed to load frequency data.",
+  "noUsageDataAvailable": "No usage data available.",
+  "previousChapter": "Previous Chapter",
+  "nextChapter": "Next Chapter",
+  "createCinematicImage": "Create Cinematic Image",
+  "srsQuestionPrompt": "What does this word mean in this context?",
+  "revealAnswer": "Reveal Answer",
+  "didntKnow": "Didn't Know",
+  "knewIt": "Knew It",
+  "srsPositiveFeedback": "Great job! Word memory increased.",
+  "srsNegativeFeedback": "Keep practicing. We'll show this word more often.",
+  "exportVerseTitle": "Export Verse",
+  "shareImage": "Share Image",
+  "backgroundTheme": "Background Theme",
+  "aspectRatio": "Aspect Ratio",
+  "failedToExportImage": "Failed to export image.",
+  "exportUnavailableTitle": "Export Unavailable",
+  "missingExportRouteData": "Missing route data for export.",
+  "invalidExportRouteData": "Invalid route data for export.",
+  "syntaxTreeUnavailableTitle": "Syntax Tree Unavailable",
+  "missingSyntaxTreeRouteData": "Missing route data for syntax tree.",
+  "invalidSyntaxTreeRouteData": "Invalid route data for syntax tree.",
+  "noStrongsAvailable": "No Strong's"
+}

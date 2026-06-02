@@ -1,0 +1,188 @@
+{
+  "@@locale": "ru",
+  "appTitle": "Оригинальная Библия",
+  "continueReading": "Продолжить чтение",
+  "selectLanguage": "Выберите язык",
+  "next": "Далее",
+  "getStarted": "Начать",
+  "skip": "Пропустить",
+
+  "onboardingWelcomeTitle": "Добро пожаловать",
+  "onboardingWelcomeDesc": "Изучайте Библию на оригинальных языках с параллельными переводами.",
+
+  "onboardingHebrewTitle": "Иврит - Ветхий Завет",
+  "onboardingHebrewDesc": "Ветхий Завет был написан на иврите, который читается справа налево. Эти тексты были созданы более 2 500 лет назад и включают Тору, Псалмы и Пророков.",
+
+  "onboardingGreekTitle": "Греческий - Новый Завет",
+  "onboardingGreekDesc": "Новый Завет был написан на греческом языке, который читается слева направо. Евангелия и Послания были написаны между 50 и 100 гг. н.э.",
+
+  "onboardingTapTitle": "Нажмите на любое слово",
+  "onboardingTapDesc": "Нажмите на любое слово, чтобы увидеть его определение, произношение и грамматическую информацию. Включите кнопку произношения, чтобы видеть, как звучат слова.",
+
+  "settings": "Настройки",
+  "translation": "Перевод",
+  "pronunciation": "Показывать произношение",
+  "pronunciationDesc": "Показывать транслитерацию над словами",
+  "fontSize": "Размер шрифта",
+  "theme": "Тема",
+  "themeSystem": "Системная",
+  "themeLight": "Светлая",
+  "themeDark": "Тёмная",
+
+  "search": "Поиск",
+  "searchHint": "Поиск по библейскому тексту...",
+  "noResults": "Ничего не найдено",
+
+  "verseOfDay": "Стих дня",
+  "quickAccess": "Быстрый доступ",
+  "home": "Главная",
+  "books": "Книги",
+
+  "oldTestament": "Ветхий Завет",
+  "newTestament": "Новый Завет",
+  "selectChapter": "Выбрать главу",
+  "chapters": "{count} глав",
+  "@chapters": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "translationNotAvailable": "Перевод недоступен",
+  "noLexiconEntry": "Лексическая статья недоступна",
+
+  "copyVerse": "Копировать стих",
+  "shareVerse": "Поделиться стихом",
+  "verseCopied": "Стих скопирован в буфер обмена",
+  "addBookmark": "Добавить закладку",
+  "removeBookmark": "Удалить закладку",
+  "bookmarks": "Закладки",
+  "noBookmarks": "Закладок пока нет",
+  "noBookmarksDesc": "Нажмите и удерживайте стих, затем нажмите значок закладки, чтобы сохранить его здесь.",
+  "removeBookmarkConfirmation": "Удалить эту закладку?",
+  "bookmarkTimeYearsAgo": "{count, plural, one {# год назад} few {# года назад} many {# лет назад} other {# года назад}}",
+  "@bookmarkTimeYearsAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarkTimeMonthsAgo": "{count, plural, one {# месяц назад} few {# месяца назад} many {# месяцев назад} other {# месяца назад}}",
+  "@bookmarkTimeMonthsAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarkTimeDaysAgo": "{count, plural, one {# день назад} few {# дня назад} many {# дней назад} other {# дня назад}}",
+  "@bookmarkTimeDaysAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarkTimeHoursAgo": "{count, plural, one {# час назад} few {# часа назад} many {# часов назад} other {# часа назад}}",
+  "@bookmarkTimeHoursAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarkTimeMinutesAgo": "{count, plural, one {# минуту назад} few {# минуты назад} many {# минут назад} other {# минуты назад}}",
+  "@bookmarkTimeMinutesAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarkTimeJustNow": "Только что",
+
+  "quickMeaning": "Краткое значение",
+  "fullDefinition": "Полное определение",
+  "pronunciationLabel": "Произношение",
+  "hebrewOT": "Иврит • Ветхий Завет",
+  "greekNT": "Греческий • Новый Завет",
+  "appResponsible": "Ответственный за приложение",
+  "legalNameLabel": "Юридическое название",
+  "tradeNameLabel": "Торговое название",
+  "cnpjLabel": "CNPJ",
+
+  "tryAgain": "Попробовать снова",
+  "somethingWentWrong": "Что-то пошло не так",
+  "error": "Ошибка",
+
+  "learningMode": "Режим обучения",
+  "learningModeDesc": "Пассивно изучайте оригинальные языки, видя их в тексте.",
+  "learningModeEnglishOnlyNotice": "Режим обучения пока поддерживает только английские переводы.",
+  "learningSectionTitle": "Обучение",
+  "loading": "Загрузка...",
+  "onboardingBibleLabel": "Библия: {translation}",
+  "@onboardingBibleLabel": {
+    "placeholders": {
+      "translation": {
+        "type": "String"
+      }
+    }
+  },
+  "syntaxTreeTitle": "Синтаксическое дерево",
+  "viewSyntaxTree": "Показать синтаксическое дерево",
+  "hebrewLabel": "Иврит",
+  "greekLabel": "Греческий",
+  "syntaxTreeTapHint": "Нажмите на любой узел слова, чтобы увидеть полное определение",
+  "noMorphologicalData": "Для этого стиха нет морфологических данных.",
+  "posVerb": "Глагол",
+  "posNoun": "Сущ.",
+  "posAdjectiveShort": "Прил.",
+  "posPronoun": "Мест.",
+  "posPrepositionShort": "Предл.",
+  "posConjunctionShort": "Союз",
+  "strongsHebrewLabel": "Иврит {number}",
+  "@strongsHebrewLabel": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "strongsGreekLabel": "Греческий {number}",
+  "@strongsGreekLabel": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "lemmaDictionaryForm": "Лемма (словарная форма)",
+  "grammar": "Грамматика",
+  "topUsageByBook": "Основное употребление по книгам",
+  "failedToLoadFrequencyData": "Не удалось загрузить данные частоты.",
+  "noUsageDataAvailable": "Данные об употреблении недоступны.",
+  "previousChapter": "Предыдущая глава",
+  "nextChapter": "Следующая глава",
+  "createCinematicImage": "Создать кинематографическое изображение",
+  "srsQuestionPrompt": "Что означает это слово в этом контексте?",
+  "revealAnswer": "Показать ответ",
+  "didntKnow": "Не знал",
+  "knewIt": "Знал",
+  "srsPositiveFeedback": "Отлично! Память слова улучшилась.",
+  "srsNegativeFeedback": "Продолжайте практиковаться. Мы будем показывать это слово чаще.",
+  "exportVerseTitle": "Экспорт стиха",
+  "shareImage": "Поделиться изображением",
+  "backgroundTheme": "Тема фона",
+  "aspectRatio": "Соотношение сторон",
+  "failedToExportImage": "Не удалось экспортировать изображение.",
+  "exportUnavailableTitle": "Экспорт недоступен",
+  "missingExportRouteData": "Отсутствуют данные маршрута для экспорта.",
+  "invalidExportRouteData": "Некорректные данные маршрута для экспорта.",
+  "syntaxTreeUnavailableTitle": "Синтаксическое дерево недоступно",
+  "missingSyntaxTreeRouteData": "Отсутствуют данные маршрута для синтаксического дерева.",
+  "invalidSyntaxTreeRouteData": "Некорректные данные маршрута для синтаксического дерева.",
+  "noStrongsAvailable": "Номер Стронга отсутствует"
+}

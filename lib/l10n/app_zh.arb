@@ -1,0 +1,188 @@
+{
+  "@@locale": "zh",
+  "appTitle": "原文圣经",
+  "continueReading": "继续阅读",
+  "selectLanguage": "选择你的语言",
+  "next": "下一步",
+  "getStarted": "开始",
+  "skip": "跳过",
+  
+  "onboardingWelcomeTitle": "欢迎",
+  "onboardingWelcomeDesc": "以原始语言和对照译本阅读圣经。",
+  
+  "onboardingHebrewTitle": "希伯来文 - 旧约",
+  "onboardingHebrewDesc": "旧约写于希伯来文，阅读方向为从右到左。这些文本写成于两千五百多年前，包含律法书、诗篇和先知书。",
+  
+  "onboardingGreekTitle": "希腊文 - 新约",
+  "onboardingGreekDesc": "新约写于希腊文，阅读方向为从左到右。福音书与书信写于公元 50-100 年间。",
+  
+  "onboardingTapTitle": "点按任意词语",
+  "onboardingTapDesc": "点按任意词语即可查看释义、发音和语法信息。开启发音按钮可查看词语读音。",
+  
+  "settings": "设置",
+  "translation": "译本",
+  "pronunciation": "显示发音",
+  "pronunciationDesc": "在词语上方显示音译",
+  "fontSize": "字体大小",
+  "theme": "主题",
+  "themeSystem": "跟随系统",
+  "themeLight": "浅色",
+  "themeDark": "深色",
+  
+  "search": "搜索",
+  "searchHint": "在圣经文本中搜索...",
+  "noResults": "未找到结果",
+  
+  "verseOfDay": "每日经文",
+  "quickAccess": "快捷入口",
+  "home": "首页",
+  "books": "书卷",
+  
+  "oldTestament": "旧约",
+  "newTestament": "新约",
+  "selectChapter": "选择章节",
+  "chapters": "{count} 章",
+  "@chapters": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  
+  "translationNotAvailable": "译文不可用",
+  "noLexiconEntry": "暂无词典条目",
+  
+  "copyVerse": "复制经文",
+  "shareVerse": "分享经文",
+  "verseCopied": "经文已复制到剪贴板",
+  "addBookmark": "添加书签",
+  "removeBookmark": "移除书签",
+  "bookmarks": "书签",
+  "noBookmarks": "还没有书签",
+  "noBookmarksDesc": "长按经文并点按书签图标可保存到这里。",
+  "removeBookmarkConfirmation": "要移除此书签吗？",
+  "bookmarkTimeYearsAgo": "{count, plural, one {# 年前} other {# 年前}}",
+  "@bookmarkTimeYearsAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarkTimeMonthsAgo": "{count, plural, one {# 个月前} other {# 个月前}}",
+  "@bookmarkTimeMonthsAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarkTimeDaysAgo": "{count, plural, one {# 天前} other {# 天前}}",
+  "@bookmarkTimeDaysAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarkTimeHoursAgo": "{count, plural, one {# 小时前} other {# 小时前}}",
+  "@bookmarkTimeHoursAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarkTimeMinutesAgo": "{count, plural, one {# 分钟前} other {# 分钟前}}",
+  "@bookmarkTimeMinutesAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarkTimeJustNow": "刚刚",
+  
+  "quickMeaning": "快速释义",
+  "fullDefinition": "完整释义",
+  "pronunciationLabel": "发音",
+  "hebrewOT": "希伯来文 • 旧约",
+  "greekNT": "希腊文 • 新约",
+  "appResponsible": "应用责任主体",
+  "legalNameLabel": "法定名称",
+  "tradeNameLabel": "商号",
+  "cnpjLabel": "CNPJ",
+  
+  "tryAgain": "重试",
+  "somethingWentWrong": "出现错误",
+  "error": "错误",
+  
+  "learningMode": "学习模式",
+  "learningModeDesc": "通过在阅读中看到原文来被动学习。",
+  "learningModeEnglishOnlyNotice": "学习模式目前仅支持英文译本。",
+  "learningSectionTitle": "学习",
+  "loading": "加载中...",
+  "onboardingBibleLabel": "圣经：{translation}",
+  "@onboardingBibleLabel": {
+    "placeholders": {
+      "translation": {
+        "type": "String"
+      }
+    }
+  },
+  "syntaxTreeTitle": "句法树",
+  "viewSyntaxTree": "查看句法树",
+  "hebrewLabel": "希伯来文",
+  "greekLabel": "希腊文",
+  "syntaxTreeTapHint": "点按任意词节点可查看完整释义",
+  "noMorphologicalData": "该节暂无形态学数据。",
+  "posVerb": "动词",
+  "posNoun": "名词",
+  "posAdjectiveShort": "形.",
+  "posPronoun": "代词",
+  "posPrepositionShort": "介.",
+  "posConjunctionShort": "连.",
+  "strongsHebrewLabel": "希伯来文 {number}",
+  "@strongsHebrewLabel": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "strongsGreekLabel": "希腊文 {number}",
+  "@strongsGreekLabel": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "lemmaDictionaryForm": "词元（词典形式）",
+  "grammar": "语法",
+  "topUsageByBook": "按书卷统计高频用法",
+  "failedToLoadFrequencyData": "频次数据加载失败。",
+  "noUsageDataAvailable": "暂无用法数据。",
+  "previousChapter": "上一章",
+  "nextChapter": "下一章",
+  "createCinematicImage": "创建电影风图片",
+  "srsQuestionPrompt": "这个词在此处是什么意思？",
+  "revealAnswer": "显示答案",
+  "didntKnow": "不知道",
+  "knewIt": "我知道",
+  "srsPositiveFeedback": "很好！该词记忆已提升。",
+  "srsNegativeFeedback": "继续练习。我们会更频繁地展示这个词。",
+  "exportVerseTitle": "导出经文",
+  "shareImage": "分享图片",
+  "backgroundTheme": "背景主题",
+  "aspectRatio": "宽高比",
+  "failedToExportImage": "导出图片失败。",
+  "exportUnavailableTitle": "导出不可用",
+  "missingExportRouteData": "导出所需路由数据缺失。",
+  "invalidExportRouteData": "导出所需路由数据无效。",
+  "syntaxTreeUnavailableTitle": "句法树不可用",
+  "missingSyntaxTreeRouteData": "句法树所需路由数据缺失。",
+  "invalidSyntaxTreeRouteData": "句法树所需路由数据无效。",
+  "noStrongsAvailable": "无 Strong 编号"
+}

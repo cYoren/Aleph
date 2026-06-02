@@ -1,0 +1,84 @@
+{
+  "translations": [
+    {
+      "id": "ALMEIDA",
+      "name": "João Ferreira de Almeida",
+      "abbreviation": "ALMEIDA",
+      "language": "pt",
+      "direction": "ltr",
+      "format": "usfx",
+      "source_file": "por-almeida.usfx.xml",
+      "license": "Public Domain"
+    },
+    {
+      "id": "SYNODAL",
+      "name": "Russian Synodal Translation",
+      "abbreviation": "SYNODAL",
+      "language": "ru",
+      "direction": "ltr",
+      "format": "zefania",
+      "source_file": "rus-synodal.zefania.xml",
+      "license": "Public Domain"
+    },
+    {
+      "id": "VALERA1909",
+      "name": "Reina Valera 1909",
+      "abbreviation": "RV1909",
+      "language": "es",
+      "direction": "ltr",
+      "format": "usfx",
+      "source_file": "spa-rv1909.usfx.xml",
+      "license": "Public Domain"
+    },
+    {
+      "id": "OSTERVALD",
+      "name": "French Ostervald 1996",
+      "abbreviation": "OSTERVALD",
+      "language": "fr",
+      "direction": "ltr",
+      "format": "osis",
+      "source_file": "fra-ostervald.osis.xml",
+      "license": "Public Domain"
+    },
+    {
+      "id": "LUTHER1912",
+      "name": "Luther Bible 1912",
+      "abbreviation": "LUTHER",
+      "language": "de",
+      "direction": "ltr",
+      "format": "osis",
+      "source_file": "deu-luther1912.osis.xml",
+      "license": "Public Domain"
+    },
+    {
+      "id": "KOUGO",
+      "name": "Japanese Kougo (Colloquial)",
+      "abbreviation": "KOUGO",
+      "language": "ja",
+      "direction": "ltr",
+      "format": "osis",
+      "source_file": "jpn-kougo.osis.xml",
+      "license": "Public Domain"
+    },
+    {
+      "id": "KOREAN",
+      "name": "Korean Bible",
+      "abbreviation": "KOREAN",
+      "language": "ko",
+      "direction": "ltr",
+      "format": "osis",
+      "source_file": "kor-korean.osis.xml",
+      "license": "Public Domain"
+    },
+    {
+      "id": "CUVS",
+      "name": "Chinese Union Version (Simplified)",
+      "abbreviation": "CUV-S",
+      "language": "zh",
+      "direction": "ltr",
+      "format": "usfx",
+      "source_file": "chi-cuv-simp.usfx.xml",
+      "license": "Public Domain"
+    }
+  ]
+}

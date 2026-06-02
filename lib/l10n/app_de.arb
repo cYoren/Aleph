@@ -1,0 +1,188 @@
+{
+  "@@locale": "de",
+  "appTitle": "Original Bibel",
+  "continueReading": "Weiterlesen",
+  "selectLanguage": "Wählen Sie Ihre Sprache",
+  "next": "Weiter",
+  "getStarted": "Loslegen",
+  "skip": "Überspringen",
+  
+  "onboardingWelcomeTitle": "Willkommen",
+  "onboardingWelcomeDesc": "Erleben Sie die Bibel in ihren Originalsprachen mit Übersetzungen nebeneinander.",
+  
+  "onboardingHebrewTitle": "Hebräisch - Altes Testament",
+  "onboardingHebrewDesc": "Das Alte Testament wurde auf Hebräisch geschrieben und von rechts nach links gelesen. Diese Texte entstanden vor über 2.500 Jahren und umfassen die Tora, Psalmen und Propheten.",
+  
+  "onboardingGreekTitle": "Griechisch - Neues Testament",
+  "onboardingGreekDesc": "Das Neue Testament wurde auf Griechisch geschrieben und von links nach rechts gelesen. Die Evangelien und Briefe entstanden zwischen 50-100 n.Chr.",
+  
+  "onboardingTapTitle": "Tippen Sie auf ein Wort",
+  "onboardingTapDesc": "Tippen Sie auf ein beliebiges Wort, um Definition, Aussprache und grammatikalische Informationen zu sehen. Aktivieren Sie die Aussprache-Taste, um zu hören, wie Wörter gesprochen werden.",
+  
+  "settings": "Einstellungen",
+  "translation": "Übersetzung",
+  "pronunciation": "Aussprache anzeigen",
+  "pronunciationDesc": "Transliteration über den Wörtern anzeigen",
+  "fontSize": "Schriftgröße",
+  "theme": "Design",
+  "themeSystem": "System",
+  "themeLight": "Hell",
+  "themeDark": "Dunkel",
+  
+  "search": "Suchen",
+  "searchHint": "Im Bibeltext suchen...",
+  "noResults": "Keine Ergebnisse gefunden",
+  
+  "verseOfDay": "Vers des Tages",
+  "quickAccess": "Schnellzugriff",
+  "home": "Start",
+  "books": "Bücher",
+  
+  "oldTestament": "Altes Testament",
+  "newTestament": "Neues Testament",
+  "selectChapter": "Kapitel wählen",
+  "chapters": "{count} Kapitel",
+  "@chapters": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  
+  "translationNotAvailable": "Übersetzung nicht verfügbar",
+  "noLexiconEntry": "Kein Lexikoneintrag verfügbar",
+  
+  "copyVerse": "Vers kopieren",
+  "shareVerse": "Vers teilen",
+  "verseCopied": "Vers in die Zwischenablage kopiert",
+  "addBookmark": "Lesezeichen hinzufügen",
+  "removeBookmark": "Lesezeichen entfernen",
+  "bookmarks": "Lesezeichen",
+  "noBookmarks": "Noch keine Lesezeichen",
+  "noBookmarksDesc": "Halten Sie einen Vers gedrückt und tippen Sie auf das Lesezeichen-Symbol, um ihn hier zu speichern.",
+  "removeBookmarkConfirmation": "Dieses Lesezeichen entfernen?",
+  "bookmarkTimeYearsAgo": "{count, plural, one {vor # Jahr} other {vor # Jahren}}",
+  "@bookmarkTimeYearsAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarkTimeMonthsAgo": "{count, plural, one {vor # Monat} other {vor # Monaten}}",
+  "@bookmarkTimeMonthsAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarkTimeDaysAgo": "{count, plural, one {vor # Tag} other {vor # Tagen}}",
+  "@bookmarkTimeDaysAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarkTimeHoursAgo": "{count, plural, one {vor # Stunde} other {vor # Stunden}}",
+  "@bookmarkTimeHoursAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarkTimeMinutesAgo": "{count, plural, one {vor # Minute} other {vor # Minuten}}",
+  "@bookmarkTimeMinutesAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarkTimeJustNow": "Gerade eben",
+  
+  "quickMeaning": "Kurzbedeutung",
+  "fullDefinition": "Vollständige Definition",
+  "pronunciationLabel": "Aussprache",
+  "hebrewOT": "Hebräisch • Altes Testament",
+  "greekNT": "Griechisch • Neues Testament",
+  "appResponsible": "Verantwortlich für die App",
+  "legalNameLabel": "Firmenname",
+  "tradeNameLabel": "Handelsname",
+  "cnpjLabel": "CNPJ",
+  
+  "tryAgain": "Erneut versuchen",
+  "somethingWentWrong": "Etwas ist schiefgelaufen",
+  "error": "Fehler",
+
+  "learningMode": "Lernmodus",
+  "learningModeDesc": "Lernen Sie die Originalsprachen passiv, indem Sie sie im Text sehen.",
+  "learningModeEnglishOnlyNotice": "Der Lernmodus unterstützt derzeit nur englische Übersetzungen.",
+  "learningSectionTitle": "Lernen",
+  "loading": "Wird geladen...",
+  "onboardingBibleLabel": "Bibel: {translation}",
+  "@onboardingBibleLabel": {
+    "placeholders": {
+      "translation": {
+        "type": "String"
+      }
+    }
+  },
+  "syntaxTreeTitle": "Syntaxbaum",
+  "viewSyntaxTree": "Syntaxbaum anzeigen",
+  "hebrewLabel": "Hebräisch",
+  "greekLabel": "Griechisch",
+  "syntaxTreeTapHint": "Tippen Sie auf einen Wortknoten, um die vollständige Definition zu sehen",
+  "noMorphologicalData": "Für diesen Vers sind keine morphologischen Daten verfügbar.",
+  "posVerb": "Verb",
+  "posNoun": "Nomen",
+  "posAdjectiveShort": "Adj.",
+  "posPronoun": "Pronomen",
+  "posPrepositionShort": "Präp.",
+  "posConjunctionShort": "Konj.",
+  "strongsHebrewLabel": "Hebräisch {number}",
+  "@strongsHebrewLabel": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "strongsGreekLabel": "Griechisch {number}",
+  "@strongsGreekLabel": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "lemmaDictionaryForm": "Lemma (Wörterbuchform)",
+  "grammar": "Grammatik",
+  "topUsageByBook": "Häufigste Nutzung nach Buch",
+  "failedToLoadFrequencyData": "Häufigkeitsdaten konnten nicht geladen werden.",
+  "noUsageDataAvailable": "Keine Nutzungsdaten verfügbar.",
+  "previousChapter": "Vorheriges Kapitel",
+  "nextChapter": "Nächstes Kapitel",
+  "createCinematicImage": "Filmisches Bild erstellen",
+  "srsQuestionPrompt": "Was bedeutet dieses Wort in diesem Kontext?",
+  "revealAnswer": "Antwort anzeigen",
+  "didntKnow": "Wusste ich nicht",
+  "knewIt": "Wusste ich",
+  "srsPositiveFeedback": "Gut gemacht! Die Worterinnerung wurde erhöht.",
+  "srsNegativeFeedback": "Weiter üben. Dieses Wort zeigen wir häufiger.",
+  "exportVerseTitle": "Vers exportieren",
+  "shareImage": "Bild teilen",
+  "backgroundTheme": "Hintergrundthema",
+  "aspectRatio": "Seitenverhältnis",
+  "failedToExportImage": "Bild konnte nicht exportiert werden.",
+  "exportUnavailableTitle": "Export nicht verfügbar",
+  "missingExportRouteData": "Fehlende Routendaten für den Export.",
+  "invalidExportRouteData": "Ungültige Routendaten für den Export.",
+  "syntaxTreeUnavailableTitle": "Syntaxbaum nicht verfügbar",
+  "missingSyntaxTreeRouteData": "Fehlende Routendaten für den Syntaxbaum.",
+  "invalidSyntaxTreeRouteData": "Ungültige Routendaten für den Syntaxbaum.",
+  "noStrongsAvailable": "Keine Strong-Nummer"
+}

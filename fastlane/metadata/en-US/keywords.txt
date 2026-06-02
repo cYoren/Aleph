@@ -1,0 +1,1 @@
+bible,hebrew,greek,scripture,translation,KJV,interlinear,study,faith,word

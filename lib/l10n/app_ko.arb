@@ -1,0 +1,188 @@
+{
+  "@@locale": "ko",
+  "appTitle": "원문 성경",
+  "continueReading": "계속 읽기",
+  "selectLanguage": "언어 선택",
+  "next": "다음",
+  "getStarted": "시작하기",
+  "skip": "건너뛰기",
+  
+  "onboardingWelcomeTitle": "환영합니다",
+  "onboardingWelcomeDesc": "원어 성경과 번역을 나란히 읽어 보세요.",
+  
+  "onboardingHebrewTitle": "히브리어 - 구약",
+  "onboardingHebrewDesc": "구약은 히브리어로 기록되었고 오른쪽에서 왼쪽으로 읽습니다. 이 본문들은 2,500년 이상 전에 기록되었으며 토라, 시편, 예언서를 포함합니다.",
+  
+  "onboardingGreekTitle": "그리스어 - 신약",
+  "onboardingGreekDesc": "신약은 그리스어로 기록되었고 왼쪽에서 오른쪽으로 읽습니다. 복음서와 서신서는 서기 50-100년 사이에 기록되었습니다.",
+  
+  "onboardingTapTitle": "단어를 눌러보세요",
+  "onboardingTapDesc": "단어를 누르면 정의, 발음, 문법 정보를 볼 수 있습니다. 발음 버튼을 켜면 단어 발음을 확인할 수 있습니다.",
+  
+  "settings": "설정",
+  "translation": "번역",
+  "pronunciation": "발음 표시",
+  "pronunciationDesc": "단어 위에 음역 표시",
+  "fontSize": "글자 크기",
+  "theme": "테마",
+  "themeSystem": "시스템",
+  "themeLight": "라이트",
+  "themeDark": "다크",
+  
+  "search": "검색",
+  "searchHint": "성경 본문 검색...",
+  "noResults": "검색 결과가 없습니다",
+  
+  "verseOfDay": "오늘의 구절",
+  "quickAccess": "빠른 접근",
+  "home": "홈",
+  "books": "성경 권",
+  
+  "oldTestament": "구약",
+  "newTestament": "신약",
+  "selectChapter": "장 선택",
+  "chapters": "{count}장",
+  "@chapters": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  
+  "translationNotAvailable": "번역을 사용할 수 없습니다",
+  "noLexiconEntry": "사전 항목이 없습니다",
+  
+  "copyVerse": "구절 복사",
+  "shareVerse": "구절 공유",
+  "verseCopied": "구절이 클립보드에 복사되었습니다",
+  "addBookmark": "북마크 추가",
+  "removeBookmark": "북마크 제거",
+  "bookmarks": "북마크",
+  "noBookmarks": "북마크가 없습니다",
+  "noBookmarksDesc": "구절을 길게 누르고 북마크 아이콘을 눌러 여기에 저장하세요.",
+  "removeBookmarkConfirmation": "이 북마크를 삭제할까요?",
+  "bookmarkTimeYearsAgo": "{count, plural, one {#년 전} other {#년 전}}",
+  "@bookmarkTimeYearsAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarkTimeMonthsAgo": "{count, plural, one {#개월 전} other {#개월 전}}",
+  "@bookmarkTimeMonthsAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarkTimeDaysAgo": "{count, plural, one {#일 전} other {#일 전}}",
+  "@bookmarkTimeDaysAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarkTimeHoursAgo": "{count, plural, one {#시간 전} other {#시간 전}}",
+  "@bookmarkTimeHoursAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarkTimeMinutesAgo": "{count, plural, one {#분 전} other {#분 전}}",
+  "@bookmarkTimeMinutesAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarkTimeJustNow": "방금 전",
+  
+  "quickMeaning": "빠른 의미",
+  "fullDefinition": "전체 정의",
+  "pronunciationLabel": "발음",
+  "hebrewOT": "히브리어 • 구약",
+  "greekNT": "그리스어 • 신약",
+  "appResponsible": "앱 책임 주체",
+  "legalNameLabel": "법인명",
+  "tradeNameLabel": "상호명",
+  "cnpjLabel": "CNPJ",
+  
+  "tryAgain": "다시 시도",
+  "somethingWentWrong": "문제가 발생했습니다",
+  "error": "오류",
+  
+  "learningMode": "학습 모드",
+  "learningModeDesc": "본문 속 원어를 보며 수동적으로 학습하세요.",
+  "learningModeEnglishOnlyNotice": "학습 모드는 현재 영어 번역만 지원합니다.",
+  "learningSectionTitle": "학습",
+  "loading": "불러오는 중...",
+  "onboardingBibleLabel": "성경: {translation}",
+  "@onboardingBibleLabel": {
+    "placeholders": {
+      "translation": {
+        "type": "String"
+      }
+    }
+  },
+  "syntaxTreeTitle": "구문 트리",
+  "viewSyntaxTree": "구문 트리 보기",
+  "hebrewLabel": "히브리어",
+  "greekLabel": "그리스어",
+  "syntaxTreeTapHint": "단어 노드를 누르면 전체 정의를 볼 수 있습니다",
+  "noMorphologicalData": "이 구절에는 형태론 데이터가 없습니다.",
+  "posVerb": "동사",
+  "posNoun": "명사",
+  "posAdjectiveShort": "형.",
+  "posPronoun": "대명사",
+  "posPrepositionShort": "전.",
+  "posConjunctionShort": "접.",
+  "strongsHebrewLabel": "히브리어 {number}",
+  "@strongsHebrewLabel": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "strongsGreekLabel": "그리스어 {number}",
+  "@strongsGreekLabel": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "lemmaDictionaryForm": "표제어(사전형)",
+  "grammar": "문법",
+  "topUsageByBook": "책별 주요 사용",
+  "failedToLoadFrequencyData": "빈도 데이터를 불러오지 못했습니다.",
+  "noUsageDataAvailable": "사용 데이터가 없습니다.",
+  "previousChapter": "이전 장",
+  "nextChapter": "다음 장",
+  "createCinematicImage": "시네마틱 이미지 만들기",
+  "srsQuestionPrompt": "이 문맥에서 이 단어는 무슨 뜻인가요?",
+  "revealAnswer": "정답 보기",
+  "didntKnow": "몰랐어요",
+  "knewIt": "알고 있었어요",
+  "srsPositiveFeedback": "좋아요! 단어 기억도가 올라갔습니다.",
+  "srsNegativeFeedback": "계속 연습하세요. 이 단어를 더 자주 보여드릴게요.",
+  "exportVerseTitle": "구절 내보내기",
+  "shareImage": "이미지 공유",
+  "backgroundTheme": "배경 테마",
+  "aspectRatio": "비율",
+  "failedToExportImage": "이미지 내보내기에 실패했습니다.",
+  "exportUnavailableTitle": "내보내기를 사용할 수 없음",
+  "missingExportRouteData": "내보내기에 필요한 경로 데이터가 없습니다.",
+  "invalidExportRouteData": "내보내기에 필요한 경로 데이터가 올바르지 않습니다.",
+  "syntaxTreeUnavailableTitle": "구문 트리를 사용할 수 없음",
+  "missingSyntaxTreeRouteData": "구문 트리에 필요한 경로 데이터가 없습니다.",
+  "invalidSyntaxTreeRouteData": "구문 트리에 필요한 경로 데이터가 올바르지 않습니다.",
+  "noStrongsAvailable": "Strong 번호 없음"
+}

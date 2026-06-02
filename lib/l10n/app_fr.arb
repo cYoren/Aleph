@@ -1,0 +1,188 @@
+{
+  "@@locale": "fr",
+  "appTitle": "Bible Originale",
+  "continueReading": "Continuer la Lecture",
+  "selectLanguage": "Sélectionnez Votre Langue",
+  "next": "Suivant",
+  "getStarted": "Commencer",
+  "skip": "Passer",
+  
+  "onboardingWelcomeTitle": "Bienvenue",
+  "onboardingWelcomeDesc": "Découvrez la Bible dans ses langues originales avec des traductions côte à côte.",
+  
+  "onboardingHebrewTitle": "Hébreu - Ancien Testament",
+  "onboardingHebrewDesc": "L'Ancien Testament a été écrit en hébreu, lu de droite à gauche. Ces textes ont été composés il y a plus de 2 500 ans et comprennent la Torah, les Psaumes et les Prophètes.",
+  
+  "onboardingGreekTitle": "Grec - Nouveau Testament",
+  "onboardingGreekDesc": "Le Nouveau Testament a été écrit en grec, lu de gauche à droite. Les Évangiles et les Épîtres ont été composés entre 50 et 100 après J.-C.",
+  
+  "onboardingTapTitle": "Touchez n'importe quel mot",
+  "onboardingTapDesc": "Touchez n'importe quel mot pour voir sa définition, sa prononciation et ses informations grammaticales. Activez le bouton de prononciation pour voir comment les mots sont prononcés.",
+  
+  "settings": "Paramètres",
+  "translation": "Traduction",
+  "pronunciation": "Afficher la Prononciation",
+  "pronunciationDesc": "Afficher la translittération au-dessus des mots",
+  "fontSize": "Taille de Police",
+  "theme": "Thème",
+  "themeSystem": "Système",
+  "themeLight": "Clair",
+  "themeDark": "Sombre",
+  
+  "search": "Rechercher",
+  "searchHint": "Rechercher dans le texte biblique...",
+  "noResults": "Aucun résultat trouvé",
+  
+  "verseOfDay": "Verset du Jour",
+  "quickAccess": "Accès Rapide",
+  "home": "Accueil",
+  "books": "Livres",
+  
+  "oldTestament": "Ancien Testament",
+  "newTestament": "Nouveau Testament",
+  "selectChapter": "Sélectionner le Chapitre",
+  "chapters": "{count} chapitres",
+  "@chapters": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  
+  "translationNotAvailable": "Traduction non disponible",
+  "noLexiconEntry": "Pas d'entrée lexicale disponible",
+  
+  "copyVerse": "Copier le verset",
+  "shareVerse": "Partager le verset",
+  "verseCopied": "Verset copié dans le presse-papiers",
+  "addBookmark": "Ajouter un signet",
+  "removeBookmark": "Supprimer le signet",
+  "bookmarks": "Signets",
+  "noBookmarks": "Pas encore de signets",
+  "noBookmarksDesc": "Maintenez un verset appuyé et touchez l'icône de signet pour le sauvegarder ici.",
+  "removeBookmarkConfirmation": "Supprimer ce signet ?",
+  "bookmarkTimeYearsAgo": "{count, plural, one {il y a # an} other {il y a # ans}}",
+  "@bookmarkTimeYearsAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarkTimeMonthsAgo": "{count, plural, one {il y a # mois} other {il y a # mois}}",
+  "@bookmarkTimeMonthsAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarkTimeDaysAgo": "{count, plural, one {il y a # jour} other {il y a # jours}}",
+  "@bookmarkTimeDaysAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarkTimeHoursAgo": "{count, plural, one {il y a # heure} other {il y a # heures}}",
+  "@bookmarkTimeHoursAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarkTimeMinutesAgo": "{count, plural, one {il y a # minute} other {il y a # minutes}}",
+  "@bookmarkTimeMinutesAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarkTimeJustNow": "À l'instant",
+  
+  "quickMeaning": "Sens Rapide",
+  "fullDefinition": "Définition Complète",
+  "pronunciationLabel": "Prononciation",
+  "hebrewOT": "Hébreu • Ancien Testament",
+  "greekNT": "Grec • Nouveau Testament",
+  "appResponsible": "Responsable de l'application",
+  "legalNameLabel": "Raison sociale",
+  "tradeNameLabel": "Nom commercial",
+  "cnpjLabel": "CNPJ",
+  
+  "tryAgain": "Réessayer",
+  "somethingWentWrong": "Une erreur s'est produite",
+  "error": "Erreur",
+
+  "learningMode": "Mode apprentissage",
+  "learningModeDesc": "Apprenez passivement les langues originales en les voyant dans le texte.",
+  "learningModeEnglishOnlyNotice": "Le mode apprentissage prend actuellement en charge uniquement les traductions anglaises.",
+  "learningSectionTitle": "Apprentissage",
+  "loading": "Chargement...",
+  "onboardingBibleLabel": "Bible : {translation}",
+  "@onboardingBibleLabel": {
+    "placeholders": {
+      "translation": {
+        "type": "String"
+      }
+    }
+  },
+  "syntaxTreeTitle": "Arbre syntaxique",
+  "viewSyntaxTree": "Voir l'arbre syntaxique",
+  "hebrewLabel": "Hébreu",
+  "greekLabel": "Grec",
+  "syntaxTreeTapHint": "Touchez un nœud de mot pour voir sa définition complète",
+  "noMorphologicalData": "Aucune donnée morphologique disponible pour ce verset.",
+  "posVerb": "Verbe",
+  "posNoun": "Nom",
+  "posAdjectiveShort": "Adj.",
+  "posPronoun": "Pronom",
+  "posPrepositionShort": "Prép.",
+  "posConjunctionShort": "Conj.",
+  "strongsHebrewLabel": "Hébreu {number}",
+  "@strongsHebrewLabel": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "strongsGreekLabel": "Grec {number}",
+  "@strongsGreekLabel": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "lemmaDictionaryForm": "Lemme (forme dictionnaire)",
+  "grammar": "Grammaire",
+  "topUsageByBook": "Usage principal par livre",
+  "failedToLoadFrequencyData": "Échec du chargement des données de fréquence.",
+  "noUsageDataAvailable": "Aucune donnée d'usage disponible.",
+  "previousChapter": "Chapitre précédent",
+  "nextChapter": "Chapitre suivant",
+  "createCinematicImage": "Créer une image cinématographique",
+  "srsQuestionPrompt": "Que signifie ce mot dans ce contexte ?",
+  "revealAnswer": "Révéler la réponse",
+  "didntKnow": "Je ne savais pas",
+  "knewIt": "Je savais",
+  "srsPositiveFeedback": "Excellent ! La mémoire du mot a augmenté.",
+  "srsNegativeFeedback": "Continuez à pratiquer. Nous montrerons ce mot plus souvent.",
+  "exportVerseTitle": "Exporter le verset",
+  "shareImage": "Partager l'image",
+  "backgroundTheme": "Thème d'arrière-plan",
+  "aspectRatio": "Format",
+  "failedToExportImage": "Échec de l'exportation de l'image.",
+  "exportUnavailableTitle": "Export indisponible",
+  "missingExportRouteData": "Données de route manquantes pour l'exportation.",
+  "invalidExportRouteData": "Données de route invalides pour l'exportation.",
+  "syntaxTreeUnavailableTitle": "Arbre syntaxique indisponible",
+  "missingSyntaxTreeRouteData": "Données de route manquantes pour l'arbre syntaxique.",
+  "invalidSyntaxTreeRouteData": "Données de route invalides pour l'arbre syntaxique.",
+  "noStrongsAvailable": "Aucun Strong"
+}

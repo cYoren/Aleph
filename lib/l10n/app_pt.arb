@@ -1,0 +1,188 @@
+{
+  "@@locale": "pt",
+  "appTitle": "Bíblia Original",
+  "continueReading": "Continuar Leitura",
+  "selectLanguage": "Selecione Seu Idioma",
+  "next": "Próximo",
+  "getStarted": "Começar",
+  "skip": "Pular",
+  
+  "onboardingWelcomeTitle": "Bem-vindo",
+  "onboardingWelcomeDesc": "Experimente a Bíblia em suas línguas originais com traduções lado a lado.",
+  
+  "onboardingHebrewTitle": "Hebraico - Antigo Testamento",
+  "onboardingHebrewDesc": "O Antigo Testamento foi escrito em hebraico, lido da direita para a esquerda. Estes textos foram compostos há mais de 2.500 anos e incluem a Torá, Salmos e Profetas.",
+  
+  "onboardingGreekTitle": "Grego - Novo Testamento",
+  "onboardingGreekDesc": "O Novo Testamento foi escrito em grego, lido da esquerda para a direita. Os Evangelhos e Epístolas foram compostos entre 50-100 d.C.",
+  
+  "onboardingTapTitle": "Toque em Qualquer Palavra",
+  "onboardingTapDesc": "Toque em qualquer palavra para ver sua definição, pronúncia e informação gramatical. Ative o botão de pronúncia para ver como as palavras são faladas.",
+  
+  "settings": "Configurações",
+  "translation": "Tradução",
+  "pronunciation": "Mostrar Pronúncia",
+  "pronunciationDesc": "Exibir transliteração acima das palavras",
+  "fontSize": "Tamanho da Fonte",
+  "theme": "Tema",
+  "themeSystem": "Sistema",
+  "themeLight": "Claro",
+  "themeDark": "Escuro",
+  
+  "search": "Buscar",
+  "searchHint": "Buscar no texto bíblico...",
+  "noResults": "Nenhum resultado encontrado",
+  
+  "verseOfDay": "Versículo do Dia",
+  "quickAccess": "Acesso Rápido",
+  "home": "Início",
+  "books": "Livros",
+  
+  "oldTestament": "Antigo Testamento",
+  "newTestament": "Novo Testamento",
+  "selectChapter": "Selecionar Capítulo",
+  "chapters": "{count} capítulos",
+  "@chapters": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  
+  "translationNotAvailable": "Tradução não disponível",
+  "noLexiconEntry": "Entrada léxica não disponível",
+  
+  "copyVerse": "Copiar versículo",
+  "shareVerse": "Compartilhar versículo",
+  "verseCopied": "Versículo copiado",
+  "addBookmark": "Adicionar favorito",
+  "removeBookmark": "Remover favorito",
+  "bookmarks": "Favoritos",
+  "noBookmarks": "Nenhum favorito ainda",
+  "noBookmarksDesc": "Segure um versículo e toque no ícone de favorito para salvá-lo aqui.",
+  "removeBookmarkConfirmation": "Remover este favorito?",
+  "bookmarkTimeYearsAgo": "{count, plural, one {há # ano} other {há # anos}}",
+  "@bookmarkTimeYearsAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarkTimeMonthsAgo": "{count, plural, one {há # mês} other {há # meses}}",
+  "@bookmarkTimeMonthsAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarkTimeDaysAgo": "{count, plural, one {há # dia} other {há # dias}}",
+  "@bookmarkTimeDaysAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarkTimeHoursAgo": "{count, plural, one {há # hora} other {há # horas}}",
+  "@bookmarkTimeHoursAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarkTimeMinutesAgo": "{count, plural, one {há # minuto} other {há # minutos}}",
+  "@bookmarkTimeMinutesAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarkTimeJustNow": "Agora mesmo",
+  
+  "quickMeaning": "Significado Rápido",
+  "fullDefinition": "Definição Completa",
+  "pronunciationLabel": "Pronúncia",
+  "hebrewOT": "Hebraico • Antigo Testamento",
+  "greekNT": "Grego • Novo Testamento",
+  "appResponsible": "Responsável pelo App",
+  "legalNameLabel": "Razão Social",
+  "tradeNameLabel": "Nome Fantasia",
+  "cnpjLabel": "CNPJ",
+  
+  "tryAgain": "Tentar Novamente",
+  "somethingWentWrong": "Algo deu errado",
+  "error": "Erro",
+
+  "learningMode": "Modo de Aprendizado",
+  "learningModeDesc": "Aprenda os idiomas originais passivamente no decorrer da leitura.",
+  "learningModeEnglishOnlyNotice": "O Modo de Aprendizado atualmente oferece suporte apenas a traduções em inglês.",
+  "learningSectionTitle": "Aprendizado",
+  "loading": "Carregando...",
+  "onboardingBibleLabel": "Bíblia: {translation}",
+  "@onboardingBibleLabel": {
+    "placeholders": {
+      "translation": {
+        "type": "String"
+      }
+    }
+  },
+  "syntaxTreeTitle": "Árvore Sintática",
+  "viewSyntaxTree": "Ver Árvore Sintática",
+  "hebrewLabel": "Hebraico",
+  "greekLabel": "Grego",
+  "syntaxTreeTapHint": "Toque em qualquer nó para ver a definição completa",
+  "noMorphologicalData": "Não há dados morfológicos disponíveis para este versículo.",
+  "posVerb": "Verbo",
+  "posNoun": "Subst.",
+  "posAdjectiveShort": "Adj.",
+  "posPronoun": "Pronome",
+  "posPrepositionShort": "Prep.",
+  "posConjunctionShort": "Conj.",
+  "strongsHebrewLabel": "Hebraico {number}",
+  "@strongsHebrewLabel": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "strongsGreekLabel": "Grego {number}",
+  "@strongsGreekLabel": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "lemmaDictionaryForm": "Lema (Forma de Dicionário)",
+  "grammar": "Gramática",
+  "topUsageByBook": "Uso Principal por Livro",
+  "failedToLoadFrequencyData": "Falha ao carregar os dados de frequência.",
+  "noUsageDataAvailable": "Nenhum dado de uso disponível.",
+  "previousChapter": "Capítulo Anterior",
+  "nextChapter": "Próximo Capítulo",
+  "createCinematicImage": "Criar Imagem Cinematográfica",
+  "srsQuestionPrompt": "O que esta palavra significa neste contexto?",
+  "revealAnswer": "Revelar resposta",
+  "didntKnow": "Não sabia",
+  "knewIt": "Sabia",
+  "srsPositiveFeedback": "Ótimo! A memória da palavra aumentou.",
+  "srsNegativeFeedback": "Continue praticando. Mostraremos esta palavra com mais frequência.",
+  "exportVerseTitle": "Exportar versículo",
+  "shareImage": "Compartilhar imagem",
+  "backgroundTheme": "Tema de fundo",
+  "aspectRatio": "Proporção",
+  "failedToExportImage": "Falha ao exportar a imagem.",
+  "exportUnavailableTitle": "Exportação indisponível",
+  "missingExportRouteData": "Dados de rota ausentes para exportação.",
+  "invalidExportRouteData": "Dados de rota inválidos para exportação.",
+  "syntaxTreeUnavailableTitle": "Árvore sintática indisponível",
+  "missingSyntaxTreeRouteData": "Dados de rota ausentes para a árvore sintática.",
+  "invalidSyntaxTreeRouteData": "Dados de rota inválidos para a árvore sintática.",
+  "noStrongsAvailable": "Sem Strong's"
+}

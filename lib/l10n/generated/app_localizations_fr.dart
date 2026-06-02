@@ -1,0 +1,401 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
+import 'app_localizations.dart';
+
+// ignore_for_file: type=lint
+
+/// The translations for French (`fr`).
+class AppLocalizationsFr extends AppLocalizations {
+  AppLocalizationsFr([String locale = 'fr']) : super(locale);
+
+  @override
+  String get appTitle => 'Bible Originale';
+
+  @override
+  String get continueReading => 'Continuer la Lecture';
+
+  @override
+  String get selectLanguage => 'Sélectionnez Votre Langue';
+
+  @override
+  String get next => 'Suivant';
+
+  @override
+  String get getStarted => 'Commencer';
+
+  @override
+  String get skip => 'Passer';
+
+  @override
+  String get onboardingWelcomeTitle => 'Bienvenue';
+
+  @override
+  String get onboardingWelcomeDesc =>
+      'Découvrez la Bible dans ses langues originales avec des traductions côte à côte.';
+
+  @override
+  String get onboardingHebrewTitle => 'Hébreu - Ancien Testament';
+
+  @override
+  String get onboardingHebrewDesc =>
+      'L\'Ancien Testament a été écrit en hébreu, lu de droite à gauche. Ces textes ont été composés il y a plus de 2 500 ans et comprennent la Torah, les Psaumes et les Prophètes.';
+
+  @override
+  String get onboardingGreekTitle => 'Grec - Nouveau Testament';
+
+  @override
+  String get onboardingGreekDesc =>
+      'Le Nouveau Testament a été écrit en grec, lu de gauche à droite. Les Évangiles et les Épîtres ont été composés entre 50 et 100 après J.-C.';
+
+  @override
+  String get onboardingTapTitle => 'Touchez n\'importe quel mot';
+
+  @override
+  String get onboardingTapDesc =>
+      'Touchez n\'importe quel mot pour voir sa définition, sa prononciation et ses informations grammaticales. Activez le bouton de prononciation pour voir comment les mots sont prononcés.';
+
+  @override
+  String get settings => 'Paramètres';
+
+  @override
+  String get translation => 'Traduction';
+
+  @override
+  String get pronunciation => 'Afficher la Prononciation';
+
+  @override
+  String get pronunciationDesc =>
+      'Afficher la translittération au-dessus des mots';
+
+  @override
+  String get fontSize => 'Taille de Police';
+
+  @override
+  String get theme => 'Thème';
+
+  @override
+  String get themeSystem => 'Système';
+
+  @override
+  String get themeLight => 'Clair';
+
+  @override
+  String get themeDark => 'Sombre';
+
+  @override
+  String get search => 'Rechercher';
+
+  @override
+  String get searchHint => 'Rechercher dans le texte biblique...';
+
+  @override
+  String get noResults => 'Aucun résultat trouvé';
+
+  @override
+  String get verseOfDay => 'Verset du Jour';
+
+  @override
+  String get quickAccess => 'Accès Rapide';
+
+  @override
+  String get home => 'Accueil';
+
+  @override
+  String get books => 'Livres';
+
+  @override
+  String get oldTestament => 'Ancien Testament';
+
+  @override
+  String get newTestament => 'Nouveau Testament';
+
+  @override
+  String get selectChapter => 'Sélectionner le Chapitre';
+
+  @override
+  String chapters(int count) {
+    return '$count chapitres';
+  }
+
+  @override
+  String get translationNotAvailable => 'Traduction non disponible';
+
+  @override
+  String get noLexiconEntry => 'Pas d\'entrée lexicale disponible';
+
+  @override
+  String get copyVerse => 'Copier le verset';
+
+  @override
+  String get shareVerse => 'Partager le verset';
+
+  @override
+  String get verseCopied => 'Verset copié dans le presse-papiers';
+
+  @override
+  String get addBookmark => 'Ajouter un signet';
+
+  @override
+  String get removeBookmark => 'Supprimer le signet';
+
+  @override
+  String get bookmarks => 'Signets';
+
+  @override
+  String get noBookmarks => 'Pas encore de signets';
+
+  @override
+  String get noBookmarksDesc =>
+      'Maintenez un verset appuyé et touchez l\'icône de signet pour le sauvegarder ici.';
+
+  @override
+  String get removeBookmarkConfirmation => 'Supprimer ce signet ?';
+
+  @override
+  String bookmarkTimeYearsAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'il y a # ans',
+      one: 'il y a # an',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String bookmarkTimeMonthsAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'il y a # mois',
+      one: 'il y a # mois',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String bookmarkTimeDaysAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'il y a # jours',
+      one: 'il y a # jour',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String bookmarkTimeHoursAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'il y a # heures',
+      one: 'il y a # heure',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String bookmarkTimeMinutesAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'il y a # minutes',
+      one: 'il y a # minute',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get bookmarkTimeJustNow => 'À l\'instant';
+
+  @override
+  String get quickMeaning => 'Sens Rapide';
+
+  @override
+  String get fullDefinition => 'Définition Complète';
+
+  @override
+  String get pronunciationLabel => 'Prononciation';
+
+  @override
+  String get hebrewOT => 'Hébreu • Ancien Testament';
+
+  @override
+  String get greekNT => 'Grec • Nouveau Testament';
+
+  @override
+  String get appResponsible => 'Responsable de l\'application';
+
+  @override
+  String get legalNameLabel => 'Raison sociale';
+
+  @override
+  String get tradeNameLabel => 'Nom commercial';
+
+  @override
+  String get cnpjLabel => 'CNPJ';
+
+  @override
+  String get tryAgain => 'Réessayer';
+
+  @override
+  String get somethingWentWrong => 'Une erreur s\'est produite';
+
+  @override
+  String get error => 'Erreur';
+
+  @override
+  String get learningMode => 'Mode apprentissage';
+
+  @override
+  String get learningModeDesc =>
+      'Apprenez passivement les langues originales en les voyant dans le texte.';
+
+  @override
+  String get learningModeEnglishOnlyNotice =>
+      'Le mode apprentissage prend actuellement en charge uniquement les traductions anglaises.';
+
+  @override
+  String get learningSectionTitle => 'Apprentissage';
+
+  @override
+  String get loading => 'Chargement...';
+
+  @override
+  String onboardingBibleLabel(String translation) {
+    return 'Bible : $translation';
+  }
+
+  @override
+  String get syntaxTreeTitle => 'Arbre syntaxique';
+
+  @override
+  String get viewSyntaxTree => 'Voir l\'arbre syntaxique';
+
+  @override
+  String get hebrewLabel => 'Hébreu';
+
+  @override
+  String get greekLabel => 'Grec';
+
+  @override
+  String get syntaxTreeTapHint =>
+      'Touchez un nœud de mot pour voir sa définition complète';
+
+  @override
+  String get noMorphologicalData =>
+      'Aucune donnée morphologique disponible pour ce verset.';
+
+  @override
+  String get posVerb => 'Verbe';
+
+  @override
+  String get posNoun => 'Nom';
+
+  @override
+  String get posAdjectiveShort => 'Adj.';
+
+  @override
+  String get posPronoun => 'Pronom';
+
+  @override
+  String get posPrepositionShort => 'Prép.';
+
+  @override
+  String get posConjunctionShort => 'Conj.';
+
+  @override
+  String strongsHebrewLabel(String number) {
+    return 'Hébreu $number';
+  }
+
+  @override
+  String strongsGreekLabel(String number) {
+    return 'Grec $number';
+  }
+
+  @override
+  String get lemmaDictionaryForm => 'Lemme (forme dictionnaire)';
+
+  @override
+  String get grammar => 'Grammaire';
+
+  @override
+  String get topUsageByBook => 'Usage principal par livre';
+
+  @override
+  String get failedToLoadFrequencyData =>
+      'Échec du chargement des données de fréquence.';
+
+  @override
+  String get noUsageDataAvailable => 'Aucune donnée d\'usage disponible.';
+
+  @override
+  String get previousChapter => 'Chapitre précédent';
+
+  @override
+  String get nextChapter => 'Chapitre suivant';
+
+  @override
+  String get createCinematicImage => 'Créer une image cinématographique';
+
+  @override
+  String get srsQuestionPrompt => 'Que signifie ce mot dans ce contexte ?';
+
+  @override
+  String get revealAnswer => 'Révéler la réponse';
+
+  @override
+  String get didntKnow => 'Je ne savais pas';
+
+  @override
+  String get knewIt => 'Je savais';
+
+  @override
+  String get srsPositiveFeedback => 'Excellent ! La mémoire du mot a augmenté.';
+
+  @override
+  String get srsNegativeFeedback =>
+      'Continuez à pratiquer. Nous montrerons ce mot plus souvent.';
+
+  @override
+  String get exportVerseTitle => 'Exporter le verset';
+
+  @override
+  String get shareImage => 'Partager l\'image';
+
+  @override
+  String get backgroundTheme => 'Thème d\'arrière-plan';
+
+  @override
+  String get aspectRatio => 'Format';
+
+  @override
+  String get failedToExportImage => 'Échec de l\'exportation de l\'image.';
+
+  @override
+  String get exportUnavailableTitle => 'Export indisponible';
+
+  @override
+  String get missingExportRouteData =>
+      'Données de route manquantes pour l\'exportation.';
+
+  @override
+  String get invalidExportRouteData =>
+      'Données de route invalides pour l\'exportation.';
+
+  @override
+  String get syntaxTreeUnavailableTitle => 'Arbre syntaxique indisponible';
+
+  @override
+  String get missingSyntaxTreeRouteData =>
+      'Données de route manquantes pour l\'arbre syntaxique.';
+
+  @override
+  String get invalidSyntaxTreeRouteData =>
+      'Données de route invalides pour l\'arbre syntaxique.';
+
+  @override
+  String get noStrongsAvailable => 'Aucun Strong';
+}
