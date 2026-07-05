@@ -180,5 +180,9 @@
   "missingWordStudyRouteData": "Für diesen Bildschirm wurden keine Wortdaten übergeben.",
   "syntaxTreeHeuristicNotice": "Grammatische Skizze auf Basis von Wortstellungs-Heuristiken — keine verifizierten Syntaxdaten.",
   "readerMode": "Lesemodus",
-  "readerModeDesc": "Zeigt beim Lesen eine kleine Übersetzung unter seltenen Wörtern. Gemeisterte Wörter erscheinen ohne Hilfe."
+  "readerModeDesc": "Zeigt beim Lesen eine kleine Übersetzung unter seltenen Wörtern. Gemeisterte Wörter erscheinen ohne Hilfe.",
+  "vocabularyTitle": "Vokabeln",
+  "dueForReviewSection": "Zur Wiederholung fällig",
+  "mostFrequentSection": "Häufigste Wörter",
+  "vocabularyCoverage": "Diese Wörter decken {percent}% des Textes ab — lerne sie zuerst."
 }

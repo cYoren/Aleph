@@ -817,6 +817,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Gloss rare words inline while you read. Words you have mastered appear plain.'**
   String get readerModeDesc;
+
+  /// No description provided for @vocabularyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Vocabulary'**
+  String get vocabularyTitle;
+
+  /// No description provided for @dueForReviewSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Due for review'**
+  String get dueForReviewSection;
+
+  /// No description provided for @mostFrequentSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Most frequent words'**
+  String get mostFrequentSection;
+
+  /// No description provided for @vocabularyCoverage.
+  ///
+  /// In en, this message translates to:
+  /// **'These words cover {percent}% of the text — learn them first.'**
+  String vocabularyCoverage(String percent);
 }
 
 class _AppLocalizationsDelegate

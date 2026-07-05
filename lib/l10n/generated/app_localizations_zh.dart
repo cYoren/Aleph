@@ -414,4 +414,18 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get readerModeDesc => '阅读时在罕见词语下方显示简短翻译。已掌握的词语不再显示提示。';
+
+  @override
+  String get vocabularyTitle => '词汇';
+
+  @override
+  String get dueForReviewSection => '待复习';
+
+  @override
+  String get mostFrequentSection => '最常见词语';
+
+  @override
+  String vocabularyCoverage(String percent) {
+    return '这些词语覆盖了 $percent% 的经文——请优先学习。';
+  }
 }

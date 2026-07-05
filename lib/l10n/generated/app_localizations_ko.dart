@@ -418,4 +418,18 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String get readerModeDesc =>
       '읽는 동안 드문 단어 아래에 짧은 번역을 표시합니다. 익힌 단어는 도움말 없이 표시됩니다.';
+
+  @override
+  String get vocabularyTitle => '어휘';
+
+  @override
+  String get dueForReviewSection => '복습할 단어';
+
+  @override
+  String get mostFrequentSection => '가장 자주 나오는 단어';
+
+  @override
+  String vocabularyCoverage(String percent) {
+    return '이 단어들은 본문의 $percent%를 차지합니다 — 먼저 학습하세요.';
+  }
 }

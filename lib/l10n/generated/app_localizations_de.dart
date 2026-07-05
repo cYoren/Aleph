@@ -430,4 +430,18 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get readerModeDesc =>
       'Zeigt beim Lesen eine kleine Übersetzung unter seltenen Wörtern. Gemeisterte Wörter erscheinen ohne Hilfe.';
+
+  @override
+  String get vocabularyTitle => 'Vokabeln';
+
+  @override
+  String get dueForReviewSection => 'Zur Wiederholung fällig';
+
+  @override
+  String get mostFrequentSection => 'Häufigste Wörter';
+
+  @override
+  String vocabularyCoverage(String percent) {
+    return 'Diese Wörter decken $percent% des Textes ab — lerne sie zuerst.';
+  }
 }

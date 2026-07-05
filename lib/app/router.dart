@@ -11,6 +11,7 @@ import '../features/onboarding/language_selection_screen.dart';
 import '../features/onboarding/onboarding_screen.dart';
 import '../features/startup/startup_gate_screen.dart';
 import '../features/export/export_composer_screen.dart';
+import '../features/vocabulary/vocabulary_screen.dart';
 import '../features/word_study/word_study_screen.dart';
 import '../shared/widgets/app_scaffold.dart';
 import '../data/models/verse.dart';
@@ -96,6 +97,11 @@ final router = GoRouter(
           isOT: isOT,
         );
       },
+    ),
+    // Full-screen modal for vocabulary decks + SRS review
+    GoRoute(
+      path: '/vocabulary',
+      builder: (context, state) => const VocabularyScreen(),
     ),
     // Full-screen modal for word study (concordance)
     GoRoute(

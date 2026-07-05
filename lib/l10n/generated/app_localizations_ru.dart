@@ -441,4 +441,18 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get readerModeDesc =>
       'Показывает небольшой перевод под редкими словами при чтении. Освоенные слова отображаются без подсказки.';
+
+  @override
+  String get vocabularyTitle => 'Словарный запас';
+
+  @override
+  String get dueForReviewSection => 'Пора повторить';
+
+  @override
+  String get mostFrequentSection => 'Самые частые слова';
+
+  @override
+  String vocabularyCoverage(String percent) {
+    return 'Эти слова покрывают $percent% текста — учите их в первую очередь.';
+  }
 }

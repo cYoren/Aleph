@@ -432,4 +432,18 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get readerModeDesc =>
       'Mostra uma pequena tradução sob palavras raras durante a leitura. Palavras dominadas aparecem sem ajuda.';
+
+  @override
+  String get vocabularyTitle => 'Vocabulário';
+
+  @override
+  String get dueForReviewSection => 'Para revisar';
+
+  @override
+  String get mostFrequentSection => 'Palavras mais frequentes';
+
+  @override
+  String vocabularyCoverage(String percent) {
+    return 'Estas palavras cobrem $percent% do texto — aprenda-as primeiro.';
+  }
 }
