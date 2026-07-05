@@ -180,5 +180,9 @@
   "missingWordStudyRouteData": "Aucune donnée de mot n'a été fournie pour cet écran.",
   "syntaxTreeHeuristicNotice": "Esquisse grammaticale fondée sur des heuristiques d'ordre des mots — pas de données syntaxiques vérifiées.",
   "readerMode": "Mode lecteur",
-  "readerModeDesc": "Affiche une petite traduction sous les mots rares pendant la lecture. Les mots maîtrisés apparaissent sans aide."
+  "readerModeDesc": "Affiche une petite traduction sous les mots rares pendant la lecture. Les mots maîtrisés apparaissent sans aide.",
+  "vocabularyTitle": "Vocabulaire",
+  "dueForReviewSection": "À réviser",
+  "mostFrequentSection": "Mots les plus fréquents",
+  "vocabularyCoverage": "Ces mots couvrent {percent}% du texte — apprenez-les en premier."
 }

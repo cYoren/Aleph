@@ -428,4 +428,18 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get readerModeDesc =>
       'Gloss rare words inline while you read. Words you have mastered appear plain.';
+
+  @override
+  String get vocabularyTitle => 'Vocabulary';
+
+  @override
+  String get dueForReviewSection => 'Due for review';
+
+  @override
+  String get mostFrequentSection => 'Most frequent words';
+
+  @override
+  String vocabularyCoverage(String percent) {
+    return 'These words cover $percent% of the text — learn them first.';
+  }
 }

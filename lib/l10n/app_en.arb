@@ -194,5 +194,16 @@
   "missingWordStudyRouteData": "No word data was provided for this screen.",
   "syntaxTreeHeuristicNotice": "Grammatical sketch based on word-order heuristics — not verified syntax data.",
   "readerMode": "Reader mode",
-  "readerModeDesc": "Gloss rare words inline while you read. Words you have mastered appear plain."
+  "readerModeDesc": "Gloss rare words inline while you read. Words you have mastered appear plain.",
+  "vocabularyTitle": "Vocabulary",
+  "dueForReviewSection": "Due for review",
+  "mostFrequentSection": "Most frequent words",
+  "vocabularyCoverage": "These words cover {percent}% of the text — learn them first.",
+  "@vocabularyCoverage": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  }
 }

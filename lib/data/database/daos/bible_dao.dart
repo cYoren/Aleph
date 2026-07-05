@@ -494,6 +494,52 @@ class BibleDAO {
     return result;
   }
 
+  /// Most frequent Strong's-keyed words for one language ('heb' or 'grc'),
+  /// for the frequency-ordered vocabulary deck.
+  Future<List<Map<String, dynamic>>> getTopFrequencyWords({
+    required String language,
+    int limit = 100,
+  }) async {
+    try {
+      final db = await _dbHelper.database;
+      return await db.rawQuery(
+        '''
+        SELECT w.strongs AS key, COUNT(*) AS c
+        FROM words w
+        WHERE w.language = ? AND w.strongs IS NOT NULL AND w.strongs != ''
+        GROUP BY w.strongs
+        ORDER BY c DESC
+        LIMIT ?
+        ''',
+        [language, limit],
+      );
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('BibleDAO top frequency error: $e');
+      }
+      return [];
+    }
+  }
+
+  /// Total token count for one language, for vocabulary coverage stats.
+  Future<int> getTotalWordCount(String language) async {
+    try {
+      final db = await _dbHelper.database;
+      final rows = await db.rawQuery(
+        'SELECT COUNT(*) AS c FROM words WHERE language = ?',
+        [language],
+      );
+      if (rows.isNotEmpty) {
+        return (rows.first['c'] as num?)?.toInt() ?? 0;
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('BibleDAO total word count error: $e');
+      }
+    }
+    return 0;
+  }
+
   /// All verses containing a word (by Strong's id or lemma), in canonical
   /// order. [limit] caps the result for very frequent words (particles,
   /// conjunctions) that appear tens of thousands of times.

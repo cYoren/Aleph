@@ -434,6 +434,16 @@ class HomeScreen extends ConsumerWidget {
                     () => context.go('/search'),
                   ),
                 ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _buildQuickButton(
+                    context,
+                    colorScheme,
+                    Icons.style,
+                    l10n.vocabularyTitle,
+                    () => context.push('/vocabulary'),
+                  ),
+                ),
               ],
             ),
           ],

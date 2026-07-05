@@ -180,5 +180,9 @@
   "missingWordStudyRouteData": "未提供该页面所需的词语数据。",
   "syntaxTreeHeuristicNotice": "基于词序启发式规则的语法示意图，并非经过校验的句法数据。",
   "readerMode": "读者模式",
-  "readerModeDesc": "阅读时在罕见词语下方显示简短翻译。已掌握的词语不再显示提示。"
+  "readerModeDesc": "阅读时在罕见词语下方显示简短翻译。已掌握的词语不再显示提示。",
+  "vocabularyTitle": "词汇",
+  "dueForReviewSection": "待复习",
+  "mostFrequentSection": "最常见词语",
+  "vocabularyCoverage": "这些词语覆盖了 {percent}% 的经文——请优先学习。"
 }
