@@ -100,8 +100,19 @@ flutter build macos
 ## Notes
 
 - `assets/bible.db` is intentionally not tracked in git.
-- Release validation enforces full-corpus thresholds, strict multilingual gates, and zero missing canonical refs for every enabled release translation.
+- Release validation enforces full-corpus thresholds, strict multilingual gates, zero missing canonical refs for every enabled release translation, and lexicon enrichment coverage.
 - `KOUGO` (ja) remains intentionally disabled and hidden from release UI.
+
+## Roadmap
+
+See [ROADMAP.md](ROADMAP.md) for direction and priorities (real lexicons, real syntax
+trees, the personalized reader mode, passage memorization in Hebrew).
+
+## Data Sources & Attribution
+
+- Hebrew/Greek token data with morphology: [`themikejr/bible-mcp`](https://github.com/themikejr/bible-mcp) (MACULA-derived, CC BY 4.0)
+- Translations: [`seven1m/open-bibles`](https://github.com/seven1m/open-bibles) (public domain / per-file licenses)
+- Strong's dictionary definitions: [`openscriptures/strongs`](https://github.com/openscriptures/strongs) (CC BY-SA, © Open Scriptures)
 
 ## Android Signing
 

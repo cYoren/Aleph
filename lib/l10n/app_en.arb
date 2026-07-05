@@ -6,19 +6,14 @@
   "next": "Next",
   "getStarted": "Get Started",
   "skip": "Skip",
-  
   "onboardingWelcomeTitle": "Welcome",
   "onboardingWelcomeDesc": "Experience the Bible in its original languages with side-by-side translations.",
-  
   "onboardingHebrewTitle": "Hebrew - Old Testament",
   "onboardingHebrewDesc": "The Old Testament was written in Hebrew, read from right to left. These texts were composed over 2,500 years ago and include the Torah, Psalms, and Prophets.",
-  
   "onboardingGreekTitle": "Greek - New Testament",
   "onboardingGreekDesc": "The New Testament was written in Greek, read left to right. The Gospels and Epistles were composed between 50-100 AD.",
-  
   "onboardingTapTitle": "Tap Any Word",
   "onboardingTapDesc": "Tap on any word to see its definition, pronunciation, and grammatical information. Toggle the pronunciation button to see how words are spoken.",
-  
   "settings": "Settings",
   "translation": "Translation",
   "pronunciation": "Show Pronunciation",
@@ -28,16 +23,13 @@
   "themeSystem": "System",
   "themeLight": "Light",
   "themeDark": "Dark",
-  
   "search": "Search",
   "searchHint": "Search in Bible text...",
   "noResults": "No results found",
-  
   "verseOfDay": "Verse of the Day",
   "quickAccess": "Quick Access",
   "home": "Home",
   "books": "Books",
-  
   "oldTestament": "Old Testament",
   "newTestament": "New Testament",
   "selectChapter": "Select Chapter",
@@ -49,10 +41,8 @@
       }
     }
   },
-  
   "translationNotAvailable": "Translation not available",
   "noLexiconEntry": "No lexicon entry available",
-  
   "copyVerse": "Copy verse",
   "shareVerse": "Share verse",
   "verseCopied": "Verse copied to clipboard",
@@ -103,7 +93,6 @@
     }
   },
   "bookmarkTimeJustNow": "Just now",
-  
   "quickMeaning": "Quick Meaning",
   "fullDefinition": "Full Definition",
   "pronunciationLabel": "Pronunciation",
@@ -113,11 +102,9 @@
   "legalNameLabel": "Legal Name",
   "tradeNameLabel": "Trade Name",
   "cnpjLabel": "CNPJ",
-  
   "tryAgain": "Try Again",
   "somethingWentWrong": "Something went wrong",
   "error": "Error",
-  
   "learningMode": "Learning Mode",
   "learningModeDesc": "Passively learn original languages by seeing them in the text.",
   "learningModeEnglishOnlyNotice": "Learning Mode currently supports English translations only.",
@@ -184,5 +171,25 @@
   "syntaxTreeUnavailableTitle": "Syntax Tree Unavailable",
   "missingSyntaxTreeRouteData": "Missing route data for syntax tree.",
   "invalidSyntaxTreeRouteData": "Invalid route data for syntax tree.",
-  "noStrongsAvailable": "No Strong's"
+  "noStrongsAvailable": "No Strong's",
+  "wordStudyTitle": "Word Study",
+  "seeAllUses": "See all occurrences",
+  "occurrencesTotal": "{count} occurrences in the Bible",
+  "@occurrencesTotal": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "showingFirstOccurrences": "Showing the first {shown} occurrences",
+  "@showingFirstOccurrences": {
+    "placeholders": {
+      "shown": {
+        "type": "int"
+      }
+    }
+  },
+  "wordStudyUnavailableTitle": "Word Study Unavailable",
+  "missingWordStudyRouteData": "No word data was provided for this screen."
 }

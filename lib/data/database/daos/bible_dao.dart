@@ -420,6 +420,62 @@ class BibleDAO {
     }
   }
 
+  /// Total number of verses containing a word keyed by Strong's id or lemma.
+  Future<int> countOccurrencesForLexiconKey(String key) async {
+    if (key.isEmpty) return 0;
+
+    try {
+      final db = await _dbHelper.database;
+      final rows = await db.rawQuery(
+        '''
+        SELECT COUNT(DISTINCT w.verse_id) as total
+        FROM words w
+        WHERE w.strongs = ? OR w.lemma = ?
+        ''',
+        [key, key],
+      );
+      if (rows.isNotEmpty) {
+        return (rows.first['total'] as num?)?.toInt() ?? 0;
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('BibleDAO occurrence count error: $e');
+      }
+    }
+    return 0;
+  }
+
+  /// All verses containing a word (by Strong's id or lemma), in canonical
+  /// order. [limit] caps the result for very frequent words (particles,
+  /// conjunctions) that appear tens of thousands of times.
+  Future<List<Verse>> getOccurrencesForLexiconKey(
+    String key, {
+    int limit = 300,
+  }) async {
+    if (key.isEmpty) return [];
+
+    try {
+      final db = await _dbHelper.database;
+      final List<Map<String, dynamic>> maps = await db.rawQuery(
+        '''
+        SELECT DISTINCT v.id, v.book_id, v.chapter, v.verse_number, v.text
+        FROM words w
+        JOIN verses v ON w.verse_id = v.id
+        WHERE w.strongs = ? OR w.lemma = ?
+        ORDER BY v.id
+        LIMIT ?
+        ''',
+        [key, key, limit],
+      );
+      return maps.map((m) => Verse.fromMap(m)).toList();
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('BibleDAO occurrences error: $e');
+      }
+      return [];
+    }
+  }
+
   // ========== TRANSLATIONS ==========
 
   Future<List<Translation>> getTranslations() async {

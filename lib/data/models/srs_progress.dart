@@ -6,6 +6,15 @@ class SrsProgress {
   final DateTime nextReviewAt;
   final DateTime lastReviewedAt;
 
+  /// SM-2 state: consecutive successful reviews since the last failure.
+  final int repetitions;
+
+  /// SM-2 easiness factor (>= 1.3, starts at 2.5).
+  final double easiness;
+
+  /// Current inter-review interval in days (fractional for sub-day steps).
+  final double intervalDays;
+
   const SrsProgress({
     this.id,
     required this.strongsId,
@@ -13,6 +22,9 @@ class SrsProgress {
     this.masteryScore = 0.0,
     required this.nextReviewAt,
     required this.lastReviewedAt,
+    this.repetitions = 0,
+    this.easiness = 2.5,
+    this.intervalDays = 0.0,
   });
 
   Map<String, dynamic> toMap() {
@@ -23,6 +35,9 @@ class SrsProgress {
       'mastery_score': masteryScore,
       'next_review_at': nextReviewAt.millisecondsSinceEpoch,
       'last_reviewed_at': lastReviewedAt.millisecondsSinceEpoch,
+      'repetitions': repetitions,
+      'easiness': easiness,
+      'interval_days': intervalDays,
     };
   }
 
@@ -36,6 +51,9 @@ class SrsProgress {
       lastReviewedAt: DateTime.fromMillisecondsSinceEpoch(
         map['last_reviewed_at'],
       ),
+      repetitions: (map['repetitions'] as num?)?.toInt() ?? 0,
+      easiness: (map['easiness'] as num?)?.toDouble() ?? 2.5,
+      intervalDays: (map['interval_days'] as num?)?.toDouble() ?? 0.0,
     );
   }
 
@@ -46,6 +64,9 @@ class SrsProgress {
     double? masteryScore,
     DateTime? nextReviewAt,
     DateTime? lastReviewedAt,
+    int? repetitions,
+    double? easiness,
+    double? intervalDays,
   }) {
     return SrsProgress(
       id: id ?? this.id,
@@ -54,6 +75,9 @@ class SrsProgress {
       masteryScore: masteryScore ?? this.masteryScore,
       nextReviewAt: nextReviewAt ?? this.nextReviewAt,
       lastReviewedAt: lastReviewedAt ?? this.lastReviewedAt,
+      repetitions: repetitions ?? this.repetitions,
+      easiness: easiness ?? this.easiness,
+      intervalDays: intervalDays ?? this.intervalDays,
     );
   }
 }

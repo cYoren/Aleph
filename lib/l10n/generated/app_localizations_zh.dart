@@ -383,4 +383,26 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get noStrongsAvailable => '无 Strong 编号';
+
+  @override
+  String get wordStudyTitle => '词语研读';
+
+  @override
+  String get seeAllUses => '查看所有出现位置';
+
+  @override
+  String occurrencesTotal(int count) {
+    return '在圣经中出现 $count 次';
+  }
+
+  @override
+  String showingFirstOccurrences(int shown) {
+    return '仅显示前 $shown 次出现';
+  }
+
+  @override
+  String get wordStudyUnavailableTitle => '词语研读不可用';
+
+  @override
+  String get missingWordStudyRouteData => '未提供该页面所需的词语数据。';
 }

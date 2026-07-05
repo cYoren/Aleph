@@ -398,4 +398,27 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get noStrongsAvailable => 'Aucun Strong';
+
+  @override
+  String get wordStudyTitle => 'Étude de mot';
+
+  @override
+  String get seeAllUses => 'Voir toutes les occurrences';
+
+  @override
+  String occurrencesTotal(int count) {
+    return '$count occurrences dans la Bible';
+  }
+
+  @override
+  String showingFirstOccurrences(int shown) {
+    return 'Affichage des $shown premières occurrences';
+  }
+
+  @override
+  String get wordStudyUnavailableTitle => 'Étude de mot indisponible';
+
+  @override
+  String get missingWordStudyRouteData =>
+      'Aucune donnée de mot n\'a été fournie pour cet écran.';
 }

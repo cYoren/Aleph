@@ -6,19 +6,14 @@
   "next": "下一步",
   "getStarted": "开始",
   "skip": "跳过",
-  
   "onboardingWelcomeTitle": "欢迎",
   "onboardingWelcomeDesc": "以原始语言和对照译本阅读圣经。",
-  
   "onboardingHebrewTitle": "希伯来文 - 旧约",
   "onboardingHebrewDesc": "旧约写于希伯来文，阅读方向为从右到左。这些文本写成于两千五百多年前，包含律法书、诗篇和先知书。",
-  
   "onboardingGreekTitle": "希腊文 - 新约",
   "onboardingGreekDesc": "新约写于希腊文，阅读方向为从左到右。福音书与书信写于公元 50-100 年间。",
-  
   "onboardingTapTitle": "点按任意词语",
   "onboardingTapDesc": "点按任意词语即可查看释义、发音和语法信息。开启发音按钮可查看词语读音。",
-  
   "settings": "设置",
   "translation": "译本",
   "pronunciation": "显示发音",
@@ -28,16 +23,13 @@
   "themeSystem": "跟随系统",
   "themeLight": "浅色",
   "themeDark": "深色",
-  
   "search": "搜索",
   "searchHint": "在圣经文本中搜索...",
   "noResults": "未找到结果",
-  
   "verseOfDay": "每日经文",
   "quickAccess": "快捷入口",
   "home": "首页",
   "books": "书卷",
-  
   "oldTestament": "旧约",
   "newTestament": "新约",
   "selectChapter": "选择章节",
@@ -49,10 +41,8 @@
       }
     }
   },
-  
   "translationNotAvailable": "译文不可用",
   "noLexiconEntry": "暂无词典条目",
-  
   "copyVerse": "复制经文",
   "shareVerse": "分享经文",
   "verseCopied": "经文已复制到剪贴板",
@@ -103,7 +93,6 @@
     }
   },
   "bookmarkTimeJustNow": "刚刚",
-  
   "quickMeaning": "快速释义",
   "fullDefinition": "完整释义",
   "pronunciationLabel": "发音",
@@ -113,11 +102,9 @@
   "legalNameLabel": "法定名称",
   "tradeNameLabel": "商号",
   "cnpjLabel": "CNPJ",
-  
   "tryAgain": "重试",
   "somethingWentWrong": "出现错误",
   "error": "错误",
-  
   "learningMode": "学习模式",
   "learningModeDesc": "通过在阅读中看到原文来被动学习。",
   "learningModeEnglishOnlyNotice": "学习模式目前仅支持英文译本。",
@@ -184,5 +171,11 @@
   "syntaxTreeUnavailableTitle": "句法树不可用",
   "missingSyntaxTreeRouteData": "句法树所需路由数据缺失。",
   "invalidSyntaxTreeRouteData": "句法树所需路由数据无效。",
-  "noStrongsAvailable": "无 Strong 编号"
+  "noStrongsAvailable": "无 Strong 编号",
+  "wordStudyTitle": "词语研读",
+  "seeAllUses": "查看所有出现位置",
+  "occurrencesTotal": "在圣经中出现 {count} 次",
+  "showingFirstOccurrences": "仅显示前 {shown} 次出现",
+  "wordStudyUnavailableTitle": "词语研读不可用",
+  "missingWordStudyRouteData": "未提供该页面所需的词语数据。"
 }

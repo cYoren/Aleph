@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/models/word.dart';
+import '../data/models/verse.dart';
 import '../data/models/lexicon_entry.dart';
 import '../shared/utils/transliterator.dart';
 import 'database_provider.dart';
@@ -69,6 +70,20 @@ final strongsUsageFrequenciesProvider =
     ) async {
       final dao = ref.watch(bibleDaoProvider);
       return dao.getStrongsUsageFrequencies(strongs);
+    });
+
+/// Concordance data for a lexicon key (Strong's id or lemma): total verse
+/// count plus the occurrences themselves (capped in the DAO for very
+/// frequent words).
+final wordOccurrencesProvider =
+    FutureProvider.family<({int total, List<Verse> verses}), String>((
+      ref,
+      lexiconKey,
+    ) async {
+      final dao = ref.watch(bibleDaoProvider);
+      final total = await dao.countOccurrencesForLexiconKey(lexiconKey);
+      final verses = await dao.getOccurrencesForLexiconKey(lexiconKey);
+      return (total: total, verses: verses);
     });
 
 /// Batch fetch lexicon entries for a list of Strong's IDs.

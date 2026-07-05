@@ -26,7 +26,7 @@ class UserDatabaseHelper {
 
     return await openDatabase(
       dbFilePath,
-      version: 2,
+      version: 3,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -40,7 +40,10 @@ class UserDatabaseHelper {
         exposure_count INTEGER NOT NULL DEFAULT 0,
         mastery_score REAL NOT NULL DEFAULT 0.0,
         next_review_at INTEGER NOT NULL,
-        last_reviewed_at INTEGER NOT NULL
+        last_reviewed_at INTEGER NOT NULL,
+        repetitions INTEGER NOT NULL DEFAULT 0,
+        easiness REAL NOT NULL DEFAULT 2.5,
+        interval_days REAL NOT NULL DEFAULT 0.0
       )
     ''');
 
@@ -117,7 +120,20 @@ class UserDatabaseHelper {
     }
 
     if (oldVersion < 2) {
+      // Creates the table with the current schema, so no further migration
+      // steps are needed for this database.
       await _createSrsTable(db);
+    } else if (oldVersion < 3) {
+      // SM-2 state columns for the spaced-repetition upgrade.
+      await db.execute(
+        'ALTER TABLE srs_progress ADD COLUMN repetitions INTEGER NOT NULL DEFAULT 0',
+      );
+      await db.execute(
+        'ALTER TABLE srs_progress ADD COLUMN easiness REAL NOT NULL DEFAULT 2.5',
+      );
+      await db.execute(
+        'ALTER TABLE srs_progress ADD COLUMN interval_days REAL NOT NULL DEFAULT 0.0',
+      );
     }
   }
 

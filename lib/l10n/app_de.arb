@@ -6,19 +6,14 @@
   "next": "Weiter",
   "getStarted": "Loslegen",
   "skip": "Überspringen",
-  
   "onboardingWelcomeTitle": "Willkommen",
   "onboardingWelcomeDesc": "Erleben Sie die Bibel in ihren Originalsprachen mit Übersetzungen nebeneinander.",
-  
   "onboardingHebrewTitle": "Hebräisch - Altes Testament",
   "onboardingHebrewDesc": "Das Alte Testament wurde auf Hebräisch geschrieben und von rechts nach links gelesen. Diese Texte entstanden vor über 2.500 Jahren und umfassen die Tora, Psalmen und Propheten.",
-  
   "onboardingGreekTitle": "Griechisch - Neues Testament",
   "onboardingGreekDesc": "Das Neue Testament wurde auf Griechisch geschrieben und von links nach rechts gelesen. Die Evangelien und Briefe entstanden zwischen 50-100 n.Chr.",
-  
   "onboardingTapTitle": "Tippen Sie auf ein Wort",
   "onboardingTapDesc": "Tippen Sie auf ein beliebiges Wort, um Definition, Aussprache und grammatikalische Informationen zu sehen. Aktivieren Sie die Aussprache-Taste, um zu hören, wie Wörter gesprochen werden.",
-  
   "settings": "Einstellungen",
   "translation": "Übersetzung",
   "pronunciation": "Aussprache anzeigen",
@@ -28,16 +23,13 @@
   "themeSystem": "System",
   "themeLight": "Hell",
   "themeDark": "Dunkel",
-  
   "search": "Suchen",
   "searchHint": "Im Bibeltext suchen...",
   "noResults": "Keine Ergebnisse gefunden",
-  
   "verseOfDay": "Vers des Tages",
   "quickAccess": "Schnellzugriff",
   "home": "Start",
   "books": "Bücher",
-  
   "oldTestament": "Altes Testament",
   "newTestament": "Neues Testament",
   "selectChapter": "Kapitel wählen",
@@ -49,10 +41,8 @@
       }
     }
   },
-  
   "translationNotAvailable": "Übersetzung nicht verfügbar",
   "noLexiconEntry": "Kein Lexikoneintrag verfügbar",
-  
   "copyVerse": "Vers kopieren",
   "shareVerse": "Vers teilen",
   "verseCopied": "Vers in die Zwischenablage kopiert",
@@ -103,7 +93,6 @@
     }
   },
   "bookmarkTimeJustNow": "Gerade eben",
-  
   "quickMeaning": "Kurzbedeutung",
   "fullDefinition": "Vollständige Definition",
   "pronunciationLabel": "Aussprache",
@@ -113,11 +102,9 @@
   "legalNameLabel": "Firmenname",
   "tradeNameLabel": "Handelsname",
   "cnpjLabel": "CNPJ",
-  
   "tryAgain": "Erneut versuchen",
   "somethingWentWrong": "Etwas ist schiefgelaufen",
   "error": "Fehler",
-
   "learningMode": "Lernmodus",
   "learningModeDesc": "Lernen Sie die Originalsprachen passiv, indem Sie sie im Text sehen.",
   "learningModeEnglishOnlyNotice": "Der Lernmodus unterstützt derzeit nur englische Übersetzungen.",
@@ -184,5 +171,11 @@
   "syntaxTreeUnavailableTitle": "Syntaxbaum nicht verfügbar",
   "missingSyntaxTreeRouteData": "Fehlende Routendaten für den Syntaxbaum.",
   "invalidSyntaxTreeRouteData": "Ungültige Routendaten für den Syntaxbaum.",
-  "noStrongsAvailable": "Keine Strong-Nummer"
+  "noStrongsAvailable": "Keine Strong-Nummer",
+  "wordStudyTitle": "Wortstudie",
+  "seeAllUses": "Alle Vorkommen anzeigen",
+  "occurrencesTotal": "{count} Vorkommen in der Bibel",
+  "showingFirstOccurrences": "Die ersten {shown} Vorkommen werden angezeigt",
+  "wordStudyUnavailableTitle": "Wortstudie nicht verfügbar",
+  "missingWordStudyRouteData": "Für diesen Bildschirm wurden keine Wortdaten übergeben."
 }

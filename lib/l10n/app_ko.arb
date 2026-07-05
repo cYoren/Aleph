@@ -6,19 +6,14 @@
   "next": "다음",
   "getStarted": "시작하기",
   "skip": "건너뛰기",
-  
   "onboardingWelcomeTitle": "환영합니다",
   "onboardingWelcomeDesc": "원어 성경과 번역을 나란히 읽어 보세요.",
-  
   "onboardingHebrewTitle": "히브리어 - 구약",
   "onboardingHebrewDesc": "구약은 히브리어로 기록되었고 오른쪽에서 왼쪽으로 읽습니다. 이 본문들은 2,500년 이상 전에 기록되었으며 토라, 시편, 예언서를 포함합니다.",
-  
   "onboardingGreekTitle": "그리스어 - 신약",
   "onboardingGreekDesc": "신약은 그리스어로 기록되었고 왼쪽에서 오른쪽으로 읽습니다. 복음서와 서신서는 서기 50-100년 사이에 기록되었습니다.",
-  
   "onboardingTapTitle": "단어를 눌러보세요",
   "onboardingTapDesc": "단어를 누르면 정의, 발음, 문법 정보를 볼 수 있습니다. 발음 버튼을 켜면 단어 발음을 확인할 수 있습니다.",
-  
   "settings": "설정",
   "translation": "번역",
   "pronunciation": "발음 표시",
@@ -28,16 +23,13 @@
   "themeSystem": "시스템",
   "themeLight": "라이트",
   "themeDark": "다크",
-  
   "search": "검색",
   "searchHint": "성경 본문 검색...",
   "noResults": "검색 결과가 없습니다",
-  
   "verseOfDay": "오늘의 구절",
   "quickAccess": "빠른 접근",
   "home": "홈",
   "books": "성경 권",
-  
   "oldTestament": "구약",
   "newTestament": "신약",
   "selectChapter": "장 선택",
@@ -49,10 +41,8 @@
       }
     }
   },
-  
   "translationNotAvailable": "번역을 사용할 수 없습니다",
   "noLexiconEntry": "사전 항목이 없습니다",
-  
   "copyVerse": "구절 복사",
   "shareVerse": "구절 공유",
   "verseCopied": "구절이 클립보드에 복사되었습니다",
@@ -103,7 +93,6 @@
     }
   },
   "bookmarkTimeJustNow": "방금 전",
-  
   "quickMeaning": "빠른 의미",
   "fullDefinition": "전체 정의",
   "pronunciationLabel": "발음",
@@ -113,11 +102,9 @@
   "legalNameLabel": "법인명",
   "tradeNameLabel": "상호명",
   "cnpjLabel": "CNPJ",
-  
   "tryAgain": "다시 시도",
   "somethingWentWrong": "문제가 발생했습니다",
   "error": "오류",
-  
   "learningMode": "학습 모드",
   "learningModeDesc": "본문 속 원어를 보며 수동적으로 학습하세요.",
   "learningModeEnglishOnlyNotice": "학습 모드는 현재 영어 번역만 지원합니다.",
@@ -184,5 +171,11 @@
   "syntaxTreeUnavailableTitle": "구문 트리를 사용할 수 없음",
   "missingSyntaxTreeRouteData": "구문 트리에 필요한 경로 데이터가 없습니다.",
   "invalidSyntaxTreeRouteData": "구문 트리에 필요한 경로 데이터가 올바르지 않습니다.",
-  "noStrongsAvailable": "Strong 번호 없음"
+  "noStrongsAvailable": "Strong 번호 없음",
+  "wordStudyTitle": "단어 연구",
+  "seeAllUses": "모든 용례 보기",
+  "occurrencesTotal": "성경에서 {count}회 사용됨",
+  "showingFirstOccurrences": "처음 {shown}개 용례만 표시",
+  "wordStudyUnavailableTitle": "단어 연구를 사용할 수 없음",
+  "missingWordStudyRouteData": "이 화면에 필요한 단어 데이터가 제공되지 않았습니다."
 }

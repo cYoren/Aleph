@@ -407,4 +407,27 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get noStrongsAvailable => 'Номер Стронга отсутствует';
+
+  @override
+  String get wordStudyTitle => 'Изучение слова';
+
+  @override
+  String get seeAllUses => 'Показать все вхождения';
+
+  @override
+  String occurrencesTotal(int count) {
+    return '$count вхождений в Библии';
+  }
+
+  @override
+  String showingFirstOccurrences(int shown) {
+    return 'Показаны первые $shown вхождений';
+  }
+
+  @override
+  String get wordStudyUnavailableTitle => 'Изучение слова недоступно';
+
+  @override
+  String get missingWordStudyRouteData =>
+      'Данные слова для этого экрана не были переданы.';
 }

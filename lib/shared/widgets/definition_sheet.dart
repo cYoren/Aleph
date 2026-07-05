@@ -199,6 +199,18 @@ class DefinitionSheet extends ConsumerWidget {
                             l10n,
                           ),
 
+                        // Concordance: all occurrences of this word
+                        if (usageLookupKey != null)
+                          _buildSeeAllUsesButton(
+                            context,
+                            ref,
+                            usageLookupKey,
+                            word.displayText,
+                            isHebrew,
+                            colorScheme,
+                            l10n,
+                          ),
+
                         // Syntax Tree entry point
                         if (word.morphCode != null)
                           _buildSyntaxTreeButton(
@@ -638,6 +650,49 @@ class DefinitionSheet extends ConsumerWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildSeeAllUsesButton(
+    BuildContext context,
+    WidgetRef ref,
+    String lexiconKey,
+    String displayWord,
+    bool isHebrew,
+    ColorScheme colorScheme,
+    AppLocalizations l10n,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: OutlinedButton.icon(
+        onPressed: () {
+          ref.read(selectedWordProvider.notifier).state = null;
+          Navigator.of(context).pop(); // close the definition sheet
+          context.push(
+            '/word-study',
+            extra: {
+              'lexiconKey': lexiconKey,
+              'displayWord': displayWord,
+              'isHebrew': isHebrew,
+            },
+          );
+        },
+        style: OutlinedButton.styleFrom(
+          minimumSize: const Size.fromHeight(48),
+          side: BorderSide(color: colorScheme.primary.withValues(alpha: 0.5)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        icon: Icon(Icons.manage_search, color: colorScheme.primary),
+        label: Text(
+          l10n.seeAllUses,
+          style: TextStyle(
+            color: colorScheme.primary,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
       ),
     );
   }

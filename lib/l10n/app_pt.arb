@@ -6,19 +6,14 @@
   "next": "Próximo",
   "getStarted": "Começar",
   "skip": "Pular",
-  
   "onboardingWelcomeTitle": "Bem-vindo",
   "onboardingWelcomeDesc": "Experimente a Bíblia em suas línguas originais com traduções lado a lado.",
-  
   "onboardingHebrewTitle": "Hebraico - Antigo Testamento",
   "onboardingHebrewDesc": "O Antigo Testamento foi escrito em hebraico, lido da direita para a esquerda. Estes textos foram compostos há mais de 2.500 anos e incluem a Torá, Salmos e Profetas.",
-  
   "onboardingGreekTitle": "Grego - Novo Testamento",
   "onboardingGreekDesc": "O Novo Testamento foi escrito em grego, lido da esquerda para a direita. Os Evangelhos e Epístolas foram compostos entre 50-100 d.C.",
-  
   "onboardingTapTitle": "Toque em Qualquer Palavra",
   "onboardingTapDesc": "Toque em qualquer palavra para ver sua definição, pronúncia e informação gramatical. Ative o botão de pronúncia para ver como as palavras são faladas.",
-  
   "settings": "Configurações",
   "translation": "Tradução",
   "pronunciation": "Mostrar Pronúncia",
@@ -28,16 +23,13 @@
   "themeSystem": "Sistema",
   "themeLight": "Claro",
   "themeDark": "Escuro",
-  
   "search": "Buscar",
   "searchHint": "Buscar no texto bíblico...",
   "noResults": "Nenhum resultado encontrado",
-  
   "verseOfDay": "Versículo do Dia",
   "quickAccess": "Acesso Rápido",
   "home": "Início",
   "books": "Livros",
-  
   "oldTestament": "Antigo Testamento",
   "newTestament": "Novo Testamento",
   "selectChapter": "Selecionar Capítulo",
@@ -49,10 +41,8 @@
       }
     }
   },
-  
   "translationNotAvailable": "Tradução não disponível",
   "noLexiconEntry": "Entrada léxica não disponível",
-  
   "copyVerse": "Copiar versículo",
   "shareVerse": "Compartilhar versículo",
   "verseCopied": "Versículo copiado",
@@ -103,7 +93,6 @@
     }
   },
   "bookmarkTimeJustNow": "Agora mesmo",
-  
   "quickMeaning": "Significado Rápido",
   "fullDefinition": "Definição Completa",
   "pronunciationLabel": "Pronúncia",
@@ -113,11 +102,9 @@
   "legalNameLabel": "Razão Social",
   "tradeNameLabel": "Nome Fantasia",
   "cnpjLabel": "CNPJ",
-  
   "tryAgain": "Tentar Novamente",
   "somethingWentWrong": "Algo deu errado",
   "error": "Erro",
-
   "learningMode": "Modo de Aprendizado",
   "learningModeDesc": "Aprenda os idiomas originais passivamente no decorrer da leitura.",
   "learningModeEnglishOnlyNotice": "O Modo de Aprendizado atualmente oferece suporte apenas a traduções em inglês.",
@@ -184,5 +171,11 @@
   "syntaxTreeUnavailableTitle": "Árvore sintática indisponível",
   "missingSyntaxTreeRouteData": "Dados de rota ausentes para a árvore sintática.",
   "invalidSyntaxTreeRouteData": "Dados de rota inválidos para a árvore sintática.",
-  "noStrongsAvailable": "Sem Strong's"
+  "noStrongsAvailable": "Sem Strong's",
+  "wordStudyTitle": "Estudo da Palavra",
+  "seeAllUses": "Ver todas as ocorrências",
+  "occurrencesTotal": "{count} ocorrências na Bíblia",
+  "showingFirstOccurrences": "Mostrando as primeiras {shown} ocorrências",
+  "wordStudyUnavailableTitle": "Estudo da palavra indisponível",
+  "missingWordStudyRouteData": "Nenhum dado da palavra foi fornecido para esta tela."
 }
