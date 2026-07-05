@@ -396,4 +396,27 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get noStrongsAvailable => 'Keine Strong-Nummer';
+
+  @override
+  String get wordStudyTitle => 'Wortstudie';
+
+  @override
+  String get seeAllUses => 'Alle Vorkommen anzeigen';
+
+  @override
+  String occurrencesTotal(int count) {
+    return '$count Vorkommen in der Bibel';
+  }
+
+  @override
+  String showingFirstOccurrences(int shown) {
+    return 'Die ersten $shown Vorkommen werden angezeigt';
+  }
+
+  @override
+  String get wordStudyUnavailableTitle => 'Wortstudie nicht verfügbar';
+
+  @override
+  String get missingWordStudyRouteData =>
+      'Für diesen Bildschirm wurden keine Wortdaten übergeben.';
 }

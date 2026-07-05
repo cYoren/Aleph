@@ -1,9 +1,26 @@
+import 'dart:math' as math;
+
 import 'package:sqflite/sqflite.dart';
 import '../../models/srs_progress.dart';
 import '../user_database_helper.dart';
 
 class SrsDao {
   final UserDatabaseHelper _dbHelper = UserDatabaseHelper.instance;
+
+  /// Quality grade fed into SM-2 for a binary correct answer.
+  /// 4 = "correct response after a hesitation" keeps the easiness factor
+  /// stable, so intervals grow through repetitions rather than grade inflation.
+  static const int _qualityCorrect = 4;
+
+  /// Quality grade for a failed review. Lowers easiness (floored at 1.3) and
+  /// resets the repetition streak.
+  static const int _qualityIncorrect = 2;
+
+  /// Failed words come back quickly instead of waiting a full day.
+  static const double _relearningIntervalDays = 1 / 24;
+
+  /// Interval (in days) that counts as fully mastered for the display score.
+  static const double _masteryIntervalDays = 30;
 
   Future<SrsProgress?> getProgress(String strongsId) async {
     final db = await _dbHelper.database;
@@ -29,43 +46,70 @@ class SrsDao {
     );
   }
 
-  /// Records an exposure to a word. Adjusts SRS score.
-  /// A simple algorithm:
-  /// - A correct review increases mastery by 0.2 (max 1.0)
-  /// - An incorrect review drops mastery heavily
-  /// For pure exposure (just reading), we can gently bump it.
+  /// Records a review outcome using the SM-2 spaced-repetition algorithm.
+  ///
+  /// Correct answers grow the interval (1 day, 6 days, then interval x
+  /// easiness); a failure resets the repetition streak, lowers easiness, and
+  /// schedules a quick relearning review.
   Future<void> recordReview(String strongsId, {required bool isCorrect}) async {
     final current = await getProgress(strongsId);
+    final updated = applySm2(
+      current,
+      strongsId: strongsId,
+      isCorrect: isCorrect,
+      now: DateTime.now(),
+    );
+    await saveProgress(updated);
+  }
 
-    final now = DateTime.now();
-    double newMastery = current?.masteryScore ?? 0.0;
-    int newExposureCount = (current?.exposureCount ?? 0) + 1;
+  /// Pure SM-2 state transition, separated from persistence for testability.
+  static SrsProgress applySm2(
+    SrsProgress? current, {
+    required String strongsId,
+    required bool isCorrect,
+    required DateTime now,
+  }) {
+    final quality = isCorrect ? _qualityCorrect : _qualityIncorrect;
 
+    double easiness = current?.easiness ?? 2.5;
+    easiness += 0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02);
+    easiness = math.max(1.3, easiness);
+
+    int repetitions = current?.repetitions ?? 0;
+    double intervalDays;
     if (isCorrect) {
-      newMastery = (newMastery + 0.2).clamp(0.0, 1.0);
+      repetitions += 1;
+      if (repetitions == 1) {
+        intervalDays = 1;
+      } else if (repetitions == 2) {
+        intervalDays = 6;
+      } else {
+        final previousInterval = math.max(1.0, current?.intervalDays ?? 1.0);
+        intervalDays = previousInterval * easiness;
+      }
     } else {
-      newMastery = (newMastery - 0.4).clamp(0.0, 1.0);
+      repetitions = 0;
+      intervalDays = _relearningIntervalDays;
     }
 
-    // Calculate next review based on mastery
-    // e.g., 0.0 -> review in 1 minute
-    // e.g., 1.0 -> review in 30 days
-    int hoursToNextReview = (newMastery * newMastery * 24 * 30).toInt().clamp(
-      1,
-      24 * 30,
+    final nextReviewAt = now.add(
+      Duration(minutes: (intervalDays * 24 * 60).round()),
     );
-    final nextReviewAt = now.add(Duration(hours: hoursToNextReview));
 
-    final updated = SrsProgress(
+    // Display-facing mastery: how close the interval is to a month.
+    final masteryScore = (intervalDays / _masteryIntervalDays).clamp(0.0, 1.0);
+
+    return SrsProgress(
       id: current?.id,
       strongsId: strongsId,
-      exposureCount: newExposureCount,
-      masteryScore: newMastery,
+      exposureCount: (current?.exposureCount ?? 0) + 1,
+      masteryScore: masteryScore.toDouble(),
       lastReviewedAt: now,
       nextReviewAt: nextReviewAt,
+      repetitions: repetitions,
+      easiness: easiness,
+      intervalDays: intervalDays,
     );
-
-    await saveProgress(updated);
   }
 
   Future<List<SrsProgress>> getWordsDueForReview() async {

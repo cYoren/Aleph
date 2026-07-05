@@ -39,6 +39,15 @@ SOURCE_FILENAMES = (
 
 OPEN_BIBLES_REPO_RAW = "https://raw.githubusercontent.com/seven1m/open-bibles"
 DEFAULT_OPEN_BIBLES_COMMIT = "b396ccf097f6b229cbd4096f10da8fd948418099"
+
+# Strong's dictionaries (full definitions, derivations, KJV renderings).
+# JSON-in-JS files maintained by Open Scriptures, CC BY-SA.
+STRONGS_REPO_RAW = "https://raw.githubusercontent.com/openscriptures/strongs"
+DEFAULT_STRONGS_COMMIT = "0acd2f251c2d35ff8db2dece4e0593979d3ac223"
+STRONGS_FILES = {
+    "strongs-hebrew-dictionary.js": "hebrew/strongs-hebrew-dictionary.js",
+    "strongs-greek-dictionary.js": "greek/strongs-greek-dictionary.js",
+}
 DEFAULT_TRANSLATION_CATALOG = Path(__file__).resolve().parent / "translation_catalog.json"
 DEFAULT_VERSIFICATION_OVERRIDES = (
     Path(__file__).resolve().parent / "versification_overrides.json"
@@ -319,6 +328,18 @@ def parse_args() -> argparse.Namespace:
         help="Pinned source commit/branch from seven1m/open-bibles",
     )
     parser.add_argument(
+        "--strongs-commit",
+        default=DEFAULT_STRONGS_COMMIT,
+        help="Pinned source commit hash from openscriptures/strongs",
+    )
+    parser.add_argument(
+        "--no-strongs-enrichment",
+        dest="strongs_enrichment",
+        action="store_false",
+        default=True,
+        help="Skip Strong's dictionary enrichment (falls back to gloss-only definitions)",
+    )
+    parser.add_argument(
         "--translation-catalog",
         default=str(DEFAULT_TRANSLATION_CATALOG),
         help="JSON file defining Open Bibles translation metadata",
@@ -558,6 +579,86 @@ def normalize_strongs(raw_value: str, language: str) -> str:
     return f"{prefix}{alnum}"
 
 
+def parse_strongs_dictionary_js(path: Path) -> Dict[str, dict]:
+    """Parse an Open Scriptures strongs-*-dictionary.js file.
+
+    The files wrap a single JSON object in `var strongsXxxDictionary = {...};`
+    plus a license header comment, so we extract the outermost braces.
+    """
+    raw = path.read_text(encoding="utf-8")
+    assignment = re.search(r"=\s*\{", raw)
+    if assignment is None:
+        raise RuntimeError(f"No dictionary assignment found in {path.name}")
+    start = assignment.end() - 1
+    end = raw.rindex("}")
+    data = json.loads(raw[start : end + 1])
+    if not isinstance(data, dict):
+        raise RuntimeError(f"Unexpected Strong's dictionary payload in {path.name}")
+    return data
+
+
+_STRONGS_BRACKET_REPLACEMENTS = {
+    "[idiom]": "×",  # Strong's multiplication sign marker
+    "[phrase]": "",
+}
+
+
+def clean_strongs_text(value: str) -> str:
+    text = (value or "").strip()
+    for marker, replacement in _STRONGS_BRACKET_REPLACEMENTS.items():
+        text = text.replace(marker, replacement)
+    text = _REF_WHITESPACE_RE.sub(" ", text)
+    return text.strip(" ;,.")
+
+
+def compose_strongs_definition(entry: dict) -> str:
+    """Build a readable multi-part definition from a Strong's dictionary entry."""
+    parts: List[str] = []
+    strongs_def = clean_strongs_text(entry.get("strongs_def") or "")
+    if strongs_def:
+        parts.append(strongs_def[0].upper() + strongs_def[1:] + ".")
+    derivation = clean_strongs_text(entry.get("derivation") or "")
+    if derivation:
+        parts.append(f"Derivation: {derivation}.")
+    kjv_def = clean_strongs_text(entry.get("kjv_def") or "")
+    if kjv_def:
+        parts.append(f"KJV renderings: {kjv_def}.")
+    return "\n\n".join(parts)
+
+
+def strongs_lookup_candidates(strongs_id: str) -> List[str]:
+    """Candidate dictionary keys for a token Strong's id.
+
+    Token ids may be zero-padded ("H0430") or carry disambiguation suffixes
+    ("H1254a"); the Open Scriptures dictionaries key on plain "H430"/"G26".
+    """
+    value = (strongs_id or "").strip().upper()
+    if len(value) < 2 or value[0] not in {"H", "G"}:
+        return []
+    prefix, body = value[0], value[1:]
+    digits = "".join(ch for ch in body if ch.isdigit())
+    candidates = [value]
+    if digits:
+        canonical = f"{prefix}{int(digits)}"
+        if canonical not in candidates:
+            candidates.append(canonical)
+    return candidates
+
+
+def load_strongs_dictionaries(
+    cache_dir: Path, strongs_commit: str
+) -> Dict[str, dict]:
+    merged: Dict[str, dict] = {}
+    for filename, repo_path in STRONGS_FILES.items():
+        url = f"{STRONGS_REPO_RAW}/{strongs_commit}/{repo_path}"
+        dst = cache_dir / filename
+        download_file(url, dst)
+        entries = parse_strongs_dictionary_js(dst)
+        merged.update(entries)
+    print(f"Loaded {len(merged):,} Strong's dictionary entries")
+    return merged
+
+
 def write_books(conn: sqlite3.Connection) -> None:
     conn.executemany(
         """
@@ -663,6 +764,7 @@ def build_verses_and_words(
     conn: sqlite3.Connection,
     hebrew_tsv: Path,
     greek_tsv: Path,
+    strongs_dicts: Optional[Dict[str, dict]] = None,
 ) -> None:
     lex_glosses: Dict[str, Counter] = defaultdict(Counter)
     lex_pos: Dict[str, Counter] = defaultdict(Counter)
@@ -810,6 +912,8 @@ def build_verses_and_words(
 
     print("Building lexicon table...")
     lex_rows = []
+    enriched_count = 0
+    strongs_entry_count = 0
     for lemma, gloss_counter in lex_glosses.items():
         gloss = gloss_counter.most_common(1)[0][0] if gloss_counter else lemma
 
@@ -837,6 +941,28 @@ def build_verses_and_words(
         definition = gloss
         if strong_label:
             definition = f"{gloss}. Strong's {strong_label}."
+            strongs_entry_count += 1
+
+        # Enrich from the full Strong's dictionaries when available: real
+        # definition text plus transliteration/pronunciation gaps (the Greek
+        # token source carries neither).
+        if strongs_dicts and strong_label:
+            dict_entry = None
+            for candidate in strongs_lookup_candidates(strong_label):
+                dict_entry = strongs_dicts.get(candidate)
+                if dict_entry is not None:
+                    break
+            if dict_entry is not None:
+                full_definition = compose_strongs_definition(dict_entry)
+                if full_definition:
+                    definition = full_definition
+                    enriched_count += 1
+                if not transliteration:
+                    transliteration = (
+                        dict_entry.get("xlit") or dict_entry.get("translit") or None
+                    )
+                if not pronunciation:
+                    pronunciation = dict_entry.get("pron") or transliteration
 
         lex_rows.append(
             (
@@ -860,6 +986,18 @@ def build_verses_and_words(
         lex_rows,
     )
     print(f"  inserted {len(lex_rows):,} lexicon entries")
+
+    if strongs_dicts:
+        print(
+            f"  enriched {enriched_count:,} of {strongs_entry_count:,} "
+            "Strong's-keyed entries with full dictionary definitions"
+        )
+        if strongs_entry_count and enriched_count / strongs_entry_count < 0.6:
+            raise RuntimeError(
+                "Strong's enrichment coverage too low "
+                f"({enriched_count}/{strongs_entry_count}); "
+                "check dictionary source or key normalization"
+            )
 
 
 def build_kjv_translation_verses(conn: sqlite3.Connection, ot_tsv: Path, nt_tsv: Path) -> None:
@@ -1659,6 +1797,10 @@ def main() -> None:
             url = build_open_bible_url(source_file, args.open_bibles_commit)
             download_file(url, cache_dir / source_file)
 
+        strongs_dicts: Optional[Dict[str, dict]] = None
+        if args.strongs_enrichment:
+            strongs_dicts = load_strongs_dictionaries(cache_dir, args.strongs_commit)
+
         if output_path.exists():
             print(f"Removing existing DB: {output_path}")
             output_path.unlink()
@@ -1672,6 +1814,7 @@ def main() -> None:
                 conn,
                 hebrew_tsv=cache_dir / "macula-hebrew.tsv",
                 greek_tsv=cache_dir / "macula-greek-SBLGNT.tsv",
+                strongs_dicts=strongs_dicts,
             )
             build_kjv_translation_verses(
                 conn,

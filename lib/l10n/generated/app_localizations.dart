@@ -763,6 +763,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No Strong\'s'**
   String get noStrongsAvailable;
+
+  /// No description provided for @wordStudyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Word Study'**
+  String get wordStudyTitle;
+
+  /// No description provided for @seeAllUses.
+  ///
+  /// In en, this message translates to:
+  /// **'See all occurrences'**
+  String get seeAllUses;
+
+  /// No description provided for @occurrencesTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} occurrences in the Bible'**
+  String occurrencesTotal(int count);
+
+  /// No description provided for @showingFirstOccurrences.
+  ///
+  /// In en, this message translates to:
+  /// **'Showing the first {shown} occurrences'**
+  String showingFirstOccurrences(int shown);
+
+  /// No description provided for @wordStudyUnavailableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Word Study Unavailable'**
+  String get wordStudyUnavailableTitle;
+
+  /// No description provided for @missingWordStudyRouteData.
+  ///
+  /// In en, this message translates to:
+  /// **'No word data was provided for this screen.'**
+  String get missingWordStudyRouteData;
 }
 
 class _AppLocalizationsDelegate

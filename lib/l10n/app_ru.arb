@@ -6,19 +6,14 @@
   "next": "Далее",
   "getStarted": "Начать",
   "skip": "Пропустить",
-
   "onboardingWelcomeTitle": "Добро пожаловать",
   "onboardingWelcomeDesc": "Изучайте Библию на оригинальных языках с параллельными переводами.",
-
   "onboardingHebrewTitle": "Иврит - Ветхий Завет",
   "onboardingHebrewDesc": "Ветхий Завет был написан на иврите, который читается справа налево. Эти тексты были созданы более 2 500 лет назад и включают Тору, Псалмы и Пророков.",
-
   "onboardingGreekTitle": "Греческий - Новый Завет",
   "onboardingGreekDesc": "Новый Завет был написан на греческом языке, который читается слева направо. Евангелия и Послания были написаны между 50 и 100 гг. н.э.",
-
   "onboardingTapTitle": "Нажмите на любое слово",
   "onboardingTapDesc": "Нажмите на любое слово, чтобы увидеть его определение, произношение и грамматическую информацию. Включите кнопку произношения, чтобы видеть, как звучат слова.",
-
   "settings": "Настройки",
   "translation": "Перевод",
   "pronunciation": "Показывать произношение",
@@ -28,16 +23,13 @@
   "themeSystem": "Системная",
   "themeLight": "Светлая",
   "themeDark": "Тёмная",
-
   "search": "Поиск",
   "searchHint": "Поиск по библейскому тексту...",
   "noResults": "Ничего не найдено",
-
   "verseOfDay": "Стих дня",
   "quickAccess": "Быстрый доступ",
   "home": "Главная",
   "books": "Книги",
-
   "oldTestament": "Ветхий Завет",
   "newTestament": "Новый Завет",
   "selectChapter": "Выбрать главу",
@@ -49,10 +41,8 @@
       }
     }
   },
-
   "translationNotAvailable": "Перевод недоступен",
   "noLexiconEntry": "Лексическая статья недоступна",
-
   "copyVerse": "Копировать стих",
   "shareVerse": "Поделиться стихом",
   "verseCopied": "Стих скопирован в буфер обмена",
@@ -103,7 +93,6 @@
     }
   },
   "bookmarkTimeJustNow": "Только что",
-
   "quickMeaning": "Краткое значение",
   "fullDefinition": "Полное определение",
   "pronunciationLabel": "Произношение",
@@ -113,11 +102,9 @@
   "legalNameLabel": "Юридическое название",
   "tradeNameLabel": "Торговое название",
   "cnpjLabel": "CNPJ",
-
   "tryAgain": "Попробовать снова",
   "somethingWentWrong": "Что-то пошло не так",
   "error": "Ошибка",
-
   "learningMode": "Режим обучения",
   "learningModeDesc": "Пассивно изучайте оригинальные языки, видя их в тексте.",
   "learningModeEnglishOnlyNotice": "Режим обучения пока поддерживает только английские переводы.",
@@ -184,5 +171,11 @@
   "syntaxTreeUnavailableTitle": "Синтаксическое дерево недоступно",
   "missingSyntaxTreeRouteData": "Отсутствуют данные маршрута для синтаксического дерева.",
   "invalidSyntaxTreeRouteData": "Некорректные данные маршрута для синтаксического дерева.",
-  "noStrongsAvailable": "Номер Стронга отсутствует"
+  "noStrongsAvailable": "Номер Стронга отсутствует",
+  "wordStudyTitle": "Изучение слова",
+  "seeAllUses": "Показать все вхождения",
+  "occurrencesTotal": "{count} вхождений в Библии",
+  "showingFirstOccurrences": "Показаны первые {shown} вхождений",
+  "wordStudyUnavailableTitle": "Изучение слова недоступно",
+  "missingWordStudyRouteData": "Данные слова для этого экрана не были переданы."
 }

@@ -154,6 +154,19 @@ for translation_id in "${required_enabled_translations[@]}"; do
   fi
 done
 
+# Lexicon enrichment gate: full Strong's dictionary definitions must be
+# present (not just the legacy one-line gloss fallback).
+enriched_lexicon="$(sqlite3 "$DB_PATH" "SELECT COUNT(*) FROM lexicon WHERE definition LIKE '%KJV renderings:%' OR LENGTH(definition) > 80;")"
+if (( enriched_lexicon < 10000 )); then
+  echo "ERROR: Expected at least 10,000 enriched lexicon definitions, found $enriched_lexicon"
+  echo "       (build with Strong's enrichment enabled — do not pass --no-strongs-enrichment for releases)"
+  exit 1
+fi
+
+echo "Running lexicon enrichment unit tests..."
+python3 "$ROOT_DIR/scripts/test_build_lexicon_enrichment.py" > /dev/null
+
 echo "OK: database asset and full-release integrity checks passed."
 echo "  books=$books_count distinct_verse_books=$distinct_verse_books verses=$verses_count"
 echo "  kjv_translation_verses=$kjv_translation_verses words=$words_count lexicon=$lexicon_count enabled_translations=$enabled_translations"
+echo "  enriched_lexicon=$enriched_lexicon"

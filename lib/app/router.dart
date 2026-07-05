@@ -11,6 +11,7 @@ import '../features/onboarding/language_selection_screen.dart';
 import '../features/onboarding/onboarding_screen.dart';
 import '../features/startup/startup_gate_screen.dart';
 import '../features/export/export_composer_screen.dart';
+import '../features/word_study/word_study_screen.dart';
 import '../shared/widgets/app_scaffold.dart';
 import '../data/models/verse.dart';
 import '../data/models/word.dart';
@@ -93,6 +94,38 @@ final router = GoRouter(
           translationText: translationText,
           reference: reference,
           isOT: isOT,
+        );
+      },
+    ),
+    // Full-screen modal for word study (concordance)
+    GoRoute(
+      path: '/word-study',
+      builder: (context, state) {
+        final l10n = AppLocalizations.of(context)!;
+        final extra = state.extra;
+        if (extra is! Map<String, dynamic>) {
+          return _RouteDataErrorScreen(
+            title: l10n.wordStudyUnavailableTitle,
+            message: l10n.missingWordStudyRouteData,
+          );
+        }
+
+        final lexiconKey = extra['lexiconKey'];
+        final displayWord = extra['displayWord'];
+        final isHebrew = extra['isHebrew'];
+        if (lexiconKey is! String ||
+            displayWord is! String ||
+            isHebrew is! bool) {
+          return _RouteDataErrorScreen(
+            title: l10n.wordStudyUnavailableTitle,
+            message: l10n.missingWordStudyRouteData,
+          );
+        }
+
+        return WordStudyScreen(
+          lexiconKey: lexiconKey,
+          displayWord: displayWord,
+          isHebrew: isHebrew,
         );
       },
     ),

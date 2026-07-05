@@ -385,4 +385,26 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get noStrongsAvailable => 'Strong 번호 없음';
+
+  @override
+  String get wordStudyTitle => '단어 연구';
+
+  @override
+  String get seeAllUses => '모든 용례 보기';
+
+  @override
+  String occurrencesTotal(int count) {
+    return '성경에서 $count회 사용됨';
+  }
+
+  @override
+  String showingFirstOccurrences(int shown) {
+    return '처음 $shown개 용례만 표시';
+  }
+
+  @override
+  String get wordStudyUnavailableTitle => '단어 연구를 사용할 수 없음';
+
+  @override
+  String get missingWordStudyRouteData => '이 화면에 필요한 단어 데이터가 제공되지 않았습니다.';
 }

@@ -394,4 +394,27 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noStrongsAvailable => 'No Strong\'s';
+
+  @override
+  String get wordStudyTitle => 'Word Study';
+
+  @override
+  String get seeAllUses => 'See all occurrences';
+
+  @override
+  String occurrencesTotal(int count) {
+    return '$count occurrences in the Bible';
+  }
+
+  @override
+  String showingFirstOccurrences(int shown) {
+    return 'Showing the first $shown occurrences';
+  }
+
+  @override
+  String get wordStudyUnavailableTitle => 'Word Study Unavailable';
+
+  @override
+  String get missingWordStudyRouteData =>
+      'No word data was provided for this screen.';
 }
