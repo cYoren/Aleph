@@ -55,21 +55,21 @@ things currently undercut the "in depth" promise:
 - [x] Replace the linear ±0.2 mastery bump with the SM-2 algorithm
       (easiness factor, expanding intervals) in `SrsDao`.
 - [ ] Upgrade to FSRS once review volume justifies it.
-- [ ] Frequency-ordered vocabulary decks: "the 100 most frequent Hebrew words cover ~50%
-      of the text" — the frequency data is already one SQL query away.
+- [x] Frequency-ordered vocabulary decks with live text-coverage stats and an SRS
+      review queue (`/vocabulary`).
 
 ### 2.2 Personalized Reader's Bible mode ⭐ the differentiator
-- [ ] Reading mode where mastered words render plain and words below the user's
-      frequency/mastery threshold get an inline gloss — a printed Reader's Greek NT, but
-      personalized and adaptive. Reading itself becomes the SRS review loop.
-- [ ] Ingredients already exist and just need wiring: word-level SRS mastery,
-      `getStrongsUsageFrequencies`, tappable reading view.
+- [x] v1 shipped: reading mode where mastered words render plain and rare words
+      (below 30 whole-Bible occurrences) get an inline gloss — a printed Reader's
+      Greek NT, but personalized and adaptive. Reading itself becomes the SRS loop.
+- [ ] Next: adaptive per-user threshold and marking words known from reading exposure.
 
 ### 2.3 Passage memorization (psalms, in Hebrew) ⭐
-- [ ] Passage-level memorization track: pick a psalm → progressive word hiding (cloze) →
-      first-letter mode → full recall, scheduled by the same SRS engine.
-- [ ] Offer it in Hebrew with niqqud, transliteration, and pronunciation — an experience
-      essentially no mobile app offers.
+- [x] v1 shipped: pick any chapter (Psalms default) → progressive word hiding
+      (warm-up/challenge/first-letters) → self-graded recall, scheduled by the shared
+      SM-2 engine (`/memorization`).
+- [ ] Add transliteration/pronunciation support inside practice mode (Hebrew niqqud
+      display modes already apply).
 - [ ] Audio recitation (verify licensing of the free Shmuelof Hebrew recordings before
       bundling).
 
@@ -81,8 +81,8 @@ things currently undercut the "in depth" promise:
 
 ## Phase 3 — Reader depth features
 
-- [ ] Display controls for the Hebrew text: toggle niqqud (vowel points) and cantillation
-      marks — reading unpointed text is itself a learning progression.
+- [x] Display controls for the Hebrew text: full / vowels-only / consonantal modes —
+      reading unpointed text is itself a learning progression.
 - [ ] Qere/Ketiv display.
 - [ ] Cross-references (Treasury of Scripture Knowledge, public domain).
 - [ ] Participant/referent data from MACULA (who is "he" in this verse?).

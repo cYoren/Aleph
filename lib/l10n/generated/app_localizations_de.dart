@@ -460,4 +460,70 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get hebrewTextConsonantal => 'Nur Konsonanten';
+
+  @override
+  String get memorizationTitle => 'Auswendiglernen';
+
+  @override
+  String get memorizationEmpty =>
+      'Noch nichts hier. Füge einen Psalm hinzu und beginne, Wörter zu verbergen.';
+
+  @override
+  String get addPassageTitle => 'Passage hinzufügen';
+
+  @override
+  String get addPassageButton => 'Hinzufügen';
+
+  @override
+  String get selectBookLabel => 'Buch';
+
+  @override
+  String get selectChapterLabel => 'Kapitel';
+
+  @override
+  String masteryLabel(String percent) {
+    return 'Beherrschung $percent%';
+  }
+
+  @override
+  String get dueNowLabel => 'Jetzt fällig';
+
+  @override
+  String get deletePassageTooltip => 'Passage entfernen';
+
+  @override
+  String get levelWarmUp => 'Aufwärmen';
+
+  @override
+  String get levelChallenge => 'Herausforderung';
+
+  @override
+  String get levelFirstLetters => 'Anfangsbuchstaben';
+
+  @override
+  String get tapHiddenWordHint =>
+      'Tippe auf ein verborgenes Wort, um es aufzudecken';
+
+  @override
+  String get howDidItGo => 'Wie lief es?';
+
+  @override
+  String get struggledButton => 'Schwierig';
+
+  @override
+  String get gotItButton => 'Geschafft';
+
+  @override
+  String nextReviewInDays(int count) {
+    return 'Gespeichert! Nächste Wiederholung in $count Tagen.';
+  }
+
+  @override
+  String nextReviewInHours(int count) {
+    return 'Gespeichert! Nächste Wiederholung in $count Stunden.';
+  }
+
+  @override
+  String get missingMemorizationRouteData =>
+      'Für diesen Bildschirm wurden keine Passagendaten übergeben.';
 }

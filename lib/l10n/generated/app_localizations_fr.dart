@@ -462,4 +462,69 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get hebrewTextConsonantal => 'Consonnes seulement';
+
+  @override
+  String get memorizationTitle => 'Mémorisation';
+
+  @override
+  String get memorizationEmpty =>
+      'Rien ici pour l\'instant. Ajoutez un psaume et commencez à masquer des mots.';
+
+  @override
+  String get addPassageTitle => 'Ajouter un passage';
+
+  @override
+  String get addPassageButton => 'Ajouter';
+
+  @override
+  String get selectBookLabel => 'Livre';
+
+  @override
+  String get selectChapterLabel => 'Chapitre';
+
+  @override
+  String masteryLabel(String percent) {
+    return 'Maîtrise $percent%';
+  }
+
+  @override
+  String get dueNowLabel => 'À réviser';
+
+  @override
+  String get deletePassageTooltip => 'Supprimer le passage';
+
+  @override
+  String get levelWarmUp => 'Échauffement';
+
+  @override
+  String get levelChallenge => 'Défi';
+
+  @override
+  String get levelFirstLetters => 'Premières lettres';
+
+  @override
+  String get tapHiddenWordHint => 'Touchez un mot masqué pour le révéler';
+
+  @override
+  String get howDidItGo => 'Comment ça s\'est passé ?';
+
+  @override
+  String get struggledButton => 'Difficile';
+
+  @override
+  String get gotItButton => 'Réussi';
+
+  @override
+  String nextReviewInDays(int count) {
+    return 'Enregistré ! Prochaine révision dans $count jours.';
+  }
+
+  @override
+  String nextReviewInHours(int count) {
+    return 'Enregistré ! Prochaine révision dans $count heures.';
+  }
+
+  @override
+  String get missingMemorizationRouteData =>
+      'Aucune donnée de passage n\'a été fournie pour cet écran.';
 }

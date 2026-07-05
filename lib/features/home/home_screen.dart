@@ -434,7 +434,11 @@ class HomeScreen extends ConsumerWidget {
                     () => context.go('/search'),
                   ),
                 ),
-                const SizedBox(width: 12),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
                 Expanded(
                   child: _buildQuickButton(
                     context,
@@ -442,6 +446,16 @@ class HomeScreen extends ConsumerWidget {
                     Icons.style,
                     l10n.vocabularyTitle,
                     () => context.push('/vocabulary'),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _buildQuickButton(
+                    context,
+                    colorScheme,
+                    Icons.psychology_outlined,
+                    l10n.memorizationTitle,
+                    () => context.push('/memorization'),
                   ),
                 ),
               ],
