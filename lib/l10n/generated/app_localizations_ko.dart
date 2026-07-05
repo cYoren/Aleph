@@ -447,4 +447,67 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get hebrewTextConsonantal => '자음만';
+
+  @override
+  String get memorizationTitle => '암송';
+
+  @override
+  String get memorizationEmpty => '아직 아무것도 없습니다. 시편을 추가하고 단어 숨기기를 시작하세요.';
+
+  @override
+  String get addPassageTitle => '구절 추가';
+
+  @override
+  String get addPassageButton => '추가';
+
+  @override
+  String get selectBookLabel => '책';
+
+  @override
+  String get selectChapterLabel => '장';
+
+  @override
+  String masteryLabel(String percent) {
+    return '숙달도 $percent%';
+  }
+
+  @override
+  String get dueNowLabel => '복습 시간';
+
+  @override
+  String get deletePassageTooltip => '구절 제거';
+
+  @override
+  String get levelWarmUp => '준비 운동';
+
+  @override
+  String get levelChallenge => '도전';
+
+  @override
+  String get levelFirstLetters => '첫 글자';
+
+  @override
+  String get tapHiddenWordHint => '숨겨진 단어를 누르면 나타납니다';
+
+  @override
+  String get howDidItGo => '어땠나요?';
+
+  @override
+  String get struggledButton => '어려웠어요';
+
+  @override
+  String get gotItButton => '외웠어요';
+
+  @override
+  String nextReviewInDays(int count) {
+    return '저장됨! $count일 후 복습합니다.';
+  }
+
+  @override
+  String nextReviewInHours(int count) {
+    return '저장됨! $count시간 후 복습합니다.';
+  }
+
+  @override
+  String get missingMemorizationRouteData => '이 화면에 필요한 구절 데이터가 제공되지 않았습니다.';
 }

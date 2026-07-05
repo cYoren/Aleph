@@ -11,8 +11,11 @@ import '../features/onboarding/language_selection_screen.dart';
 import '../features/onboarding/onboarding_screen.dart';
 import '../features/startup/startup_gate_screen.dart';
 import '../features/export/export_composer_screen.dart';
+import '../features/memorization/memorization_practice_screen.dart';
+import '../features/memorization/memorization_screen.dart';
 import '../features/vocabulary/vocabulary_screen.dart';
 import '../features/word_study/word_study_screen.dart';
+import '../data/models/memorization_passage.dart';
 import '../shared/widgets/app_scaffold.dart';
 import '../data/models/verse.dart';
 import '../data/models/word.dart';
@@ -102,6 +105,25 @@ final router = GoRouter(
     GoRoute(
       path: '/vocabulary',
       builder: (context, state) => const VocabularyScreen(),
+    ),
+    // Passage memorization list + practice
+    GoRoute(
+      path: '/memorization',
+      builder: (context, state) => const MemorizationScreen(),
+    ),
+    GoRoute(
+      path: '/memorization-practice',
+      builder: (context, state) {
+        final l10n = AppLocalizations.of(context)!;
+        final extra = state.extra;
+        if (extra is! MemorizationPassage) {
+          return _RouteDataErrorScreen(
+            title: l10n.memorizationTitle,
+            message: l10n.missingMemorizationRouteData,
+          );
+        }
+        return MemorizationPracticeScreen(passage: extra);
+      },
     ),
     // Full-screen modal for word study (concordance)
     GoRoute(

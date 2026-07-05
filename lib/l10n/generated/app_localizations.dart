@@ -871,6 +871,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Consonants only'**
   String get hebrewTextConsonantal;
+
+  /// No description provided for @memorizationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Memorization'**
+  String get memorizationTitle;
+
+  /// No description provided for @memorizationEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing here yet. Add a psalm and start hiding words.'**
+  String get memorizationEmpty;
+
+  /// No description provided for @addPassageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add passage'**
+  String get addPassageTitle;
+
+  /// No description provided for @addPassageButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get addPassageButton;
+
+  /// No description provided for @selectBookLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Book'**
+  String get selectBookLabel;
+
+  /// No description provided for @selectChapterLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Chapter'**
+  String get selectChapterLabel;
+
+  /// No description provided for @masteryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Mastery {percent}%'**
+  String masteryLabel(String percent);
+
+  /// No description provided for @dueNowLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Due now'**
+  String get dueNowLabel;
+
+  /// No description provided for @deletePassageTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove passage'**
+  String get deletePassageTooltip;
+
+  /// No description provided for @levelWarmUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Warm-up'**
+  String get levelWarmUp;
+
+  /// No description provided for @levelChallenge.
+  ///
+  /// In en, this message translates to:
+  /// **'Challenge'**
+  String get levelChallenge;
+
+  /// No description provided for @levelFirstLetters.
+  ///
+  /// In en, this message translates to:
+  /// **'First letters'**
+  String get levelFirstLetters;
+
+  /// No description provided for @tapHiddenWordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a hidden word to reveal it'**
+  String get tapHiddenWordHint;
+
+  /// No description provided for @howDidItGo.
+  ///
+  /// In en, this message translates to:
+  /// **'How did it go?'**
+  String get howDidItGo;
+
+  /// No description provided for @struggledButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Struggled'**
+  String get struggledButton;
+
+  /// No description provided for @gotItButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get gotItButton;
+
+  /// No description provided for @nextReviewInDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved! Next review in {count} days.'**
+  String nextReviewInDays(int count);
+
+  /// No description provided for @nextReviewInHours.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved! Next review in {count} hours.'**
+  String nextReviewInHours(int count);
+
+  /// No description provided for @missingMemorizationRouteData.
+  ///
+  /// In en, this message translates to:
+  /// **'No passage data was provided for this screen.'**
+  String get missingMemorizationRouteData;
 }
 
 class _AppLocalizationsDelegate

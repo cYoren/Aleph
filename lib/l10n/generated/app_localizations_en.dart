@@ -457,4 +457,69 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get hebrewTextConsonantal => 'Consonants only';
+
+  @override
+  String get memorizationTitle => 'Memorization';
+
+  @override
+  String get memorizationEmpty =>
+      'Nothing here yet. Add a psalm and start hiding words.';
+
+  @override
+  String get addPassageTitle => 'Add passage';
+
+  @override
+  String get addPassageButton => 'Add';
+
+  @override
+  String get selectBookLabel => 'Book';
+
+  @override
+  String get selectChapterLabel => 'Chapter';
+
+  @override
+  String masteryLabel(String percent) {
+    return 'Mastery $percent%';
+  }
+
+  @override
+  String get dueNowLabel => 'Due now';
+
+  @override
+  String get deletePassageTooltip => 'Remove passage';
+
+  @override
+  String get levelWarmUp => 'Warm-up';
+
+  @override
+  String get levelChallenge => 'Challenge';
+
+  @override
+  String get levelFirstLetters => 'First letters';
+
+  @override
+  String get tapHiddenWordHint => 'Tap a hidden word to reveal it';
+
+  @override
+  String get howDidItGo => 'How did it go?';
+
+  @override
+  String get struggledButton => 'Struggled';
+
+  @override
+  String get gotItButton => 'Got it';
+
+  @override
+  String nextReviewInDays(int count) {
+    return 'Saved! Next review in $count days.';
+  }
+
+  @override
+  String nextReviewInHours(int count) {
+    return 'Saved! Next review in $count hours.';
+  }
+
+  @override
+  String get missingMemorizationRouteData =>
+      'No passage data was provided for this screen.';
 }

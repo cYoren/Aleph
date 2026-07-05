@@ -471,4 +471,69 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get hebrewTextConsonantal => 'Только согласные';
+
+  @override
+  String get memorizationTitle => 'Заучивание';
+
+  @override
+  String get memorizationEmpty =>
+      'Пока пусто. Добавьте псалом и начните скрывать слова.';
+
+  @override
+  String get addPassageTitle => 'Добавить отрывок';
+
+  @override
+  String get addPassageButton => 'Добавить';
+
+  @override
+  String get selectBookLabel => 'Книга';
+
+  @override
+  String get selectChapterLabel => 'Глава';
+
+  @override
+  String masteryLabel(String percent) {
+    return 'Освоение $percent%';
+  }
+
+  @override
+  String get dueNowLabel => 'Пора повторить';
+
+  @override
+  String get deletePassageTooltip => 'Удалить отрывок';
+
+  @override
+  String get levelWarmUp => 'Разминка';
+
+  @override
+  String get levelChallenge => 'Вызов';
+
+  @override
+  String get levelFirstLetters => 'Первые буквы';
+
+  @override
+  String get tapHiddenWordHint => 'Нажмите на скрытое слово, чтобы открыть его';
+
+  @override
+  String get howDidItGo => 'Как прошло?';
+
+  @override
+  String get struggledButton => 'Было трудно';
+
+  @override
+  String get gotItButton => 'Получилось';
+
+  @override
+  String nextReviewInDays(int count) {
+    return 'Сохранено! Следующее повторение через $count дн.';
+  }
+
+  @override
+  String nextReviewInHours(int count) {
+    return 'Сохранено! Следующее повторение через $count ч.';
+  }
+
+  @override
+  String get missingMemorizationRouteData =>
+      'Данные отрывка для этого экрана не были переданы.';
 }

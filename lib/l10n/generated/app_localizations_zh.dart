@@ -443,4 +443,67 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get hebrewTextConsonantal => '仅辅音';
+
+  @override
+  String get memorizationTitle => '背诵';
+
+  @override
+  String get memorizationEmpty => '这里还没有内容。添加一篇诗篇，开始隐藏词语吧。';
+
+  @override
+  String get addPassageTitle => '添加段落';
+
+  @override
+  String get addPassageButton => '添加';
+
+  @override
+  String get selectBookLabel => '书卷';
+
+  @override
+  String get selectChapterLabel => '章';
+
+  @override
+  String masteryLabel(String percent) {
+    return '掌握度 $percent%';
+  }
+
+  @override
+  String get dueNowLabel => '待复习';
+
+  @override
+  String get deletePassageTooltip => '移除段落';
+
+  @override
+  String get levelWarmUp => '热身';
+
+  @override
+  String get levelChallenge => '挑战';
+
+  @override
+  String get levelFirstLetters => '首字母';
+
+  @override
+  String get tapHiddenWordHint => '点击隐藏的词语即可显示';
+
+  @override
+  String get howDidItGo => '感觉如何？';
+
+  @override
+  String get struggledButton => '有困难';
+
+  @override
+  String get gotItButton => '记住了';
+
+  @override
+  String nextReviewInDays(int count) {
+    return '已保存！$count 天后复习。';
+  }
+
+  @override
+  String nextReviewInHours(int count) {
+    return '已保存！$count 小时后复习。';
+  }
+
+  @override
+  String get missingMemorizationRouteData => '未提供该页面所需的段落数据。';
 }

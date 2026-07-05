@@ -461,4 +461,69 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get hebrewTextConsonantal => 'Somente consoantes';
+
+  @override
+  String get memorizationTitle => 'Memorização';
+
+  @override
+  String get memorizationEmpty =>
+      'Nada aqui ainda. Adicione um salmo e comece a ocultar palavras.';
+
+  @override
+  String get addPassageTitle => 'Adicionar passagem';
+
+  @override
+  String get addPassageButton => 'Adicionar';
+
+  @override
+  String get selectBookLabel => 'Livro';
+
+  @override
+  String get selectChapterLabel => 'Capítulo';
+
+  @override
+  String masteryLabel(String percent) {
+    return 'Domínio $percent%';
+  }
+
+  @override
+  String get dueNowLabel => 'Para revisar';
+
+  @override
+  String get deletePassageTooltip => 'Remover passagem';
+
+  @override
+  String get levelWarmUp => 'Aquecimento';
+
+  @override
+  String get levelChallenge => 'Desafio';
+
+  @override
+  String get levelFirstLetters => 'Primeiras letras';
+
+  @override
+  String get tapHiddenWordHint => 'Toque em uma palavra oculta para revelá-la';
+
+  @override
+  String get howDidItGo => 'Como foi?';
+
+  @override
+  String get struggledButton => 'Tive dificuldade';
+
+  @override
+  String get gotItButton => 'Consegui';
+
+  @override
+  String nextReviewInDays(int count) {
+    return 'Salvo! Próxima revisão em $count dias.';
+  }
+
+  @override
+  String nextReviewInHours(int count) {
+    return 'Salvo! Próxima revisão em $count horas.';
+  }
+
+  @override
+  String get missingMemorizationRouteData =>
+      'Nenhum dado de passagem foi fornecido para esta tela.';
 }

@@ -210,5 +210,45 @@
   "hebrewTextDesc": "Reading with fewer marks is a skill milestone",
   "hebrewTextFull": "Full (with cantillation)",
   "hebrewTextNoCantillation": "Vowels only",
-  "hebrewTextConsonantal": "Consonants only"
+  "hebrewTextConsonantal": "Consonants only",
+  "memorizationTitle": "Memorization",
+  "memorizationEmpty": "Nothing here yet. Add a psalm and start hiding words.",
+  "addPassageTitle": "Add passage",
+  "addPassageButton": "Add",
+  "selectBookLabel": "Book",
+  "selectChapterLabel": "Chapter",
+  "masteryLabel": "Mastery {percent}%",
+  "dueNowLabel": "Due now",
+  "deletePassageTooltip": "Remove passage",
+  "levelWarmUp": "Warm-up",
+  "levelChallenge": "Challenge",
+  "levelFirstLetters": "First letters",
+  "tapHiddenWordHint": "Tap a hidden word to reveal it",
+  "howDidItGo": "How did it go?",
+  "struggledButton": "Struggled",
+  "gotItButton": "Got it",
+  "nextReviewInDays": "Saved! Next review in {count} days.",
+  "nextReviewInHours": "Saved! Next review in {count} hours.",
+  "missingMemorizationRouteData": "No passage data was provided for this screen.",
+  "@masteryLabel": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "@nextReviewInDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@nextReviewInHours": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

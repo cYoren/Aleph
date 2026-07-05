@@ -26,10 +26,28 @@ class UserDatabaseHelper {
 
     return await openDatabase(
       dbFilePath,
-      version: 3,
+      version: 4,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
+  }
+
+  Future<void> _createMemorizationTable(Database db) async {
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS memorization_passages (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        book_id TEXT NOT NULL,
+        chapter INTEGER NOT NULL,
+        created_at INTEGER NOT NULL,
+        repetitions INTEGER NOT NULL DEFAULT 0,
+        easiness REAL NOT NULL DEFAULT 2.5,
+        interval_days REAL NOT NULL DEFAULT 0.0,
+        mastery_score REAL NOT NULL DEFAULT 0.0,
+        next_review_at INTEGER NOT NULL,
+        last_practiced_at INTEGER,
+        UNIQUE(book_id, chapter)
+      )
+    ''');
   }
 
   Future<void> _createSrsTable(Database db) async {
@@ -107,6 +125,9 @@ class UserDatabaseHelper {
     // Spaced Repetition System table
     await _createSrsTable(db);
 
+    // Passage memorization table
+    await _createMemorizationTable(db);
+
     if (kDebugMode) {
       debugPrint('UserDatabaseHelper: Tables created successfully');
     }
@@ -134,6 +155,10 @@ class UserDatabaseHelper {
       await db.execute(
         'ALTER TABLE srs_progress ADD COLUMN interval_days REAL NOT NULL DEFAULT 0.0',
       );
+    }
+
+    if (oldVersion < 4) {
+      await _createMemorizationTable(db);
     }
   }
 
