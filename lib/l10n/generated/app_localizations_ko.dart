@@ -432,4 +432,19 @@ class AppLocalizationsKo extends AppLocalizations {
   String vocabularyCoverage(String percent) {
     return '이 단어들은 본문의 $percent%를 차지합니다 — 먼저 학습하세요.';
   }
+
+  @override
+  String get hebrewTextTitle => '히브리어 텍스트';
+
+  @override
+  String get hebrewTextDesc => '기호를 줄여 읽는 것은 학습의 이정표입니다';
+
+  @override
+  String get hebrewTextFull => '전체 (칸틸레이션 포함)';
+
+  @override
+  String get hebrewTextNoCantillation => '모음 기호만';
+
+  @override
+  String get hebrewTextConsonantal => '자음만';
 }

@@ -446,4 +446,20 @@ class AppLocalizationsFr extends AppLocalizations {
   String vocabularyCoverage(String percent) {
     return 'Ces mots couvrent $percent% du texte — apprenez-les en premier.';
   }
+
+  @override
+  String get hebrewTextTitle => 'Texte hébreu';
+
+  @override
+  String get hebrewTextDesc =>
+      'Lire avec moins de signes est une étape d\'apprentissage';
+
+  @override
+  String get hebrewTextFull => 'Complet (avec cantillation)';
+
+  @override
+  String get hebrewTextNoCantillation => 'Voyelles seulement';
+
+  @override
+  String get hebrewTextConsonantal => 'Consonnes seulement';
 }

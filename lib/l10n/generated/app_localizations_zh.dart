@@ -428,4 +428,19 @@ class AppLocalizationsZh extends AppLocalizations {
   String vocabularyCoverage(String percent) {
     return '这些词语覆盖了 $percent% 的经文——请优先学习。';
   }
+
+  @override
+  String get hebrewTextTitle => '希伯来文显示';
+
+  @override
+  String get hebrewTextDesc => '以更少的符号阅读是学习的里程碑';
+
+  @override
+  String get hebrewTextFull => '完整（含音调符号）';
+
+  @override
+  String get hebrewTextNoCantillation => '仅元音符号';
+
+  @override
+  String get hebrewTextConsonantal => '仅辅音';
 }

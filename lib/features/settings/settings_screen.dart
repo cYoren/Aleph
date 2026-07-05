@@ -4,6 +4,7 @@ import 'package:original_bible/shared/constants/app_identity.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../features/settings/settings_provider.dart';
 import '../../providers/translations_provider.dart';
+import '../../shared/utils/hebrew_display.dart';
 
 const _interfaceLanguages = <String, String>{
   'en': 'English',
@@ -104,6 +105,34 @@ class SettingsScreen extends ConsumerWidget {
             onChanged: (bool value) {
               notifier.setShowPronunciation(value);
             },
+          ),
+          ListTile(
+            leading: const Icon(Icons.text_fields),
+            title: Text(l10n.hebrewTextTitle),
+            subtitle: Text(l10n.hebrewTextDesc),
+            trailing: DropdownButton<HebrewTextDisplay>(
+              value: settings.hebrewTextDisplay,
+              underline: const SizedBox.shrink(),
+              onChanged: (mode) {
+                if (mode != null) {
+                  notifier.setHebrewTextDisplay(mode);
+                }
+              },
+              items: [
+                DropdownMenuItem(
+                  value: HebrewTextDisplay.full,
+                  child: Text(l10n.hebrewTextFull),
+                ),
+                DropdownMenuItem(
+                  value: HebrewTextDisplay.noCantillation,
+                  child: Text(l10n.hebrewTextNoCantillation),
+                ),
+                DropdownMenuItem(
+                  value: HebrewTextDisplay.consonantal,
+                  child: Text(l10n.hebrewTextConsonantal),
+                ),
+              ],
+            ),
           ),
           const Divider(),
 

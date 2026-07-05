@@ -455,4 +455,20 @@ class AppLocalizationsRu extends AppLocalizations {
   String vocabularyCoverage(String percent) {
     return 'Эти слова покрывают $percent% текста — учите их в первую очередь.';
   }
+
+  @override
+  String get hebrewTextTitle => 'Еврейский текст';
+
+  @override
+  String get hebrewTextDesc =>
+      'Чтение с меньшим числом знаков — веха в обучении';
+
+  @override
+  String get hebrewTextFull => 'Полный (с кантилляцией)';
+
+  @override
+  String get hebrewTextNoCantillation => 'Только огласовки';
+
+  @override
+  String get hebrewTextConsonantal => 'Только согласные';
 }

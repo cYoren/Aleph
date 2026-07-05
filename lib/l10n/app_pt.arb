@@ -184,5 +184,10 @@
   "vocabularyTitle": "Vocabulário",
   "dueForReviewSection": "Para revisar",
   "mostFrequentSection": "Palavras mais frequentes",
-  "vocabularyCoverage": "Estas palavras cobrem {percent}% do texto — aprenda-as primeiro."
+  "vocabularyCoverage": "Estas palavras cobrem {percent}% do texto — aprenda-as primeiro.",
+  "hebrewTextTitle": "Texto hebraico",
+  "hebrewTextDesc": "Ler com menos sinais é um marco de aprendizado",
+  "hebrewTextFull": "Completo (com cantilação)",
+  "hebrewTextNoCantillation": "Somente vogais",
+  "hebrewTextConsonantal": "Somente consoantes"
 }
