@@ -118,6 +118,15 @@ class SettingsScreen extends ConsumerWidget {
               notifier.setLearningMode(value);
             },
           ),
+          SwitchListTile(
+            secondary: const Icon(Icons.auto_stories_outlined),
+            title: Text(l10n.readerMode),
+            subtitle: Text(l10n.readerModeDesc),
+            value: settings.readerModeEnabled,
+            onChanged: (bool value) {
+              notifier.setReaderMode(value);
+            },
+          ),
           const Divider(),
 
           // Translation Section

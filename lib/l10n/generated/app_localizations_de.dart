@@ -423,4 +423,11 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get syntaxTreeHeuristicNotice =>
       'Grammatische Skizze auf Basis von Wortstellungs-Heuristiken — keine verifizierten Syntaxdaten.';
+
+  @override
+  String get readerMode => 'Lesemodus';
+
+  @override
+  String get readerModeDesc =>
+      'Zeigt beim Lesen eine kleine Übersetzung unter seltenen Wörtern. Gemeisterte Wörter erscheinen ohne Hilfe.';
 }

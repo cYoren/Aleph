@@ -27,6 +27,11 @@ class VerseWithWords extends ConsumerWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final showTransliteration = settings.showPronunciation;
 
+    // Reader mode: inline glosses for rare, not-yet-mastered words
+    final readerGlosses = settings.readerModeEnabled
+        ? (ref.watch(readerGlossesProvider(verse.id)).valueOrNull ?? {})
+        : const <int, String>{};
+
     return wordsAsync.when(
       loading: () => _buildPlainText(colorScheme),
       error: (err, stack) => _buildPlainText(colorScheme),
@@ -47,6 +52,7 @@ class VerseWithWords extends ConsumerWidget {
             isOT: isOT,
             fontSize: fontSize,
             transliteration: transliteration,
+            readerGloss: readerGlosses[word.id],
           );
         }).toList();
 

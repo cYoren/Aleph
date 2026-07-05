@@ -805,6 +805,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Grammatical sketch based on word-order heuristics — not verified syntax data.'**
   String get syntaxTreeHeuristicNotice;
+
+  /// No description provided for @readerMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Reader mode'**
+  String get readerMode;
+
+  /// No description provided for @readerModeDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Gloss rare words inline while you read. Words you have mastered appear plain.'**
+  String get readerModeDesc;
 }
 
 class _AppLocalizationsDelegate

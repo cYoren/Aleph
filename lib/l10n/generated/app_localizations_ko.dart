@@ -411,4 +411,11 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String get syntaxTreeHeuristicNotice =>
       '어순 휴리스틱에 기반한 문법 스케치이며, 검증된 구문 데이터가 아닙니다.';
+
+  @override
+  String get readerMode => '리더 모드';
+
+  @override
+  String get readerModeDesc =>
+      '읽는 동안 드문 단어 아래에 짧은 번역을 표시합니다. 익힌 단어는 도움말 없이 표시됩니다.';
 }

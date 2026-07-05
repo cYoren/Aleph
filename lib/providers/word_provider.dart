@@ -3,6 +3,7 @@ import '../data/models/word.dart';
 import '../data/models/verse.dart';
 import '../data/models/lexicon_entry.dart';
 import '../shared/utils/transliterator.dart';
+import '../shared/utils/reader_mode.dart';
 import 'database_provider.dart';
 
 /// Currently selected word
@@ -71,6 +72,34 @@ final strongsUsageFrequenciesProvider =
       final dao = ref.watch(bibleDaoProvider);
       return dao.getStrongsUsageFrequencies(strongs);
     });
+
+/// Reader mode glosses for a verse: word.id -> short gloss, for words rare
+/// enough (and not yet mastered) to deserve an inline translation.
+final readerGlossesProvider = FutureProvider.family<Map<int, String>, String>((
+  ref,
+  verseId,
+) async {
+  final words = await ref.watch(wordsForVerseProvider(verseId).future);
+  final keys = words
+      .map((w) => w.lexiconLookupKey)
+      .whereType<String>()
+      .toSet()
+      .toList();
+  if (keys.isEmpty) return {};
+
+  final dao = ref.watch(bibleDaoProvider);
+  final srsDao = ref.watch(srsDaoProvider);
+  final frequencies = await dao.getFrequenciesForLexiconKeys(keys);
+  final progress = await srsDao.getProgressForIds(keys);
+  final lexicon = await dao.getLexiconEntriesForStrongs(keys);
+
+  return selectReaderGlosses(
+    words: words,
+    frequencies: frequencies,
+    progress: progress,
+    lexicon: lexicon,
+  );
+});
 
 /// Concordance data for a lexicon key (Strong's id or lemma): total verse
 /// count plus the occurrences themselves (capped in the DAO for very

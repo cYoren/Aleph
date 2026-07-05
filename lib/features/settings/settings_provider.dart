@@ -70,6 +70,7 @@ class SettingsState {
   final String appLanguage;
   final bool hasCompletedOnboarding;
   final bool learningModeEnabled;
+  final bool readerModeEnabled;
   final bool hasManuallySelectedTranslation;
   final bool isLoaded;
 
@@ -83,6 +84,7 @@ class SettingsState {
     this.appLanguage = 'en',
     this.hasCompletedOnboarding = false,
     this.learningModeEnabled = false,
+    this.readerModeEnabled = false,
     this.hasManuallySelectedTranslation = false,
     this.isLoaded = false,
   });
@@ -97,6 +99,7 @@ class SettingsState {
     String? appLanguage,
     bool? hasCompletedOnboarding,
     bool? learningModeEnabled,
+    bool? readerModeEnabled,
     bool? hasManuallySelectedTranslation,
     bool? isLoaded,
   }) {
@@ -111,6 +114,7 @@ class SettingsState {
       hasCompletedOnboarding:
           hasCompletedOnboarding ?? this.hasCompletedOnboarding,
       learningModeEnabled: learningModeEnabled ?? this.learningModeEnabled,
+      readerModeEnabled: readerModeEnabled ?? this.readerModeEnabled,
       hasManuallySelectedTranslation:
           hasManuallySelectedTranslation ?? this.hasManuallySelectedTranslation,
       isLoaded: isLoaded ?? this.isLoaded,
@@ -139,6 +143,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
       final hasCompletedOnboarding =
           prefs.getBool('hasCompletedOnboarding') ?? false;
       final learningModeEnabled = prefs.getBool('learningModeEnabled') ?? false;
+      final readerModeEnabled = prefs.getBool('readerModeEnabled') ?? false;
       final hasManuallySelectedTranslation =
           prefs.getBool('hasManuallySelectedTranslation') ?? false;
 
@@ -163,6 +168,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         appLanguage: appLanguage,
         hasCompletedOnboarding: hasCompletedOnboarding,
         learningModeEnabled: learningModeEnabled,
+        readerModeEnabled: readerModeEnabled,
         hasManuallySelectedTranslation: hasManuallySelectedTranslation,
         isLoaded: true,
       );
@@ -283,6 +289,12 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     state = state.copyWith(learningModeEnabled: enabled);
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('learningModeEnabled', enabled);
+  }
+
+  Future<void> setReaderMode(bool enabled) async {
+    state = state.copyWith(readerModeEnabled: enabled);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('readerModeEnabled', enabled);
   }
 }
 

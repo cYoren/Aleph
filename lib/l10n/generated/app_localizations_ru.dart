@@ -434,4 +434,11 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get syntaxTreeHeuristicNotice =>
       'Грамматический набросок на основе эвристик порядка слов — это не выверенные синтаксические данные.';
+
+  @override
+  String get readerMode => 'Режим читателя';
+
+  @override
+  String get readerModeDesc =>
+      'Показывает небольшой перевод под редкими словами при чтении. Освоенные слова отображаются без подсказки.';
 }

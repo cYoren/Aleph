@@ -408,4 +408,10 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get syntaxTreeHeuristicNotice => '基于词序启发式规则的语法示意图，并非经过校验的句法数据。';
+
+  @override
+  String get readerMode => '读者模式';
+
+  @override
+  String get readerModeDesc => '阅读时在罕见词语下方显示简短翻译。已掌握的词语不再显示提示。';
 }
