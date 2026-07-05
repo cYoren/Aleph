@@ -419,4 +419,8 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get missingWordStudyRouteData =>
       'Für diesen Bildschirm wurden keine Wortdaten übergeben.';
+
+  @override
+  String get syntaxTreeHeuristicNotice =>
+      'Grammatische Skizze auf Basis von Wortstellungs-Heuristiken — keine verifizierten Syntaxdaten.';
 }

@@ -177,5 +177,6 @@
   "occurrencesTotal": "{count} apariciones en la Biblia",
   "showingFirstOccurrences": "Mostrando las primeras {shown} apariciones",
   "wordStudyUnavailableTitle": "Estudio de palabra no disponible",
-  "missingWordStudyRouteData": "No se proporcionaron datos de la palabra para esta pantalla."
+  "missingWordStudyRouteData": "No se proporcionaron datos de la palabra para esta pantalla.",
+  "syntaxTreeHeuristicNotice": "Esbozo gramatical basado en heurísticas del orden de palabras — no son datos sintácticos verificados."
 }

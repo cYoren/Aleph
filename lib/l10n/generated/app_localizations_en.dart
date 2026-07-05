@@ -417,4 +417,8 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get missingWordStudyRouteData =>
       'No word data was provided for this screen.';
+
+  @override
+  String get syntaxTreeHeuristicNotice =>
+      'Grammatical sketch based on word-order heuristics — not verified syntax data.';
 }

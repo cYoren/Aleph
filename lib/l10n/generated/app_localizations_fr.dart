@@ -421,4 +421,8 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get missingWordStudyRouteData =>
       'Aucune donnée de mot n\'a été fournie pour cet écran.';
+
+  @override
+  String get syntaxTreeHeuristicNotice =>
+      'Esquisse grammaticale fondée sur des heuristiques d\'ordre des mots — pas de données syntaxiques vérifiées.';
 }

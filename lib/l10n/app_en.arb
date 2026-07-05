@@ -191,5 +191,6 @@
     }
   },
   "wordStudyUnavailableTitle": "Word Study Unavailable",
-  "missingWordStudyRouteData": "No word data was provided for this screen."
+  "missingWordStudyRouteData": "No word data was provided for this screen.",
+  "syntaxTreeHeuristicNotice": "Grammatical sketch based on word-order heuristics — not verified syntax data."
 }
