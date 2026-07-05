@@ -799,6 +799,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No word data was provided for this screen.'**
   String get missingWordStudyRouteData;
+
+  /// No description provided for @syntaxTreeHeuristicNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'Grammatical sketch based on word-order heuristics — not verified syntax data.'**
+  String get syntaxTreeHeuristicNotice;
 }
 
 class _AppLocalizationsDelegate

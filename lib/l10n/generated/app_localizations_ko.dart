@@ -407,4 +407,8 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get missingWordStudyRouteData => '이 화면에 필요한 단어 데이터가 제공되지 않았습니다.';
+
+  @override
+  String get syntaxTreeHeuristicNotice =>
+      '어순 휴리스틱에 기반한 문법 스케치이며, 검증된 구문 데이터가 아닙니다.';
 }

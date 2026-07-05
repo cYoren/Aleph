@@ -177,5 +177,6 @@
   "occurrencesTotal": "在圣经中出现 {count} 次",
   "showingFirstOccurrences": "仅显示前 {shown} 次出现",
   "wordStudyUnavailableTitle": "词语研读不可用",
-  "missingWordStudyRouteData": "未提供该页面所需的词语数据。"
+  "missingWordStudyRouteData": "未提供该页面所需的词语数据。",
+  "syntaxTreeHeuristicNotice": "基于词序启发式规则的语法示意图，并非经过校验的句法数据。"
 }

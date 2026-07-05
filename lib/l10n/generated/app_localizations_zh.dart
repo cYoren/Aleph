@@ -405,4 +405,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get missingWordStudyRouteData => '未提供该页面所需的词语数据。';
+
+  @override
+  String get syntaxTreeHeuristicNotice => '基于词序启发式规则的语法示意图，并非经过校验的句法数据。';
 }

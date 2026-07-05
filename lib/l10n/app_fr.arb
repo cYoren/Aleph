@@ -177,5 +177,6 @@
   "occurrencesTotal": "{count} occurrences dans la Bible",
   "showingFirstOccurrences": "Affichage des {shown} premières occurrences",
   "wordStudyUnavailableTitle": "Étude de mot indisponible",
-  "missingWordStudyRouteData": "Aucune donnée de mot n'a été fournie pour cet écran."
+  "missingWordStudyRouteData": "Aucune donnée de mot n'a été fournie pour cet écran.",
+  "syntaxTreeHeuristicNotice": "Esquisse grammaticale fondée sur des heuristiques d'ordre des mots — pas de données syntaxiques vérifiées."
 }

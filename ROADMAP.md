@@ -39,7 +39,7 @@ things currently undercut the "in depth" promise:
 - [ ] Import genuine treebank data: **MACULA Greek** and **MACULA Hebrew**
       (Clear Bible, CC BY 4.0) — same data family as our existing token source.
       Add a `syntax_nodes` table to the build pipeline.
-- [ ] Until real trees ship, label the current view as a grammatical sketch, not a parse.
+- [x] Until real trees ship, label the current view as a grammatical sketch, not a parse.
 
 ### 1.3 Concordance / word study — **in progress**
 - [x] "See all occurrences" of a word from the definition sheet: every verse containing a

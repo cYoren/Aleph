@@ -67,6 +67,32 @@ class SyntaxTreeScreen extends ConsumerWidget {
       ),
       body: Column(
         children: [
+          // Honesty banner: the tree is POS-heuristic, not real treebank data
+          // (see ROADMAP.md 1.2 — replaced once MACULA trees are imported).
+          Container(
+            width: double.infinity,
+            color: colorScheme.tertiaryContainer.withValues(alpha: 0.5),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.info_outline,
+                  size: 16,
+                  color: colorScheme.onTertiaryContainer,
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    l10n.syntaxTreeHeuristicNotice,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: colorScheme.onTertiaryContainer,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
           // Legend bar
           _buildLegend(colorScheme, l10n),
           // Hint text

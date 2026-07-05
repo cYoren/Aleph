@@ -430,4 +430,8 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get missingWordStudyRouteData =>
       'Данные слова для этого экрана не были переданы.';
+
+  @override
+  String get syntaxTreeHeuristicNotice =>
+      'Грамматический набросок на основе эвристик порядка слов — это не выверенные синтаксические данные.';
 }

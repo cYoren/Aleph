@@ -177,5 +177,6 @@
   "occurrencesTotal": "{count} вхождений в Библии",
   "showingFirstOccurrences": "Показаны первые {shown} вхождений",
   "wordStudyUnavailableTitle": "Изучение слова недоступно",
-  "missingWordStudyRouteData": "Данные слова для этого экрана не были переданы."
+  "missingWordStudyRouteData": "Данные слова для этого экрана не были переданы.",
+  "syntaxTreeHeuristicNotice": "Грамматический набросок на основе эвристик порядка слов — это не выверенные синтаксические данные."
 }
