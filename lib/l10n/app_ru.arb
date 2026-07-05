@@ -184,5 +184,10 @@
   "vocabularyTitle": "Словарный запас",
   "dueForReviewSection": "Пора повторить",
   "mostFrequentSection": "Самые частые слова",
-  "vocabularyCoverage": "Эти слова покрывают {percent}% текста — учите их в первую очередь."
+  "vocabularyCoverage": "Эти слова покрывают {percent}% текста — учите их в первую очередь.",
+  "hebrewTextTitle": "Еврейский текст",
+  "hebrewTextDesc": "Чтение с меньшим числом знаков — веха в обучении",
+  "hebrewTextFull": "Полный (с кантилляцией)",
+  "hebrewTextNoCantillation": "Только огласовки",
+  "hebrewTextConsonantal": "Только согласные"
 }

@@ -446,4 +446,19 @@ class AppLocalizationsPt extends AppLocalizations {
   String vocabularyCoverage(String percent) {
     return 'Estas palavras cobrem $percent% do texto — aprenda-as primeiro.';
   }
+
+  @override
+  String get hebrewTextTitle => 'Texto hebraico';
+
+  @override
+  String get hebrewTextDesc => 'Ler com menos sinais é um marco de aprendizado';
+
+  @override
+  String get hebrewTextFull => 'Completo (com cantilação)';
+
+  @override
+  String get hebrewTextNoCantillation => 'Somente vogais';
+
+  @override
+  String get hebrewTextConsonantal => 'Somente consoantes';
 }

@@ -205,5 +205,10 @@
         "type": "String"
       }
     }
-  }
+  },
+  "hebrewTextTitle": "Hebrew text",
+  "hebrewTextDesc": "Reading with fewer marks is a skill milestone",
+  "hebrewTextFull": "Full (with cantillation)",
+  "hebrewTextNoCantillation": "Vowels only",
+  "hebrewTextConsonantal": "Consonants only"
 }

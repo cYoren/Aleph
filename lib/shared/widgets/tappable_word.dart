@@ -4,6 +4,7 @@ import '../../data/models/word.dart';
 import '../../providers/word_provider.dart';
 import '../../features/settings/settings_provider.dart';
 import '../../providers/visual_context_provider.dart';
+import '../utils/hebrew_display.dart';
 import 'definition_sheet.dart';
 
 class TappableWord extends ConsumerStatefulWidget {
@@ -195,8 +196,17 @@ class _TappableWordState extends ConsumerState<TappableWord> {
             ? colorScheme.primary
             : colorScheme.onSurface.withValues(alpha: 0.85));
 
+    final displayText = widget.isOT
+        ? applyHebrewDisplay(
+            widget.word.displayText,
+            ref.watch(
+              settingsProvider.select((s) => s.hebrewTextDisplay),
+            ),
+          )
+        : widget.word.displayText;
+
     return Text(
-      widget.word.displayText,
+      displayText,
       style: TextStyle(
         fontFamily: fontFamily,
         fontSize: widget.fontSize,

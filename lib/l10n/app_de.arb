@@ -184,5 +184,10 @@
   "vocabularyTitle": "Vokabeln",
   "dueForReviewSection": "Zur Wiederholung fällig",
   "mostFrequentSection": "Häufigste Wörter",
-  "vocabularyCoverage": "Diese Wörter decken {percent}% des Textes ab — lerne sie zuerst."
+  "vocabularyCoverage": "Diese Wörter decken {percent}% des Textes ab — lerne sie zuerst.",
+  "hebrewTextTitle": "Hebräischer Text",
+  "hebrewTextDesc": "Mit weniger Zeichen zu lesen ist ein Lernmeilenstein",
+  "hebrewTextFull": "Vollständig (mit Kantillation)",
+  "hebrewTextNoCantillation": "Nur Vokale",
+  "hebrewTextConsonantal": "Nur Konsonanten"
 }

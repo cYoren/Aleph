@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/models/verse.dart';
 import '../../providers/word_provider.dart';
 import '../../features/settings/settings_provider.dart';
+import '../utils/hebrew_display.dart';
 import 'tappable_word.dart';
 
 class VerseWithWords extends ConsumerWidget {
@@ -32,12 +33,14 @@ class VerseWithWords extends ConsumerWidget {
         ? (ref.watch(readerGlossesProvider(verse.id)).valueOrNull ?? {})
         : const <int, String>{};
 
+    final hebrewDisplay = settings.hebrewTextDisplay;
+
     return wordsAsync.when(
-      loading: () => _buildPlainText(colorScheme),
-      error: (err, stack) => _buildPlainText(colorScheme),
+      loading: () => _buildPlainText(colorScheme, hebrewDisplay),
+      error: (err, stack) => _buildPlainText(colorScheme, hebrewDisplay),
       data: (words) {
         if (words.isEmpty) {
-          return _buildPlainText(colorScheme);
+          return _buildPlainText(colorScheme, hebrewDisplay);
         }
 
         // Get transliterations (or empty map if still loading)
@@ -84,12 +87,15 @@ class VerseWithWords extends ConsumerWidget {
     );
   }
 
-  Widget _buildPlainText(ColorScheme colorScheme) {
+  Widget _buildPlainText(
+    ColorScheme colorScheme,
+    HebrewTextDisplay hebrewDisplay,
+  ) {
     // Use EzraSIL for Hebrew (OT), Gentium for Greek (NT)
     final fontFamily = isOT ? 'EzraSIL' : 'Gentium';
 
     return Text(
-      verse.textContent,
+      isOT ? applyHebrewDisplay(verse.textContent, hebrewDisplay) : verse.textContent,
       style: TextStyle(
         fontFamily: fontFamily,
         fontSize: fontSize,

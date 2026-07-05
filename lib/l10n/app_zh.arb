@@ -184,5 +184,10 @@
   "vocabularyTitle": "词汇",
   "dueForReviewSection": "待复习",
   "mostFrequentSection": "最常见词语",
-  "vocabularyCoverage": "这些词语覆盖了 {percent}% 的经文——请优先学习。"
+  "vocabularyCoverage": "这些词语覆盖了 {percent}% 的经文——请优先学习。",
+  "hebrewTextTitle": "希伯来文显示",
+  "hebrewTextDesc": "以更少的符号阅读是学习的里程碑",
+  "hebrewTextFull": "完整（含音调符号）",
+  "hebrewTextNoCantillation": "仅元音符号",
+  "hebrewTextConsonantal": "仅辅音"
 }

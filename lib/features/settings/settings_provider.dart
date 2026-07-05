@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../shared/utils/hebrew_display.dart';
 
 // Language to default translation mapping (applied during onboarding only).
 const Map<String, String> languageToTranslation = {
@@ -71,6 +72,7 @@ class SettingsState {
   final bool hasCompletedOnboarding;
   final bool learningModeEnabled;
   final bool readerModeEnabled;
+  final HebrewTextDisplay hebrewTextDisplay;
   final bool hasManuallySelectedTranslation;
   final bool isLoaded;
 
@@ -85,6 +87,7 @@ class SettingsState {
     this.hasCompletedOnboarding = false,
     this.learningModeEnabled = false,
     this.readerModeEnabled = false,
+    this.hebrewTextDisplay = HebrewTextDisplay.full,
     this.hasManuallySelectedTranslation = false,
     this.isLoaded = false,
   });
@@ -100,6 +103,7 @@ class SettingsState {
     bool? hasCompletedOnboarding,
     bool? learningModeEnabled,
     bool? readerModeEnabled,
+    HebrewTextDisplay? hebrewTextDisplay,
     bool? hasManuallySelectedTranslation,
     bool? isLoaded,
   }) {
@@ -115,6 +119,7 @@ class SettingsState {
           hasCompletedOnboarding ?? this.hasCompletedOnboarding,
       learningModeEnabled: learningModeEnabled ?? this.learningModeEnabled,
       readerModeEnabled: readerModeEnabled ?? this.readerModeEnabled,
+      hebrewTextDisplay: hebrewTextDisplay ?? this.hebrewTextDisplay,
       hasManuallySelectedTranslation:
           hasManuallySelectedTranslation ?? this.hasManuallySelectedTranslation,
       isLoaded: isLoaded ?? this.isLoaded,
@@ -144,6 +149,9 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
           prefs.getBool('hasCompletedOnboarding') ?? false;
       final learningModeEnabled = prefs.getBool('learningModeEnabled') ?? false;
       final readerModeEnabled = prefs.getBool('readerModeEnabled') ?? false;
+      final hebrewTextDisplay = HebrewTextDisplay.fromName(
+        prefs.getString('hebrewTextDisplay'),
+      );
       final hasManuallySelectedTranslation =
           prefs.getBool('hasManuallySelectedTranslation') ?? false;
 
@@ -169,6 +177,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         hasCompletedOnboarding: hasCompletedOnboarding,
         learningModeEnabled: learningModeEnabled,
         readerModeEnabled: readerModeEnabled,
+        hebrewTextDisplay: hebrewTextDisplay,
         hasManuallySelectedTranslation: hasManuallySelectedTranslation,
         isLoaded: true,
       );
@@ -295,6 +304,12 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     state = state.copyWith(readerModeEnabled: enabled);
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('readerModeEnabled', enabled);
+  }
+
+  Future<void> setHebrewTextDisplay(HebrewTextDisplay mode) async {
+    state = state.copyWith(hebrewTextDisplay: mode);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('hebrewTextDisplay', mode.name);
   }
 }
 

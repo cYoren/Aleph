@@ -841,6 +841,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'These words cover {percent}% of the text — learn them first.'**
   String vocabularyCoverage(String percent);
+
+  /// No description provided for @hebrewTextTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Hebrew text'**
+  String get hebrewTextTitle;
+
+  /// No description provided for @hebrewTextDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading with fewer marks is a skill milestone'**
+  String get hebrewTextDesc;
+
+  /// No description provided for @hebrewTextFull.
+  ///
+  /// In en, this message translates to:
+  /// **'Full (with cantillation)'**
+  String get hebrewTextFull;
+
+  /// No description provided for @hebrewTextNoCantillation.
+  ///
+  /// In en, this message translates to:
+  /// **'Vowels only'**
+  String get hebrewTextNoCantillation;
+
+  /// No description provided for @hebrewTextConsonantal.
+  ///
+  /// In en, this message translates to:
+  /// **'Consonants only'**
+  String get hebrewTextConsonantal;
 }
 
 class _AppLocalizationsDelegate
