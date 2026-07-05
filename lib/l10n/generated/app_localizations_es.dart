@@ -426,4 +426,11 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get syntaxTreeHeuristicNotice =>
       'Esbozo gramatical basado en heurísticas del orden de palabras — no son datos sintácticos verificados.';
+
+  @override
+  String get readerMode => 'Modo lector';
+
+  @override
+  String get readerModeDesc =>
+      'Muestra una pequeña traducción bajo las palabras raras mientras lees. Las palabras dominadas aparecen sin ayuda.';
 }

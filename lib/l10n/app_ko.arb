@@ -178,5 +178,7 @@
   "showingFirstOccurrences": "처음 {shown}개 용례만 표시",
   "wordStudyUnavailableTitle": "단어 연구를 사용할 수 없음",
   "missingWordStudyRouteData": "이 화면에 필요한 단어 데이터가 제공되지 않았습니다.",
-  "syntaxTreeHeuristicNotice": "어순 휴리스틱에 기반한 문법 스케치이며, 검증된 구문 데이터가 아닙니다."
+  "syntaxTreeHeuristicNotice": "어순 휴리스틱에 기반한 문법 스케치이며, 검증된 구문 데이터가 아닙니다.",
+  "readerMode": "리더 모드",
+  "readerModeDesc": "읽는 동안 드문 단어 아래에 짧은 번역을 표시합니다. 익힌 단어는 도움말 없이 표시됩니다."
 }

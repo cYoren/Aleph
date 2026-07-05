@@ -421,4 +421,11 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get syntaxTreeHeuristicNotice =>
       'Grammatical sketch based on word-order heuristics — not verified syntax data.';
+
+  @override
+  String get readerMode => 'Reader mode';
+
+  @override
+  String get readerModeDesc =>
+      'Gloss rare words inline while you read. Words you have mastered appear plain.';
 }

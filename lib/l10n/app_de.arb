@@ -178,5 +178,7 @@
   "showingFirstOccurrences": "Die ersten {shown} Vorkommen werden angezeigt",
   "wordStudyUnavailableTitle": "Wortstudie nicht verfügbar",
   "missingWordStudyRouteData": "Für diesen Bildschirm wurden keine Wortdaten übergeben.",
-  "syntaxTreeHeuristicNotice": "Grammatische Skizze auf Basis von Wortstellungs-Heuristiken — keine verifizierten Syntaxdaten."
+  "syntaxTreeHeuristicNotice": "Grammatische Skizze auf Basis von Wortstellungs-Heuristiken — keine verifizierten Syntaxdaten.",
+  "readerMode": "Lesemodus",
+  "readerModeDesc": "Zeigt beim Lesen eine kleine Übersetzung unter seltenen Wörtern. Gemeisterte Wörter erscheinen ohne Hilfe."
 }

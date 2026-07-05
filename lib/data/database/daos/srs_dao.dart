@@ -112,6 +112,27 @@ class SrsDao {
     );
   }
 
+  /// Batch progress lookup for reader mode and vocabulary decks.
+  Future<Map<String, SrsProgress>> getProgressForIds(List<String> ids) async {
+    final requested = ids.where((id) => id.isNotEmpty).toSet().toList();
+    if (requested.isEmpty) return {};
+
+    final db = await _dbHelper.database;
+    final placeholders = requested.map((_) => '?').join(',');
+    final maps = await db.query(
+      'srs_progress',
+      where: 'strongs_id IN ($placeholders)',
+      whereArgs: requested,
+    );
+
+    final result = <String, SrsProgress>{};
+    for (final map in maps) {
+      final progress = SrsProgress.fromMap(map);
+      result[progress.strongsId] = progress;
+    }
+    return result;
+  }
+
   Future<List<SrsProgress>> getWordsDueForReview() async {
     final db = await _dbHelper.database;
     final nowMs = DateTime.now().millisecondsSinceEpoch;

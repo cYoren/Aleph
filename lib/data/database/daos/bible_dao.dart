@@ -445,6 +445,55 @@ class BibleDAO {
     return 0;
   }
 
+  /// Whole-Bible occurrence counts for a batch of lexicon keys (Strong's ids
+  /// or lemmas). Used by reader mode to decide which words are rare enough
+  /// to gloss inline.
+  Future<Map<String, int>> getFrequenciesForLexiconKeys(
+    List<String> keys,
+  ) async {
+    final requested = keys.where((k) => k.isNotEmpty).toSet().toList();
+    if (requested.isEmpty) return {};
+
+    final result = <String, int>{};
+    try {
+      final db = await _dbHelper.database;
+      final placeholders = requested.map((_) => '?').join(',');
+
+      final strongsRows = await db.rawQuery(
+        'SELECT strongs AS k, COUNT(*) AS c FROM words '
+        'WHERE strongs IN ($placeholders) GROUP BY strongs',
+        requested,
+      );
+      for (final row in strongsRows) {
+        final key = row['k']?.toString() ?? '';
+        if (key.isNotEmpty) {
+          result[key] = (row['c'] as num?)?.toInt() ?? 0;
+        }
+      }
+
+      final remaining = requested.where((k) => !result.containsKey(k)).toList();
+      if (remaining.isNotEmpty) {
+        final remainingPlaceholders = remaining.map((_) => '?').join(',');
+        final lemmaRows = await db.rawQuery(
+          'SELECT lemma AS k, COUNT(*) AS c FROM words '
+          'WHERE lemma IN ($remainingPlaceholders) GROUP BY lemma',
+          remaining,
+        );
+        for (final row in lemmaRows) {
+          final key = row['k']?.toString() ?? '';
+          if (key.isNotEmpty) {
+            result[key] = (row['c'] as num?)?.toInt() ?? 0;
+          }
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('BibleDAO frequency batch error: $e');
+      }
+    }
+    return result;
+  }
+
   /// All verses containing a word (by Strong's id or lemma), in canonical
   /// order. [limit] caps the result for very frequent words (particles,
   /// conjunctions) that appear tens of thousands of times.

@@ -192,5 +192,7 @@
   },
   "wordStudyUnavailableTitle": "Word Study Unavailable",
   "missingWordStudyRouteData": "No word data was provided for this screen.",
-  "syntaxTreeHeuristicNotice": "Grammatical sketch based on word-order heuristics — not verified syntax data."
+  "syntaxTreeHeuristicNotice": "Grammatical sketch based on word-order heuristics — not verified syntax data.",
+  "readerMode": "Reader mode",
+  "readerModeDesc": "Gloss rare words inline while you read. Words you have mastered appear plain."
 }

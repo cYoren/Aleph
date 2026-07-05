@@ -178,5 +178,7 @@
   "showingFirstOccurrences": "Affichage des {shown} premières occurrences",
   "wordStudyUnavailableTitle": "Étude de mot indisponible",
   "missingWordStudyRouteData": "Aucune donnée de mot n'a été fournie pour cet écran.",
-  "syntaxTreeHeuristicNotice": "Esquisse grammaticale fondée sur des heuristiques d'ordre des mots — pas de données syntaxiques vérifiées."
+  "syntaxTreeHeuristicNotice": "Esquisse grammaticale fondée sur des heuristiques d'ordre des mots — pas de données syntaxiques vérifiées.",
+  "readerMode": "Mode lecteur",
+  "readerModeDesc": "Affiche une petite traduction sous les mots rares pendant la lecture. Les mots maîtrisés apparaissent sans aide."
 }

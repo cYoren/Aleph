@@ -11,6 +11,7 @@ class TappableWord extends ConsumerStatefulWidget {
   final bool isOT;
   final double fontSize;
   final String? transliteration; // Latin alphabet transliteration
+  final String? readerGloss; // Reader-mode inline gloss shown under the word
   final Color? colorOverride;
   final VoidCallback? onTapOverride;
 
@@ -20,6 +21,7 @@ class TappableWord extends ConsumerStatefulWidget {
     required this.isOT,
     required this.fontSize,
     this.transliteration,
+    this.readerGloss,
     this.colorOverride,
     this.onTapOverride,
   });
@@ -135,27 +137,51 @@ class _TappableWordState extends ConsumerState<TappableWord> {
               ? Border.all(color: colorScheme.secondary.withValues(alpha: 0.5))
               : null,
         ),
-        child: showTransliteration
-            ? Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Latin transliteration above
-                  Text(
-                    widget.transliteration!,
-                    style: TextStyle(
-                      fontSize: widget.fontSize * 0.6,
-                      color: colorScheme.primary.withValues(alpha: 0.8),
-                      fontWeight: FontWeight.w500,
-                      fontStyle: FontStyle.italic,
-                    ),
-                  ),
-                  const SizedBox(height: 1),
-                  // Original text
-                  _buildWordText(colorScheme),
-                ],
-              )
-            : _buildWordText(colorScheme),
+        child: _buildWordStack(colorScheme, showTransliteration),
       ),
+    );
+  }
+
+  Widget _buildWordStack(ColorScheme colorScheme, bool showTransliteration) {
+    final hasGloss = widget.readerGloss != null &&
+        widget.readerGloss!.isNotEmpty;
+
+    if (!showTransliteration && !hasGloss) {
+      return _buildWordText(colorScheme);
+    }
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (showTransliteration) ...[
+          // Latin transliteration above
+          Text(
+            widget.transliteration!,
+            style: TextStyle(
+              fontSize: widget.fontSize * 0.6,
+              color: colorScheme.primary.withValues(alpha: 0.8),
+              fontWeight: FontWeight.w500,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+          const SizedBox(height: 1),
+        ],
+        // Original text
+        _buildWordText(colorScheme),
+        if (hasGloss) ...[
+          const SizedBox(height: 1),
+          // Reader-mode gloss below, always LTR (target-language text)
+          Text(
+            widget.readerGloss!,
+            textDirection: TextDirection.ltr,
+            style: TextStyle(
+              fontSize: widget.fontSize * 0.55,
+              color: colorScheme.onSurfaceVariant,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+        ],
+      ],
     );
   }
 
