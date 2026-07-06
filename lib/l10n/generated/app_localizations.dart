@@ -1009,6 +1009,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No cross-references for this verse.'**
   String get noCrossReferences;
+
+  /// No description provided for @parsingQuizTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Parsing practice'**
+  String get parsingQuizTitle;
+
+  /// No description provided for @whatFormIsThis.
+  ///
+  /// In en, this message translates to:
+  /// **'What form is this?'**
+  String get whatFormIsThis;
+
+  /// No description provided for @nextQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get nextQuestion;
+
+  /// No description provided for @quizScore.
+  ///
+  /// In en, this message translates to:
+  /// **'You got {score} of {total}'**
+  String quizScore(int score, int total);
+
+  /// No description provided for @practiceAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Practice again'**
+  String get practiceAgain;
+
+  /// No description provided for @doneButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get doneButton;
 }
 
 class _AppLocalizationsDelegate

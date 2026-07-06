@@ -212,5 +212,11 @@
   "wordResultsSection": "Wörter",
   "verseResultsSection": "Verse",
   "crossReferencesTitle": "Querverweise",
-  "noCrossReferences": "Keine Querverweise für diesen Vers."
+  "noCrossReferences": "Keine Querverweise für diesen Vers.",
+  "parsingQuizTitle": "Formenbestimmung",
+  "whatFormIsThis": "Welche Form ist das?",
+  "nextQuestion": "Weiter",
+  "quizScore": "{score} von {total} richtig",
+  "practiceAgain": "Nochmal üben",
+  "doneButton": "Fertig"
 }

@@ -518,4 +518,24 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get noCrossReferences => '本节经文没有串珠参考。';
+
+  @override
+  String get parsingQuizTitle => '词形练习';
+
+  @override
+  String get whatFormIsThis => '这是什么词形？';
+
+  @override
+  String get nextQuestion => '下一题';
+
+  @override
+  String quizScore(int score, int total) {
+    return '答对 $score / $total';
+  }
+
+  @override
+  String get practiceAgain => '再练一次';
+
+  @override
+  String get doneButton => '完成';
 }

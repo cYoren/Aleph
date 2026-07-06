@@ -548,4 +548,24 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get noCrossReferences => 'Для этого стиха нет перекрёстных ссылок.';
+
+  @override
+  String get parsingQuizTitle => 'Разбор форм';
+
+  @override
+  String get whatFormIsThis => 'Что это за форма?';
+
+  @override
+  String get nextQuestion => 'Далее';
+
+  @override
+  String quizScore(int score, int total) {
+    return 'Правильно $score из $total';
+  }
+
+  @override
+  String get practiceAgain => 'Ещё раз';
+
+  @override
+  String get doneButton => 'Готово';
 }

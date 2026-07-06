@@ -212,5 +212,11 @@
   "wordResultsSection": "단어",
   "verseResultsSection": "구절",
   "crossReferencesTitle": "관주 성구",
-  "noCrossReferences": "이 구절에는 관주가 없습니다."
+  "noCrossReferences": "이 구절에는 관주가 없습니다.",
+  "parsingQuizTitle": "형태 분석 연습",
+  "whatFormIsThis": "이 단어는 어떤 형태일까요?",
+  "nextQuestion": "다음",
+  "quizScore": "{total}문제 중 {score}개 정답",
+  "practiceAgain": "다시 연습",
+  "doneButton": "완료"
 }

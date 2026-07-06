@@ -539,4 +539,24 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get noCrossReferences =>
       'Não há referências cruzadas para este versículo.';
+
+  @override
+  String get parsingQuizTitle => 'Prática de análise';
+
+  @override
+  String get whatFormIsThis => 'Que forma é esta?';
+
+  @override
+  String get nextQuestion => 'Próxima';
+
+  @override
+  String quizScore(int score, int total) {
+    return 'Você acertou $score de $total';
+  }
+
+  @override
+  String get practiceAgain => 'Praticar novamente';
+
+  @override
+  String get doneButton => 'Concluir';
 }
