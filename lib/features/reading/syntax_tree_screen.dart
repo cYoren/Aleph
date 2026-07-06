@@ -6,8 +6,10 @@ import '../../data/models/word.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../providers/books_provider.dart';
 import '../../providers/database_provider.dart';
+import '../../providers/word_provider.dart';
 import '../../shared/utils/syntax_tree_parser.dart';
 import '../../shared/utils/morphology_decoder.dart';
+import '../../shared/widgets/definition_sheet.dart';
 import 'widgets/real_syntax_tree_view.dart';
 import 'widgets/syntax_tree_view.dart';
 
@@ -117,7 +119,7 @@ class SyntaxTreeScreen extends ConsumerWidget {
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (err, stack) => _buildHeuristicBody(colorScheme, l10n),
         data: (trees) => trees.isNotEmpty
-            ? _buildRealTreeBody(trees, colorScheme, l10n)
+            ? _buildRealTreeBody(context, ref, trees, colorScheme, l10n)
             : _buildHeuristicBody(colorScheme, l10n),
       ),
     );
@@ -126,6 +128,8 @@ class SyntaxTreeScreen extends ConsumerWidget {
   /// Real MACULA sentence trees: indented outline per sentence, with the
   /// CC BY attribution the license requires.
   Widget _buildRealTreeBody(
+    BuildContext context,
+    WidgetRef ref,
     List<RealSyntaxNode> trees,
     ColorScheme colorScheme,
     AppLocalizations l10n,
@@ -144,6 +148,17 @@ class SyntaxTreeScreen extends ConsumerWidget {
             ),
           ),
         ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          child: Text(
+            l10n.syntaxTreeTapHint,
+            style: TextStyle(
+              fontSize: 12,
+              fontStyle: FontStyle.italic,
+              color: colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ),
         const Divider(height: 1),
         Expanded(
           child: ListView.separated(
@@ -154,11 +169,31 @@ class SyntaxTreeScreen extends ConsumerWidget {
             itemBuilder: (context, index) => RealSyntaxTreeView(
               root: trees[index],
               isHebrew: isOT,
+              onLeafTap: (leaf) => _openLeafDefinition(context, ref, leaf),
             ),
           ),
         ),
       ],
     );
+  }
+
+  /// Opens the definition sheet for a tapped tree word by matching its
+  /// surface text against this verse's words. Sentences can span verses, so
+  /// leaves from a neighboring verse simply do not match (no-op). Duplicate
+  /// surface forms within one verse share the same lexeme, so first-match is
+  /// safe.
+  void _openLeafDefinition(
+    BuildContext context,
+    WidgetRef ref,
+    RealSyntaxNode leaf,
+  ) {
+    final text = leaf.text;
+    if (text == null || text.isEmpty) return;
+    final match = words.where((w) => w.displayText == text).firstOrNull;
+    if (match == null) return;
+
+    ref.read(selectedWordProvider.notifier).state = match;
+    DefinitionSheet.show(context);
   }
 
   /// Fallback for DBs without the syntax_trees table: the POS-ordering

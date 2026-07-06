@@ -34,31 +34,29 @@ const Map<String, String> kClassLabels = {
 };
 
 /// Renders one MACULA sentence tree as an indented outline. Groups whose
-/// children are all words collapse into a single RTL/LTR text run so short
-/// phrases stay readable on one line.
+/// children are all words collapse into a single RTL/LTR text run; internal
+/// nodes fold on header tap; word leaves are tappable for their definition.
 class RealSyntaxTreeView extends StatelessWidget {
   final RealSyntaxNode root;
   final bool isHebrew;
   final double fontSize;
+  final void Function(RealSyntaxNode leaf)? onLeafTap;
 
   const RealSyntaxTreeView({
     super.key,
     required this.root,
     required this.isHebrew,
     this.fontSize = 20,
+    this.onLeafTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    return _buildNode(root, colorScheme, depth: 0);
+    return _buildNode(root, colorScheme);
   }
 
-  Widget _buildNode(
-    RealSyntaxNode node,
-    ColorScheme colorScheme, {
-    required int depth,
-  }) {
+  Widget _buildNode(RealSyntaxNode node, ColorScheme colorScheme) {
     if (node.isLeaf) {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 2),
@@ -84,38 +82,11 @@ class RealSyntaxTreeView extends StatelessWidget {
       );
     }
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (node.role != null || node.nodeClass != null || node.rule != null)
-            _headerChips(node, colorScheme),
-          Padding(
-            padding: const EdgeInsets.only(left: 12),
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border(
-                  left: BorderSide(
-                    color: colorScheme.outlineVariant,
-                    width: 1.5,
-                  ),
-                ),
-              ),
-              padding: const EdgeInsets.only(left: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: node.children
-                    .map(
-                      (child) =>
-                          _buildNode(child, colorScheme, depth: depth + 1),
-                    )
-                    .toList(),
-              ),
-            ),
-          ),
-        ],
-      ),
+    return _CollapsibleGroup(
+      node: node,
+      colorScheme: colorScheme,
+      headerBuilder: (n) => _headerChips(n, colorScheme),
+      childBuilder: (child) => _buildNode(child, colorScheme),
     );
   }
 
@@ -163,13 +134,10 @@ class RealSyntaxTreeView extends StatelessWidget {
         ),
       );
     }
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 2),
-      child: Wrap(
-        spacing: 6,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: chips,
-      ),
+    return Wrap(
+      spacing: 6,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: chips,
     );
   }
 
@@ -199,7 +167,7 @@ class RealSyntaxTreeView extends StatelessWidget {
 
   Widget _leafText(RealSyntaxNode leaf, ColorScheme colorScheme) {
     final isPunctuation = leaf.nodeClass == 'pc';
-    return Text(
+    final text = Text(
       leaf.text ?? '',
       textDirection: isHebrew ? TextDirection.rtl : TextDirection.ltr,
       style: TextStyle(
@@ -208,6 +176,91 @@ class RealSyntaxTreeView extends StatelessWidget {
         color: isPunctuation
             ? colorScheme.onSurfaceVariant
             : colorScheme.onSurface,
+      ),
+    );
+    if (onLeafTap == null || isPunctuation) {
+      return text;
+    }
+    return GestureDetector(onTap: () => onLeafTap!(leaf), child: text);
+  }
+}
+
+/// Internal tree node with a tappable header that folds its children.
+class _CollapsibleGroup extends StatefulWidget {
+  final RealSyntaxNode node;
+  final ColorScheme colorScheme;
+  final Widget Function(RealSyntaxNode) headerBuilder;
+  final Widget Function(RealSyntaxNode) childBuilder;
+
+  const _CollapsibleGroup({
+    required this.node,
+    required this.colorScheme,
+    required this.headerBuilder,
+    required this.childBuilder,
+  });
+
+  @override
+  State<_CollapsibleGroup> createState() => _CollapsibleGroupState();
+}
+
+class _CollapsibleGroupState extends State<_CollapsibleGroup> {
+  bool _expanded = true;
+
+  bool get _hasHeader =>
+      widget.node.role != null ||
+      widget.node.nodeClass != null ||
+      widget.node.rule != null;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = widget.colorScheme;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (_hasHeader)
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => setState(() => _expanded = !_expanded),
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 2),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      _expanded ? Icons.arrow_drop_down : Icons.arrow_right,
+                      size: 18,
+                      color: colorScheme.onSurfaceVariant,
+                    ),
+                    Flexible(child: widget.headerBuilder(widget.node)),
+                  ],
+                ),
+              ),
+            ),
+          if (_expanded)
+            Padding(
+              padding: const EdgeInsets.only(left: 12),
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border(
+                    left: BorderSide(
+                      color: colorScheme.outlineVariant,
+                      width: 1.5,
+                    ),
+                  ),
+                ),
+                padding: const EdgeInsets.only(left: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: widget.node.children
+                      .map(widget.childBuilder)
+                      .toList(),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
