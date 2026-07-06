@@ -94,6 +94,15 @@ def macula_hebrew_book_code(abbr: str) -> str:
     return abbr[0] + abbr[1:].lower()
 
 
+# Scholarly lexicons: BDB (public domain, Open Scriptures digitization) and
+# Abbott-Smith (public domain, translatable-exegetical-tools digitization).
+HEBREW_LEXICON_RAW = "https://raw.githubusercontent.com/openscriptures/HebrewLexicon"
+DEFAULT_HEBREW_LEXICON_COMMIT = "21c9add13bc727d3a951361778e97e3ff7afd1ce"
+ABBOTT_SMITH_RAW = (
+    "https://raw.githubusercontent.com/translatable-exegetical-tools/Abbott-Smith"
+)
+DEFAULT_ABBOTT_SMITH_COMMIT = "8c00cb244761aa23659421a8cbbbf7a3b27b7d59"
+
 # Strong's dictionaries (full definitions, derivations, KJV renderings).
 # JSON-in-JS files maintained by Open Scriptures, CC BY-SA.
 STRONGS_REPO_RAW = "https://raw.githubusercontent.com/openscriptures/strongs"
@@ -401,6 +410,23 @@ def parse_args() -> argparse.Namespace:
         help="Skip the OpenBible.info cross-references table",
     )
     parser.add_argument(
+        "--no-extended-lexicon",
+        dest="extended_lexicon",
+        action="store_false",
+        default=True,
+        help="Skip BDB / Abbott-Smith extended lexicon entries",
+    )
+    parser.add_argument(
+        "--hebrew-lexicon-commit",
+        default=DEFAULT_HEBREW_LEXICON_COMMIT,
+        help="Pinned commit for openscriptures/HebrewLexicon",
+    )
+    parser.add_argument(
+        "--abbott-smith-commit",
+        default=DEFAULT_ABBOTT_SMITH_COMMIT,
+        help="Pinned commit for translatable-exegetical-tools/Abbott-Smith",
+    )
+    parser.add_argument(
         "--no-syntax-trees",
         dest="syntax_trees",
         action="store_false",
@@ -582,7 +608,9 @@ def init_schema(conn: sqlite3.Connection) -> None:
             part_of_speech TEXT,
             language TEXT,
             transliteration TEXT,
-            pronunciation TEXT
+            pronunciation TEXT,
+            extended_definition TEXT,
+            extended_source TEXT
         );
 
         CREATE TABLE cross_references (
@@ -1006,6 +1034,122 @@ def download_macula_files(
     return paths
 
 
+def _local_name(tag: str) -> str:
+    return tag.split("}")[-1]
+
+
+def flatten_xml_text(el: ET.Element, skip_tags: Optional[set] = None) -> str:
+    """Flattens mixed XML content to plain text, skipping given elements."""
+    skip = skip_tags or set()
+    parts: List[str] = []
+
+    def walk(node: ET.Element) -> None:
+        if _local_name(node.tag) in skip:
+            if node.tail:
+                parts.append(node.tail)
+            return
+        if node.text:
+            parts.append(node.text)
+        for child in node:
+            walk(child)
+        if node.tail:
+            parts.append(node.tail)
+
+    if el.text:
+        parts.append(el.text)
+    for child in el:
+        walk(child)
+    return _REF_WHITESPACE_RE.sub(" ", "".join(parts)).strip()
+
+
+def parse_bdb_lexicon(bdb_path: Path, index_path: Path) -> Dict[str, str]:
+    """Returns Strong's key ('H1') -> flattened BDB entry text.
+
+    LexicalIndex.xml maps Strong's numbers to BDB entry ids; the BDB file
+    holds the entries themselves (mixed content, flattened to plain text).
+    """
+    entries_by_id: Dict[str, str] = {}
+    for el in ET.parse(bdb_path).getroot().iter():
+        if _local_name(el.tag) != "entry":
+            continue
+        entry_id = el.get("id")
+        if not entry_id:
+            continue
+        text = flatten_xml_text(el, skip_tags={"status"})
+        if text:
+            entries_by_id[entry_id] = text
+
+    result: Dict[str, str] = {}
+    for el in ET.parse(index_path).getroot().iter():
+        if _local_name(el.tag) != "xref":
+            continue
+        strong = (el.get("strong") or "").strip()
+        bdb_id = (el.get("bdb") or "").strip()
+        if not strong or not strong.isdigit() or bdb_id not in entries_by_id:
+            continue
+        key = f"H{int(strong)}"
+        text = entries_by_id[bdb_id]
+        # Keep the fullest entry when several ids map to one Strong's number.
+        if key not in result or len(text) > len(result[key]):
+            result[key] = text
+    return result
+
+
+def parse_abbott_smith_lexicon(path: Path) -> Dict[str, str]:
+    """Returns Strong's key ('G26') -> flattened Abbott-Smith entry text.
+
+    TEI entries carry n="lemma|G26"; occurrence-count notes are dropped.
+    """
+    result: Dict[str, str] = {}
+    for el in ET.parse(path).getroot().iter():
+        if _local_name(el.tag) != "entry":
+            continue
+        n = el.get("n") or ""
+        if "|" not in n:
+            continue
+        strong = n.split("|", 1)[1].strip().upper()
+        if not strong.startswith("G") or not strong[1:].isdigit():
+            continue
+        key = f"G{int(strong[1:])}"
+        text = flatten_xml_text(el, skip_tags={"note"})
+        if not text:
+            continue
+        if key not in result or len(text) > len(result[key]):
+            result[key] = text
+    return result
+
+
+def load_extended_lexicons(
+    cache_dir: Path,
+    hebrew_lexicon_commit: str,
+    abbott_smith_commit: str,
+) -> Dict[str, str]:
+    bdb_path = cache_dir / "BrownDriverBriggs.xml"
+    index_path = cache_dir / "LexicalIndex.xml"
+    as_path = cache_dir / "abbott-smith.tei.xml"
+    download_file(
+        f"{HEBREW_LEXICON_RAW}/{hebrew_lexicon_commit}/BrownDriverBriggs.xml",
+        bdb_path,
+    )
+    download_file(
+        f"{HEBREW_LEXICON_RAW}/{hebrew_lexicon_commit}/LexicalIndex.xml",
+        index_path,
+    )
+    download_file(
+        f"{ABBOTT_SMITH_RAW}/{abbott_smith_commit}/abbott-smith.tei.xml",
+        as_path,
+    )
+
+    merged = parse_bdb_lexicon(bdb_path, index_path)
+    hebrew_count = len(merged)
+    merged.update(parse_abbott_smith_lexicon(as_path))
+    print(
+        f"Loaded extended lexicon entries: {hebrew_count:,} BDB, "
+        f"{len(merged) - hebrew_count:,} Abbott-Smith"
+    )
+    return merged
+
+
 def load_strongs_dictionaries(
     cache_dir: Path, strongs_commit: str
 ) -> Dict[str, dict]:
@@ -1126,6 +1270,7 @@ def build_verses_and_words(
     hebrew_tsv: Path,
     greek_tsv: Path,
     strongs_dicts: Optional[Dict[str, dict]] = None,
+    extended_lexicons: Optional[Dict[str, str]] = None,
 ) -> None:
     lex_glosses: Dict[str, Counter] = defaultdict(Counter)
     lex_pos: Dict[str, Counter] = defaultdict(Counter)
@@ -1275,6 +1420,7 @@ def build_verses_and_words(
     lex_rows = []
     enriched_count = 0
     strongs_entry_count = 0
+    extended_count = 0
     for lemma, gloss_counter in lex_glosses.items():
         gloss = gloss_counter.most_common(1)[0][0] if gloss_counter else lemma
 
@@ -1325,6 +1471,19 @@ def build_verses_and_words(
                 if not pronunciation:
                     pronunciation = dict_entry.get("pron") or transliteration
 
+        # Scholarly lexicon layer (BDB for Hebrew, Abbott-Smith for Greek).
+        extended_definition = None
+        extended_source = None
+        if extended_lexicons and strong_label:
+            for candidate in strongs_lookup_candidates(strong_label):
+                extended_definition = extended_lexicons.get(candidate)
+                if extended_definition is not None:
+                    extended_source = (
+                        "BDB" if candidate.startswith("H") else "Abbott-Smith"
+                    )
+                    extended_count += 1
+                    break
+
         lex_rows.append(
             (
                 lemma,
@@ -1335,14 +1494,17 @@ def build_verses_and_words(
                 language,
                 transliteration,
                 pronunciation,
+                extended_definition,
+                extended_source,
             )
         )
 
     conn.executemany(
         """
         INSERT INTO lexicon
-        (lemma, strongs_id, gloss, definition, part_of_speech, language, transliteration, pronunciation)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        (lemma, strongs_id, gloss, definition, part_of_speech, language,
+         transliteration, pronunciation, extended_definition, extended_source)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
         lex_rows,
     )
@@ -1358,6 +1520,16 @@ def build_verses_and_words(
                 "Strong's enrichment coverage too low "
                 f"({enriched_count}/{strongs_entry_count}); "
                 "check dictionary source or key normalization"
+            )
+
+    if extended_lexicons:
+        print(
+            f"  attached {extended_count:,} BDB/Abbott-Smith extended entries"
+        )
+        if extended_count < 8000:
+            raise RuntimeError(
+                f"Extended lexicon coverage too low ({extended_count}); "
+                "check BDB/Abbott-Smith sources or key normalization"
             )
 
 
@@ -2162,6 +2334,14 @@ def main() -> None:
         if args.strongs_enrichment:
             strongs_dicts = load_strongs_dictionaries(cache_dir, args.strongs_commit)
 
+        extended_lexicons: Optional[Dict[str, str]] = None
+        if args.extended_lexicon:
+            extended_lexicons = load_extended_lexicons(
+                cache_dir,
+                hebrew_lexicon_commit=args.hebrew_lexicon_commit,
+                abbott_smith_commit=args.abbott_smith_commit,
+            )
+
         cross_references_txt: Optional[Path] = None
         if args.cross_references:
             cross_references_txt = download_cross_references(cache_dir)
@@ -2188,6 +2368,7 @@ def main() -> None:
                 hebrew_tsv=cache_dir / "macula-hebrew.tsv",
                 greek_tsv=cache_dir / "macula-greek-SBLGNT.tsv",
                 strongs_dicts=strongs_dicts,
+                extended_lexicons=extended_lexicons,
             )
             build_kjv_translation_verses(
                 conn,

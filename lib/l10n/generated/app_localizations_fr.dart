@@ -563,4 +563,10 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get syntaxSourceMacula =>
       'Arbres syntaxiques : MACULA hébreu et grec (Clear Bible), CC BY 4.0';
+
+  @override
+  String get showMore => 'Afficher plus';
+
+  @override
+  String get showLess => 'Afficher moins';
 }

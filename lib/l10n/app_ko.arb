@@ -219,5 +219,7 @@
   "quizScore": "{total}문제 중 {score}개 정답",
   "practiceAgain": "다시 연습",
   "doneButton": "완료",
-  "syntaxSourceMacula": "구문 트리: MACULA 히브리어·그리스어 (Clear Bible), CC BY 4.0"
+  "syntaxSourceMacula": "구문 트리: MACULA 히브리어·그리스어 (Clear Bible), CC BY 4.0",
+  "showMore": "더 보기",
+  "showLess": "접기"
 }

@@ -219,5 +219,7 @@
   "quizScore": "答对 {score} / {total}",
   "practiceAgain": "再练一次",
   "doneButton": "完成",
-  "syntaxSourceMacula": "句法树：MACULA 希伯来文与希腊文（Clear Bible），CC BY 4.0"
+  "syntaxSourceMacula": "句法树：MACULA 希伯来文与希腊文（Clear Bible），CC BY 4.0",
+  "showMore": "显示更多",
+  "showLess": "收起"
 }

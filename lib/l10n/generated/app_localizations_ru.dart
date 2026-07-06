@@ -572,4 +572,10 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get syntaxSourceMacula =>
       'Синтаксические деревья: MACULA Hebrew & Greek (Clear Bible), CC BY 4.0';
+
+  @override
+  String get showMore => 'Показать больше';
+
+  @override
+  String get showLess => 'Свернуть';
 }

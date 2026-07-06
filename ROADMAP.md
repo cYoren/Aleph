@@ -19,19 +19,18 @@ aggregation) are explicitly de-prioritized.
 The foundation is right (word-level tokens, Strong's, morphology, offline SQLite), but two
 things currently undercut the "in depth" promise:
 
-### 1.1 Real lexicon definitions ⭐ top priority — **in progress**
+### 1.1 Real lexicon definitions ⭐ — **shipped**
 - [x] Replace the majority-vote gloss "definition" (`"{gloss}. Strong's {n}."`) with full
       Strong's dictionary entries (definition, derivation, KJV renderings) from
       Open Scriptures (CC BY-SA) in `scripts/build_full_bible_db.py`.
 - [x] Fill missing transliteration/pronunciation from the Strong's data
       (the Greek NT tokens currently have none).
-- [ ] Phase 2 sources — full scholarly lexicons, layered on top of Strong's:
-  - Hebrew: **BDB** (Brown–Driver–Briggs), public domain, digitized at
-    `openscriptures/HebrewLexicon`.
-  - Greek: **Abbott-Smith**, public domain, digitized at
-    `biblicalhumanities/abbott-smith` (Dodson as an alternative).
-  - Schema: add a `lexicon_senses` table (numbered senses per lemma) so the UI can show
-    structured senses instead of one text blob.
+- [x] Scholarly lexicon layer shipped: **BDB** (Hebrew, `openscriptures/HebrewLexicon`)
+      and **Abbott-Smith** (Greek, `translatable-exegetical-tools/Abbott-Smith`) entries
+      attached to ~14k lexicon rows, shown as an expandable section in the definition
+      sheet.
+- [ ] Structured senses: parse the numbered sense hierarchy into a `lexicon_senses`
+      table instead of one flattened text blob.
 
 ### 1.2 Real syntax trees — **shipped**
 - [x] Imported the **MACULA Greek** (SBLGNT lowfat) and **MACULA Hebrew** (WLC lowfat)
@@ -120,7 +119,7 @@ features. YouVersion wins that game; our niche is *actually engaging the origina
 | Hebrew/Greek tokens, morphology, glosses | `themikejr/bible-mcp` (MACULA-derived) | CC BY 4.0 |
 | Translations (KJV, Luther 1912, …) | `seven1m/open-bibles` | public domain / as listed |
 | Strong's dictionaries (full definitions) | `openscriptures/strongs` | CC BY-SA |
-| BDB Hebrew lexicon (planned) | `openscriptures/HebrewLexicon` | public domain |
-| Abbott-Smith Greek lexicon (planned) | `biblicalhumanities/abbott-smith` | public domain |
+| BDB Hebrew lexicon | `openscriptures/HebrewLexicon` | public domain |
+| Abbott-Smith Greek lexicon | `translatable-exegetical-tools/Abbott-Smith` | public domain |
 | MACULA treebanks (syntax trees) | Clear Bible | CC BY 4.0 |
 | Cross-references | OpenBible.info (TSK-derived) | CC Attribution |
