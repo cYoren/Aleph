@@ -15,6 +15,7 @@ import '../../shared/widgets/loading_skeleton.dart';
 import '../../shared/widgets/empty_state.dart';
 import 'widgets/visual_context_overlay.dart';
 import 'widgets/dynamic_translation_text.dart';
+import 'widgets/cross_references_sheet.dart';
 
 class ReadingScreen extends ConsumerStatefulWidget {
   const ReadingScreen({super.key});
@@ -390,6 +391,25 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
                     ),
                   ),
                   const Spacer(),
+                  // Cross-references button
+                  IconButton(
+                    icon: Icon(
+                      Icons.link,
+                      color: colorScheme.onSurfaceVariant,
+                      size: 22,
+                    ),
+                    visualDensity: VisualDensity.compact,
+                    tooltip: l10n.crossReferencesTitle,
+                    onPressed: () {
+                      CrossReferencesSheet.show(
+                        context,
+                        bookId: readingState.bookId,
+                        chapter: readingState.chapter,
+                        verse: verse.verseNumber,
+                        verseReference: verseReference,
+                      );
+                    },
+                  ),
                   // Bookmark button
                   Consumer(
                     builder: (context, ref, _) {

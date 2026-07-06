@@ -516,4 +516,10 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get verseResultsSection => '구절';
+
+  @override
+  String get crossReferencesTitle => '관주 성구';
+
+  @override
+  String get noCrossReferences => '이 구절에는 관주가 없습니다.';
 }

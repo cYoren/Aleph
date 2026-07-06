@@ -542,4 +542,10 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get verseResultsSection => 'Стихи';
+
+  @override
+  String get crossReferencesTitle => 'Перекрёстные ссылки';
+
+  @override
+  String get noCrossReferences => 'Для этого стиха нет перекрёстных ссылок.';
 }

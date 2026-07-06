@@ -252,5 +252,7 @@
     }
   },
   "wordResultsSection": "Words",
-  "verseResultsSection": "Verses"
+  "verseResultsSection": "Verses",
+  "crossReferencesTitle": "Cross-references",
+  "noCrossReferences": "No cross-references for this verse."
 }

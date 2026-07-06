@@ -210,5 +210,7 @@
   "nextReviewInHours": "¡Guardado! Próximo repaso en {count} horas.",
   "missingMemorizationRouteData": "No se proporcionaron datos del pasaje para esta pantalla.",
   "wordResultsSection": "Palabras",
-  "verseResultsSection": "Versículos"
+  "verseResultsSection": "Versículos",
+  "crossReferencesTitle": "Referencias cruzadas",
+  "noCrossReferences": "No hay referencias cruzadas para este versículo."
 }

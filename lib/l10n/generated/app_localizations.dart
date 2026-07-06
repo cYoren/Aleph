@@ -997,6 +997,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Verses'**
   String get verseResultsSection;
+
+  /// No description provided for @crossReferencesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cross-references'**
+  String get crossReferencesTitle;
+
+  /// No description provided for @noCrossReferences.
+  ///
+  /// In en, this message translates to:
+  /// **'No cross-references for this verse.'**
+  String get noCrossReferences;
 }
 
 class _AppLocalizationsDelegate

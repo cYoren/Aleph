@@ -533,4 +533,10 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get verseResultsSection => 'Versets';
+
+  @override
+  String get crossReferencesTitle => 'Références croisées';
+
+  @override
+  String get noCrossReferences => 'Aucune référence croisée pour ce verset.';
 }

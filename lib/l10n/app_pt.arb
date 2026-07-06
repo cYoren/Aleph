@@ -210,5 +210,7 @@
   "nextReviewInHours": "Salvo! Próxima revisão em {count} horas.",
   "missingMemorizationRouteData": "Nenhum dado de passagem foi fornecido para esta tela.",
   "wordResultsSection": "Palavras",
-  "verseResultsSection": "Versículos"
+  "verseResultsSection": "Versículos",
+  "crossReferencesTitle": "Referências cruzadas",
+  "noCrossReferences": "Não há referências cruzadas para este versículo."
 }

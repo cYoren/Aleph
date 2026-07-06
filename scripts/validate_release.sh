@@ -19,6 +19,7 @@ required_tables=(
   translation_ref_map
   words
   lexicon
+  cross_references
 )
 
 for table in "${required_tables[@]}"; do
@@ -160,6 +161,12 @@ enriched_lexicon="$(sqlite3 "$DB_PATH" "SELECT COUNT(*) FROM lexicon WHERE defin
 if (( enriched_lexicon < 10000 )); then
   echo "ERROR: Expected at least 10,000 enriched lexicon definitions, found $enriched_lexicon"
   echo "       (build with Strong's enrichment enabled — do not pass --no-strongs-enrichment for releases)"
+  exit 1
+fi
+
+cross_references_count="$(sqlite3 "$DB_PATH" "SELECT COUNT(*) FROM cross_references;")"
+if (( cross_references_count < 200000 )); then
+  echo "ERROR: Expected at least 200,000 cross-references, found $cross_references_count"
   exit 1
 fi
 
