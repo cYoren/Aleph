@@ -44,7 +44,8 @@ things currently undercut the "in depth" promise:
 ### 1.3 Concordance / word study — **in progress**
 - [x] "See all occurrences" of a word from the definition sheet: every verse containing a
       Strong's number / lemma, in canonical order, tappable to jump into the reader.
-- [ ] Occurrence pagination + grouping by book.
+- [x] Occurrences grouped by book with headers (list capped at 300 with a count
+      note; true pagination still open for hyper-frequent particles).
 - [x] Word search: by Strong's id, lemma (pointing/accent-insensitive),
       transliteration, or English gloss — results open the concordance.
 - [ ] True root (shoresh) search across binyanim.
@@ -98,7 +99,8 @@ things currently undercut the "in depth" promise:
 
 - [ ] Test coverage for the data pipeline first (versification mapping, coverage gates,
       lexicon enrichment) — every depth feature builds on that layer.
-- [ ] Widget tests for the reading → tap word → definition flow.
+- [x] Widget test for the tap word → definition flow (gloss, Strong's definition,
+      BDB expandable section, concordance entry point).
 - [ ] Keep 100% offline as a hard constraint; any future sync must be opt-in and E2E
       encrypted.
 

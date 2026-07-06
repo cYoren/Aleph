@@ -25,6 +25,9 @@ class VisibleWordCoordinatesNotifier
   VisibleWordCoordinatesNotifier() : super({});
 
   void registerWord(String wordId, String lexiconKey, GlobalKey widgetKey) {
+    // Word widgets (un)register via post-frame/microtask callbacks that can
+    // fire after this notifier is disposed (e.g. leaving the reading screen).
+    if (!mounted) return;
     state = {
       ...state,
       wordId: WordCoordinates(
@@ -36,6 +39,7 @@ class VisibleWordCoordinatesNotifier
   }
 
   void unregisterWord(String wordId) {
+    if (!mounted) return;
     if (state.containsKey(wordId)) {
       final newState = Map<String, WordCoordinates>.from(state);
       newState.remove(wordId);
