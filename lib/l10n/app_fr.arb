@@ -212,5 +212,11 @@
   "wordResultsSection": "Mots",
   "verseResultsSection": "Versets",
   "crossReferencesTitle": "Références croisées",
-  "noCrossReferences": "Aucune référence croisée pour ce verset."
+  "noCrossReferences": "Aucune référence croisée pour ce verset.",
+  "parsingQuizTitle": "Exercice d'analyse",
+  "whatFormIsThis": "Quelle est cette forme ?",
+  "nextQuestion": "Suivant",
+  "quizScore": "Vous avez {score} sur {total}",
+  "practiceAgain": "Recommencer",
+  "doneButton": "Terminé"
 }

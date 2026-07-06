@@ -254,5 +254,21 @@
   "wordResultsSection": "Words",
   "verseResultsSection": "Verses",
   "crossReferencesTitle": "Cross-references",
-  "noCrossReferences": "No cross-references for this verse."
+  "noCrossReferences": "No cross-references for this verse.",
+  "parsingQuizTitle": "Parsing practice",
+  "whatFormIsThis": "What form is this?",
+  "nextQuestion": "Next",
+  "quizScore": "You got {score} of {total}",
+  "practiceAgain": "Practice again",
+  "doneButton": "Done",
+  "@quizScore": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  }
 }

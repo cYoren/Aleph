@@ -13,6 +13,7 @@ import '../features/startup/startup_gate_screen.dart';
 import '../features/export/export_composer_screen.dart';
 import '../features/memorization/memorization_practice_screen.dart';
 import '../features/memorization/memorization_screen.dart';
+import '../features/vocabulary/parsing_quiz_screen.dart';
 import '../features/vocabulary/vocabulary_screen.dart';
 import '../features/word_study/word_study_screen.dart';
 import '../data/models/memorization_passage.dart';
@@ -105,6 +106,14 @@ final router = GoRouter(
     GoRoute(
       path: '/vocabulary',
       builder: (context, state) => const VocabularyScreen(),
+    ),
+    // Morphology parsing quiz
+    GoRoute(
+      path: '/parsing-quiz',
+      builder: (context, state) {
+        final language = state.extra is String ? state.extra as String : 'heb';
+        return ParsingQuizScreen(language: language);
+      },
     ),
     // Passage memorization list + practice
     GoRoute(

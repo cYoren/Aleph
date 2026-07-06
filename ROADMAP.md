@@ -76,7 +76,8 @@ things currently undercut the "in depth" promise:
       bundling).
 
 ### 2.4 Morphology as a learning tool
-- [ ] Parsing quizzes ("identify this form") driven by the existing morphology decoder.
+- [x] Parsing quizzes ("what form is this?") driven by the morphology decoder —
+      from the vocabulary screen, Hebrew and Greek.
 - [ ] Paradigm tables (show the full conjugation/declension a form belongs to).
 
 ---

@@ -212,5 +212,11 @@
   "wordResultsSection": "Palavras",
   "verseResultsSection": "Versículos",
   "crossReferencesTitle": "Referências cruzadas",
-  "noCrossReferences": "Não há referências cruzadas para este versículo."
+  "noCrossReferences": "Não há referências cruzadas para este versículo.",
+  "parsingQuizTitle": "Prática de análise",
+  "whatFormIsThis": "Que forma é esta?",
+  "nextQuestion": "Próxima",
+  "quizScore": "Você acertou {score} de {total}",
+  "practiceAgain": "Praticar novamente",
+  "doneButton": "Concluir"
 }

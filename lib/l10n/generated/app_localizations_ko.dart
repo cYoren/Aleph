@@ -522,4 +522,24 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get noCrossReferences => '이 구절에는 관주가 없습니다.';
+
+  @override
+  String get parsingQuizTitle => '형태 분석 연습';
+
+  @override
+  String get whatFormIsThis => '이 단어는 어떤 형태일까요?';
+
+  @override
+  String get nextQuestion => '다음';
+
+  @override
+  String quizScore(int score, int total) {
+    return '$total문제 중 $score개 정답';
+  }
+
+  @override
+  String get practiceAgain => '다시 연습';
+
+  @override
+  String get doneButton => '완료';
 }

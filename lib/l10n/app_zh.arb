@@ -212,5 +212,11 @@
   "wordResultsSection": "词语",
   "verseResultsSection": "经文",
   "crossReferencesTitle": "串珠经文",
-  "noCrossReferences": "本节经文没有串珠参考。"
+  "noCrossReferences": "本节经文没有串珠参考。",
+  "parsingQuizTitle": "词形练习",
+  "whatFormIsThis": "这是什么词形？",
+  "nextQuestion": "下一题",
+  "quizScore": "答对 {score} / {total}",
+  "practiceAgain": "再练一次",
+  "doneButton": "完成"
 }

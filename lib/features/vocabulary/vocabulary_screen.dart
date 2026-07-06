@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../data/models/word.dart';
 import '../../l10n/generated/app_localizations.dart';
@@ -27,7 +28,16 @@ class _VocabularyScreenState extends ConsumerState<VocabularyScreen> {
     final dueAsync = ref.watch(dueVocabularyProvider);
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.vocabularyTitle)),
+      appBar: AppBar(
+        title: Text(l10n.vocabularyTitle),
+        actions: [
+          IconButton(
+            tooltip: l10n.parsingQuizTitle,
+            icon: const Icon(Icons.quiz_outlined),
+            onPressed: () => context.push('/parsing-quiz', extra: _language),
+          ),
+        ],
+      ),
       body: ListView(
         padding: const EdgeInsets.symmetric(vertical: 8),
         children: [

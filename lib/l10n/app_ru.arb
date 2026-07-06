@@ -212,5 +212,11 @@
   "wordResultsSection": "Слова",
   "verseResultsSection": "Стихи",
   "crossReferencesTitle": "Перекрёстные ссылки",
-  "noCrossReferences": "Для этого стиха нет перекрёстных ссылок."
+  "noCrossReferences": "Для этого стиха нет перекрёстных ссылок.",
+  "parsingQuizTitle": "Разбор форм",
+  "whatFormIsThis": "Что это за форма?",
+  "nextQuestion": "Далее",
+  "quizScore": "Правильно {score} из {total}",
+  "practiceAgain": "Ещё раз",
+  "doneButton": "Готово"
 }

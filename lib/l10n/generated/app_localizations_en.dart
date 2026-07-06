@@ -534,4 +534,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noCrossReferences => 'No cross-references for this verse.';
+
+  @override
+  String get parsingQuizTitle => 'Parsing practice';
+
+  @override
+  String get whatFormIsThis => 'What form is this?';
+
+  @override
+  String get nextQuestion => 'Next';
+
+  @override
+  String quizScore(int score, int total) {
+    return 'You got $score of $total';
+  }
+
+  @override
+  String get practiceAgain => 'Practice again';
+
+  @override
+  String get doneButton => 'Done';
 }

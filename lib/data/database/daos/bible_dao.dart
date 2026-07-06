@@ -512,6 +512,32 @@ class BibleDAO {
     }
   }
 
+  /// Random words with morphology codes for the parsing quiz.
+  Future<List<Word>> getRandomMorphWords({
+    required String language,
+    int limit = 40,
+  }) async {
+    try {
+      final db = await _dbHelper.database;
+      final maps = await db.rawQuery(
+        '''
+        SELECT id, verse_id, position, word, lemma, morph, strongs, language
+        FROM words
+        WHERE language = ? AND morph IS NOT NULL AND morph != ''
+        ORDER BY RANDOM()
+        LIMIT ?
+        ''',
+        [language, limit],
+      );
+      return maps.map((m) => Word.fromMap(m)).toList();
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('BibleDAO random morph words error: $e');
+      }
+      return [];
+    }
+  }
+
   /// Most frequent Strong's-keyed words for one language ('heb' or 'grc'),
   /// for the frequency-ordered vocabulary deck.
   Future<List<Map<String, dynamic>>> getTopFrequencyWords({
