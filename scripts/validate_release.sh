@@ -177,6 +177,12 @@ if (( syntax_trees_count < 30000 )); then
   exit 1
 fi
 
+extended_lexicon_count="$(sqlite3 "$DB_PATH" "SELECT COUNT(*) FROM lexicon WHERE extended_definition IS NOT NULL AND extended_definition != '';")"
+if (( extended_lexicon_count < 8000 )); then
+  echo "ERROR: Expected at least 8,000 BDB/Abbott-Smith extended entries, found $extended_lexicon_count"
+  exit 1
+fi
+
 echo "Running lexicon enrichment unit tests..."
 python3 "$ROOT_DIR/scripts/test_build_lexicon_enrichment.py" > /dev/null
 

@@ -219,5 +219,7 @@
   "quizScore": "Правильно {score} из {total}",
   "practiceAgain": "Ещё раз",
   "doneButton": "Готово",
-  "syntaxSourceMacula": "Синтаксические деревья: MACULA Hebrew & Greek (Clear Bible), CC BY 4.0"
+  "syntaxSourceMacula": "Синтаксические деревья: MACULA Hebrew & Greek (Clear Bible), CC BY 4.0",
+  "showMore": "Показать больше",
+  "showLess": "Свернуть"
 }

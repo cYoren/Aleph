@@ -7,6 +7,12 @@ class LexiconEntry {
   final String? definition;
   final String? language;
 
+  /// Full scholarly lexicon entry (BDB for Hebrew, Abbott-Smith for Greek).
+  final String? extendedDefinition;
+
+  /// Which lexicon [extendedDefinition] comes from: 'BDB' or 'Abbott-Smith'.
+  final String? extendedSource;
+
   LexiconEntry({
     required this.strongsId,
     required this.lemma,
@@ -15,6 +21,8 @@ class LexiconEntry {
     this.gloss,
     this.definition,
     this.language,
+    this.extendedDefinition,
+    this.extendedSource,
   });
 
   factory LexiconEntry.fromMap(Map<String, dynamic> map) {
@@ -26,6 +34,8 @@ class LexiconEntry {
       gloss: map['gloss']?.toString(),
       definition: map['definition']?.toString(),
       language: map['language']?.toString(),
+      extendedDefinition: map['extended_definition']?.toString(),
+      extendedSource: map['extended_source']?.toString(),
     );
   }
 }

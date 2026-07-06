@@ -541,4 +541,10 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get syntaxSourceMacula => '句法树：MACULA 希伯来文与希腊文（Clear Bible），CC BY 4.0';
+
+  @override
+  String get showMore => '显示更多';
+
+  @override
+  String get showLess => '收起';
 }

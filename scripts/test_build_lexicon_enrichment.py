@@ -197,5 +197,63 @@ class MaculaTreeExtractionTest(unittest.TestCase):
         self.assertEqual(build_db.macula_hebrew_book_code("SNG"), "Sng")
 
 
+class ExtendedLexiconParsingTest(unittest.TestCase):
+    def _write(self, content):
+        fh = tempfile.NamedTemporaryFile(
+            "w", suffix=".xml", delete=False, encoding="utf-8"
+        )
+        fh.write(content)
+        fh.close()
+        return Path(fh.name)
+
+    def test_bdb_parsing_maps_strongs_to_flattened_entries(self):
+        bdb = self._write(
+            """<lexicon xmlns="http://openscriptures.github.com/morphhb/namespace">
+              <part id="a"><section id="a.ab">
+                <entry id="a.ab.ab"><w>אב</w> <pos>n.m.</pos> <def>father</def>,
+                  chief <status p="1">done</status></entry>
+              </section></part>
+            </lexicon>"""
+        )
+        index = self._write(
+            """<index xmlns="http://openscriptures.github.com/morphhb/namespace">
+              <part xml:lang="heb">
+                <entry id="aac"><w>אב</w>
+                  <xref bdb="a.ab.ab" strong="1"/></entry>
+                <entry id="bad"><w>x</w><xref bdb="missing" strong="2"/></entry>
+              </part>
+            </index>"""
+        )
+        try:
+            result = build_db.parse_bdb_lexicon(bdb, index)
+        finally:
+            bdb.unlink()
+            index.unlink()
+        self.assertEqual(list(result.keys()), ["H1"])
+        self.assertIn("father", result["H1"])
+        # <status> metadata is dropped, whitespace collapsed
+        self.assertNotIn("done", result["H1"])
+        self.assertNotIn("\n", result["H1"])
+
+    def test_abbott_smith_parsing(self):
+        tei = self._write(
+            """<TEI xmlns="http://www.tei-c.org/ns/1.0"><text><body>
+              <entry n="ἀγάπη|G26">
+                <note type="occurrencesNT">116</note>
+                <sense><gloss>love</gloss>, <gloss>goodwill</gloss></sense>
+              </entry>
+              <entry n="Α α|">no strongs here</entry>
+            </body></text></TEI>"""
+        )
+        try:
+            result = build_db.parse_abbott_smith_lexicon(tei)
+        finally:
+            tei.unlink()
+        self.assertEqual(list(result.keys()), ["G26"])
+        self.assertIn("love", result["G26"])
+        # occurrence-count notes are metadata, not entry text
+        self.assertNotIn("116", result["G26"])
+
+
 if __name__ == "__main__":
     sys.exit(unittest.main(verbosity=2))

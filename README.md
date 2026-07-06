@@ -115,6 +115,7 @@ trees, the personalized reader mode, passage memorization in Hebrew).
 - Strong's dictionary definitions: [`openscriptures/strongs`](https://github.com/openscriptures/strongs) (CC BY-SA, © Open Scriptures)
 - Cross-references: [OpenBible.info](https://www.openbible.info/labs/cross-references/) (CC Attribution)
 - Syntax trees: [MACULA Hebrew](https://github.com/Clear-Bible/macula-hebrew) & [MACULA Greek](https://github.com/Clear-Bible/macula-greek) (Clear Bible, CC BY 4.0)
+- Scholarly lexicons: [BDB](https://github.com/openscriptures/HebrewLexicon) and [Abbott-Smith](https://github.com/translatable-exegetical-tools/Abbott-Smith) (public domain digitizations)
 
 ## Android Signing
 

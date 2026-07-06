@@ -181,6 +181,18 @@ class DefinitionSheet extends ConsumerWidget {
                             colorScheme,
                           ),
 
+                        // Scholarly lexicon entry (BDB / Abbott-Smith)
+                        if (lexicon.extendedDefinition != null &&
+                            lexicon.extendedDefinition!.isNotEmpty)
+                          _ExpandableSection(
+                            title: lexicon.extendedSource == 'BDB'
+                                ? 'BDB (Brown–Driver–Briggs)'
+                                : (lexicon.extendedSource ?? ''),
+                            content: lexicon.extendedDefinition!,
+                            showMoreLabel: l10n.showMore,
+                            showLessLabel: l10n.showLess,
+                          ),
+
                         // Decoded morphology
                         if (word.morphCode != null)
                           _buildMorphologySection(
@@ -743,6 +755,78 @@ class DefinitionSheet extends ConsumerWidget {
             fontWeight: FontWeight.w600,
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Long scholarly lexicon entry, collapsed to a preview with a toggle.
+class _ExpandableSection extends StatefulWidget {
+  final String title;
+  final String content;
+  final String showMoreLabel;
+  final String showLessLabel;
+
+  const _ExpandableSection({
+    required this.title,
+    required this.content,
+    required this.showMoreLabel,
+    required this.showLessLabel,
+  });
+
+  @override
+  State<_ExpandableSection> createState() => _ExpandableSectionState();
+}
+
+class _ExpandableSectionState extends State<_ExpandableSection> {
+  static const int _previewLength = 320;
+  bool _expanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final needsToggle = widget.content.length > _previewLength;
+    final text = _expanded || !needsToggle
+        ? widget.content
+        : '${widget.content.substring(0, _previewLength)}…';
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            widget.title.toUpperCase(),
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.bold,
+              color: colorScheme.primary,
+              letterSpacing: 1,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            text,
+            style: TextStyle(
+              fontSize: 15,
+              color: colorScheme.onSurface,
+              height: 1.5,
+            ),
+          ),
+          if (needsToggle)
+            TextButton(
+              onPressed: () => setState(() => _expanded = !_expanded),
+              style: TextButton.styleFrom(
+                padding: EdgeInsets.zero,
+                minimumSize: const Size(0, 32),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              child: Text(
+                _expanded ? widget.showLessLabel : widget.showMoreLabel,
+                style: const TextStyle(fontSize: 13),
+              ),
+            ),
+        ],
       ),
     );
   }

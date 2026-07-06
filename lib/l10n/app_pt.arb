@@ -219,5 +219,7 @@
   "quizScore": "Você acertou {score} de {total}",
   "practiceAgain": "Praticar novamente",
   "doneButton": "Concluir",
-  "syntaxSourceMacula": "Árvores sintáticas: MACULA Hebraico e Grego (Clear Bible), CC BY 4.0"
+  "syntaxSourceMacula": "Árvores sintáticas: MACULA Hebraico e Grego (Clear Bible), CC BY 4.0",
+  "showMore": "Mostrar mais",
+  "showLess": "Mostrar menos"
 }
