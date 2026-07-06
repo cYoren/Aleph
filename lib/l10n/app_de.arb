@@ -210,5 +210,7 @@
   "nextReviewInHours": "Gespeichert! Nächste Wiederholung in {count} Stunden.",
   "missingMemorizationRouteData": "Für diesen Bildschirm wurden keine Passagendaten übergeben.",
   "wordResultsSection": "Wörter",
-  "verseResultsSection": "Verse"
+  "verseResultsSection": "Verse",
+  "crossReferencesTitle": "Querverweise",
+  "noCrossReferences": "Keine Querverweise für diesen Vers."
 }

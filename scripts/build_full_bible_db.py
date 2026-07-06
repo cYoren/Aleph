@@ -40,6 +40,29 @@ SOURCE_FILENAMES = (
 OPEN_BIBLES_REPO_RAW = "https://raw.githubusercontent.com/seven1m/open-bibles"
 DEFAULT_OPEN_BIBLES_COMMIT = "b396ccf097f6b229cbd4096f10da8fd948418099"
 
+# Cross-references dataset from OpenBible.info (CC Attribution, ~344k pairs).
+CROSS_REFERENCES_URL = "https://a.openbible.info/data/cross-references.zip"
+CROSS_REFERENCES_ZIP = "cross_references.zip"
+CROSS_REFERENCES_TXT = "cross_references.txt"
+
+# OSIS-style book names used by the OpenBible dataset -> app book ids.
+OSIS_TO_ABBR = {
+    "Gen": "GEN", "Exod": "EXO", "Lev": "LEV", "Num": "NUM", "Deut": "DEU",
+    "Josh": "JOS", "Judg": "JDG", "Ruth": "RUT", "1Sam": "1SA", "2Sam": "2SA",
+    "1Kgs": "1KI", "2Kgs": "2KI", "1Chr": "1CH", "2Chr": "2CH", "Ezra": "EZR",
+    "Neh": "NEH", "Esth": "EST", "Job": "JOB", "Ps": "PSA", "Prov": "PRO",
+    "Eccl": "ECC", "Song": "SNG", "Isa": "ISA", "Jer": "JER", "Lam": "LAM",
+    "Ezek": "EZK", "Dan": "DAN", "Hos": "HOS", "Joel": "JOL", "Amos": "AMO",
+    "Obad": "OBA", "Jonah": "JON", "Mic": "MIC", "Nah": "NAM", "Hab": "HAB",
+    "Zeph": "ZEP", "Hag": "HAG", "Zech": "ZEC", "Mal": "MAL",
+    "Matt": "MAT", "Mark": "MRK", "Luke": "LUK", "John": "JHN", "Acts": "ACT",
+    "Rom": "ROM", "1Cor": "1CO", "2Cor": "2CO", "Gal": "GAL", "Eph": "EPH",
+    "Phil": "PHP", "Col": "COL", "1Thess": "1TH", "2Thess": "2TH",
+    "1Tim": "1TI", "2Tim": "2TI", "Titus": "TIT", "Phlm": "PHM", "Heb": "HEB",
+    "Jas": "JAS", "1Pet": "1PE", "2Pet": "2PE", "1John": "1JN",
+    "2John": "2JN", "3John": "3JN", "Jude": "JUD", "Rev": "REV",
+}
+
 # Strong's dictionaries (full definitions, derivations, KJV renderings).
 # JSON-in-JS files maintained by Open Scriptures, CC BY-SA.
 STRONGS_REPO_RAW = "https://raw.githubusercontent.com/openscriptures/strongs"
@@ -340,6 +363,13 @@ def parse_args() -> argparse.Namespace:
         help="Skip Strong's dictionary enrichment (falls back to gloss-only definitions)",
     )
     parser.add_argument(
+        "--no-cross-references",
+        dest="cross_references",
+        action="store_false",
+        default=True,
+        help="Skip the OpenBible.info cross-references table",
+    )
+    parser.add_argument(
         "--translation-catalog",
         default=str(DEFAULT_TRANSLATION_CATALOG),
         help="JSON file defining Open Bibles translation metadata",
@@ -429,6 +459,7 @@ def init_schema(conn: sqlite3.Connection) -> None:
         DROP TABLE IF EXISTS translation_ref_map;
         DROP TABLE IF EXISTS words;
         DROP TABLE IF EXISTS lexicon;
+        DROP TABLE IF EXISTS cross_references;
 
         CREATE TABLE books (
             id INTEGER PRIMARY KEY,
@@ -505,7 +536,21 @@ def init_schema(conn: sqlite3.Connection) -> None:
             pronunciation TEXT
         );
 
+        CREATE TABLE cross_references (
+            id INTEGER PRIMARY KEY,
+            from_book TEXT NOT NULL,
+            from_chapter INTEGER NOT NULL,
+            from_verse INTEGER NOT NULL,
+            to_book TEXT NOT NULL,
+            to_chapter INTEGER NOT NULL,
+            to_verse_start INTEGER NOT NULL,
+            to_verse_end INTEGER NOT NULL,
+            votes INTEGER NOT NULL DEFAULT 0
+        );
+
         CREATE INDEX idx_books_order ON books(book_order);
+        CREATE INDEX idx_cross_references_from
+            ON cross_references(from_book, from_chapter, from_verse);
         CREATE INDEX idx_verses_ref ON verses(book_id, chapter, verse_number);
         CREATE INDEX idx_translation_verses_ref
             ON translation_verses(translation_id, book_id, chapter, verse_number);
@@ -643,6 +688,103 @@ def strongs_lookup_candidates(strongs_id: str) -> List[str]:
         if canonical not in candidates:
             candidates.append(canonical)
     return candidates
+
+
+def parse_openbible_ref(raw: str) -> Optional[Tuple[str, int, int]]:
+    """Parses an OpenBible ref like 'Gen.1.1' into (app_book_id, chapter, verse)."""
+    parts = (raw or "").strip().split(".")
+    if len(parts) != 3:
+        return None
+    book_id = OSIS_TO_ABBR.get(parts[0])
+    if book_id is None:
+        return None
+    try:
+        return (book_id, int(parts[1]), int(parts[2]))
+    except ValueError:
+        return None
+
+
+def build_cross_references(conn: sqlite3.Connection, txt_path: Path) -> None:
+    """Loads the OpenBible.info cross-references TSV into the DB.
+
+    'To' refs may be ranges ('Col.1.16-Col.1.17'); cross-chapter ranges are
+    clamped to the starting chapter. Negative-vote pairs (community-rejected)
+    are dropped.
+    """
+    print("Building cross_references table...")
+    rows: List[Tuple[str, int, int, str, int, int, int, int]] = []
+    skipped = 0
+
+    with txt_path.open(encoding="utf-8") as fh:
+        for line_number, line in enumerate(fh):
+            if line_number == 0:
+                continue  # header
+            fields = line.rstrip("\n").split("\t")
+            if len(fields) < 3:
+                continue
+            from_ref = parse_openbible_ref(fields[0])
+            try:
+                votes = int(fields[2])
+            except ValueError:
+                continue
+            if from_ref is None or votes < 0:
+                skipped += 1
+                continue
+
+            to_raw = fields[1]
+            if "-" in to_raw:
+                start_raw, end_raw = to_raw.split("-", 1)
+                to_start = parse_openbible_ref(start_raw)
+                to_end = parse_openbible_ref(end_raw)
+            else:
+                to_start = parse_openbible_ref(to_raw)
+                to_end = to_start
+            if to_start is None:
+                skipped += 1
+                continue
+            if to_end is None or to_end[0] != to_start[0] or to_end[1] != to_start[1]:
+                # Clamp cross-chapter ranges to the starting verse's chapter.
+                to_end = to_start
+
+            rows.append(
+                (
+                    from_ref[0],
+                    from_ref[1],
+                    from_ref[2],
+                    to_start[0],
+                    to_start[1],
+                    to_start[2],
+                    max(to_start[2], to_end[2]),
+                    votes,
+                )
+            )
+
+    conn.executemany(
+        """
+        INSERT INTO cross_references
+        (from_book, from_chapter, from_verse,
+         to_book, to_chapter, to_verse_start, to_verse_end, votes)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        """,
+        rows,
+    )
+    print(f"  inserted {len(rows):,} cross-references (skipped {skipped:,})")
+    if len(rows) < 200000:
+        raise RuntimeError(
+            f"Cross-reference import too small ({len(rows)}); source data problem?"
+        )
+
+
+def download_cross_references(cache_dir: Path) -> Path:
+    import zipfile
+
+    zip_path = cache_dir / CROSS_REFERENCES_ZIP
+    txt_path = cache_dir / CROSS_REFERENCES_TXT
+    if not txt_path.exists() or txt_path.stat().st_size == 0:
+        download_file(CROSS_REFERENCES_URL, zip_path)
+        with zipfile.ZipFile(zip_path) as archive:
+            archive.extract(CROSS_REFERENCES_TXT, cache_dir)
+    return txt_path
 
 
 def load_strongs_dictionaries(
@@ -1801,6 +1943,10 @@ def main() -> None:
         if args.strongs_enrichment:
             strongs_dicts = load_strongs_dictionaries(cache_dir, args.strongs_commit)
 
+        cross_references_txt: Optional[Path] = None
+        if args.cross_references:
+            cross_references_txt = download_cross_references(cache_dir)
+
         if output_path.exists():
             print(f"Removing existing DB: {output_path}")
             output_path.unlink()
@@ -1840,6 +1986,8 @@ def main() -> None:
                         f"{len(remaining_kjv_missing)} canonical refs still missing. "
                         f"First refs: {first_missing}"
                     )
+            if cross_references_txt is not None:
+                build_cross_references(conn, cross_references_txt)
             coverage_report = build_open_bible_translation_verses(
                 conn=conn,
                 cache_dir=cache_dir,

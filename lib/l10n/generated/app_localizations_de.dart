@@ -532,4 +532,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get verseResultsSection => 'Verse';
+
+  @override
+  String get crossReferencesTitle => 'Querverweise';
+
+  @override
+  String get noCrossReferences => 'Keine Querverweise für diesen Vers.';
 }

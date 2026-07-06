@@ -116,5 +116,27 @@ class ComposeStrongsDefinitionTest(unittest.TestCase):
         )
 
 
+class ParseOpenbibleRefTest(unittest.TestCase):
+    def test_simple_ref(self):
+        self.assertEqual(build_db.parse_openbible_ref("Gen.1.1"), ("GEN", 1, 1))
+
+    def test_osis_names_map_to_app_ids(self):
+        self.assertEqual(build_db.parse_openbible_ref("Ps.23.1"), ("PSA", 23, 1))
+        self.assertEqual(build_db.parse_openbible_ref("1Kgs.2.3"), ("1KI", 2, 3))
+        self.assertEqual(build_db.parse_openbible_ref("Phlm.1.5"), ("PHM", 1, 5))
+        self.assertEqual(build_db.parse_openbible_ref("Song.2.1"), ("SNG", 2, 1))
+
+    def test_unknown_book_returns_none(self):
+        self.assertIsNone(build_db.parse_openbible_ref("Tob.1.1"))
+        self.assertIsNone(build_db.parse_openbible_ref("Gen.1"))
+        self.assertIsNone(build_db.parse_openbible_ref(""))
+
+    def test_every_osis_book_maps_to_known_abbreviation(self):
+        known = {b.abbr for b in build_db.BOOKS}
+        for osis, abbr in build_db.OSIS_TO_ABBR.items():
+            self.assertIn(abbr, known, f"{osis} maps to unknown {abbr}")
+        self.assertEqual(len(set(build_db.OSIS_TO_ABBR.values())), 66)
+
+
 if __name__ == "__main__":
     sys.exit(unittest.main(verbosity=2))

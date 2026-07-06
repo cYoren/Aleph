@@ -210,5 +210,7 @@
   "nextReviewInHours": "已保存！{count} 小时后复习。",
   "missingMemorizationRouteData": "未提供该页面所需的段落数据。",
   "wordResultsSection": "词语",
-  "verseResultsSection": "经文"
+  "verseResultsSection": "经文",
+  "crossReferencesTitle": "串珠经文",
+  "noCrossReferences": "本节经文没有串珠参考。"
 }

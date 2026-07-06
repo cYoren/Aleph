@@ -532,4 +532,11 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get verseResultsSection => 'Versículos';
+
+  @override
+  String get crossReferencesTitle => 'Referências cruzadas';
+
+  @override
+  String get noCrossReferences =>
+      'Não há referências cruzadas para este versículo.';
 }

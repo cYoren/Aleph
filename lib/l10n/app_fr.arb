@@ -210,5 +210,7 @@
   "nextReviewInHours": "Enregistré ! Prochaine révision dans {count} heures.",
   "missingMemorizationRouteData": "Aucune donnée de passage n'a été fournie pour cet écran.",
   "wordResultsSection": "Mots",
-  "verseResultsSection": "Versets"
+  "verseResultsSection": "Versets",
+  "crossReferencesTitle": "Références croisées",
+  "noCrossReferences": "Aucune référence croisée pour ce verset."
 }

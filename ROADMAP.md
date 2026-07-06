@@ -86,7 +86,8 @@ things currently undercut the "in depth" promise:
 - [x] Display controls for the Hebrew text: full / vowels-only / consonantal modes —
       reading unpointed text is itself a learning progression.
 - [ ] Qere/Ketiv display.
-- [ ] Cross-references (Treasury of Scripture Knowledge, public domain).
+- [x] Cross-references: OpenBible.info dataset (CC-BY, ~340k pairs), per-verse
+      sheet in the reader with previews, best-voted first.
 - [ ] Participant/referent data from MACULA (who is "he" in this verse?).
 - [ ] Textual variants (NT: NA/Byz differences) — long-term.
 
@@ -120,4 +121,4 @@ features. YouVersion wins that game; our niche is *actually engaging the origina
 | BDB Hebrew lexicon (planned) | `openscriptures/HebrewLexicon` | public domain |
 | Abbott-Smith Greek lexicon (planned) | `biblicalhumanities/abbott-smith` | public domain |
 | MACULA treebanks (planned) | Clear Bible | CC BY 4.0 |
-| Cross-references (planned) | Treasury of Scripture Knowledge | public domain |
+| Cross-references | OpenBible.info (TSK-derived) | CC Attribution |

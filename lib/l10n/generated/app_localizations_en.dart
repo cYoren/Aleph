@@ -528,4 +528,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get verseResultsSection => 'Verses';
+
+  @override
+  String get crossReferencesTitle => 'Cross-references';
+
+  @override
+  String get noCrossReferences => 'No cross-references for this verse.';
 }

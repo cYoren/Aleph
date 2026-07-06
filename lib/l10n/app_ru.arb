@@ -210,5 +210,7 @@
   "nextReviewInHours": "Сохранено! Следующее повторение через {count} ч.",
   "missingMemorizationRouteData": "Данные отрывка для этого экрана не были переданы.",
   "wordResultsSection": "Слова",
-  "verseResultsSection": "Стихи"
+  "verseResultsSection": "Стихи",
+  "crossReferencesTitle": "Перекрёстные ссылки",
+  "noCrossReferences": "Для этого стиха нет перекрёстных ссылок."
 }

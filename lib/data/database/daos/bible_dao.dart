@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import '../../models/book.dart';
 import '../../models/verse.dart';
 import '../../models/word.dart';
+import '../../models/cross_reference.dart';
 import '../../models/lexicon_entry.dart';
 import '../../models/translation.dart';
 import '../database_helper.dart';
@@ -586,6 +587,75 @@ class BibleDAO {
       }
       return [];
     }
+  }
+
+  /// Top cross-references for a verse (OpenBible.info data), best-voted
+  /// first. Returns [] when the DB predates the cross_references table.
+  Future<List<CrossReference>> getCrossReferencesForVerse(
+    String bookId,
+    int chapter,
+    int verse, {
+    int limit = 15,
+  }) async {
+    try {
+      final db = await _dbHelper.database;
+      final maps = await db.rawQuery(
+        '''
+        SELECT to_book, to_chapter, to_verse_start, to_verse_end, votes
+        FROM cross_references
+        WHERE from_book = ? AND from_chapter = ? AND from_verse = ?
+        ORDER BY votes DESC
+        LIMIT ?
+        ''',
+        [bookId, chapter, verse, limit],
+      );
+      return maps.map((m) => CrossReference.fromMap(m)).toList();
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('BibleDAO cross-references error: $e');
+      }
+      return [];
+    }
+  }
+
+  /// Text of one verse in the given translation, falling back to KJV and
+  /// then the original-language text.
+  Future<String?> getVerseTextWithFallback({
+    required String translationId,
+    required String bookId,
+    required int chapter,
+    required int verse,
+  }) async {
+    try {
+      final db = await _dbHelper.database;
+      final rows = await db.rawQuery(
+        '''
+        SELECT COALESCE(tv_sel.text, tv_kjv.text, v.text) AS text
+        FROM verses v
+        LEFT JOIN translation_verses tv_sel
+          ON tv_sel.book_id = v.book_id
+         AND tv_sel.chapter = v.chapter
+         AND tv_sel.verse_number = v.verse_number
+         AND UPPER(tv_sel.translation_id) = UPPER(?)
+        LEFT JOIN translation_verses tv_kjv
+          ON tv_kjv.book_id = v.book_id
+         AND tv_kjv.chapter = v.chapter
+         AND tv_kjv.verse_number = v.verse_number
+         AND tv_kjv.translation_id = 'KJV'
+        WHERE v.book_id = ? AND v.chapter = ? AND v.verse_number = ?
+        LIMIT 1
+        ''',
+        [translationId, bookId, chapter, verse],
+      );
+      if (rows.isNotEmpty) {
+        return rows.first['text']?.toString();
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('BibleDAO verse text lookup error: $e');
+      }
+    }
+    return null;
   }
 
   // ========== TRANSLATIONS ==========

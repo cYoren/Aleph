@@ -512,4 +512,10 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get verseResultsSection => '经文';
+
+  @override
+  String get crossReferencesTitle => '串珠经文';
+
+  @override
+  String get noCrossReferences => '本节经文没有串珠参考。';
 }
