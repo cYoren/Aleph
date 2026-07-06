@@ -684,6 +684,60 @@ class BibleDAO {
     return null;
   }
 
+  /// Raw JSON array of MACULA sentence trees covering a verse, or null when
+  /// the DB predates the syntax_trees table (or has no tree for the verse).
+  Future<String?> getSyntaxTreesForVerse(
+    String bookId,
+    int chapter,
+    int verse,
+  ) async {
+    try {
+      final db = await _dbHelper.database;
+      final rows = await db.query(
+        'syntax_trees',
+        columns: ['trees'],
+        where: 'book_id = ? AND chapter = ? AND verse = ?',
+        whereArgs: [bookId, chapter, verse],
+        limit: 1,
+      );
+      if (rows.isNotEmpty) {
+        return rows.first['trees']?.toString();
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('BibleDAO syntax trees error: $e');
+      }
+    }
+    return null;
+  }
+
+  /// Resolves a verses-table row id to (book, chapter, verse).
+  Future<(String, int, int)?> getVerseRefByRowId(int rowId) async {
+    try {
+      final db = await _dbHelper.database;
+      final rows = await db.query(
+        'verses',
+        columns: ['book_id', 'chapter', 'verse_number'],
+        where: 'id = ?',
+        whereArgs: [rowId],
+        limit: 1,
+      );
+      if (rows.isNotEmpty) {
+        final row = rows.first;
+        return (
+          row['book_id']?.toString() ?? '',
+          (row['chapter'] as num?)?.toInt() ?? 0,
+          (row['verse_number'] as num?)?.toInt() ?? 0,
+        );
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('BibleDAO verse ref lookup error: $e');
+      }
+    }
+    return null;
+  }
+
   // ========== TRANSLATIONS ==========
 
   Future<List<Translation>> getTranslations() async {

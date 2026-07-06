@@ -218,5 +218,6 @@
   "nextQuestion": "下一题",
   "quizScore": "答对 {score} / {total}",
   "practiceAgain": "再练一次",
-  "doneButton": "完成"
+  "doneButton": "完成",
+  "syntaxSourceMacula": "句法树：MACULA 希伯来文与希腊文（Clear Bible），CC BY 4.0"
 }

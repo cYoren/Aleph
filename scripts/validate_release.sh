@@ -20,6 +20,7 @@ required_tables=(
   words
   lexicon
   cross_references
+  syntax_trees
 )
 
 for table in "${required_tables[@]}"; do
@@ -167,6 +168,12 @@ fi
 cross_references_count="$(sqlite3 "$DB_PATH" "SELECT COUNT(*) FROM cross_references;")"
 if (( cross_references_count < 200000 )); then
   echo "ERROR: Expected at least 200,000 cross-references, found $cross_references_count"
+  exit 1
+fi
+
+syntax_trees_count="$(sqlite3 "$DB_PATH" "SELECT COUNT(*) FROM syntax_trees;")"
+if (( syntax_trees_count < 30000 )); then
+  echo "ERROR: Expected at least 30,000 verses with syntax trees, found $syntax_trees_count"
   exit 1
 fi
 

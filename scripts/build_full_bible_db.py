@@ -63,6 +63,37 @@ OSIS_TO_ABBR = {
     "2John": "2JN", "3John": "3JN", "Jude": "JUD", "Rev": "REV",
 }
 
+# MACULA treebanks (Clear Bible, CC BY 4.0): real syntax trees.
+MACULA_GREEK_RAW = "https://raw.githubusercontent.com/Clear-Bible/macula-greek"
+DEFAULT_MACULA_GREEK_COMMIT = "453876a98c049b08b54375918d04ead2a3d879e7"
+MACULA_GREEK_FILES = (
+    "01-matthew.xml", "02-mark.xml", "03-luke.xml", "04-john.xml",
+    "05-acts.xml", "06-romans.xml", "07-1corinthians.xml",
+    "08-2corinthians.xml", "09-galatians.xml", "10-ephesians.xml",
+    "11-philippians.xml", "12-colossians.xml", "13-1thessalonians.xml",
+    "14-2thessalonians.xml", "15-1timothy.xml", "16-2timothy.xml",
+    "17-titus.xml", "18-philemon.xml", "19-hebrews.xml", "20-james.xml",
+    "21-1peter.xml", "22-2peter.xml", "23-1john.xml", "24-2john.xml",
+    "25-3john.xml", "26-jude.xml", "27-revelation.xml",
+)
+
+MACULA_HEBREW_RAW = "https://raw.githubusercontent.com/Clear-Bible/macula-hebrew"
+DEFAULT_MACULA_HEBREW_COMMIT = "47db250bd55d0d8577f2a94fba114ef16c35b23c"
+
+# WLC follows Hebrew versification: Joel has 4 chapters and Malachi 3
+# (the books table lists English chapter counts for these two).
+MACULA_HEBREW_CHAPTER_OVERRIDES = {"JOL": 4, "MAL": 3}
+
+
+def macula_hebrew_book_code(abbr: str) -> str:
+    """Filename book code used by macula-hebrew lowfat files ('GEN' -> 'Gen')."""
+    if abbr == "HOS":  # quirk in the upstream filenames
+        return "HOS"
+    if abbr[0].isdigit():
+        return abbr[0] + abbr[1] + abbr[2:].lower()
+    return abbr[0] + abbr[1:].lower()
+
+
 # Strong's dictionaries (full definitions, derivations, KJV renderings).
 # JSON-in-JS files maintained by Open Scriptures, CC BY-SA.
 STRONGS_REPO_RAW = "https://raw.githubusercontent.com/openscriptures/strongs"
@@ -370,6 +401,23 @@ def parse_args() -> argparse.Namespace:
         help="Skip the OpenBible.info cross-references table",
     )
     parser.add_argument(
+        "--no-syntax-trees",
+        dest="syntax_trees",
+        action="store_false",
+        default=True,
+        help="Skip MACULA syntax trees (large download, ~650MB of source XML)",
+    )
+    parser.add_argument(
+        "--macula-greek-commit",
+        default=DEFAULT_MACULA_GREEK_COMMIT,
+        help="Pinned commit for Clear-Bible/macula-greek",
+    )
+    parser.add_argument(
+        "--macula-hebrew-commit",
+        default=DEFAULT_MACULA_HEBREW_COMMIT,
+        help="Pinned commit for Clear-Bible/macula-hebrew",
+    )
+    parser.add_argument(
         "--translation-catalog",
         default=str(DEFAULT_TRANSLATION_CATALOG),
         help="JSON file defining Open Bibles translation metadata",
@@ -460,6 +508,7 @@ def init_schema(conn: sqlite3.Connection) -> None:
         DROP TABLE IF EXISTS words;
         DROP TABLE IF EXISTS lexicon;
         DROP TABLE IF EXISTS cross_references;
+        DROP TABLE IF EXISTS syntax_trees;
 
         CREATE TABLE books (
             id INTEGER PRIMARY KEY,
@@ -546,6 +595,14 @@ def init_schema(conn: sqlite3.Connection) -> None:
             to_verse_start INTEGER NOT NULL,
             to_verse_end INTEGER NOT NULL,
             votes INTEGER NOT NULL DEFAULT 0
+        );
+
+        CREATE TABLE syntax_trees (
+            book_id TEXT NOT NULL,
+            chapter INTEGER NOT NULL,
+            verse INTEGER NOT NULL,
+            trees TEXT NOT NULL,
+            PRIMARY KEY (book_id, chapter, verse)
         );
 
         CREATE INDEX idx_books_order ON books(book_order);
@@ -785,6 +842,168 @@ def download_cross_references(cache_dir: Path) -> Path:
         with zipfile.ZipFile(zip_path) as archive:
             archive.extract(CROSS_REFERENCES_TXT, cache_dir)
     return txt_path
+
+
+_MACULA_REF_RE = re.compile(r"^([A-Z0-9]{3}) (\d+):(\d+)!(\d+)$")
+
+
+def parse_macula_ref(raw: str) -> Optional[Tuple[str, int, int, int]]:
+    """Parses a MACULA token ref like 'GEN 1:1!2' -> (book, chapter, verse, n)."""
+    match = _MACULA_REF_RE.match((raw or "").strip())
+    if match is None:
+        return None
+    book, chapter, verse, word = match.groups()
+    if book not in BOOK_BY_ABBR:
+        return None
+    return (book, int(chapter), int(verse), int(word))
+
+
+def macula_element_to_node(el: ET.Element) -> Optional[dict]:
+    """Converts a lowfat <wg>/<w>/<pc> element into a compact JSON node.
+
+    Node keys: t=text, n=word number, r=role, c=class, u=rule, k=children.
+    Pass-through groups (no role/class/rule) are spliced away.
+    """
+    tag = el.tag
+    if tag == "w":
+        node: dict = {"t": (el.text or "").strip()}
+        ref = parse_macula_ref(el.get("ref", ""))
+        if ref is not None:
+            node["n"] = ref[3]
+        if el.get("role"):
+            node["r"] = el.get("role")
+        if el.get("class"):
+            node["c"] = el.get("class")
+        return node
+    if tag == "pc":
+        text = (el.text or "").strip()
+        return {"t": text, "c": "pc"} if text else None
+    if tag != "wg":
+        return None  # milestones, <p>, notes
+
+    children = []
+    for child in el:
+        node = macula_element_to_node(child)
+        if node is not None:
+            children.append(node)
+    if not children:
+        return None
+
+    role = el.get("role")
+    cls = el.get("class")
+    rule = el.get("rule")
+    if not role and not cls and not rule:
+        if len(children) == 1:
+            return children[0]
+        return {"k": children}
+
+    node = {}
+    if role:
+        node["r"] = role
+    if cls:
+        node["c"] = cls
+    if rule:
+        node["u"] = rule
+    node["k"] = children
+    return node
+
+
+def macula_sentence_to_tree(sentence: ET.Element) -> Optional[dict]:
+    nodes = []
+    for child in sentence:
+        node = macula_element_to_node(child)
+        if node is not None:
+            nodes.append(node)
+    if not nodes:
+        return None
+    if len(nodes) == 1:
+        return nodes[0]
+    return {"k": nodes}
+
+
+def macula_sentence_verses(sentence: ET.Element) -> List[Tuple[str, int, int]]:
+    verses = []
+    seen = set()
+    for w in sentence.iter("w"):
+        ref = parse_macula_ref(w.get("ref", ""))
+        if ref is None:
+            continue
+        key = (ref[0], ref[1], ref[2])
+        if key not in seen:
+            seen.add(key)
+            verses.append(key)
+    return verses
+
+
+def build_syntax_trees(conn: sqlite3.Connection, xml_paths: List[Path]) -> None:
+    """Extracts per-verse sentence trees from MACULA lowfat XML files.
+
+    Each verse row stores a JSON array of the sentence trees that touch it
+    (sentences occasionally span verse boundaries).
+    """
+    print("Building syntax_trees table from MACULA lowfat XML...")
+    trees_by_verse: Dict[Tuple[str, int, int], List[dict]] = defaultdict(list)
+    files_done = 0
+
+    for path in xml_paths:
+        root = ET.parse(path).getroot()
+        for sentence in root.iter("sentence"):
+            tree = macula_sentence_to_tree(sentence)
+            if tree is None:
+                continue
+            for verse_key in macula_sentence_verses(sentence):
+                trees_by_verse[verse_key].append(tree)
+        files_done += 1
+        if files_done % 100 == 0:
+            print(f"  parsed {files_done}/{len(xml_paths)} tree files")
+
+    rows = [
+        (book, chapter, verse, json.dumps(trees, ensure_ascii=False, separators=(",", ":")))
+        for (book, chapter, verse), trees in trees_by_verse.items()
+    ]
+    conn.executemany(
+        "INSERT OR REPLACE INTO syntax_trees (book_id, chapter, verse, trees) "
+        "VALUES (?, ?, ?, ?)",
+        rows,
+    )
+    print(f"  inserted syntax trees for {len(rows):,} verses")
+    if len(rows) < 30000:
+        raise RuntimeError(
+            f"Syntax tree coverage too low ({len(rows)} verses); "
+            "check MACULA sources"
+        )
+
+
+def download_macula_files(
+    cache_dir: Path,
+    greek_commit: str,
+    hebrew_commit: str,
+) -> List[Path]:
+    paths: List[Path] = []
+    tree_dir = cache_dir / "macula_lowfat"
+    tree_dir.mkdir(parents=True, exist_ok=True)
+
+    for book in BOOKS:
+        if book.testament != "OT":
+            continue
+        code = macula_hebrew_book_code(book.abbr)
+        chapter_count = MACULA_HEBREW_CHAPTER_OVERRIDES.get(
+            book.abbr, book.chapter_count
+        )
+        for chapter in range(1, chapter_count + 1):
+            filename = f"{book.order:02d}-{code}-{chapter:03d}-lowfat.xml"
+            url = f"{MACULA_HEBREW_RAW}/{hebrew_commit}/WLC/lowfat/{filename}"
+            dst = tree_dir / filename
+            download_file(url, dst)
+            paths.append(dst)
+
+    for filename in MACULA_GREEK_FILES:
+        url = f"{MACULA_GREEK_RAW}/{greek_commit}/SBLGNT/lowfat/{filename}"
+        dst = tree_dir / filename
+        download_file(url, dst)
+        paths.append(dst)
+
+    return paths
 
 
 def load_strongs_dictionaries(
@@ -1947,6 +2166,14 @@ def main() -> None:
         if args.cross_references:
             cross_references_txt = download_cross_references(cache_dir)
 
+        macula_paths: List[Path] = []
+        if args.syntax_trees:
+            macula_paths = download_macula_files(
+                cache_dir,
+                greek_commit=args.macula_greek_commit,
+                hebrew_commit=args.macula_hebrew_commit,
+            )
+
         if output_path.exists():
             print(f"Removing existing DB: {output_path}")
             output_path.unlink()
@@ -1988,6 +2215,8 @@ def main() -> None:
                     )
             if cross_references_txt is not None:
                 build_cross_references(conn, cross_references_txt)
+            if macula_paths:
+                build_syntax_trees(conn, macula_paths)
             coverage_report = build_open_bible_translation_verses(
                 conn=conn,
                 cache_dir=cache_dir,

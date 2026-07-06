@@ -561,4 +561,8 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get doneButton => 'Listo';
+
+  @override
+  String get syntaxSourceMacula =>
+      'Árboles sintácticos: MACULA hebreo y griego (Clear Bible), CC BY 4.0';
 }

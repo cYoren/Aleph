@@ -1045,6 +1045,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Done'**
   String get doneButton;
+
+  /// No description provided for @syntaxSourceMacula.
+  ///
+  /// In en, this message translates to:
+  /// **'Syntax trees: MACULA Hebrew & Greek (Clear Bible), CC BY 4.0'**
+  String get syntaxSourceMacula;
 }
 
 class _AppLocalizationsDelegate

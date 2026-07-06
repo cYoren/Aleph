@@ -218,5 +218,6 @@
   "nextQuestion": "Weiter",
   "quizScore": "{score} von {total} richtig",
   "practiceAgain": "Nochmal üben",
-  "doneButton": "Fertig"
+  "doneButton": "Fertig",
+  "syntaxSourceMacula": "Syntaxbäume: MACULA Hebräisch & Griechisch (Clear Bible), CC BY 4.0"
 }
