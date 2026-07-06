@@ -1,3 +1,7 @@
+> **Superseded:** current direction and priorities live in [ROADMAP.md](ROADMAP.md).
+> This document is kept as the original feature analysis from before the
+> original-languages roadmap was adopted.
+
 # Original Bible - Feature Analysis & Recommendations
 
 ## 📱 Current Features (Implemented)
