@@ -113,6 +113,8 @@ trees, the personalized reader mode, passage memorization in Hebrew).
 - Hebrew/Greek token data with morphology: [`themikejr/bible-mcp`](https://github.com/themikejr/bible-mcp) (MACULA-derived, CC BY 4.0)
 - Translations: [`seven1m/open-bibles`](https://github.com/seven1m/open-bibles) (public domain / per-file licenses)
 - Strong's dictionary definitions: [`openscriptures/strongs`](https://github.com/openscriptures/strongs) (CC BY-SA, © Open Scriptures)
+- Cross-references: [OpenBible.info](https://www.openbible.info/labs/cross-references/) (CC Attribution)
+- Syntax trees: [MACULA Hebrew](https://github.com/Clear-Bible/macula-hebrew) & [MACULA Greek](https://github.com/Clear-Bible/macula-greek) (Clear Bible, CC BY 4.0)
 
 ## Android Signing
 

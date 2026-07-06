@@ -33,13 +33,14 @@ things currently undercut the "in depth" promise:
   - Schema: add a `lexicon_senses` table (numbered senses per lemma) so the UI can show
     structured senses instead of one text blob.
 
-### 1.2 Real syntax trees (replace the heuristic parser)
-- [ ] The current `SyntaxTreeParser` fabricates trees from POS-ordering heuristics
-      (first verb = root, etc.). This shows *wrong* syntax, especially in Hebrew poetry.
-- [ ] Import genuine treebank data: **MACULA Greek** and **MACULA Hebrew**
-      (Clear Bible, CC BY 4.0) — same data family as our existing token source.
-      Add a `syntax_nodes` table to the build pipeline.
-- [x] Until real trees ship, label the current view as a grammatical sketch, not a parse.
+### 1.2 Real syntax trees — **shipped**
+- [x] Imported the **MACULA Greek** (SBLGNT lowfat) and **MACULA Hebrew** (WLC lowfat)
+      treebanks (Clear Bible, CC BY 4.0): per-verse sentence trees in a `syntax_trees`
+      table, 100% verse coverage (31,152/31,152).
+- [x] The syntax screen renders the real trees as an indented outline with role/phrase
+      labels; the POS-heuristic sketch remains only as a fallback for old DBs, still
+      labeled as a sketch.
+- [ ] Tap a tree word to open its lexicon entry; collapsible nodes for long sentences.
 
 ### 1.3 Concordance / word study — **in progress**
 - [x] "See all occurrences" of a word from the definition sheet: every verse containing a
@@ -121,5 +122,5 @@ features. YouVersion wins that game; our niche is *actually engaging the origina
 | Strong's dictionaries (full definitions) | `openscriptures/strongs` | CC BY-SA |
 | BDB Hebrew lexicon (planned) | `openscriptures/HebrewLexicon` | public domain |
 | Abbott-Smith Greek lexicon (planned) | `biblicalhumanities/abbott-smith` | public domain |
-| MACULA treebanks (planned) | Clear Bible | CC BY 4.0 |
+| MACULA treebanks (syntax trees) | Clear Bible | CC BY 4.0 |
 | Cross-references | OpenBible.info (TSK-derived) | CC Attribution |

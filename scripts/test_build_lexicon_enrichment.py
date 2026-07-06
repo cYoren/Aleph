@@ -138,5 +138,64 @@ class ParseOpenbibleRefTest(unittest.TestCase):
         self.assertEqual(len(set(build_db.OSIS_TO_ABBR.values())), 66)
 
 
+class MaculaTreeExtractionTest(unittest.TestCase):
+    SAMPLE = """
+    <chapter>
+      <sentence>
+        <p><milestone unit="verse">GEN 1:1</milestone></p>
+        <wg class="cl" rule="PP-V-S-O">
+          <wg role="pp" class="pp" rule="PrepNp">
+            <w ref="GEN 1:1!1" class="prep">be</w>
+            <w ref="GEN 1:1!1" class="noun">reshit</w>
+          </wg>
+          <w role="v" ref="GEN 1:1!2" class="verb">bara</w>
+          <wg>
+            <w ref="GEN 1:1!3" class="noun">elohim</w>
+          </wg>
+        </wg>
+      </sentence>
+    </chapter>
+    """
+
+    def _sentence(self):
+        import xml.etree.ElementTree as ET
+
+        return next(ET.fromstring(self.SAMPLE).iter("sentence"))
+
+    def test_tree_structure(self):
+        tree = build_db.macula_sentence_to_tree(self._sentence())
+        self.assertEqual(tree["c"], "cl")
+        self.assertEqual(tree["u"], "PP-V-S-O")
+        self.assertEqual(len(tree["k"]), 3)
+        pp = tree["k"][0]
+        self.assertEqual(pp["r"], "pp")
+        self.assertEqual(pp["k"][0], {"t": "be", "n": 1, "c": "prep"})
+
+    def test_passthrough_group_is_spliced(self):
+        tree = build_db.macula_sentence_to_tree(self._sentence())
+        # The attribute-less <wg> around 'elohim' must collapse to its leaf.
+        self.assertEqual(tree["k"][2], {"t": "elohim", "n": 3, "c": "noun"})
+
+    def test_verse_coverage(self):
+        verses = build_db.macula_sentence_verses(self._sentence())
+        self.assertEqual(verses, [("GEN", 1, 1)])
+
+    def test_ref_parsing(self):
+        self.assertEqual(
+            build_db.parse_macula_ref("GEN 1:1!2"), ("GEN", 1, 1, 2)
+        )
+        self.assertEqual(
+            build_db.parse_macula_ref("JUD 1:25!3"), ("JUD", 1, 25, 3)
+        )
+        self.assertIsNone(build_db.parse_macula_ref("XXX 1:1!1"))
+        self.assertIsNone(build_db.parse_macula_ref("GEN 1:1"))
+
+    def test_hebrew_filename_codes(self):
+        self.assertEqual(build_db.macula_hebrew_book_code("GEN"), "Gen")
+        self.assertEqual(build_db.macula_hebrew_book_code("1SA"), "1Sa")
+        self.assertEqual(build_db.macula_hebrew_book_code("HOS"), "HOS")
+        self.assertEqual(build_db.macula_hebrew_book_code("SNG"), "Sng")
+
+
 if __name__ == "__main__":
     sys.exit(unittest.main(verbosity=2))

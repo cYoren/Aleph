@@ -1,11 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../data/models/real_syntax_node.dart';
 import '../../data/models/word.dart';
 import '../../l10n/generated/app_localizations.dart';
+import '../../providers/books_provider.dart';
+import '../../providers/database_provider.dart';
 import '../../shared/utils/syntax_tree_parser.dart';
 import '../../shared/utils/morphology_decoder.dart';
+import 'widgets/real_syntax_tree_view.dart';
 import 'widgets/syntax_tree_view.dart';
+
+/// Resolves a verse identifier (verses-table row id, or "GEN.1.1") to
+/// (bookId, chapter, verse).
+final verseRefForIdProvider =
+    FutureProvider.family<(String, int, int)?, String>((ref, verseId) async {
+      final parts = verseId.split('.');
+      if (parts.length >= 3) {
+        final chapter = int.tryParse(parts[1]);
+        final verse = int.tryParse(parts[2]);
+        if (chapter != null && verse != null) {
+          return (parts[0], chapter, verse);
+        }
+      }
+      final rowId = int.tryParse(verseId);
+      if (rowId == null) return null;
+      final dao = ref.watch(bibleDaoProvider);
+      return dao.getVerseRefByRowId(rowId);
+    });
+
+/// Real MACULA sentence trees for a verse ([] when unavailable).
+final realSyntaxTreesProvider =
+    FutureProvider.family<List<RealSyntaxNode>, String>((ref, verseId) async {
+      final verseRef = await ref.watch(verseRefForIdProvider(verseId).future);
+      if (verseRef == null) return const [];
+      final dao = ref.watch(bibleDaoProvider);
+      final raw = await dao.getSyntaxTreesForVerse(
+        verseRef.$1,
+        verseRef.$2,
+        verseRef.$3,
+      );
+      if (raw == null) return const [];
+      return RealSyntaxNode.parseTreesJson(raw);
+    });
 
 class SyntaxTreeScreen extends ConsumerWidget {
   final List<Word> words;
@@ -23,7 +60,18 @@ class SyntaxTreeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
-    final root = SyntaxTreeParser.parse(words, isHebrew: isOT);
+    final realTreesAsync = ref.watch(realSyntaxTreesProvider(verseReference));
+
+    // Human-readable reference for the app bar (falls back to the raw id).
+    final resolvedRef = ref
+        .watch(verseRefForIdProvider(verseReference))
+        .valueOrNull;
+    String displayReference = verseReference;
+    if (resolvedRef != null) {
+      final book = ref.watch(bookByAbbreviationProvider(resolvedRef.$1));
+      displayReference =
+          '${book?.name ?? resolvedRef.$1} ${resolvedRef.$2}:${resolvedRef.$3}';
+    }
 
     return Scaffold(
       backgroundColor: colorScheme.surface,
@@ -36,7 +84,7 @@ class SyntaxTreeScreen extends ConsumerWidget {
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             Text(
-              verseReference,
+              displayReference,
               style: TextStyle(
                 fontSize: 12,
                 color: colorScheme.onSurfaceVariant,
@@ -65,71 +113,124 @@ class SyntaxTreeScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          // Honesty banner: the tree is POS-heuristic, not real treebank data
-          // (see ROADMAP.md 1.2 — replaced once MACULA trees are imported).
-          Container(
-            width: double.infinity,
-            color: colorScheme.tertiaryContainer.withValues(alpha: 0.5),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.info_outline,
-                  size: 16,
-                  color: colorScheme.onTertiaryContainer,
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    l10n.syntaxTreeHeuristicNotice,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: colorScheme.onTertiaryContainer,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          // Legend bar
-          _buildLegend(colorScheme, l10n),
-          // Hint text
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4),
-            child: Text(
-              l10n.syntaxTreeTapHint,
-              style: TextStyle(
-                fontSize: 12,
-                fontStyle: FontStyle.italic,
-                color: colorScheme.onSurfaceVariant,
-              ),
-            ),
-          ),
-          const Divider(height: 1),
-          // Tree view
-          Expanded(
-            child: words.isEmpty
-                ? Center(
-                    child: Text(
-                      l10n.noMorphologicalData,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: colorScheme.onSurfaceVariant,
-                        fontSize: 14,
-                      ),
-                    ),
-                  )
-                : Padding(
-                    padding: const EdgeInsets.all(24),
-                    child: ClipRect(
-                      child: SyntaxTreeView(root: root, isOT: isOT),
-                    ),
-                  ),
-          ),
-        ],
+      body: realTreesAsync.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (err, stack) => _buildHeuristicBody(colorScheme, l10n),
+        data: (trees) => trees.isNotEmpty
+            ? _buildRealTreeBody(trees, colorScheme, l10n)
+            : _buildHeuristicBody(colorScheme, l10n),
       ),
+    );
+  }
+
+  /// Real MACULA sentence trees: indented outline per sentence, with the
+  /// CC BY attribution the license requires.
+  Widget _buildRealTreeBody(
+    List<RealSyntaxNode> trees,
+    ColorScheme colorScheme,
+    AppLocalizations l10n,
+  ) {
+    return Column(
+      children: [
+        Container(
+          width: double.infinity,
+          color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.4),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+          child: Text(
+            l10n.syntaxSourceMacula,
+            style: TextStyle(
+              fontSize: 11,
+              color: colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ),
+        const Divider(height: 1),
+        Expanded(
+          child: ListView.separated(
+            padding: const EdgeInsets.all(16),
+            itemCount: trees.length,
+            separatorBuilder: (context, index) =>
+                const Divider(height: 32),
+            itemBuilder: (context, index) => RealSyntaxTreeView(
+              root: trees[index],
+              isHebrew: isOT,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Fallback for DBs without the syntax_trees table: the POS-ordering
+  /// sketch, clearly labeled as such.
+  Widget _buildHeuristicBody(
+    ColorScheme colorScheme,
+    AppLocalizations l10n,
+  ) {
+    final root = SyntaxTreeParser.parse(words, isHebrew: isOT);
+
+    return Column(
+      children: [
+        Container(
+          width: double.infinity,
+          color: colorScheme.tertiaryContainer.withValues(alpha: 0.5),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Row(
+            children: [
+              Icon(
+                Icons.info_outline,
+                size: 16,
+                color: colorScheme.onTertiaryContainer,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  l10n.syntaxTreeHeuristicNotice,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: colorScheme.onTertiaryContainer,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        // Legend bar
+        _buildLegend(colorScheme, l10n),
+        // Hint text
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          child: Text(
+            l10n.syntaxTreeTapHint,
+            style: TextStyle(
+              fontSize: 12,
+              fontStyle: FontStyle.italic,
+              color: colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ),
+        const Divider(height: 1),
+        // Tree view
+        Expanded(
+          child: words.isEmpty
+              ? Center(
+                  child: Text(
+                    l10n.noMorphologicalData,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: colorScheme.onSurfaceVariant,
+                      fontSize: 14,
+                    ),
+                  ),
+                )
+              : Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: ClipRect(
+                    child: SyntaxTreeView(root: root, isOT: isOT),
+                  ),
+                ),
+        ),
+      ],
     );
   }
 

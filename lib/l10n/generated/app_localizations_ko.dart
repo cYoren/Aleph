@@ -542,4 +542,8 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get doneButton => '완료';
+
+  @override
+  String get syntaxSourceMacula =>
+      '구문 트리: MACULA 히브리어·그리스어 (Clear Bible), CC BY 4.0';
 }

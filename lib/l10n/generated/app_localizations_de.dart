@@ -558,4 +558,8 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get doneButton => 'Fertig';
+
+  @override
+  String get syntaxSourceMacula =>
+      'Syntaxbäume: MACULA Hebräisch & Griechisch (Clear Bible), CC BY 4.0';
 }
