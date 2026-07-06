@@ -526,4 +526,10 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get missingMemorizationRouteData =>
       'Für diesen Bildschirm wurden keine Passagendaten übergeben.';
+
+  @override
+  String get wordResultsSection => 'Wörter';
+
+  @override
+  String get verseResultsSection => 'Verse';
 }

@@ -506,4 +506,10 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get missingMemorizationRouteData => '未提供该页面所需的段落数据。';
+
+  @override
+  String get wordResultsSection => '词语';
+
+  @override
+  String get verseResultsSection => '经文';
 }

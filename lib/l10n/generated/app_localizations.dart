@@ -985,6 +985,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No passage data was provided for this screen.'**
   String get missingMemorizationRouteData;
+
+  /// No description provided for @wordResultsSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Words'**
+  String get wordResultsSection;
+
+  /// No description provided for @verseResultsSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Verses'**
+  String get verseResultsSection;
 }
 
 class _AppLocalizationsDelegate

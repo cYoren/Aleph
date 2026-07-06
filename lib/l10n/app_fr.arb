@@ -208,5 +208,7 @@
   "gotItButton": "Réussi",
   "nextReviewInDays": "Enregistré ! Prochaine révision dans {count} jours.",
   "nextReviewInHours": "Enregistré ! Prochaine révision dans {count} heures.",
-  "missingMemorizationRouteData": "Aucune donnée de passage n'a été fournie pour cet écran."
+  "missingMemorizationRouteData": "Aucune donnée de passage n'a été fournie pour cet écran.",
+  "wordResultsSection": "Mots",
+  "verseResultsSection": "Versets"
 }

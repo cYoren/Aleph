@@ -10,6 +10,7 @@ import '../reading/reading_provider.dart';
 import '../settings/settings_provider.dart';
 import '../../shared/widgets/empty_state.dart';
 import '../../shared/widgets/loading_skeleton.dart';
+import 'word_search_provider.dart';
 
 final searchQueryProvider = StateProvider<String>((ref) => '');
 
@@ -159,16 +160,33 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             Expanded(
               child: searchResults.when(
                 data: (verses) {
-                  if (verses.isEmpty) {
+                  final wordResults =
+                      ref.watch(wordSearchResultsProvider).valueOrNull ??
+                      const <WordSearchResult>[];
+                  if (verses.isEmpty && wordResults.isEmpty) {
                     return NoSearchResultsState(query: query);
                   }
-                  return ListView.builder(
-                    itemCount: verses.length,
+                  return ListView(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    itemBuilder: (context, index) {
-                      final verse = verses[index];
-                      return _buildSearchResult(verse, colorScheme);
-                    },
+                    children: [
+                      if (wordResults.isNotEmpty) ...[
+                        _buildSectionLabel(
+                          l10n.wordResultsSection,
+                          colorScheme,
+                        ),
+                        ...wordResults.map(
+                          (word) => _buildWordResult(word, colorScheme),
+                        ),
+                        if (verses.isNotEmpty)
+                          _buildSectionLabel(
+                            l10n.verseResultsSection,
+                            colorScheme,
+                          ),
+                      ],
+                      ...verses.map(
+                        (verse) => _buildSearchResult(verse, colorScheme),
+                      ),
+                    ],
                   );
                 },
                 loading: () => ListView.builder(
@@ -183,6 +201,80 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               ),
             ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildSectionLabel(String title, ColorScheme colorScheme) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 4, bottom: 8),
+      child: Text(
+        title.toUpperCase(),
+        style: TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.bold,
+          letterSpacing: 1,
+          color: colorScheme.primary,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildWordResult(WordSearchResult word, ColorScheme colorScheme) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 8),
+      child: ListTile(
+        onTap: () {
+          context.push(
+            '/word-study',
+            extra: {
+              'lexiconKey': word.lexiconKey,
+              'displayWord': word.lemma,
+              'isHebrew': word.isHebrew,
+            },
+          );
+        },
+        leading: Icon(Icons.translate, color: colorScheme.primary),
+        title: Row(
+          children: [
+            Text(
+              word.lemma,
+              style: TextStyle(
+                fontSize: 20,
+                fontFamily: word.isHebrew ? 'EzraSIL' : 'Gentium',
+                color: colorScheme.onSurface,
+              ),
+            ),
+            if (word.transliteration != null &&
+                word.transliteration!.isNotEmpty) ...[
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  word.transliteration!,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontStyle: FontStyle.italic,
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
+        subtitle: word.gloss != null && word.gloss!.isNotEmpty
+            ? Text(word.gloss!, maxLines: 1, overflow: TextOverflow.ellipsis)
+            : null,
+        trailing: word.strongsId.isNotEmpty
+            ? Text(
+                word.strongsId,
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  color: colorScheme.onSurfaceVariant,
+                ),
+              )
+            : null,
       ),
     );
   }

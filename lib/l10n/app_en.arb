@@ -250,5 +250,7 @@
         "type": "int"
       }
     }
-  }
+  },
+  "wordResultsSection": "Words",
+  "verseResultsSection": "Verses"
 }

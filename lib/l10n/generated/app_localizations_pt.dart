@@ -526,4 +526,10 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get missingMemorizationRouteData =>
       'Nenhum dado de passagem foi fornecido para esta tela.';
+
+  @override
+  String get wordResultsSection => 'Palavras';
+
+  @override
+  String get verseResultsSection => 'Versículos';
 }

@@ -208,5 +208,7 @@
   "gotItButton": "Получилось",
   "nextReviewInDays": "Сохранено! Следующее повторение через {count} дн.",
   "nextReviewInHours": "Сохранено! Следующее повторение через {count} ч.",
-  "missingMemorizationRouteData": "Данные отрывка для этого экрана не были переданы."
+  "missingMemorizationRouteData": "Данные отрывка для этого экрана не были переданы.",
+  "wordResultsSection": "Слова",
+  "verseResultsSection": "Стихи"
 }
