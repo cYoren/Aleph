@@ -208,5 +208,7 @@
   "gotItButton": "Lo logré",
   "nextReviewInDays": "¡Guardado! Próximo repaso en {count} días.",
   "nextReviewInHours": "¡Guardado! Próximo repaso en {count} horas.",
-  "missingMemorizationRouteData": "No se proporcionaron datos del pasaje para esta pantalla."
+  "missingMemorizationRouteData": "No se proporcionaron datos del pasaje para esta pantalla.",
+  "wordResultsSection": "Palabras",
+  "verseResultsSection": "Versículos"
 }

@@ -510,4 +510,10 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get missingMemorizationRouteData => '이 화면에 필요한 구절 데이터가 제공되지 않았습니다.';
+
+  @override
+  String get wordResultsSection => '단어';
+
+  @override
+  String get verseResultsSection => '구절';
 }

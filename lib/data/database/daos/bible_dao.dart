@@ -494,6 +494,23 @@ class BibleDAO {
     return result;
   }
 
+  /// Lightweight dump of the whole lexicon for the in-memory word-search
+  /// index (~13k rows; loaded once and cached by the provider).
+  Future<List<Map<String, dynamic>>> getLexiconIndex() async {
+    try {
+      final db = await _dbHelper.database;
+      return await db.rawQuery(
+        'SELECT lemma, strongs_id, transliteration, gloss, language '
+        'FROM lexicon',
+      );
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('BibleDAO lexicon index error: $e');
+      }
+      return [];
+    }
+  }
+
   /// Most frequent Strong's-keyed words for one language ('heb' or 'grc'),
   /// for the frequency-ordered vocabulary deck.
   Future<List<Map<String, dynamic>>> getTopFrequencyWords({

@@ -536,4 +536,10 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get missingMemorizationRouteData =>
       'Данные отрывка для этого экрана не были переданы.';
+
+  @override
+  String get wordResultsSection => 'Слова';
+
+  @override
+  String get verseResultsSection => 'Стихи';
 }

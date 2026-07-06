@@ -208,5 +208,7 @@
   "gotItButton": "외웠어요",
   "nextReviewInDays": "저장됨! {count}일 후 복습합니다.",
   "nextReviewInHours": "저장됨! {count}시간 후 복습합니다.",
-  "missingMemorizationRouteData": "이 화면에 필요한 구절 데이터가 제공되지 않았습니다."
+  "missingMemorizationRouteData": "이 화면에 필요한 구절 데이터가 제공되지 않았습니다.",
+  "wordResultsSection": "단어",
+  "verseResultsSection": "구절"
 }

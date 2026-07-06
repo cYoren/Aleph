@@ -527,4 +527,10 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get missingMemorizationRouteData =>
       'Aucune donnée de passage n\'a été fournie pour cet écran.';
+
+  @override
+  String get wordResultsSection => 'Mots';
+
+  @override
+  String get verseResultsSection => 'Versets';
 }

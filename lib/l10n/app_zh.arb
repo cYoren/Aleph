@@ -208,5 +208,7 @@
   "gotItButton": "记住了",
   "nextReviewInDays": "已保存！{count} 天后复习。",
   "nextReviewInHours": "已保存！{count} 小时后复习。",
-  "missingMemorizationRouteData": "未提供该页面所需的段落数据。"
+  "missingMemorizationRouteData": "未提供该页面所需的段落数据。",
+  "wordResultsSection": "词语",
+  "verseResultsSection": "经文"
 }

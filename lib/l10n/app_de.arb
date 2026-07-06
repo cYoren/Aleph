@@ -208,5 +208,7 @@
   "gotItButton": "Geschafft",
   "nextReviewInDays": "Gespeichert! Nächste Wiederholung in {count} Tagen.",
   "nextReviewInHours": "Gespeichert! Nächste Wiederholung in {count} Stunden.",
-  "missingMemorizationRouteData": "Für diesen Bildschirm wurden keine Passagendaten übergeben."
+  "missingMemorizationRouteData": "Für diesen Bildschirm wurden keine Passagendaten übergeben.",
+  "wordResultsSection": "Wörter",
+  "verseResultsSection": "Verse"
 }

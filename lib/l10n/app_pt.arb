@@ -208,5 +208,7 @@
   "gotItButton": "Consegui",
   "nextReviewInDays": "Salvo! Próxima revisão em {count} dias.",
   "nextReviewInHours": "Salvo! Próxima revisão em {count} horas.",
-  "missingMemorizationRouteData": "Nenhum dado de passagem foi fornecido para esta tela."
+  "missingMemorizationRouteData": "Nenhum dado de passagem foi fornecido para esta tela.",
+  "wordResultsSection": "Palavras",
+  "verseResultsSection": "Versículos"
 }

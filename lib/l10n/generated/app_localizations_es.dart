@@ -528,4 +528,10 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get missingMemorizationRouteData =>
       'No se proporcionaron datos del pasaje para esta pantalla.';
+
+  @override
+  String get wordResultsSection => 'Palabras';
+
+  @override
+  String get verseResultsSection => 'Versículos';
 }

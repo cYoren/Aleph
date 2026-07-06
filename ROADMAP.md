@@ -45,7 +45,9 @@ things currently undercut the "in depth" promise:
 - [x] "See all occurrences" of a word from the definition sheet: every verse containing a
       Strong's number / lemma, in canonical order, tappable to jump into the reader.
 - [ ] Occurrence pagination + grouping by book.
-- [ ] Search by lemma / Strong's / Hebrew root (current search is surface-text only).
+- [x] Word search: by Strong's id, lemma (pointing/accent-insensitive),
+      transliteration, or English gloss — results open the concordance.
+- [ ] True root (shoresh) search across binyanim.
 
 ---
 

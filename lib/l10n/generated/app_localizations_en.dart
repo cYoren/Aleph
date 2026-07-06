@@ -522,4 +522,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get missingMemorizationRouteData =>
       'No passage data was provided for this screen.';
+
+  @override
+  String get wordResultsSection => 'Words';
+
+  @override
+  String get verseResultsSection => 'Verses';
 }
