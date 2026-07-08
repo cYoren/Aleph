@@ -1,0 +1,120 @@
+name: iOS TestFlight
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-upload:
+    name: Build and upload iOS build
+    runs-on: macos-14
+    timeout-minutes: 90
+    env:
+      APP_PATH: .
+      BUNDLE_ID: com.originalbible.originalBible
+      ASC_API_KEY_ID: ${{ secrets.ASC_API_KEY_ID }}
+      ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      FASTLANE_SKIP_UPDATE_CHECK: "1"
+      FASTLANE_HIDE_CHANGELOG: "1"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Show tool versions
+        run: |
+          set -euo pipefail
+          flutter --version
+          xcodebuild -version
+          ruby -v
+
+      - name: Prepare App Store Connect credentials
+        env:
+          ASC_API_KEY_P8: ${{ secrets.ASC_API_KEY_P8 }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/asc"
+          python3 - <<'PY'
+          import json, os, pathlib
+          key = os.environ["ASC_API_KEY_P8"].replace("\\n", "\n")
+          tmp = pathlib.Path(os.environ["RUNNER_TEMP"]) / "asc"
+          (tmp / f"AuthKey_{os.environ['ASC_API_KEY_ID']}.p8").write_text(key)
+          (tmp / "api_key.json").write_text(json.dumps({
+              "key_id": os.environ["ASC_API_KEY_ID"],
+              "issuer_id": os.environ["ASC_ISSUER_ID"],
+              "key": key,
+              "duration": 1200,
+              "in_house": False,
+          }))
+          PY
+
+      - name: Install dependencies and generate code
+        working-directory: ${{ env.APP_PATH }}
+        run: |
+          set -euo pipefail
+          flutter pub get
+          if grep -q '^  build_runner:' pubspec.yaml; then
+            dart run build_runner build --delete-conflicting-outputs
+          fi
+          if [ -f scripts/build_full_bible_db.py ]; then
+            mkdir -p build
+            python3 scripts/build_full_bible_db.py --output assets/bible.db --cache-dir /tmp/original_bible_db_cache --strict-coverage --fill-kjv-gaps --emit-coverage-report build/coverage_report.json
+          fi
+
+      - name: Build unsigned iOS archive
+        working-directory: ${{ env.APP_PATH }}
+        run: |
+          set -euo pipefail
+          flutter build ipa --release --no-codesign
+
+      - name: Sign and export IPA
+        working-directory: ${{ env.APP_PATH }}
+        run: |
+          set -euo pipefail
+          cat > "$RUNNER_TEMP/ExportOptions.plist" <<PLIST
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key><string>app-store-connect</string>
+            <key>teamID</key><string>${APPLE_TEAM_ID}</string>
+            <key>signingStyle</key><string>automatic</string>
+            <key>destination</key><string>export</string>
+            <key>manageAppVersionAndBuildNumber</key><false/>
+            <key>uploadSymbols</key><true/>
+          </dict>
+          </plist>
+          PLIST
+          xcodebuild -exportArchive \
+            -archivePath build/ios/archive/Runner.xcarchive \
+            -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist" \
+            -exportPath "$RUNNER_TEMP/ipa_export" \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$RUNNER_TEMP/asc/AuthKey_${ASC_API_KEY_ID}.p8" \
+            -authenticationKeyID "$ASC_API_KEY_ID" \
+            -authenticationKeyIssuerID "$ASC_ISSUER_ID"
+          ls -lah "$RUNNER_TEMP/ipa_export"
+
+      - name: Upload to TestFlight
+        run: |
+          set -euo pipefail
+          sudo gem install fastlane --no-document
+          IPA="$(find "$RUNNER_TEMP/ipa_export" -name '*.ipa' -maxdepth 1 | head -1)"
+          test -n "$IPA"
+          fastlane pilot upload --ipa "$IPA" --api_key_path "$RUNNER_TEMP/asc/api_key.json" --app_identifier "$BUNDLE_ID" --skip_waiting_for_build_processing true
+
+      - name: Upload IPA artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-ipa
+          path: ${{ runner.temp }}/ipa_export/*.ipa
+          if-no-files-found: ignore
