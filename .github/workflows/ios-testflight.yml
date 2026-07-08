@@ -8,35 +8,41 @@ permissions:
 
 jobs:
   build-upload:
-    name: Build and upload iOS build
+    name: Build and upload
     runs-on: macos-26
     timeout-minutes: 90
     env:
       APP_PATH: .
-      BUNDLE_ID: com.originalbible.originalBible
+      BUNDLE_ID: org.originalbible.app
       ASC_API_KEY_ID: ${{ secrets.ASC_API_KEY_ID }}
       ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
       APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-      FASTLANE_SKIP_UPDATE_CHECK: "1"
-      FASTLANE_HIDE_CHANGELOG: "1"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: stable
           cache: true
-
-      - name: Show tool versions
+      - name: Install Apple distribution certificate
+        env:
+          CERT_B64: ${{ secrets.IOS_DISTRIBUTION_CERTIFICATE_BASE64 }}
+          CERT_PASS: ${{ secrets.IOS_DISTRIBUTION_CERTIFICATE_PASSWORD }}
         run: |
           set -euo pipefail
-          flutter --version
-          xcodebuild -version
-          ruby -v
-
-      - name: Prepare App Store Connect credentials
+          CERT_PATH="$RUNNER_TEMP/apple_dist.p12"
+          KEYCHAIN_PATH="$RUNNER_TEMP/app-signing.keychain-db"
+          KEYCHAIN_PASS="$(uuidgen)"
+          printf '%s' "$CERT_B64" | base64 --decode > "$CERT_PATH"
+          security create-keychain -p "$KEYCHAIN_PASS" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$KEYCHAIN_PASS" "$KEYCHAIN_PATH"
+          security import "$CERT_PATH" -P "$CERT_PASS" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+          security list-keychains -d user -s "$KEYCHAIN_PATH" login.keychain-db
+          security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASS" "$KEYCHAIN_PATH"
+          echo "KEYCHAIN_PATH=$KEYCHAIN_PATH" >> "$GITHUB_ENV"
+      - name: Prepare ASC credentials
         env:
           ASC_API_KEY_P8: ${{ secrets.ASC_API_KEY_P8 }}
         run: |
@@ -46,71 +52,21 @@ jobs:
           import json, os, pathlib
           key = os.environ["ASC_API_KEY_P8"].replace("\\n", "\n")
           tmp = pathlib.Path(os.environ["RUNNER_TEMP"]) / "asc"
-          (tmp / f"AuthKey_{os.environ['ASC_API_KEY_ID']}.p8").write_text(key)
-          (tmp / "api_key.json").write_text(json.dumps({
-              "key_id": os.environ["ASC_API_KEY_ID"],
-              "issuer_id": os.environ["ASC_ISSUER_ID"],
-              "key": key,
-              "duration": 1200,
-              "in_house": False,
-          }))
+          (tmp / "AuthKey_%s.p8" % os.environ["ASC_API_KEY_ID"]).write_text(key)
           PY
-
-      - name: Install Apple distribution certificate
-        env:
-          IOS_DISTRIBUTION_CERTIFICATE_BASE64: ${{ secrets.IOS_DISTRIBUTION_CERTIFICATE_BASE64 }}
-          IOS_DISTRIBUTION_CERTIFICATE_PASSWORD: ${{ secrets.IOS_DISTRIBUTION_CERTIFICATE_PASSWORD }}
-        run: |
-          set -euo pipefail
-          CERT_PATH="$RUNNER_TEMP/apple_distribution.p12"
-          KEYCHAIN_PATH="$RUNNER_TEMP/app-signing.keychain-db"
-          KEYCHAIN_PASSWORD="$(uuidgen)"
-          printf '%s' "$IOS_DISTRIBUTION_CERTIFICATE_BASE64" | base64 --decode > "$CERT_PATH"
-          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
-          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
-          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
-          security import "$CERT_PATH" -P "$IOS_DISTRIBUTION_CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
-          security list-keychains -d user -s "$KEYCHAIN_PATH" login.keychain-db
-          security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
-          echo "KEYCHAIN_PATH=$KEYCHAIN_PATH" >> "$GITHUB_ENV"
-
-      - name: Install dependencies and generate code
+      - name: Install dependencies and build database
         working-directory: ${{ env.APP_PATH }}
         run: |
           set -euo pipefail
           flutter pub get
-          if grep -q '^  build_runner:' pubspec.yaml; then
-            dart run build_runner build --delete-conflicting-outputs
-          fi
           if [ -f scripts/build_full_bible_db.py ]; then
             mkdir -p build
             python3 scripts/build_full_bible_db.py --output assets/bible.db --cache-dir /tmp/original_bible_db_cache --strict-coverage --fill-kjv-gaps --emit-coverage-report build/coverage_report.json
           fi
-
-      - name: Build signed iOS archive
+      - name: Build Flutter framework (unsigned)
         working-directory: ${{ env.APP_PATH }}
-        run: |
-          set -euo pipefail
-          # Set development team in Xcode project so Flutter build passes
-          sed -i '' 's/DEVELOPMENT_TEAM = "";/DEVELOPMENT_TEAM = "'"$APPLE_TEAM_ID"'";/' ios/Runner.xcodeproj/project.pbxproj || true
-          # Prepare iOS build directory (generates Podfile, xcconfigs, etc)
-          flutter build ios --release --no-codesign
-          # Archive with distribution signing
-          xcodebuild -workspace ios/Runner.xcworkspace \
-            -scheme Runner \
-            -configuration Release \
-            -destination generic/platform=iOS \
-            -archivePath build/ios/archive/Runner.xcarchive \
-            DEVELOPMENT_TEAM="$APPLE_TEAM_ID" \
-            CODE_SIGN_STYLE=Manual \
-            PROVISIONING_PROFILE_SPECIFIER="" \
-            OTHER_CODE_SIGN_FLAGS="--keychain $KEYCHAIN_PATH" \
-            -allowProvisioningUpdates \
-            -authenticationKeyPath "$RUNNER_TEMP/asc/AuthKey_${ASC_API_KEY_ID}.p8" \
-            -authenticationKeyID "$ASC_API_KEY_ID" \
-            -authenticationKeyIssuerID "$ASC_ISSUER_ID" \
-            archive
-      - name: Sign and export IPA
+        run: flutter build ios --release --no-codesign
+      - name: Archive and export IPA with signing
         working-directory: ${{ env.APP_PATH }}
         run: |
           set -euo pipefail
@@ -121,31 +77,36 @@ jobs:
           <dict>
             <key>method</key><string>app-store-connect</string>
             <key>teamID</key><string>${APPLE_TEAM_ID}</string>
-            <key>signingStyle</key><string>manual</string>
+            <key>signingStyle</key><string>automatic</string>
+            <key>stripSwiftSymbols</key><true/>
             <key>destination</key><string>export</string>
             <key>manageAppVersionAndBuildNumber</key><false/>
-            <key>uploadSymbols</key><true/>
           </dict>
           </plist>
           PLIST
+          xcodebuild -workspace ios/Runner.xcworkspace \
+            -scheme Runner \
+            -configuration Release \
+            -destination generic/platform=iOS \
+            -archivePath build/ios/archive/Runner.xcarchive \
+            DEVELOPMENT_TEAM=$APPLE_TEAM_ID \
+            CODE_SIGN_STYLE=Automatic \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$RUNNER_TEMP/asc/AuthKey_${ASC_API_KEY_ID}.p8" \
+            -authenticationKeyID "$ASC_API_KEY_ID" \
+            -authenticationKeyIssuerID "$ASC_ISSUER_ID" \
+            archive
           xcodebuild -exportArchive \
             -archivePath build/ios/archive/Runner.xcarchive \
             -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist" \
             -exportPath "$RUNNER_TEMP/ipa_export" \
-            -allowProvisioningUpdates \
-            -authenticationKeyPath "$RUNNER_TEMP/asc/AuthKey_${ASC_API_KEY_ID}.p8" \
-            -authenticationKeyID "$ASC_API_KEY_ID" \
-            -authenticationKeyIssuerID "$ASC_ISSUER_ID"
-          ls -lah "$RUNNER_TEMP/ipa_export"
-
+            -allowProvisioningUpdates
       - name: Upload to TestFlight
         run: |
           set -euo pipefail
-          sudo gem install fastlane --no-document
-          IPA="$(find "$RUNNER_TEMP/ipa_export" -name '*.ipa' -maxdepth 1 | head -1)"
+          IPA=$(find "$RUNNER_TEMP/ipa_export" -name '*.ipa' -maxdepth 1 | head -1)
           test -n "$IPA"
-          fastlane pilot upload --ipa "$IPA" --api_key_path "$RUNNER_TEMP/asc/api_key.json" --app_identifier "$BUNDLE_ID" --skip_waiting_for_build_processing true
-
+          xcrun altool --upload-app -f "$IPA" --apiKey "$ASC_API_KEY_ID" --apiIssuer "$ASC_ISSUER_ID" --type ios
       - name: Upload IPA artifact
         if: always()
         uses: actions/upload-artifact@v4
