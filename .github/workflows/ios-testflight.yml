@@ -64,57 +64,42 @@ jobs:
             python3 scripts/build_full_bible_db.py --output assets/bible.db --cache-dir /tmp/original_bible_db_cache --strict-coverage --fill-kjv-gaps --emit-coverage-report build/coverage_report.json
           fi
 
-      - name: Inject signing settings and build
+      - name: Build and upload with Fastlane
         working-directory: ${{ env.APP_PATH }}
+        env:
+          FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ""
         run: |
           set -euo pipefail
-          PBX="ios/Runner.xcodeproj/project.pbxproj"
-          python3 -c "
-          import re
-          p=open('$PBX').read()
-          def add_signing(m):
-            return m.group(0) + chr(10) + chr(9) + chr(9) + chr(9) + chr(9) + 'DEVELOPMENT_TEAM = $APPLE_TEAM_ID;' + chr(10) + chr(9) + chr(9) + chr(9) + chr(9) + 'CODE_SIGN_STYLE = Manual;' + chr(10) + chr(9) + chr(9) + chr(9) + chr(9) + 'CODE_SIGN_IDENTITY = \"Apple Distribution\";'
-          p=re.sub(r'(PRODUCT_BUNDLE_IDENTIFIER\s*=\s*[^;]+;)', add_signing, p)
-          open('$PBX','w').write(p)
-          "
+          # Write Fastlane config
+          mkdir -p fastlane
+          cat > fastlane/Appfile <<EOF
+          app_identifier "$BUNDLE_ID"
+          apple_id ""
+          team_id "$APPLE_TEAM_ID"
+          itc_team_id "$APPLE_TEAM_ID"
+          EOF
+          # Use the API key JSON for Fastlane
+          cp "$RUNNER_TEMP/asc/api_key.json" fastlane/api_key.json
           flutter build ios --release --no-codesign
-          xcodebuild -workspace ios/Runner.xcworkspace \
-            -scheme Runner \
-            -configuration Release \
-            -destination generic/platform=iOS \
-            -archivePath build/ios/archive/Runner.xcarchive \
-            DEVELOPMENT_TEAM=$APPLE_TEAM_ID \
-            CODE_SIGN_STYLE=Manual \
-            CODE_SIGN_IDENTITY="Apple Distribution" \
-            -allowProvisioningUpdates \
-            -authenticationKeyPath "$RUNNER_TEMP/asc/AuthKey_${ASC_API_KEY_ID}.p8" \
-            -authenticationKeyID "$ASC_API_KEY_ID" \
-            -authenticationKeyIssuerID "$ASC_ISSUER_ID" \
-            archive
-          cat > "$RUNNER_TEMP/ExportOptions.plist" <<PLIST
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0">
-          <dict>
-            <key>method</key><string>app-store-connect</string>
-            <key>teamID</key><string>${APPLE_TEAM_ID}</string>
-            <key>signingStyle</key><string>manual</string>
-            <key>stripSwiftSymbols</key><true/>
-            <key>manageAppVersionAndBuildNumber</key><false/>
-          </dict>
-          </plist>
-          PLIST
-          xcodebuild -exportArchive \
-            -archivePath build/ios/archive/Runner.xcarchive \
-            -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist" \
-            -exportPath "$RUNNER_TEMP/ipa_export" \
-            -allowProvisioningUpdates
+          fastlane run build_app \
+            scheme:Runner \
+            workspace:ios/Runner.xcworkspace \
+            export_method:app-store \
+            output_directory:"$RUNNER_TEMP/ipa_export" \
+            silent:true \
+            xcargs:"DEVELOPMENT_TEAM=$APPLE_TEAM_ID" \
+            api_key_path:fastlane/api_key.json
 
       - name: Upload to TestFlight
         run: |
           IPA=$(find "$RUNNER_TEMP/ipa_export" -name '*.ipa' 2>/dev/null | head -1)
           test -n "$IPA"
-          xcrun altool --upload-app -f "$IPA" --apiKey "$ASC_API_KEY_ID" --apiIssuer "$ASC_ISSUER_ID" --type ios
+          fastlane run pilot upload \
+            ipa:"$IPA" \
+            app_identifier:"$BUNDLE_ID" \
+            api_key_path:"$RUNNER_TEMP/asc/api_key.json" \
+            skip_waiting_for_build_processing:true \
+            skip_submission:false
 
       - name: Upload IPA artifact
         if: always()
