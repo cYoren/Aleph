@@ -64,9 +64,8 @@ jobs:
             app_identifier:"$BUNDLE_ID" \
             api_key_path:"$RUNNER_TEMP/asc/api_key.json" \
             team_id:"$APPLE_TEAM_ID" \
-            --development false \
-            --skip_install false \
-            --force
+            skip_install:false \
+            force:true
 
       - name: Inject Development Team and set up project
         working-directory: ${{ env.APP_PATH }}
