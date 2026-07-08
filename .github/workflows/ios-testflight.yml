@@ -42,7 +42,33 @@ jobs:
           security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASS" "$KEYCHAIN_PATH"
           echo "KEYCHAIN_PATH=$KEYCHAIN_PATH" >> "$GITHUB_ENV"
 
-      - name: Inject Development Team
+      - name: Prepare ASC keys
+        env:
+          ASC_API_KEY_P8: ${{ secrets.ASC_API_KEY_P8 }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/asc"
+          python3 -c "
+          import os,json
+          k=os.environ['ASC_API_KEY_P8'].replace('\\\\n','\\n')
+          p=os.environ['RUNNER_TEMP']
+          open(f'{p}/asc/AuthKey_' + os.environ['ASC_API_KEY_ID'] + '.p8','w').write(k)
+          json.dump({'key_id':os.environ['ASC_API_KEY_ID'],'issuer_id':os.environ['ASC_ISSUER_ID'],'key':k,'duration':1200,'in_house':False},open(f'{p}/asc/api_key.json','w'))
+          "
+
+      - name: Create distribution provisioning profile
+        env:
+          FASTLANE_SKIP_UPDATE_CHECK: "1"
+          FASTLANE_HIDE_CHANGELOG: "1"
+        run: |
+          fastlane run sigh \
+            app_identifier:"$BUNDLE_ID" \
+            api_key_path:"$RUNNER_TEMP/asc/api_key.json" \
+            team_id:"$APPLE_TEAM_ID" \
+            --development false \
+            --skip_install false \
+            --force
+
+      - name: Inject Development Team and set up project
         working-directory: ${{ env.APP_PATH }}
         run: |
           python3 -c "import os, re; p=open('ios/Runner.xcodeproj/project.pbxproj').read(); p=re.sub(r'(PRODUCT_BUNDLE_IDENTIFIER[^;]+;)', lambda m: m.group(1) + '\n\t\t\t\tDEVELOPMENT_TEAM = ' + os.environ['APPLE_TEAM_ID'] + ';', p); open('ios/Runner.xcodeproj/project.pbxproj','w').write(p)"
@@ -60,6 +86,14 @@ jobs:
         working-directory: ${{ env.APP_PATH }}
         run: |
           set -euo pipefail
+          flutter build ios --release --no-codesign
+          xcodebuild -workspace ios/Runner.xcworkspace \
+            -scheme Runner \
+            -configuration Release \
+            -destination generic/platform=iOS \
+            -archivePath build/ios/archive/Runner.xcarchive \
+            DEVELOPMENT_TEAM=$APPLE_TEAM_ID \
+            archive
           cat > "$RUNNER_TEMP/ExportOptions.plist" <<PLIST
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -67,24 +101,34 @@ jobs:
           <dict>
             <key>method</key><string>app-store-connect</string>
             <key>teamID</key><string>${APPLE_TEAM_ID}</string>
-            <key>signingStyle</key><string>automatic</string>
+            <key>signingStyle</key><string>manual</string>
             <key>stripSwiftSymbols</key><true/>
             <key>manageAppVersionAndBuildNumber</key><false/>
           </dict>
           </plist>
           PLIST
-          flutter build ipa --release --export-options-plist "$RUNNER_TEMP/ExportOptions.plist"
+          xcodebuild -exportArchive \
+            -archivePath build/ios/archive/Runner.xcarchive \
+            -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist" \
+            -exportPath "$RUNNER_TEMP/ipa_export"
 
       - name: Upload to TestFlight
+        env:
+          FASTLANE_SKIP_UPDATE_CHECK: "1"
+          FASTLANE_HIDE_CHANGELOG: "1"
         run: |
-          IPA=$(find build/ios/ipa -name '*.ipa' 2>/dev/null | head -1)
+          IPA=$(find "$RUNNER_TEMP/ipa_export" -name '*.ipa' 2>/dev/null | head -1)
           test -n "$IPA"
-          xcrun altool --upload-app -f "$IPA" --apiKey "$ASC_API_KEY_ID" --apiIssuer "$ASC_ISSUER_ID" --type ios
+          fastlane run pilot upload \
+            ipa:"$IPA" \
+            app_identifier:"$BUNDLE_ID" \
+            api_key_path:"$RUNNER_TEMP/asc/api_key.json" \
+            skip_waiting_for_build_processing:true
 
       - name: Upload IPA artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: ios-ipa
-          path: build/ios/ipa/*.ipa
+          path: ${{ runner.temp }}/ipa_export/*.ipa
           if-no-files-found: ignore
