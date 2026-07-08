@@ -91,7 +91,7 @@ jobs:
         working-directory: ${{ env.APP_PATH }}
         run: |
           set -euo pipefail
-          flutter build ios --release --no-codesign
+          flutter build ios --release --config-only
           xcodebuild -workspace ios/Runner.xcworkspace \
             -scheme Runner \
             -configuration Release \
@@ -99,7 +99,6 @@ jobs:
             -archivePath build/ios/archive/Runner.xcarchive \
             DEVELOPMENT_TEAM="$APPLE_TEAM_ID" \
             CODE_SIGN_STYLE=Automatic \
-            CODE_SIGN_IDENTITY="Apple Distribution" \
             OTHER_CODE_SIGN_FLAGS="--keychain $KEYCHAIN_PATH" \
             -allowProvisioningUpdates \
             -authenticationKeyPath "$RUNNER_TEMP/asc/AuthKey_${ASC_API_KEY_ID}.p8" \
