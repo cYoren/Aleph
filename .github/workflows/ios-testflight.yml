@@ -64,6 +64,12 @@ jobs:
             python3 scripts/build_full_bible_db.py --output assets/bible.db --cache-dir /tmp/original_bible_db_cache --strict-coverage --fill-kjv-gaps --emit-coverage-report build/coverage_report.json
           fi
 
+      - name: Inject Development Team
+        working-directory: ${{ env.APP_PATH }}
+        run: |
+          python3 -c "import os, re; p=open('ios/Runner.xcodeproj/project.pbxproj').read(); p=re.sub(r'(PRODUCT_BUNDLE_IDENTIFIER[^;]+;)', lambda m: m.group(1) + '\n\t\t\t\tDEVELOPMENT_TEAM = ' + os.environ['APPLE_TEAM_ID'] + ';', p); open('ios/Runner.xcodeproj/project.pbxproj','w').write(p)"
+          echo 'Dev team injected'
+
       - name: Build and upload with Fastlane
         working-directory: ${{ env.APP_PATH }}
         env:
