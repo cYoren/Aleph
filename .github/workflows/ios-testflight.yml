@@ -52,7 +52,7 @@ jobs:
           import json, os, pathlib
           key = os.environ["ASC_API_KEY_P8"].replace("\\n", "\n")
           tmp = pathlib.Path(os.environ["RUNNER_TEMP"]) / "asc"
-          (tmp / "AuthKey_%s.p8" % os.environ["ASC_API_KEY_ID"]).write_text(key)
+          (tmp / ("AuthKey_%s.p8" % os.environ["ASC_API_KEY_ID"])).write_text(key)
           PY
       - name: Install dependencies and build database
         working-directory: ${{ env.APP_PATH }}
