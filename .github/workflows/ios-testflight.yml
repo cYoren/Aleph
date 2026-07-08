@@ -78,7 +78,6 @@ jobs:
           FASTLANE_HIDE_CHANGELOG: "1"
         run: |
           set -euo pipefail
-          # Write Fastlane config
           mkdir -p fastlane
           cat > fastlane/Appfile <<EOF
           app_identifier "$BUNDLE_ID"
@@ -86,8 +85,6 @@ jobs:
           team_id "$APPLE_TEAM_ID"
           itc_team_id "$APPLE_TEAM_ID"
           EOF
-          # Use the API key JSON for Fastlane
-          cp "$RUNNER_TEMP/asc/api_key.json" fastlane/api_key.json
           flutter build ios --release --no-codesign
           fastlane run build_app \
             scheme:Runner \
@@ -95,11 +92,14 @@ jobs:
             export_method:app-store \
             output_directory:"$RUNNER_TEMP/ipa_export" \
             silent:true \
-            xcargs:"DEVELOPMENT_TEAM=$APPLE_TEAM_ID" \
-            api_key_path:fastlane/api_key.json
+            xcargs:"DEVELOPMENT_TEAM=$APPLE_TEAM_ID"
 
       - name: Upload to TestFlight
+        env:
+          FASTLANE_SKIP_UPDATE_CHECK: "1"
+          FASTLANE_HIDE_CHANGELOG: "1"
         run: |
+          set -euo pipefail
           IPA=$(find "$RUNNER_TEMP/ipa_export" -name '*.ipa' 2>/dev/null | head -1)
           test -n "$IPA"
           fastlane run pilot upload \
