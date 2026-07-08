@@ -55,14 +55,43 @@ jobs:
           json.dump({'key_id':os.environ['ASC_API_KEY_ID'],'issuer_id':os.environ['ASC_ISSUER_ID'],'key':k,'duration':1200,'in_house':False},open(f'{p}/asc/api_key.json','w'))
           "
 
-      - name: Inject Development Team (only)
-        working-directory: ${{ env.APP_PATH }}
+      - name: Create dist profile + set up signing + build
+        env:
+          FASTLANE_SKIP_UPDATE_CHECK: "1"
+          FASTLANE_HIDE_CHANGELOG: "1"
         run: |
-          python3 -c "import os, re; p=open('ios/Runner.xcodeproj/project.pbxproj').read(); p=re.sub(r'(PRODUCT_BUNDLE_IDENTIFIER[^;]+;)', lambda m: m.group(1) + chr(10) + chr(9)*4 + 'DEVELOPMENT_TEAM = ' + os.environ['APPLE_TEAM_ID'] + ';', p); open('ios/Runner.xcodeproj/project.pbxproj','w').write(p)"
+          set -euo pipefail
+          # 1) Create distribution provisioning profile
+          fastlane run sigh \
+            app_identifier:"$BUNDLE_ID" \
+            api_key_path:"$RUNNER_TEMP/asc/api_key.json" \
+            team_id:"$APPLE_TEAM_ID" \
+            skip_install:false \
+            force:true
 
-      - name: Install dependencies
-        working-directory: ${{ env.APP_PATH }}
-        run: |
+          # 2) Inject all signing settings ONLY where PRODUCT_BUNDLE_IDENTIFIER matches our bundle
+          python3 -c "
+          import os, re
+          team = os.environ['APPLE_TEAM_ID']
+          bundle = os.environ['BUNDLE_ID']
+          prof = bundle + ' AppStore'
+          with open('ios/Runner.xcodeproj/project.pbxproj') as f:
+              c = f.read()
+          # Only inject into build configs that have our specific bundle ID (Runner target only)
+          c = re.sub(
+              r'(PRODUCT_BUNDLE_IDENTIFIER = ' + re.escape(bundle) + ';)',
+              lambda m: m.group(1) + chr(10) + chr(9)*4 + 'DEVELOPMENT_TEAM = ' + team + ';'
+                        + chr(10) + chr(9)*4 + 'CODE_SIGN_STYLE = Manual;'
+                        + chr(10) + chr(9)*4 + 'CODE_SIGN_IDENTITY = \\\"Apple Distribution\\\";'
+                        + chr(10) + chr(9)*4 + 'PROVISIONING_PROFILE_SPECIFIER = \\\"' + prof + '\\\";',
+              c
+          )
+          with open('ios/Runner.xcodeproj/project.pbxproj', 'w') as f:
+              f.write(c)
+          print('injected runner-only: team=' + team + ' profile=' + prof)
+          "
+
+          # 3) Install deps
           flutter pub get
           if [ -f scripts/build_full_bible_db.py ]; then
             mkdir -p build
@@ -73,44 +102,42 @@ jobs:
             done
           fi
 
-      - name: Create dist profile and build IPA
-        env:
-          FASTLANE_SKIP_UPDATE_CHECK: "1"
-          FASTLANE_HIDE_CHANGELOG: "1"
-        run: |
-          set -euo pipefail
-          # Create distribution provisioning profile
-          fastlane run sigh \
-            app_identifier:"$BUNDLE_ID" \
-            api_key_path:"$RUNNER_TEMP/asc/api_key.json" \
-            team_id:"$APPLE_TEAM_ID" \
-            skip_install:false \
-            force:true
-          # Build (no sign), then archive with -allowProvisioningUpdates + auth key
+          # 4) Build unsigned, then archive (no -allowProvisioningUpdates - just use our settings)
           flutter build ios --release --no-codesign
           xcodebuild -workspace ios/Runner.xcworkspace \
             -scheme Runner \
             -configuration Release \
             -destination generic/platform=iOS \
             -archivePath build/ios/archive/Runner.xcarchive \
-            -allowProvisioningUpdates \
-            -authenticationKeyPath "$RUNNER_TEMP/asc/AuthKey_${ASC_API_KEY_ID}.p8" \
-            -authenticationKeyID "$ASC_API_KEY_ID" \
-            -authenticationKeyIssuerID "$ASC_ISSUER_ID" \
-            DEVELOPMENT_TEAM=$APPLE_TEAM_ID \
             archive
+
+      - name: Export and upload
+        env:
+          FASTLANE_SKIP_UPDATE_CHECK: "1"
+          FASTLANE_HIDE_CHANGELOG: "1"
+        run: |
+          set -euo pipefail
           # Export IPA with the distribution profile
+          cat > "$RUNNER_TEMP/ExportOptions.plist" <<PLIST
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key><string>app-store-connect</string>
+            <key>teamID</key><string>${APPLE_TEAM_ID}</string>
+            <key>signingStyle</key><string>manual</string>
+            <key>stripSwiftSymbols</key><true/>
+            <key>manageAppVersionAndBuildNumber</key><false/>
+          </dict>
+          </plist>
+          PLIST
           xcodebuild -exportArchive \
             -archivePath build/ios/archive/Runner.xcarchive \
             -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist" \
             -exportPath "$RUNNER_TEMP/ipa_export"
 
-      - name: Upload to TestFlight
-        env:
-          FASTLANE_SKIP_UPDATE_CHECK: "1"
-          FASTLANE_HIDE_CHANGELOG: "1"
-        run: |
-          IPA=$(find build/ios/ipa -name '*.ipa' 2>/dev/null | head -1)
+          # Upload to TestFlight
+          IPA=$(find "$RUNNER_TEMP/ipa_export" -name '*.ipa' 2>/dev/null | head -1)
           test -n "$IPA"
           fastlane run pilot upload \
             ipa:"$IPA" \
@@ -123,5 +150,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ios-ipa
-          path: build/ios/ipa/*.ipa
+          path: ${{ runner.temp }}/ipa_export/*.ipa
           if-no-files-found: ignore
