@@ -82,8 +82,24 @@ jobs:
             team_id:"$APPLE_TEAM_ID" \
             skip_install:false \
             force:true
-          # Build with Flutter - let Flutter handle archive + export internally
-          flutter build ipa --release
+          # Build (no sign), then archive with -allowProvisioningUpdates + auth key
+          flutter build ios --release --no-codesign
+          xcodebuild -workspace ios/Runner.xcworkspace \
+            -scheme Runner \
+            -configuration Release \
+            -destination generic/platform=iOS \
+            -archivePath build/ios/archive/Runner.xcarchive \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$RUNNER_TEMP/asc/AuthKey_${ASC_API_KEY_ID}.p8" \
+            -authenticationKeyID "$ASC_API_KEY_ID" \
+            -authenticationKeyIssuerID "$ASC_ISSUER_ID" \
+            DEVELOPMENT_TEAM=$APPLE_TEAM_ID \
+            archive
+          # Export IPA with the distribution profile
+          xcodebuild -exportArchive \
+            -archivePath build/ios/archive/Runner.xcarchive \
+            -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist" \
+            -exportPath "$RUNNER_TEMP/ipa_export"
 
       - name: Upload to TestFlight
         env:
