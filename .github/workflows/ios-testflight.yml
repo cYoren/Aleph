@@ -9,7 +9,7 @@ permissions:
 jobs:
   build-upload:
     name: Build and upload
-    runs-on: macos-26
+    runs-on: self-hosted
     timeout-minutes: 90
     env:
       APP_PATH: .
