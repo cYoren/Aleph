@@ -11,6 +11,9 @@ jobs:
     name: Build and upload
     runs-on: self-hosted
     timeout-minutes: 90
+    defaults:
+      run:
+        working-directory: .
     env:
       APP_PATH: .
       BUNDLE_ID: com.originalbible.originalBible
