@@ -16,3 +16,10 @@
 - `native/original-bible-reading-genesis1-iphone17promax-ios26.5.png`: real Genesis 1 reading screen with Hebrew source text, niqqud, KJV translation, verse cards, bookmark/link controls and bottom navigation.
 
 Both images are native simulator captures. They are not browser renders, AI-generated UI, or final marketing compositions. Any composed App Store panels must preserve these source images as provenance.
+
+## Concept compositions
+
+- `concepts/original-bible-language-concept-1320x2868.png`: concept direction for multilingual Bible discovery.
+- `concepts/original-bible-reading-concept-1320x2868.png`: concept direction for Hebrew plus translation reading.
+
+These concept panels contain authentic captured UI, but the `ORIGINAL BIBLE • NATIVE UI PROOF` footer is an internal provenance label. They are archived for iteration and must not be treated as final App Store uploads until that footer is removed and the final panel set is re-verified.
