@@ -552,4 +552,89 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get showLess => '접기';
+
+  @override
+  String get readabilityTitle => 'What can I read?';
+
+  @override
+  String get readabilityAllBooks => 'Every book, most readable first';
+
+  @override
+  String get readabilityNoText => 'No text is loaded yet.';
+
+  @override
+  String get readabilityCanReadNow => 'You can read this now';
+
+  @override
+  String get readabilityClosest => 'Closest to readable';
+
+  @override
+  String get readabilityEmptyTitle =>
+      'Start learning words to see this map fill in';
+
+  @override
+  String get readabilityEmptyBody =>
+      'As you master vocabulary, each book shows how much of it you can already read. The most frequent words cover the most text, so progress here is quick at first.';
+
+  @override
+  String get openVocabulary => 'Open vocabulary';
+
+  @override
+  String get reciteAloud => 'Recite aloud';
+
+  @override
+  String get stopReciting => 'Stop reciting';
+
+  @override
+  String get recitationPreparing => 'Preparing…';
+
+  @override
+  String get recitationStop => 'Stop';
+
+  @override
+  String get hearItRead => 'Hear it read';
+
+  @override
+  String get phraseSpacingTitle => 'Phrase spacing';
+
+  @override
+  String get phraseSpacingDesc =>
+      'Space the Hebrew at the Masoretic accents, so a verse reads in sense units instead of word by word.';
+
+  @override
+  String get recitationVoiceTitle => 'Recitation voice';
+
+  @override
+  String get recitationVoiceDesc =>
+      'Read aloud by your device\'s speech voices: Modern Israeli for Hebrew, Modern Greek for Greek. These are living reading traditions, not reconstructed ancient pronunciation.';
+
+  @override
+  String get voiceMissing =>
+      'No Hebrew or Greek voice is installed on this device. Add one in your system speech settings to hear the text read aloud.';
+
+  @override
+  String get voiceUnsupported => 'This device has no speech engine available.';
+
+  @override
+  String get recitationFailed => 'Recitation could not be started.';
+
+  @override
+  String readBook(String book) {
+    return 'Read $book';
+  }
+
+  @override
+  String readabilityCoverage(int percent, int count) {
+    return 'You know $percent% of its vocabulary — about $count unfamiliar words per chapter.';
+  }
+
+  @override
+  String recitationVerse(int number) {
+    return 'Verse $number';
+  }
+
+  @override
+  String voiceMissingFor(String tradition) {
+    return 'No $tradition voice is installed on this device.';
+  }
 }

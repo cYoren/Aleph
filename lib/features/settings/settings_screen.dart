@@ -134,6 +134,20 @@ class SettingsScreen extends ConsumerWidget {
               ],
             ),
           ),
+          SwitchListTile(
+            secondary: const Icon(Icons.format_align_right),
+            title: Text(l10n.phraseSpacingTitle),
+            subtitle: Text(l10n.phraseSpacingDesc),
+            value: settings.showSenseUnits,
+            onChanged: (bool value) {
+              notifier.setShowSenseUnits(value);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.graphic_eq),
+            title: Text(l10n.recitationVoiceTitle),
+            subtitle: Text(l10n.recitationVoiceDesc),
+          ),
           const Divider(),
 
           // Learning Section
@@ -219,11 +233,6 @@ class SettingsScreen extends ConsumerWidget {
 
           // Responsible Entity Section
           _buildSectionHeader(l10n.appResponsible, colorScheme),
-          ListTile(
-            leading: const Icon(Icons.business_outlined),
-            title: Text(l10n.legalNameLabel),
-            subtitle: const Text(AppIdentity.responsibleLegalName),
-          ),
           ListTile(
             leading: const Icon(Icons.storefront_outlined),
             title: Text(l10n.tradeNameLabel),

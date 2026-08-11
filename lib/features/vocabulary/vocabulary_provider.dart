@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/models/lexicon_entry.dart';
 import '../../data/models/srs_progress.dart';
 import '../../providers/database_provider.dart';
+import '../../shared/utils/vocabulary_filter.dart';
 
 /// One row of the vocabulary deck: a word with its whole-Bible frequency,
 /// lexicon entry, and the user's SRS progress (if any).
@@ -41,7 +42,13 @@ final vocabularyDeckProvider = FutureProvider.family<VocabularyDeck, String>((
   final srsDao = ref.watch(srsDaoProvider);
   final isHebrew = language == 'heb';
 
-  final rows = await dao.getTopFrequencyWords(language: language, limit: 100);
+  // Over-fetch, because the prefixes and entry-less ids removed below sit at
+  // the very top of the raw frequency table.
+  const deckSize = 100;
+  final rows = await dao.getTopFrequencyWords(
+    language: language,
+    limit: deckSize * 4,
+  );
   final keys = rows
       .map((r) => r['key']?.toString() ?? '')
       .where((k) => k.isNotEmpty)
@@ -57,15 +64,29 @@ final vocabularyDeckProvider = FutureProvider.family<VocabularyDeck, String>((
   var coveredTokens = 0;
   final items = <VocabularyDeckItem>[];
   for (final row in rows) {
+    if (items.length >= deckSize) break;
+
     final key = row['key']?.toString() ?? '';
     if (key.isEmpty) continue;
+
+    // Drop bare prefixes and ids with no dictionary entry: neither is a word
+    // a learner studies, and both used to head the deck.
+    final entry = lexicon[key];
+    if (!isDeckWorthy(
+      lemma: entry?.lemma,
+      gloss: entry?.gloss,
+      isHebrew: isHebrew,
+    )) {
+      continue;
+    }
+
     final frequency = (row['c'] as num?)?.toInt() ?? 0;
     coveredTokens += frequency;
     items.add(
       VocabularyDeckItem(
         lexiconKey: key,
         frequency: frequency,
-        entry: lexicon[key],
+        entry: entry,
         progress: progress[key],
         isHebrew: isHebrew,
       ),

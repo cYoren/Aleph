@@ -569,4 +569,90 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get showLess => 'Mostrar menos';
+
+  @override
+  String get readabilityTitle => 'O que eu consigo ler?';
+
+  @override
+  String get readabilityAllBooks => 'Todos os livros, do mais legível ao menos';
+
+  @override
+  String get readabilityNoText => 'Nenhum texto carregado ainda.';
+
+  @override
+  String get readabilityCanReadNow => 'Você já consegue ler este';
+
+  @override
+  String get readabilityClosest => 'Mais próximo de conseguir ler';
+
+  @override
+  String get readabilityEmptyTitle =>
+      'Comece a aprender palavras para preencher este mapa';
+
+  @override
+  String get readabilityEmptyBody =>
+      'Conforme você domina o vocabulário, cada livro mostra quanto dele você já consegue ler. As palavras mais frequentes cobrem a maior parte do texto, então o progresso é rápido no início.';
+
+  @override
+  String get openVocabulary => 'Abrir vocabulário';
+
+  @override
+  String get reciteAloud => 'Recitar em voz alta';
+
+  @override
+  String get stopReciting => 'Parar a recitação';
+
+  @override
+  String get recitationPreparing => 'Preparando…';
+
+  @override
+  String get recitationStop => 'Parar';
+
+  @override
+  String get hearItRead => 'Ouvir a leitura';
+
+  @override
+  String get phraseSpacingTitle => 'Espaçamento por frases';
+
+  @override
+  String get phraseSpacingDesc =>
+      'Espaça o hebraico nos acentos massoréticos, para que o versículo seja lido em unidades de sentido, e não palavra por palavra.';
+
+  @override
+  String get recitationVoiceTitle => 'Voz da recitação';
+
+  @override
+  String get recitationVoiceDesc =>
+      'Leitura em voz alta pelas vozes do seu aparelho: hebraico israelense moderno e grego moderno. São tradições vivas de leitura, não a pronúncia antiga reconstruída.';
+
+  @override
+  String get voiceMissing =>
+      'Nenhuma voz de hebraico ou grego está instalada neste aparelho. Adicione uma nas configurações de fala do sistema para ouvir o texto.';
+
+  @override
+  String get voiceUnsupported =>
+      'Este aparelho não possui mecanismo de fala disponível.';
+
+  @override
+  String get recitationFailed => 'Não foi possível iniciar a recitação.';
+
+  @override
+  String readBook(String book) {
+    return 'Ler $book';
+  }
+
+  @override
+  String readabilityCoverage(int percent, int count) {
+    return 'Você conhece $percent% do vocabulário dele — cerca de $count palavras desconhecidas por capítulo.';
+  }
+
+  @override
+  String recitationVerse(int number) {
+    return 'Versículo $number';
+  }
+
+  @override
+  String voiceMissingFor(String tradition) {
+    return 'Nenhuma voz de $tradition está instalada neste aparelho.';
+  }
 }

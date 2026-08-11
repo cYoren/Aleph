@@ -221,5 +221,60 @@
   "doneButton": "Concluir",
   "syntaxSourceMacula": "Árvores sintáticas: MACULA Hebraico e Grego (Clear Bible), CC BY 4.0",
   "showMore": "Mostrar mais",
-  "showLess": "Mostrar menos"
+  "showLess": "Mostrar menos",
+  "readabilityTitle": "O que eu consigo ler?",
+  "readabilityAllBooks": "Todos os livros, do mais legível ao menos",
+  "readabilityNoText": "Nenhum texto carregado ainda.",
+  "readabilityCanReadNow": "Você já consegue ler este",
+  "readabilityClosest": "Mais próximo de conseguir ler",
+  "readabilityEmptyTitle": "Comece a aprender palavras para preencher este mapa",
+  "readabilityEmptyBody": "Conforme você domina o vocabulário, cada livro mostra quanto dele você já consegue ler. As palavras mais frequentes cobrem a maior parte do texto, então o progresso é rápido no início.",
+  "openVocabulary": "Abrir vocabulário",
+  "reciteAloud": "Recitar em voz alta",
+  "stopReciting": "Parar a recitação",
+  "recitationPreparing": "Preparando…",
+  "recitationStop": "Parar",
+  "hearItRead": "Ouvir a leitura",
+  "phraseSpacingTitle": "Espaçamento por frases",
+  "phraseSpacingDesc": "Espaça o hebraico nos acentos massoréticos, para que o versículo seja lido em unidades de sentido, e não palavra por palavra.",
+  "recitationVoiceTitle": "Voz da recitação",
+  "recitationVoiceDesc": "Leitura em voz alta pelas vozes do seu aparelho: hebraico israelense moderno e grego moderno. São tradições vivas de leitura, não a pronúncia antiga reconstruída.",
+  "voiceMissing": "Nenhuma voz de hebraico ou grego está instalada neste aparelho. Adicione uma nas configurações de fala do sistema para ouvir o texto.",
+  "voiceUnsupported": "Este aparelho não possui mecanismo de fala disponível.",
+  "recitationFailed": "Não foi possível iniciar a recitação.",
+  "readBook": "Ler {book}",
+  "@readBook": {
+    "placeholders": {
+      "book": {
+        "type": "String"
+      }
+    }
+  },
+  "readabilityCoverage": "Você conhece {percent}% do vocabulário dele — cerca de {count} palavras desconhecidas por capítulo.",
+  "@readabilityCoverage": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recitationVerse": "Versículo {number}",
+  "@recitationVerse": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "voiceMissingFor": "Nenhuma voz de {tradition} está instalada neste aparelho.",
+  "@voiceMissingFor": {
+    "placeholders": {
+      "tradition": {
+        "type": "String"
+      }
+    }
+  }
 }
