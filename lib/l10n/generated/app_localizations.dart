@@ -1063,6 +1063,150 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Show less'**
   String get showLess;
+
+  /// No description provided for @readabilityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What can I read?'**
+  String get readabilityTitle;
+
+  /// No description provided for @readabilityAllBooks.
+  ///
+  /// In en, this message translates to:
+  /// **'Every book, most readable first'**
+  String get readabilityAllBooks;
+
+  /// No description provided for @readabilityNoText.
+  ///
+  /// In en, this message translates to:
+  /// **'No text is loaded yet.'**
+  String get readabilityNoText;
+
+  /// No description provided for @readabilityCanReadNow.
+  ///
+  /// In en, this message translates to:
+  /// **'You can read this now'**
+  String get readabilityCanReadNow;
+
+  /// No description provided for @readabilityClosest.
+  ///
+  /// In en, this message translates to:
+  /// **'Closest to readable'**
+  String get readabilityClosest;
+
+  /// No description provided for @readabilityEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Start learning words to see this map fill in'**
+  String get readabilityEmptyTitle;
+
+  /// No description provided for @readabilityEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'As you master vocabulary, each book shows how much of it you can already read. The most frequent words cover the most text, so progress here is quick at first.'**
+  String get readabilityEmptyBody;
+
+  /// No description provided for @openVocabulary.
+  ///
+  /// In en, this message translates to:
+  /// **'Open vocabulary'**
+  String get openVocabulary;
+
+  /// No description provided for @reciteAloud.
+  ///
+  /// In en, this message translates to:
+  /// **'Recite aloud'**
+  String get reciteAloud;
+
+  /// No description provided for @stopReciting.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop reciting'**
+  String get stopReciting;
+
+  /// No description provided for @recitationPreparing.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing…'**
+  String get recitationPreparing;
+
+  /// No description provided for @recitationStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get recitationStop;
+
+  /// No description provided for @hearItRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Hear it read'**
+  String get hearItRead;
+
+  /// No description provided for @phraseSpacingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Phrase spacing'**
+  String get phraseSpacingTitle;
+
+  /// No description provided for @phraseSpacingDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Space the Hebrew at the Masoretic accents, so a verse reads in sense units instead of word by word.'**
+  String get phraseSpacingDesc;
+
+  /// No description provided for @recitationVoiceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recitation voice'**
+  String get recitationVoiceTitle;
+
+  /// No description provided for @recitationVoiceDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Read aloud by your device\'s speech voices: Modern Israeli for Hebrew, Modern Greek for Greek. These are living reading traditions, not reconstructed ancient pronunciation.'**
+  String get recitationVoiceDesc;
+
+  /// No description provided for @voiceMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'No Hebrew or Greek voice is installed on this device. Add one in your system speech settings to hear the text read aloud.'**
+  String get voiceMissing;
+
+  /// No description provided for @voiceUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'This device has no speech engine available.'**
+  String get voiceUnsupported;
+
+  /// No description provided for @recitationFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Recitation could not be started.'**
+  String get recitationFailed;
+
+  /// No description provided for @readBook.
+  ///
+  /// In en, this message translates to:
+  /// **'Read {book}'**
+  String readBook(String book);
+
+  /// No description provided for @readabilityCoverage.
+  ///
+  /// In en, this message translates to:
+  /// **'You know {percent}% of its vocabulary — about {count} unfamiliar words per chapter.'**
+  String readabilityCoverage(int percent, int count);
+
+  /// No description provided for @recitationVerse.
+  ///
+  /// In en, this message translates to:
+  /// **'Verse {number}'**
+  String recitationVerse(int number);
+
+  /// No description provided for @voiceMissingFor.
+  ///
+  /// In en, this message translates to:
+  /// **'No {tradition} voice is installed on this device.'**
+  String voiceMissingFor(String tradition);
 }
 
 class _AppLocalizationsDelegate

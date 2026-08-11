@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../l10n/generated/app_localizations.dart';
 import '../../providers/books_provider.dart';
+import '../../providers/book_names_provider.dart';
 import '../../providers/bookmarks_provider.dart';
 import '../settings/settings_provider.dart';
 import 'reading_provider.dart';
@@ -16,6 +17,8 @@ import '../../shared/widgets/empty_state.dart';
 import 'widgets/visual_context_overlay.dart';
 import 'widgets/dynamic_translation_text.dart';
 import 'widgets/cross_references_sheet.dart';
+import '../audio/recitation_provider.dart';
+import '../audio/widgets/recitation_bar.dart';
 
 class ReadingScreen extends ConsumerStatefulWidget {
   const ReadingScreen({super.key});
@@ -27,6 +30,10 @@ class ReadingScreen extends ConsumerStatefulWidget {
 class _ReadingScreenState extends ConsumerState<ReadingScreen> {
   late PageController _pageController;
 
+  /// Per-verse keys so the reader can scroll the verse being recited into
+  /// view as the voice reaches it.
+  final Map<int, GlobalKey> _verseKeys = {};
+
   @override
   void initState() {
     super.initState();
@@ -37,6 +44,39 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
   void dispose() {
     _pageController.dispose();
     super.dispose();
+  }
+
+  GlobalKey _keyForVerse(int verseNumber) =>
+      _verseKeys.putIfAbsent(verseNumber, () => GlobalKey());
+
+  /// Brings the verse now being spoken into view.
+  void _scrollToVerse(int verseNumber) {
+    final context = _verseKeys[verseNumber]?.currentContext;
+    if (context == null) return;
+    Scrollable.ensureVisible(
+      context,
+      duration: const Duration(milliseconds: 400),
+      curve: Curves.easeInOut,
+      alignment: 0.3,
+    );
+  }
+
+  /// Starts or stops reciting the chapter on screen.
+  Future<void> _toggleRecitation(ReadingState readingState, bool isOT) async {
+    final notifier = ref.read(recitationProvider.notifier);
+    final recitation = ref.read(recitationProvider);
+
+    if (recitation.isActive) {
+      await notifier.stop();
+      return;
+    }
+
+    await notifier.startChapter(
+      bookId: readingState.bookId,
+      chapter: readingState.chapter,
+      verses: readingState.verses,
+      isHebrew: isOT,
+    );
   }
 
   @override
@@ -60,6 +100,39 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
       bookByAbbreviationProvider(readingState.bookId),
     );
     final maxChapter = currentBook?.effectiveChapterCount ?? 999;
+    final isOT = _isOldTestament(readingState.bookId);
+
+    // Book names come from the localized asset, not the English-only database.
+    final bookTitle = ref
+        .watch(bookNamesProvider)
+        .nameFor(readingState.bookId, fallback: currentBook?.name);
+
+    // Follow the voice: scroll each verse into view as it starts sounding.
+    ref.listen<RecitationState>(recitationProvider, (previous, next) {
+      final verseNumber = next.currentVerseNumber;
+      if (verseNumber == null) return;
+      if (previous?.currentVerseNumber == verseNumber) return;
+      if (next.bookId != readingState.bookId ||
+          next.chapter != readingState.chapter) {
+        return;
+      }
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _scrollToVerse(verseNumber);
+      });
+    });
+
+    // Stop the voice when the reader moves to a different chapter.
+    ref.listen<ReadingState>(readingProvider, (previous, next) {
+      if (previous == null) return;
+      final movedAway =
+          previous.bookId != next.bookId || previous.chapter != next.chapter;
+      final recitation = ref.read(recitationProvider);
+      if (movedAway && recitation.isActive) {
+        ref.read(recitationProvider.notifier).stop();
+      }
+    });
+
+    final recitation = ref.watch(recitationProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -73,7 +146,7 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  '${currentBook?.name ?? readingState.bookId} ${readingState.chapter}',
+                  '$bookTitle ${readingState.chapter}',
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(width: 4),
@@ -83,6 +156,19 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
           ),
         ),
         actions: [
+          // Recite the chapter aloud in its original language
+          IconButton(
+            icon: Icon(
+              recitation.isActive
+                  ? Icons.stop_circle_outlined
+                  : Icons.play_circle_outline,
+              color: recitation.isActive ? colorScheme.primary : null,
+            ),
+            tooltip: recitation.isActive ? l10n.stopReciting : l10n.reciteAloud,
+            onPressed: readingState.verses.isEmpty
+                ? null
+                : () => _toggleRecitation(readingState, isOT),
+          ),
           // Pronunciation toggle button
           IconButton(
             icon: Icon(
@@ -139,12 +225,23 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
           ),
         ],
       ),
-      body: _buildBody(
-        readingState,
-        settings,
-        notifier,
-        colorScheme,
-        maxChapter,
+      body: Column(
+        children: [
+          Expanded(
+            child: _buildBody(
+              readingState,
+              settings,
+              notifier,
+              colorScheme,
+              maxChapter,
+            ),
+          ),
+          RecitationBar(
+            reference:
+                '$bookTitle ${readingState.chapter}',
+            onStop: () => ref.read(recitationProvider.notifier).stop(),
+          ),
+        ],
       ),
     );
   }
@@ -222,12 +319,22 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               itemBuilder: (context, index) {
                 final verse = readingState.verses[index];
+                final isBeingRecited = ref.watch(
+                  recitationProvider.select(
+                    (r) => r.isSpeaking(
+                      readingState.bookId,
+                      readingState.chapter,
+                      verse.verseNumber,
+                    ),
+                  ),
+                );
                 return _buildVerseCard(
                   verse,
                   readingState,
                   settings,
                   isOT,
                   colorScheme,
+                  isBeingRecited: isBeingRecited,
                 );
               },
             ),
@@ -334,8 +441,9 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
     ReadingState readingState,
     SettingsState settings,
     bool isOT,
-    ColorScheme colorScheme,
-  ) {
+    ColorScheme colorScheme, {
+    bool isBeingRecited = false,
+  }) {
     final translationText = readingState.getTranslation(verse.id);
     final l10n = AppLocalizations.of(context)!;
 
@@ -343,11 +451,14 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
     final currentBook = ref.watch(
       bookByAbbreviationProvider(readingState.bookId),
     );
-    final bookName = currentBook?.name ?? readingState.bookId;
+    final bookName = ref
+        .watch(bookNamesProvider)
+        .nameFor(readingState.bookId, fallback: currentBook?.name);
     final verseReference =
         '$bookName ${readingState.chapter}:${verse.verseNumber}';
 
     return GestureDetector(
+      key: _keyForVerse(verse.verseNumber),
       onLongPress: () => _showVerseOptionsMenu(
         context,
         verse,
@@ -358,10 +469,18 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
       child: Card(
         margin: const EdgeInsets.only(bottom: 12),
         elevation: 0,
+        // The verse currently being recited lifts off the page so the eye can
+        // follow the voice.
+        color: isBeingRecited
+            ? colorScheme.primaryContainer.withValues(alpha: 0.35)
+            : null,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
           side: BorderSide(
-            color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+            color: isBeingRecited
+                ? colorScheme.primary.withValues(alpha: 0.7)
+                : colorScheme.outlineVariant.withValues(alpha: 0.5),
+            width: isBeingRecited ? 1.5 : 1.0,
           ),
         ),
         child: Padding(

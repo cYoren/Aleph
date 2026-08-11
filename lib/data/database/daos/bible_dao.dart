@@ -565,6 +565,83 @@ class BibleDAO {
     }
   }
 
+  /// Total original-language token count for every book.
+  ///
+  /// The denominator of the readability map: how much text there is to read.
+  Future<Map<String, int>> getTokenCountsByBook() async {
+    try {
+      final db = await _dbHelper.database;
+      final rows = await db.rawQuery('''
+        SELECT v.book_id AS book, COUNT(*) AS c
+        FROM words w
+        JOIN verses v ON v.id = w.verse_id
+        GROUP BY v.book_id
+      ''');
+
+      final result = <String, int>{};
+      for (final row in rows) {
+        final book = row['book']?.toString() ?? '';
+        if (book.isEmpty) continue;
+        result[book] = (row['c'] as num?)?.toInt() ?? 0;
+      }
+      return result;
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('BibleDAO token counts by book error: $e');
+      }
+      return {};
+    }
+  }
+
+  /// Per-book count of tokens whose lexicon key is in [lexiconKeys].
+  ///
+  /// The numerator of the readability map: how much of each book the reader
+  /// already knows. Keys are batched because SQLite caps how many bound
+  /// variables a single statement may carry.
+  Future<Map<String, int>> getTokenCountsByBookForKeys(
+    List<String> lexiconKeys,
+  ) async {
+    final keys = lexiconKeys.where((k) => k.isNotEmpty).toSet().toList();
+    if (keys.isEmpty) return {};
+
+    const batchSize = 800;
+    final result = <String, int>{};
+
+    try {
+      final db = await _dbHelper.database;
+
+      for (int start = 0; start < keys.length; start += batchSize) {
+        final batch = keys.sublist(
+          start,
+          start + batchSize > keys.length ? keys.length : start + batchSize,
+        );
+        final placeholders = batch.map((_) => '?').join(',');
+
+        final rows = await db.rawQuery('''
+          SELECT v.book_id AS book, COUNT(*) AS c
+          FROM words w
+          JOIN verses v ON v.id = w.verse_id
+          WHERE w.strongs IN ($placeholders)
+          GROUP BY v.book_id
+          ''', batch);
+
+        for (final row in rows) {
+          final book = row['book']?.toString() ?? '';
+          if (book.isEmpty) continue;
+          result[book] =
+              (result[book] ?? 0) + ((row['c'] as num?)?.toInt() ?? 0);
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('BibleDAO known token counts error: $e');
+      }
+      return {};
+    }
+
+    return result;
+  }
+
   /// Total token count for one language, for vocabulary coverage stats.
   Future<int> getTotalWordCount(String language) async {
     try {

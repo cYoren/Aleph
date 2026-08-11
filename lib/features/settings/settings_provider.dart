@@ -73,6 +73,11 @@ class SettingsState {
   final bool learningModeEnabled;
   final bool readerModeEnabled;
   final HebrewTextDisplay hebrewTextDisplay;
+
+  /// Space the Hebrew text at the Masoretic disjunctive accents, so a verse
+  /// reads as phrases rather than a flat row of words.
+  final bool showSenseUnits;
+
   final bool hasManuallySelectedTranslation;
   final bool isLoaded;
 
@@ -88,6 +93,7 @@ class SettingsState {
     this.learningModeEnabled = false,
     this.readerModeEnabled = false,
     this.hebrewTextDisplay = HebrewTextDisplay.full,
+    this.showSenseUnits = true,
     this.hasManuallySelectedTranslation = false,
     this.isLoaded = false,
   });
@@ -104,6 +110,7 @@ class SettingsState {
     bool? learningModeEnabled,
     bool? readerModeEnabled,
     HebrewTextDisplay? hebrewTextDisplay,
+    bool? showSenseUnits,
     bool? hasManuallySelectedTranslation,
     bool? isLoaded,
   }) {
@@ -120,6 +127,7 @@ class SettingsState {
       learningModeEnabled: learningModeEnabled ?? this.learningModeEnabled,
       readerModeEnabled: readerModeEnabled ?? this.readerModeEnabled,
       hebrewTextDisplay: hebrewTextDisplay ?? this.hebrewTextDisplay,
+      showSenseUnits: showSenseUnits ?? this.showSenseUnits,
       hasManuallySelectedTranslation:
           hasManuallySelectedTranslation ?? this.hasManuallySelectedTranslation,
       isLoaded: isLoaded ?? this.isLoaded,
@@ -152,6 +160,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
       final hebrewTextDisplay = HebrewTextDisplay.fromName(
         prefs.getString('hebrewTextDisplay'),
       );
+      final showSenseUnits = prefs.getBool('showSenseUnits') ?? true;
       final hasManuallySelectedTranslation =
           prefs.getBool('hasManuallySelectedTranslation') ?? false;
 
@@ -178,6 +187,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         learningModeEnabled: learningModeEnabled,
         readerModeEnabled: readerModeEnabled,
         hebrewTextDisplay: hebrewTextDisplay,
+        showSenseUnits: showSenseUnits,
         hasManuallySelectedTranslation: hasManuallySelectedTranslation,
         isLoaded: true,
       );
@@ -310,6 +320,12 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     state = state.copyWith(hebrewTextDisplay: mode);
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('hebrewTextDisplay', mode.name);
+  }
+
+  Future<void> setShowSenseUnits(bool enabled) async {
+    state = state.copyWith(showSenseUnits: enabled);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('showSenseUnits', enabled);
   }
 }
 

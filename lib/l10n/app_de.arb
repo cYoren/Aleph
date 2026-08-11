@@ -221,5 +221,60 @@
   "doneButton": "Fertig",
   "syntaxSourceMacula": "Syntaxbäume: MACULA Hebräisch & Griechisch (Clear Bible), CC BY 4.0",
   "showMore": "Mehr anzeigen",
-  "showLess": "Weniger anzeigen"
+  "showLess": "Weniger anzeigen",
+  "readabilityTitle": "What can I read?",
+  "readabilityAllBooks": "Every book, most readable first",
+  "readabilityNoText": "No text is loaded yet.",
+  "readabilityCanReadNow": "You can read this now",
+  "readabilityClosest": "Closest to readable",
+  "readabilityEmptyTitle": "Start learning words to see this map fill in",
+  "readabilityEmptyBody": "As you master vocabulary, each book shows how much of it you can already read. The most frequent words cover the most text, so progress here is quick at first.",
+  "openVocabulary": "Open vocabulary",
+  "reciteAloud": "Recite aloud",
+  "stopReciting": "Stop reciting",
+  "recitationPreparing": "Preparing…",
+  "recitationStop": "Stop",
+  "hearItRead": "Hear it read",
+  "phraseSpacingTitle": "Phrase spacing",
+  "phraseSpacingDesc": "Space the Hebrew at the Masoretic accents, so a verse reads in sense units instead of word by word.",
+  "recitationVoiceTitle": "Recitation voice",
+  "recitationVoiceDesc": "Read aloud by your device's speech voices: Modern Israeli for Hebrew, Modern Greek for Greek. These are living reading traditions, not reconstructed ancient pronunciation.",
+  "voiceMissing": "No Hebrew or Greek voice is installed on this device. Add one in your system speech settings to hear the text read aloud.",
+  "voiceUnsupported": "This device has no speech engine available.",
+  "recitationFailed": "Recitation could not be started.",
+  "readBook": "Read {book}",
+  "@readBook": {
+    "placeholders": {
+      "book": {
+        "type": "String"
+      }
+    }
+  },
+  "readabilityCoverage": "You know {percent}% of its vocabulary — about {count} unfamiliar words per chapter.",
+  "@readabilityCoverage": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recitationVerse": "Verse {number}",
+  "@recitationVerse": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "voiceMissingFor": "No {tradition} voice is installed on this device.",
+  "@voiceMissingFor": {
+    "placeholders": {
+      "tradition": {
+        "type": "String"
+      }
+    }
+  }
 }
