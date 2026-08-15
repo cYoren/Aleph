@@ -694,6 +694,45 @@ class BibleDAO {
 
   /// Top cross-references for a verse (OpenBible.info data), best-voted
   /// first. Returns [] when the DB predates the cross_references table.
+  /// Cross-reference count for every verse of one chapter, in a single query.
+  ///
+  /// Feeds the badge on the reader's cross-reference button: the icon alone
+  /// gave no sign that 61 references sit behind Genesis 1:1, so it read as
+  /// absent. A per-verse count query inside the scrolling verse list would
+  /// risk scroll jank, so this loads once per chapter instead.
+  Future<Map<int, int>> getCrossReferenceCountsForChapter(
+    String bookId,
+    int chapter,
+  ) async {
+    try {
+      final db = await _dbHelper.database;
+      final rows = await db.rawQuery(
+        '''
+        SELECT from_verse, COUNT(*) AS c
+        FROM cross_references
+        WHERE from_book = ? AND from_chapter = ?
+        GROUP BY from_verse
+        ''',
+        [bookId, chapter],
+      );
+
+      final result = <int, int>{};
+      for (final row in rows) {
+        final verse = (row['from_verse'] as num?)?.toInt();
+        final count = (row['c'] as num?)?.toInt();
+        if (verse != null && count != null) {
+          result[verse] = count;
+        }
+      }
+      return result;
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('BibleDAO cross-reference counts error: $e');
+      }
+      return {};
+    }
+  }
+
   Future<List<CrossReference>> getCrossReferencesForVerse(
     String bookId,
     int chapter,

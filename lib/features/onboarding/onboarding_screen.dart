@@ -46,6 +46,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       description: l10n.onboardingTapDesc,
       color: Colors.teal,
     ),
+    _OnboardingPageData(
+      icon: Icons.play_circle_outline,
+      title: l10n.onboardingRecitationTitle,
+      description: l10n.onboardingRecitationDesc,
+      color: Colors.deepOrange,
+    ),
   ];
 
   void _nextPage() {

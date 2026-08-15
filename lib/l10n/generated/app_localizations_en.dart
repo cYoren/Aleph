@@ -52,7 +52,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingTapDesc =>
-      'Tap on any word to see its definition, pronunciation, and grammatical information. Toggle the pronunciation button to see how words are spoken.';
+      'Tap any word to see its definition, pronunciation, and grammatical information. Long-press a word for a quick meaning without leaving your place.';
 
   @override
   String get settings => 'Settings';
@@ -649,4 +649,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String voiceMissingFor(String tradition) {
     return 'No $tradition voice is installed on this device.';
   }
+
+  @override
+  String crossReferencesCount(int count) {
+    return '$count cross-references';
+  }
+
+  @override
+  String get onboardingRecitationTitle => 'Hear It Recited';
+
+  @override
+  String get onboardingRecitationDesc =>
+      'Press play to hear any chapter read aloud in Hebrew or Greek, by living voices rather than a reconstructed ancient pronunciation. Slow it right down from the speed control until your ear catches up.';
+
+  @override
+  String get readingHintTitle => 'Three ways in';
+
+  @override
+  String get readingHintBody =>
+      'Tap a word for its full meaning. Long-press for a quick peek without losing your place. Press ▶ above to hear the chapter recited.';
+
+  @override
+  String get readingHintDismiss => 'Got it';
 }

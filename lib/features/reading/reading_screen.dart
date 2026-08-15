@@ -227,6 +227,14 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
       ),
       body: Column(
         children: [
+          // Shown once, for anyone who tapped Skip during onboarding: the
+          // three affordances that make the reader usable are otherwise not
+          // discoverable on their own (long-press especially).
+          if (!settings.hasSeenReadingHint && readingState.verses.isNotEmpty)
+            _ReadingHintBanner(
+              onDismiss: () =>
+                  ref.read(settingsProvider.notifier).dismissReadingHint(),
+            ),
           Expanded(
             child: _buildBody(
               readingState,
@@ -510,15 +518,16 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
                     ),
                   ),
                   const Spacer(),
-                  // Cross-references button
-                  IconButton(
-                    icon: Icon(
-                      Icons.link,
-                      color: colorScheme.onSurfaceVariant,
-                      size: 22,
-                    ),
-                    visualDensity: VisualDensity.compact,
-                    tooltip: l10n.crossReferencesTitle,
+                  // Cross-references button. Badged with the reference count,
+                  // loaded once for the whole chapter: an unlabeled link icon
+                  // among four others read as "not implemented" rather than
+                  // "61 references behind this verse".
+                  _CrossReferenceButton(
+                    bookId: readingState.bookId,
+                    chapter: readingState.chapter,
+                    verseNumber: verse.verseNumber,
+                    colorScheme: colorScheme,
+                    l10n: l10n,
                     onPressed: () {
                       CrossReferencesSheet.show(
                         context,
@@ -748,5 +757,129 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
       'MAL',
     };
     return otBooks.contains(bookId);
+  }
+}
+
+/// One-time hint teaching tap / long-press / recite, for readers who skipped
+/// onboarding. Dismissing it is permanent, tracked in [SettingsState].
+class _ReadingHintBanner extends StatelessWidget {
+  const _ReadingHintBanner({required this.onDismiss});
+
+  final VoidCallback onDismiss;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context)!;
+
+    return Material(
+      color: colorScheme.secondaryContainer,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 10, 12, 10),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(
+              Icons.lightbulb_outline,
+              size: 20,
+              color: colorScheme.onSecondaryContainer,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    l10n.readingHintTitle,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: colorScheme.onSecondaryContainer,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    l10n.readingHintBody,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: colorScheme.onSecondaryContainer,
+                      height: 1.35,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: onDismiss,
+                      style: TextButton.styleFrom(
+                        minimumSize: const Size(0, 32),
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        foregroundColor: colorScheme.onSecondaryContainer,
+                      ),
+                      child: Text(l10n.readingHintDismiss),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Cross-reference entry point for one verse, badged with how many related
+/// passages it has.
+///
+/// The count comes from [crossReferenceCountsForChapterProvider], keyed by
+/// chapter rather than by verse: every verse card in a chapter watches the
+/// same provider instance, so opening a chapter costs one query total, not
+/// one per visible verse.
+class _CrossReferenceButton extends ConsumerWidget {
+  const _CrossReferenceButton({
+    required this.bookId,
+    required this.chapter,
+    required this.verseNumber,
+    required this.colorScheme,
+    required this.l10n,
+    required this.onPressed,
+  });
+
+  final String bookId;
+  final int chapter;
+  final int verseNumber;
+  final ColorScheme colorScheme;
+  final AppLocalizations l10n;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final counts = ref
+        .watch(crossReferenceCountsForChapterProvider((bookId, chapter)))
+        .valueOrNull;
+    final count = counts?[verseNumber] ?? 0;
+
+    final icon = Icon(
+      Icons.link,
+      color: colorScheme.onSurfaceVariant,
+      size: 22,
+    );
+
+    return IconButton(
+      icon: count > 0
+          ? Badge(
+              label: Text('$count'),
+              backgroundColor: colorScheme.primary,
+              textColor: colorScheme.onPrimary,
+              child: icon,
+            )
+          : icon,
+      visualDensity: VisualDensity.compact,
+      tooltip: count > 0
+          ? l10n.crossReferencesCount(count)
+          : l10n.crossReferencesTitle,
+      onPressed: onPressed,
+    );
   }
 }

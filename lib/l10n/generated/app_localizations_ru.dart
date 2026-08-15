@@ -52,7 +52,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get onboardingTapDesc =>
-      'Нажмите на любое слово, чтобы увидеть его определение, произношение и грамматическую информацию. Включите кнопку произношения, чтобы видеть, как звучат слова.';
+      'Нажмите на любое слово, чтобы увидеть его определение, произношение и грамматическую информацию. Нажмите и удерживайте слово, чтобы быстро увидеть значение, не теряя место.';
 
   @override
   String get settings => 'Настройки';
@@ -580,87 +580,110 @@ class AppLocalizationsRu extends AppLocalizations {
   String get showLess => 'Свернуть';
 
   @override
-  String get readabilityTitle => 'What can I read?';
+  String get readabilityTitle => 'Что я могу читать?';
 
   @override
-  String get readabilityAllBooks => 'Every book, most readable first';
+  String get readabilityAllBooks => 'Все книги, от самых доступных';
 
   @override
-  String get readabilityNoText => 'No text is loaded yet.';
+  String get readabilityNoText => 'Текст ещё не загружен.';
 
   @override
-  String get readabilityCanReadNow => 'You can read this now';
+  String get readabilityCanReadNow => 'Это вы уже можете читать';
 
   @override
-  String get readabilityClosest => 'Closest to readable';
+  String get readabilityClosest => 'Ближе всего к доступному';
 
   @override
   String get readabilityEmptyTitle =>
-      'Start learning words to see this map fill in';
+      'Начните учить слова, и эта карта заполнится';
 
   @override
   String get readabilityEmptyBody =>
-      'As you master vocabulary, each book shows how much of it you can already read. The most frequent words cover the most text, so progress here is quick at first.';
+      'По мере освоения лексики каждая книга показывает, какую её часть вы уже можете читать. Самые частые слова покрывают большую часть текста, поэтому вначале прогресс идёт быстро.';
 
   @override
-  String get openVocabulary => 'Open vocabulary';
+  String get openVocabulary => 'Открыть словарь';
 
   @override
-  String get reciteAloud => 'Recite aloud';
+  String get reciteAloud => 'Читать вслух';
 
   @override
-  String get stopReciting => 'Stop reciting';
+  String get stopReciting => 'Остановить чтение';
 
   @override
-  String get recitationPreparing => 'Preparing…';
+  String get recitationPreparing => 'Подготовка…';
 
   @override
-  String get recitationStop => 'Stop';
+  String get recitationStop => 'Стоп';
 
   @override
-  String get hearItRead => 'Hear it read';
+  String get hearItRead => 'Прослушать';
 
   @override
-  String get phraseSpacingTitle => 'Phrase spacing';
+  String get phraseSpacingTitle => 'Деление на смысловые части';
 
   @override
   String get phraseSpacingDesc =>
-      'Space the Hebrew at the Masoretic accents, so a verse reads in sense units instead of word by word.';
+      'Расставляет пробелы в еврейском тексте по масоретским акцентам, чтобы стих читался смысловыми единицами, а не слово за словом.';
 
   @override
-  String get recitationVoiceTitle => 'Recitation voice';
+  String get recitationVoiceTitle => 'Голос чтения';
 
   @override
   String get recitationVoiceDesc =>
-      'Read aloud by your device\'s speech voices: Modern Israeli for Hebrew, Modern Greek for Greek. These are living reading traditions, not reconstructed ancient pronunciation.';
+      'Чтение голосами вашего устройства: современный израильский для иврита и современный греческий для греческого. Это живые традиции чтения, а не реконструированное древнее произношение.';
 
   @override
   String get voiceMissing =>
-      'No Hebrew or Greek voice is installed on this device. Add one in your system speech settings to hear the text read aloud.';
+      'На этом устройстве не установлен голос для иврита или греческого. Добавьте его в системных настройках синтеза речи, чтобы слышать текст.';
 
   @override
-  String get voiceUnsupported => 'This device has no speech engine available.';
+  String get voiceUnsupported =>
+      'На этом устройстве нет доступного синтезатора речи.';
 
   @override
-  String get recitationFailed => 'Recitation could not be started.';
+  String get recitationFailed => 'Не удалось начать чтение.';
 
   @override
   String readBook(String book) {
-    return 'Read $book';
+    return 'Читать: $book';
   }
 
   @override
   String readabilityCoverage(int percent, int count) {
-    return 'You know $percent% of its vocabulary — about $count unfamiliar words per chapter.';
+    return 'Вы знаете $percent % его лексики — около $count незнакомых слов на главу.';
   }
 
   @override
   String recitationVerse(int number) {
-    return 'Verse $number';
+    return 'Стих $number';
   }
 
   @override
   String voiceMissingFor(String tradition) {
-    return 'No $tradition voice is installed on this device.';
+    return 'На этом устройстве не установлен голос «$tradition».';
   }
+
+  @override
+  String crossReferencesCount(int count) {
+    return 'Перекрёстных ссылок: $count';
+  }
+
+  @override
+  String get onboardingRecitationTitle => 'Послушайте чтение вслух';
+
+  @override
+  String get onboardingRecitationDesc =>
+      'Нажмите кнопку воспроизведения, чтобы услышать любую главу на иврите или греческом — живыми голосами, а не реконструированным древним произношением. Замедлите темп, пока ухо не привыкнет.';
+
+  @override
+  String get readingHintTitle => 'Три способа начать';
+
+  @override
+  String get readingHintBody =>
+      'Нажмите на слово, чтобы увидеть его полное значение. Нажмите и удерживайте для быстрого предпросмотра, не теряя место. Нажмите ▶ вверху, чтобы услышать главу вслух.';
+
+  @override
+  String get readingHintDismiss => 'Понятно';
 }

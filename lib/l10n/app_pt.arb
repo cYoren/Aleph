@@ -13,7 +13,7 @@
   "onboardingGreekTitle": "Grego - Novo Testamento",
   "onboardingGreekDesc": "O Novo Testamento foi escrito em grego, lido da esquerda para a direita. Os Evangelhos e Epístolas foram compostos entre 50-100 d.C.",
   "onboardingTapTitle": "Toque em Qualquer Palavra",
-  "onboardingTapDesc": "Toque em qualquer palavra para ver sua definição, pronúncia e informação gramatical. Ative o botão de pronúncia para ver como as palavras são faladas.",
+  "onboardingTapDesc": "Toque em qualquer palavra para ver sua definição, pronúncia e informação gramatical. Toque e segure uma palavra para ver o significado rápido sem perder o lugar.",
   "settings": "Configurações",
   "translation": "Tradução",
   "pronunciation": "Mostrar Pronúncia",
@@ -276,5 +276,18 @@
         "type": "String"
       }
     }
-  }
+  },
+  "crossReferencesCount": "{count} referências cruzadas",
+  "@crossReferencesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onboardingRecitationTitle": "Ouça a Recitação",
+  "onboardingRecitationDesc": "Toque em reproduzir para ouvir qualquer capítulo lido em voz alta em hebraico ou grego, com vozes vivas em vez de uma pronúncia antiga reconstruída. Diminua a velocidade até o seu ouvido acompanhar.",
+  "readingHintTitle": "Três formas de começar",
+  "readingHintBody": "Toque em uma palavra para ver o significado completo. Toque e segure para uma prévia rápida sem perder o lugar. Toque em ▶ acima para ouvir o capítulo recitado.",
+  "readingHintDismiss": "Entendi"
 }

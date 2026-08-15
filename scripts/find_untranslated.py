@@ -29,10 +29,20 @@ L10N_DIR = pathlib.Path("lib/l10n")
 LIB_DIR = pathlib.Path("lib")
 LOCALES = ["pt", "de", "fr", "es", "ru", "zh", "ko"]
 
-# Strings that are legitimately identical across languages.
+# Strings that are legitimately identical across languages: fixed acronyms, or
+# short/abbreviated forms that happen to converge between cognate languages.
+# Verified by hand against every locale before being added here - do not add a
+# key just because it is failing the check.
 ALLOWED_IDENTICAL = {
     "appTitle",
     "KJV",
+    "cnpjLabel",  # "CNPJ" - a Brazilian tax-ID acronym, not a translatable word
+    "themeSystem",  # "System" is also correct German
+    "posVerb",  # "Verb" is also correct German
+    "posAdjectiveShort",  # "Adj." converges across en/pt/de/fr/es
+    "posPrepositionShort",  # "Prep." converges across en/pt/es
+    "posConjunctionShort",  # "Conj." converges across en/pt/es
+    "error",  # "Error" is also correct Spanish
 }
 
 

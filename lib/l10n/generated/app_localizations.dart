@@ -191,7 +191,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingTapDesc.
   ///
   /// In en, this message translates to:
-  /// **'Tap on any word to see its definition, pronunciation, and grammatical information. Toggle the pronunciation button to see how words are spoken.'**
+  /// **'Tap any word to see its definition, pronunciation, and grammatical information. Long-press a word for a quick meaning without leaving your place.'**
   String get onboardingTapDesc;
 
   /// No description provided for @settings.
@@ -1207,6 +1207,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No {tradition} voice is installed on this device.'**
   String voiceMissingFor(String tradition);
+
+  /// No description provided for @crossReferencesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} cross-references'**
+  String crossReferencesCount(int count);
+
+  /// No description provided for @onboardingRecitationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Hear It Recited'**
+  String get onboardingRecitationTitle;
+
+  /// No description provided for @onboardingRecitationDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Press play to hear any chapter read aloud in Hebrew or Greek, by living voices rather than a reconstructed ancient pronunciation. Slow it right down from the speed control until your ear catches up.'**
+  String get onboardingRecitationDesc;
+
+  /// No description provided for @readingHintTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Three ways in'**
+  String get readingHintTitle;
+
+  /// No description provided for @readingHintBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a word for its full meaning. Long-press for a quick peek without losing your place. Press ▶ above to hear the chapter recited.'**
+  String get readingHintBody;
+
+  /// No description provided for @readingHintDismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get readingHintDismiss;
 }
 
 class _AppLocalizationsDelegate

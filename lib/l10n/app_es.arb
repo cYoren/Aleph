@@ -13,7 +13,7 @@
   "onboardingGreekTitle": "Griego - Nuevo Testamento",
   "onboardingGreekDesc": "El Nuevo Testamento fue escrito en griego, de izquierda a derecha. Los Evangelios y las Epístolas fueron compuestos entre los años 50 y 100 d.C.",
   "onboardingTapTitle": "Toca cualquier palabra",
-  "onboardingTapDesc": "Toca cualquier palabra para ver su definición, pronunciación e información gramatical. Activa el botón de pronunciación para ver cómo se pronuncian las palabras.",
+  "onboardingTapDesc": "Toca cualquier palabra para ver su definición, pronunciación e información gramatical. Mantén pulsada una palabra para ver su significado rápido sin perder tu lugar.",
   "settings": "Ajustes",
   "translation": "Traducción",
   "pronunciation": "Mostrar pronunciación",
@@ -222,27 +222,27 @@
   "syntaxSourceMacula": "Árboles sintácticos: MACULA hebreo y griego (Clear Bible), CC BY 4.0",
   "showMore": "Mostrar más",
   "showLess": "Mostrar menos",
-  "readabilityTitle": "What can I read?",
-  "readabilityAllBooks": "Every book, most readable first",
-  "readabilityNoText": "No text is loaded yet.",
-  "readabilityCanReadNow": "You can read this now",
-  "readabilityClosest": "Closest to readable",
-  "readabilityEmptyTitle": "Start learning words to see this map fill in",
-  "readabilityEmptyBody": "As you master vocabulary, each book shows how much of it you can already read. The most frequent words cover the most text, so progress here is quick at first.",
-  "openVocabulary": "Open vocabulary",
-  "reciteAloud": "Recite aloud",
-  "stopReciting": "Stop reciting",
-  "recitationPreparing": "Preparing…",
-  "recitationStop": "Stop",
-  "hearItRead": "Hear it read",
-  "phraseSpacingTitle": "Phrase spacing",
-  "phraseSpacingDesc": "Space the Hebrew at the Masoretic accents, so a verse reads in sense units instead of word by word.",
-  "recitationVoiceTitle": "Recitation voice",
-  "recitationVoiceDesc": "Read aloud by your device's speech voices: Modern Israeli for Hebrew, Modern Greek for Greek. These are living reading traditions, not reconstructed ancient pronunciation.",
-  "voiceMissing": "No Hebrew or Greek voice is installed on this device. Add one in your system speech settings to hear the text read aloud.",
-  "voiceUnsupported": "This device has no speech engine available.",
-  "recitationFailed": "Recitation could not be started.",
-  "readBook": "Read {book}",
+  "readabilityTitle": "¿Qué puedo leer?",
+  "readabilityAllBooks": "Todos los libros, del más legible al menos",
+  "readabilityNoText": "Todavía no hay texto cargado.",
+  "readabilityCanReadNow": "Ya puedes leer este",
+  "readabilityClosest": "El más cercano a poder leerse",
+  "readabilityEmptyTitle": "Empieza a aprender palabras para llenar este mapa",
+  "readabilityEmptyBody": "A medida que domines el vocabulario, cada libro mostrará cuánto puedes leer ya. Las palabras más frecuentes cubren la mayor parte del texto, así que al principio se avanza rápido.",
+  "openVocabulary": "Abrir vocabulario",
+  "reciteAloud": "Leer en voz alta",
+  "stopReciting": "Detener la lectura",
+  "recitationPreparing": "Preparando…",
+  "recitationStop": "Detener",
+  "hearItRead": "Escuchar la lectura",
+  "phraseSpacingTitle": "Espaciado por frases",
+  "phraseSpacingDesc": "Espacia el texto hebreo en los acentos masoréticos, para leer el versículo en unidades de sentido y no palabra por palabra.",
+  "recitationVoiceTitle": "Voz de lectura",
+  "recitationVoiceDesc": "Lectura con las voces de tu dispositivo: hebreo israelí moderno y griego moderno. Son tradiciones vivas de lectura, no la pronunciación antigua reconstruida.",
+  "voiceMissing": "No hay ninguna voz de hebreo o griego instalada en este dispositivo. Añade una en los ajustes de voz del sistema para escuchar el texto.",
+  "voiceUnsupported": "Este dispositivo no tiene ningún motor de voz disponible.",
+  "recitationFailed": "No se pudo iniciar la lectura.",
+  "readBook": "Leer {book}",
   "@readBook": {
     "placeholders": {
       "book": {
@@ -250,7 +250,7 @@
       }
     }
   },
-  "readabilityCoverage": "You know {percent}% of its vocabulary — about {count} unfamiliar words per chapter.",
+  "readabilityCoverage": "Conoces el {percent} % de su vocabulario: unas {count} palabras desconocidas por capítulo.",
   "@readabilityCoverage": {
     "placeholders": {
       "percent": {
@@ -261,7 +261,7 @@
       }
     }
   },
-  "recitationVerse": "Verse {number}",
+  "recitationVerse": "Versículo {number}",
   "@recitationVerse": {
     "placeholders": {
       "number": {
@@ -269,12 +269,25 @@
       }
     }
   },
-  "voiceMissingFor": "No {tradition} voice is installed on this device.",
+  "voiceMissingFor": "No hay ninguna voz de {tradition} instalada en este dispositivo.",
   "@voiceMissingFor": {
     "placeholders": {
       "tradition": {
         "type": "String"
       }
     }
-  }
+  },
+  "crossReferencesCount": "{count} referencias cruzadas",
+  "@crossReferencesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onboardingRecitationTitle": "Escucha la recitación",
+  "onboardingRecitationDesc": "Pulsa reproducir para escuchar cualquier capítulo leído en voz alta en hebreo o griego, con voces vivas en lugar de una pronunciación antigua reconstruida. Reduce la velocidad hasta que tu oído se acostumbre.",
+  "readingHintTitle": "Tres formas de empezar",
+  "readingHintBody": "Toca una palabra para ver su significado completo. Mantén pulsado para una vista rápida sin perder tu lugar. Pulsa ▶ arriba para escuchar el capítulo recitado.",
+  "readingHintDismiss": "Entendido"
 }

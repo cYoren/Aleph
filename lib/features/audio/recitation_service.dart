@@ -7,6 +7,7 @@
 library;
 
 import 'dart:async';
+import 'dart:io' show Platform;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -70,6 +71,7 @@ class RecitationService {
       // Makes `speak` complete only when the utterance has finished, which is
       // what lets us read a chapter verse by verse without racing.
       await _tts.awaitSpeakCompletion(true);
+      await _configureIosAudioSession();
       _configured = true;
     }
 
@@ -81,6 +83,39 @@ class RecitationService {
     await _tts.setSpeechRate(_platformRate(rate));
     await _tts.setVolume(1.0);
     await _tts.setPitch(1.0);
+  }
+
+  /// Puts iOS into an audio session that suits spoken content.
+  ///
+  /// Without this, iOS applies the default (`ambientSolo`) session, and the
+  /// recitation is **silenced by the Ring/Silent switch and by screen lock** —
+  /// so a user with their phone on silent taps play, watches the verse
+  /// highlight and scroll, and hears nothing. That reads as a broken feature
+  /// rather than a muted one.
+  ///
+  /// `playback` keeps the audio going through the silent switch and, together
+  /// with the `audio` background mode in Info.plist, through screen lock, which
+  /// is what makes listening while walking or driving possible. The session is
+  /// deliberately non-mixing: this is spoken content, so it should interrupt
+  /// music the way a podcast does rather than talk over it.
+  ///
+  /// Does nothing on other platforms.
+  Future<void> _configureIosAudioSession() async {
+    if (!Platform.isIOS) return;
+    try {
+      await _tts.setSharedInstance(true);
+      await _tts.setIosAudioCategory(
+        IosTextToSpeechAudioCategory.playback,
+        const [IosTextToSpeechAudioCategoryOptions.duckOthers],
+        IosTextToSpeechAudioMode.spokenAudio,
+      );
+    } catch (e) {
+      // A failed session setup must not stop playback: audio may still work,
+      // just subject to the silent switch.
+      if (kDebugMode) {
+        debugPrint('RecitationService iOS audio session setup failed: $e');
+      }
+    }
   }
 
   /// Maps a 1.0-is-normal multiplier onto the platform scale.
