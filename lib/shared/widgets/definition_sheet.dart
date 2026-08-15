@@ -5,6 +5,7 @@ import '../../l10n/generated/app_localizations.dart';
 import '../../providers/word_provider.dart';
 import '../../providers/books_provider.dart';
 import '../utils/morphology_decoder.dart';
+import '../../features/audio/widgets/recitation_bar.dart';
 
 class DefinitionSheet extends ConsumerWidget {
   const DefinitionSheet({super.key});
@@ -102,6 +103,11 @@ class DefinitionSheet extends ConsumerWidget {
                         ],
                       ),
                     ),
+                    SpeakWordButton(
+                      text: word.displayText,
+                      isHebrew: isHebrew,
+                      size: 24,
+                    ),
                     IconButton(
                       icon: const Icon(Icons.close),
                       onPressed: () {
@@ -149,6 +155,24 @@ class DefinitionSheet extends ConsumerWidget {
                       controller: scrollController,
                       padding: const EdgeInsets.all(16),
                       children: [
+                        // The meaning comes first. Someone who taps a word
+                        // wants to know what it means; the dictionary form,
+                        // pronunciation, and grammar are what they read next,
+                        // not what they should have to scroll past.
+                        if (lexicon.gloss != null)
+                          _buildSection(
+                            l10n.quickMeaning,
+                            lexicon.gloss!,
+                            colorScheme,
+                          ),
+
+                        if (lexicon.definition != null)
+                          _buildSection(
+                            l10n.fullDefinition,
+                            lexicon.definition!,
+                            colorScheme,
+                          ),
+
                         // Lemma with proper font
                         _buildLemmaSection(
                           lexicon.lemma,
@@ -165,20 +189,6 @@ class DefinitionSheet extends ConsumerWidget {
                             lexicon.pronunciation!,
                             colorScheme,
                             l10n,
-                          ),
-
-                        if (lexicon.gloss != null)
-                          _buildSection(
-                            l10n.quickMeaning,
-                            lexicon.gloss!,
-                            colorScheme,
-                          ),
-
-                        if (lexicon.definition != null)
-                          _buildSection(
-                            l10n.fullDefinition,
-                            lexicon.definition!,
-                            colorScheme,
                           ),
 
                         // Scholarly lexicon entry (BDB / Abbott-Smith)

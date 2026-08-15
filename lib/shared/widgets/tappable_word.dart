@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/models/word.dart';
@@ -31,9 +33,17 @@ class TappableWord extends ConsumerStatefulWidget {
   ConsumerState<TappableWord> createState() => _TappableWordState();
 }
 
+/// How long a peeked gloss stays on screen before fading out on its own.
+const Duration _kPeekDuration = Duration(milliseconds: 2600);
+
 class _TappableWordState extends ConsumerState<TappableWord> {
   final GlobalKey _wordKey = GlobalKey();
   late final VisibleWordCoordinatesNotifier _visibleWordCoordinatesNotifier;
+
+  /// Anchors the peek bubble to this word so it tracks scrolling.
+  final LayerLink _peekLink = LayerLink();
+  OverlayEntry? _peekEntry;
+  Timer? _peekTimer;
 
   @override
   void initState() {
@@ -60,11 +70,111 @@ class _TappableWordState extends ConsumerState<TappableWord> {
 
   @override
   void dispose() {
+    _removePeek();
     final wordId = widget.word.id.toString();
     Future<void>.microtask(() {
       _visibleWordCoordinatesNotifier.unregisterWord(wordId);
     });
     super.dispose();
+  }
+
+  void _removePeek() {
+    _peekTimer?.cancel();
+    _peekTimer = null;
+    _peekEntry?.remove();
+    _peekEntry = null;
+  }
+
+  /// Shows the gloss inline without opening the definition sheet.
+  ///
+  /// Tapping a word to read its entry costs you your place in the line; a
+  /// long-press answers "what does that one mean?" and leaves the reading
+  /// rhythm intact.
+  Future<void> _showPeek() async {
+    final lookupKey = widget.word.lexiconLookupKey;
+    if (lookupKey == null) return;
+
+    final entry = await ref.read(lexiconEntryProvider(lookupKey).future);
+    if (!mounted) return;
+
+    final gloss = entry?.gloss?.trim();
+    if (gloss == null || gloss.isEmpty) return;
+
+    final overlay = Overlay.maybeOf(context);
+    if (overlay == null) return;
+
+    _removePeek();
+
+    final colorScheme = Theme.of(context).colorScheme;
+    _peekEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        width: 220,
+        child: CompositedTransformFollower(
+          link: _peekLink,
+          showWhenUnlinked: false,
+          // Sit just above the word, horizontally centred on it.
+          targetAnchor: Alignment.topCenter,
+          followerAnchor: Alignment.bottomCenter,
+          offset: const Offset(0, -6),
+          child: IgnorePointer(
+            child: Center(
+              child: Material(
+                color: Colors.transparent,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: colorScheme.inverseSurface,
+                    borderRadius: BorderRadius.circular(8),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.2),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        gloss,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: colorScheme.onInverseSurface,
+                        ),
+                      ),
+                      if (widget.transliteration != null &&
+                          widget.transliteration!.isNotEmpty) ...[
+                        const SizedBox(height: 2),
+                        Text(
+                          widget.transliteration!,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontStyle: FontStyle.italic,
+                            color: colorScheme.onInverseSurface.withValues(
+                              alpha: 0.75,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    overlay.insert(_peekEntry!);
+    _peekTimer = Timer(_kPeekDuration, _removePeek);
   }
 
   void _reportCoordinates() {
@@ -105,7 +215,10 @@ class _TappableWordState extends ConsumerState<TappableWord> {
         widget.transliteration!.isNotEmpty;
 
     return GestureDetector(
+      onLongPress: _showPeek,
       onTap: () {
+        _removePeek();
+
         if (widget.onTapOverride != null) {
           widget.onTapOverride!();
           return;
@@ -124,28 +237,33 @@ class _TappableWordState extends ConsumerState<TappableWord> {
 
         DefinitionSheet.show(context);
       },
-      child: Container(
-        key: _wordKey,
-        padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 2),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? colorScheme.primaryContainer.withValues(alpha: 0.5)
-              : isContextActive
-              ? colorScheme.secondaryContainer.withValues(alpha: 0.3)
-              : null,
-          borderRadius: BorderRadius.circular(4),
-          border: isContextActive && !isSelected
-              ? Border.all(color: colorScheme.secondary.withValues(alpha: 0.5))
-              : null,
+      child: CompositedTransformTarget(
+        link: _peekLink,
+        child: Container(
+          key: _wordKey,
+          padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 2),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? colorScheme.primaryContainer.withValues(alpha: 0.5)
+                : isContextActive
+                ? colorScheme.secondaryContainer.withValues(alpha: 0.3)
+                : null,
+            borderRadius: BorderRadius.circular(4),
+            border: isContextActive && !isSelected
+                ? Border.all(
+                    color: colorScheme.secondary.withValues(alpha: 0.5),
+                  )
+                : null,
+          ),
+          child: _buildWordStack(colorScheme, showTransliteration),
         ),
-        child: _buildWordStack(colorScheme, showTransliteration),
       ),
     );
   }
 
   Widget _buildWordStack(ColorScheme colorScheme, bool showTransliteration) {
-    final hasGloss = widget.readerGloss != null &&
-        widget.readerGloss!.isNotEmpty;
+    final hasGloss =
+        widget.readerGloss != null && widget.readerGloss!.isNotEmpty;
 
     if (!showTransliteration && !hasGloss) {
       return _buildWordText(colorScheme);
@@ -199,9 +317,7 @@ class _TappableWordState extends ConsumerState<TappableWord> {
     final displayText = widget.isOT
         ? applyHebrewDisplay(
             widget.word.displayText,
-            ref.watch(
-              settingsProvider.select((s) => s.hebrewTextDisplay),
-            ),
+            ref.watch(settingsProvider.select((s) => s.hebrewTextDisplay)),
           )
         : widget.word.displayText;
 

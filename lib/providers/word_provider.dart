@@ -3,6 +3,7 @@ import '../data/models/word.dart';
 import '../data/models/verse.dart';
 import '../data/models/lexicon_entry.dart';
 import '../shared/utils/transliterator.dart';
+import '../shared/utils/hebrew_syllables.dart';
 import '../shared/utils/reader_mode.dart';
 import 'database_provider.dart';
 
@@ -27,6 +28,16 @@ final selectedWordLexiconProvider = FutureProvider<LexiconEntry?>((ref) async {
   return dao.getLexiconEntry(lookupKey);
 });
 
+/// Lexicon entry for one key, for the long-press peek in the reader.
+final lexiconEntryProvider = FutureProvider.family<LexiconEntry?, String>((
+  ref,
+  lexiconKey,
+) async {
+  if (lexiconKey.isEmpty) return null;
+  final dao = ref.watch(bibleDaoProvider);
+  return dao.getLexiconEntry(lexiconKey);
+});
+
 /// Words for a specific verse
 final wordsForVerseProvider = FutureProvider.family<List<Word>, String>((
   ref,
@@ -36,8 +47,11 @@ final wordsForVerseProvider = FutureProvider.family<List<Word>, String>((
   return dao.getWordsForVerse(verseId);
 });
 
-/// Transliterations for a verse - word ID -> transliteration
-/// Uses automatic transliteration from the word's display text
+/// Transliterations for a verse - word ID -> transliteration.
+///
+/// Hebrew is syllabified and stress-marked from the cantillation (`bə·rēʾ·ˈšîṯ`)
+/// so the reader can see how a word is actually spoken, not just which letters
+/// it contains. Greek falls back to the plain letter-for-letter scheme.
 final transliterationsForVerseProvider =
     FutureProvider.family<Map<String, String>, (String, bool)>((
       ref,
@@ -50,11 +64,27 @@ final transliterationsForVerseProvider =
 
       // Generate transliterations for each word
       final Map<String, String> result = {};
-      for (final word in words) {
-        final transliteration = Transliterator.transliterate(
-          word.displayText,
-          isHebrew: isHebrew,
-        );
+      for (int i = 0; i < words.length; i++) {
+        final word = words[i];
+        final String transliteration;
+
+        if (isHebrew) {
+          // Silluq only ever falls on the last word of a verse, so the final
+          // token is the one where U+05BD may mark stress rather than meteg.
+          final syllabified = syllabifyHebrew(
+            word.displayText,
+            isVerseFinal: i == words.length - 1,
+          );
+          transliteration = syllabified.isEmpty
+              ? Transliterator.transliterate(word.displayText, isHebrew: true)
+              : syllabified.marked;
+        } else {
+          transliteration = Transliterator.transliterate(
+            word.displayText,
+            isHebrew: false,
+          );
+        }
+
         if (transliteration.isNotEmpty) {
           result[word.id.toString()] = transliteration;
         }

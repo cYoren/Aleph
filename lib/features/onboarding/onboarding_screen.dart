@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../l10n/generated/app_localizations.dart';
+import '../explain/explain_provider.dart';
 import '../settings/settings_provider.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
@@ -46,6 +47,23 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       description: l10n.onboardingTapDesc,
       color: Colors.teal,
     ),
+    _OnboardingPageData(
+      icon: Icons.play_circle_outline,
+      title: l10n.onboardingRecitationTitle,
+      description: l10n.onboardingRecitationDesc,
+      color: Colors.deepOrange,
+    ),
+    // Only offered when this build can actually do it. The switch defaults to
+    // on, but the page states plainly what leaves the device, so the reader is
+    // choosing rather than discovering it later.
+    if (ref.read(explainConfiguredProvider))
+      _OnboardingPageData(
+        icon: Icons.auto_awesome_outlined,
+        title: l10n.onboardingAiTitle,
+        description: l10n.onboardingAiDesc,
+        color: Colors.purple,
+        isAiConsent: true,
+      ),
   ];
 
   void _nextPage() {
@@ -161,6 +179,9 @@ class _OnboardingPageData {
   final String? exampleTranslation;
   final bool isRTL;
 
+  /// When true the page shows the AI opt-in switch and its privacy note.
+  final bool isAiConsent;
+
   const _OnboardingPageData({
     required this.icon,
     required this.title,
@@ -169,16 +190,17 @@ class _OnboardingPageData {
     this.exampleText,
     this.exampleTranslation,
     this.isRTL = false,
+    this.isAiConsent = false,
   });
 }
 
-class _OnboardingPage extends StatelessWidget {
+class _OnboardingPage extends ConsumerWidget {
   final _OnboardingPageData data;
 
   const _OnboardingPage({required this.data});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Padding(
@@ -219,6 +241,46 @@ class _OnboardingPage extends StatelessWidget {
             ),
             textAlign: TextAlign.center,
           ),
+
+          // AI opt-in: the switch is on by default, but the note below it
+          // says exactly what leaves the device, so the reader is making a
+          // choice here rather than finding out later.
+          if (data.isAiConsent) ...[
+            const SizedBox(height: 24),
+            Consumer(
+              builder: (context, ref, _) {
+                final l10n = AppLocalizations.of(context)!;
+                final enabled = ref.watch(
+                  settingsProvider.select((s) => s.aiExplainEnabled),
+                );
+                return Column(
+                  children: [
+                    SwitchListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(
+                        l10n.onboardingAiToggle,
+                        style: const TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                      value: enabled,
+                      onChanged: (value) => ref
+                          .read(settingsProvider.notifier)
+                          .setAiExplainEnabled(value),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      l10n.onboardingAiPrivacy,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 11,
+                        height: 1.4,
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ],
 
           // Example text (if provided)
           if (data.exampleText != null) ...[

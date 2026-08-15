@@ -51,7 +51,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get onboardingTapDesc =>
-      '단어를 누르면 정의, 발음, 문법 정보를 볼 수 있습니다. 발음 버튼을 켜면 단어 발음을 확인할 수 있습니다.';
+      '단어를 누르면 정의, 발음, 문법 정보를 볼 수 있습니다. 단어를 길게 누르면 읽던 자리를 벗어나지 않고 빠르게 뜻을 확인할 수 있습니다.';
 
   @override
   String get settings => '설정';
@@ -552,4 +552,180 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get showLess => '접기';
+
+  @override
+  String get readabilityTitle => '무엇을 읽을 수 있나요?';
+
+  @override
+  String get readabilityAllBooks => '모든 책, 읽기 쉬운 순서';
+
+  @override
+  String get readabilityNoText => '아직 본문이 불러와지지 않았습니다.';
+
+  @override
+  String get readabilityCanReadNow => '지금 읽을 수 있습니다';
+
+  @override
+  String get readabilityClosest => '가장 읽기에 가까운 책';
+
+  @override
+  String get readabilityEmptyTitle => '단어를 익히면 이 지도가 채워집니다';
+
+  @override
+  String get readabilityEmptyBody =>
+      '어휘를 익혀 갈수록 각 책에서 이미 읽을 수 있는 비율이 표시됩니다. 자주 쓰이는 단어가 본문의 대부분을 차지하므로 처음에는 빠르게 늘어납니다.';
+
+  @override
+  String get openVocabulary => '어휘 열기';
+
+  @override
+  String get reciteAloud => '소리내어 읽기';
+
+  @override
+  String get stopReciting => '읽기 중지';
+
+  @override
+  String get recitationPreparing => '준비 중…';
+
+  @override
+  String get recitationStop => '중지';
+
+  @override
+  String get hearItRead => '발음 듣기';
+
+  @override
+  String get phraseSpacingTitle => '의미 단위 띄어쓰기';
+
+  @override
+  String get phraseSpacingDesc =>
+      '마소라 악센트에 따라 히브리어 본문을 띄어, 절을 단어 단위가 아니라 의미 단위로 읽게 합니다.';
+
+  @override
+  String get recitationVoiceTitle => '낭독 음성';
+
+  @override
+  String get recitationVoiceDesc =>
+      '기기의 음성으로 읽어 줍니다. 히브리어는 현대 이스라엘 발음, 그리스어는 현대 그리스 발음입니다. 재구성한 고대 발음이 아니라 지금도 사용되는 낭독 전통입니다.';
+
+  @override
+  String get voiceMissing =>
+      '이 기기에 히브리어 또는 그리스어 음성이 설치되어 있지 않습니다. 시스템 음성 설정에서 추가하면 본문을 들을 수 있습니다.';
+
+  @override
+  String get voiceUnsupported => '이 기기에는 사용할 수 있는 음성 엔진이 없습니다.';
+
+  @override
+  String get recitationFailed => '낭독을 시작할 수 없습니다.';
+
+  @override
+  String readBook(String book) {
+    return '$book 읽기';
+  }
+
+  @override
+  String readabilityCoverage(int percent, int count) {
+    return '이 책 어휘의 $percent%를 알고 있습니다. 장마다 모르는 단어가 약 $count개입니다.';
+  }
+
+  @override
+  String recitationVerse(int number) {
+    return '$number절';
+  }
+
+  @override
+  String voiceMissingFor(String tradition) {
+    return '이 기기에 $tradition 음성이 설치되어 있지 않습니다.';
+  }
+
+  @override
+  String crossReferencesCount(int count) {
+    return '교차 참조 $count개';
+  }
+
+  @override
+  String get onboardingRecitationTitle => '낭독으로 들어보세요';
+
+  @override
+  String get onboardingRecitationDesc =>
+      '재생 버튼을 누르면 어느 장이든 히브리어나 그리스어로 낭독되는 것을 들을 수 있습니다. 복원된 고대 발음이 아니라 지금도 쓰이는 살아 있는 발음입니다. 속도 조절로 천천히 낮춰 귀에 익을 때까지 들어 보세요.';
+
+  @override
+  String get readingHintTitle => '시작하는 세 가지 방법';
+
+  @override
+  String get readingHintBody =>
+      '단어를 누르면 전체 뜻을 볼 수 있습니다. 길게 누르면 자리를 벗어나지 않고 빠르게 미리 볼 수 있습니다. 위쪽의 ▶를 누르면 이 장의 낭독을 들을 수 있습니다.';
+
+  @override
+  String get readingHintDismiss => '확인';
+
+  @override
+  String get explainTitle => '이 구절 설명하기';
+
+  @override
+  String get explainLoading => '구절을 읽는 중…';
+
+  @override
+  String get explainDisclaimer => 'AI가 작성했습니다. 틀릴 수 있으니 본문과 대조해 보세요.';
+
+  @override
+  String get explainSettingTitle => 'AI 구절 설명';
+
+  @override
+  String get explainSettingDesc =>
+      '기본적으로 꺼져 있습니다. 켜면 읽고 있는 구절이 설명을 위해 인터넷으로 전송됩니다. 그 밖의 모든 기능은 완전히 오프라인으로 동작합니다.';
+
+  @override
+  String get explainErrorOffline => '연결이 없습니다. 인터넷이 필요한 유일한 기능입니다.';
+
+  @override
+  String get explainErrorRateLimited => '요청이 너무 많습니다. 잠시 후 다시 시도해 주세요.';
+
+  @override
+  String get explainErrorGeneric => '설명을 생성하지 못했습니다.';
+
+  @override
+  String get explainRetry => '다시 시도';
+
+  @override
+  String get explainLowQuality =>
+      '이 답변은 이상해 보입니다. 다시 시도해 보세요. 계속 반복되면 모델을 교체해야 할 수 있습니다.';
+
+  @override
+  String explainFreeRemaining(int count) {
+    return '오늘 남은 무료 설명 $count회';
+  }
+
+  @override
+  String get explainLimitReached => '오늘의 무료 설명을 모두 사용했습니다.';
+
+  @override
+  String get explainUpgradeTitle => '무제한, 그리고 더 뛰어난 모델';
+
+  @override
+  String get explainDiagnosticsTitle => 'AI 진단';
+
+  @override
+  String get explainDiagnosticsDesc =>
+      '질문에 답하는 모델의 성공률과 속도입니다. 답변이 평소보다 나빠 보이면 여기를 확인하세요.';
+
+  @override
+  String get explainNoData => '아직 요청한 설명이 없습니다.';
+
+  @override
+  String get explainClearDiagnostics => '기록 지우기';
+
+  @override
+  String get onboardingAiTitle => '어떤 구절이든 물어보세요';
+
+  @override
+  String get onboardingAiDesc =>
+      '당신의 질문을 위한 선생님: 히브리어가 실제로 무엇을 말하는지, 그리스어가 번역이 담지 못한 무엇을 지니는지. 어떤 절에서든 ✨를 누르세요.';
+
+  @override
+  String get onboardingAiToggle => 'AI 선생님 사용';
+
+  @override
+  String get onboardingAiPrivacy =>
+      '이 기능만 인터넷을 사용합니다. 질문한 절이 설명을 위해 전송됩니다. 본문, 사전, 문법, 음성 등 나머지는 모두 완전히 오프라인으로 동작합니다. 설정에서 언제든 변경할 수 있습니다.';
 }

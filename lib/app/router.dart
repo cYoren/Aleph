@@ -13,6 +13,8 @@ import '../features/startup/startup_gate_screen.dart';
 import '../features/export/export_composer_screen.dart';
 import '../features/memorization/memorization_practice_screen.dart';
 import '../features/memorization/memorization_screen.dart';
+import '../features/explain/explain_diagnostics_screen.dart';
+import '../features/readability/readability_screen.dart';
 import '../features/vocabulary/parsing_quiz_screen.dart';
 import '../features/vocabulary/vocabulary_screen.dart';
 import '../features/word_study/word_study_screen.dart';
@@ -106,6 +108,16 @@ final router = GoRouter(
     GoRoute(
       path: '/vocabulary',
       builder: (context, state) => const VocabularyScreen(),
+    ),
+    // Which books the reader can already read
+    GoRoute(
+      path: '/readability',
+      builder: (context, state) => const ReadabilityScreen(),
+    ),
+    // Health of the AI models answering questions
+    GoRoute(
+      path: '/ai-diagnostics',
+      builder: (context, state) => const ExplainDiagnosticsScreen(),
     ),
     // Morphology parsing quiz
     GoRoute(

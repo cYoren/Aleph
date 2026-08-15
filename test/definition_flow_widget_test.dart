@@ -111,27 +111,31 @@ void main() {
     await tester.tap(find.text('אֱלֹהִים'));
     await tester.pumpAndSettle();
 
-    // The sheet opened on the lemma section.
-    expect(find.text('LEMMA (DICTIONARY FORM)'), findsOneWidget);
+    // The sheet opens on the meaning. Someone who taps a word wants to know
+    // what it means before anything else, so the gloss leads and the
+    // dictionary form follows it.
+    expect(find.text('God'), findsOneWidget);
 
     // Expand the draggable sheet so lower sections are hit-testable.
-    await tester.drag(
-      find.text('LEMMA (DICTIONARY FORM)'),
-      const Offset(0, -400),
-    );
+    await tester.drag(find.text('God'), const Offset(0, -400));
     await tester.pumpAndSettle();
 
     // Scroll the sheet's list to reach each section (content below the
     // fold is lazily built).
     final sheetList = find.byType(Scrollable).last;
-    await tester.scrollUntilVisible(find.text('God'), 80, scrollable: sheetList);
-    expect(find.text('God'), findsOneWidget);
-
     await tester.scrollUntilVisible(
       find.text('Gods in the ordinary sense; the supreme God.'),
       80,
       scrollable: sheetList,
     );
+
+    // The dictionary form is still present, now below the meaning.
+    await tester.scrollUntilVisible(
+      find.text('LEMMA (DICTIONARY FORM)'),
+      80,
+      scrollable: sheetList,
+    );
+    expect(find.text('LEMMA (DICTIONARY FORM)'), findsOneWidget);
 
     // Scholarly BDB entry, collapsed with a Show more toggle.
     await tester.scrollUntilVisible(

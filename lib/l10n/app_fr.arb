@@ -13,7 +13,7 @@
   "onboardingGreekTitle": "Grec - Nouveau Testament",
   "onboardingGreekDesc": "Le Nouveau Testament a été écrit en grec, lu de gauche à droite. Les Évangiles et les Épîtres ont été composés entre 50 et 100 après J.-C.",
   "onboardingTapTitle": "Touchez n'importe quel mot",
-  "onboardingTapDesc": "Touchez n'importe quel mot pour voir sa définition, sa prononciation et ses informations grammaticales. Activez le bouton de prononciation pour voir comment les mots sont prononcés.",
+  "onboardingTapDesc": "Touchez n'importe quel mot pour voir sa définition, sa prononciation et ses informations grammaticales. Restez appuyé sur un mot pour voir rapidement son sens sans perdre votre place.",
   "settings": "Paramètres",
   "translation": "Traduction",
   "pronunciation": "Afficher la Prononciation",
@@ -221,5 +221,101 @@
   "doneButton": "Terminé",
   "syntaxSourceMacula": "Arbres syntaxiques : MACULA hébreu et grec (Clear Bible), CC BY 4.0",
   "showMore": "Afficher plus",
-  "showLess": "Afficher moins"
+  "showLess": "Afficher moins",
+  "readabilityTitle": "Que puis-je lire ?",
+  "readabilityAllBooks": "Tous les livres, du plus lisible au moins",
+  "readabilityNoText": "Aucun texte chargé pour le moment.",
+  "readabilityCanReadNow": "Vous pouvez déjà lire ce livre",
+  "readabilityClosest": "Le plus proche d'être lisible",
+  "readabilityEmptyTitle": "Apprenez du vocabulaire pour remplir cette carte",
+  "readabilityEmptyBody": "À mesure que vous maîtrisez le vocabulaire, chaque livre indique la part que vous pouvez déjà lire. Les mots les plus fréquents couvrent la majeure partie du texte : les progrès sont donc rapides au début.",
+  "openVocabulary": "Ouvrir le vocabulaire",
+  "reciteAloud": "Lire à voix haute",
+  "stopReciting": "Arrêter la lecture",
+  "recitationPreparing": "Préparation…",
+  "recitationStop": "Arrêter",
+  "hearItRead": "Écouter la lecture",
+  "phraseSpacingTitle": "Espacement par groupes de sens",
+  "phraseSpacingDesc": "Espace le texte hébreu aux accents massorétiques, afin de lire le verset par unités de sens plutôt que mot à mot.",
+  "recitationVoiceTitle": "Voix de lecture",
+  "recitationVoiceDesc": "Lecture par les voix de synthèse de votre appareil : hébreu israélien moderne et grec moderne. Ce sont des traditions de lecture vivantes, et non la prononciation antique reconstituée.",
+  "voiceMissing": "Aucune voix hébraïque ou grecque n'est installée sur cet appareil. Ajoutez-en une dans les réglages de synthèse vocale du système pour entendre le texte.",
+  "voiceUnsupported": "Aucun moteur de synthèse vocale n'est disponible sur cet appareil.",
+  "recitationFailed": "Impossible de démarrer la lecture.",
+  "readBook": "Lire {book}",
+  "@readBook": {
+    "placeholders": {
+      "book": {
+        "type": "String"
+      }
+    }
+  },
+  "readabilityCoverage": "Vous connaissez {percent} % de son vocabulaire — environ {count} mots inconnus par chapitre.",
+  "@readabilityCoverage": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recitationVerse": "Verset {number}",
+  "@recitationVerse": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "voiceMissingFor": "Aucune voix {tradition} n'est installée sur cet appareil.",
+  "@voiceMissingFor": {
+    "placeholders": {
+      "tradition": {
+        "type": "String"
+      }
+    }
+  },
+  "crossReferencesCount": "{count} références croisées",
+  "@crossReferencesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onboardingRecitationTitle": "Écoutez la récitation",
+  "onboardingRecitationDesc": "Appuyez sur lecture pour entendre n'importe quel chapitre lu à voix haute en hébreu ou en grec, avec des voix vivantes plutôt qu'une prononciation antique reconstituée. Ralentissez le rythme jusqu'à ce que votre oreille suive.",
+  "readingHintTitle": "Trois façons de commencer",
+  "readingHintBody": "Touchez un mot pour voir son sens complet. Restez appuyé pour un aperçu rapide sans perdre votre place. Appuyez sur ▶ ci-dessus pour entendre le chapitre récité.",
+  "readingHintDismiss": "Compris",
+  "explainTitle": "Expliquer ce passage",
+  "explainLoading": "Lecture du passage…",
+  "explainDisclaimer": "Rédigé par une IA. Peut se tromper — vérifiez avec le texte.",
+  "explainSettingTitle": "Explication de passage par IA",
+  "explainSettingDesc": "Désactivé par défaut. Une fois activé, le passage que vous lisez est envoyé par internet pour être expliqué. Tout le reste de l'application fonctionne entièrement hors ligne.",
+  "explainErrorOffline": "Pas de connexion. C'est la seule fonction qui en a besoin.",
+  "explainErrorRateLimited": "Trop de requêtes en ce moment. Réessayez dans un instant.",
+  "explainErrorGeneric": "L'explication n'a pas pu être produite.",
+  "explainRetry": "Réessayer",
+  "explainLowQuality": "Cette réponse semble incorrecte. Réessayez — si cela persiste, il faudra peut-être changer de modèle.",
+  "explainFreeRemaining": "{count} explications gratuites restantes aujourd'hui",
+  "@explainFreeRemaining": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "explainLimitReached": "Vous avez utilisé vos explications gratuites du jour.",
+  "explainUpgradeTitle": "Illimité, avec un modèle plus fin",
+  "explainDiagnosticsTitle": "Diagnostic de l'IA",
+  "explainDiagnosticsDesc": "Taux de réussite et rapidité du modèle qui répond à vos questions. À consulter si les réponses semblent moins bonnes que d'habitude.",
+  "explainNoData": "Aucune explication demandée pour l'instant.",
+  "explainClearDiagnostics": "Effacer l'historique",
+  "onboardingAiTitle": "Posez une question sur un passage",
+  "onboardingAiDesc": "Un tuteur pour votre question : ce que dit vraiment l'hébreu, ce que porte le grec qu'une traduction ne rend pas. Touchez le ✨ sur n'importe quel verset.",
+  "onboardingAiToggle": "Activer le tuteur IA",
+  "onboardingAiPrivacy": "C'est la seule partie de l'application qui utilise internet : le verset sur lequel vous posez une question est envoyé pour être expliqué. Tout le reste — texte, dictionnaires, grammaire, audio — fonctionne entièrement hors ligne. Vous pouvez changer cela à tout moment dans les Réglages."
 }

@@ -99,6 +99,25 @@ class SrsDao {
     return result;
   }
 
+  /// Lexicon keys the reader has mastered at or above [threshold].
+  ///
+  /// Used by the readability map to work out how much of each book the reader
+  /// can already read without stopping.
+  Future<List<String>> getMasteredLexiconKeys(double threshold) async {
+    final db = await _dbHelper.database;
+    final maps = await db.query(
+      'srs_progress',
+      columns: ['strongs_id'],
+      where: 'mastery_score >= ?',
+      whereArgs: [threshold],
+    );
+
+    return maps
+        .map((m) => m['strongs_id']?.toString() ?? '')
+        .where((id) => id.isNotEmpty)
+        .toList();
+  }
+
   Future<List<SrsProgress>> getWordsDueForReview() async {
     final db = await _dbHelper.database;
     final nowMs = DateTime.now().millisecondsSinceEpoch;

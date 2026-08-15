@@ -52,7 +52,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingTapDesc =>
-      'Tap on any word to see its definition, pronunciation, and grammatical information. Toggle the pronunciation button to see how words are spoken.';
+      'Tap any word to see its definition, pronunciation, and grammatical information. Long-press a word for a quick meaning without leaving your place.';
 
   @override
   String get settings => 'Settings';
@@ -564,4 +564,184 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get showLess => 'Show less';
+
+  @override
+  String get readabilityTitle => 'What can I read?';
+
+  @override
+  String get readabilityAllBooks => 'Every book, most readable first';
+
+  @override
+  String get readabilityNoText => 'No text is loaded yet.';
+
+  @override
+  String get readabilityCanReadNow => 'You can read this now';
+
+  @override
+  String get readabilityClosest => 'Closest to readable';
+
+  @override
+  String get readabilityEmptyTitle =>
+      'Start learning words to see this map fill in';
+
+  @override
+  String get readabilityEmptyBody =>
+      'As you master vocabulary, each book shows how much of it you can already read. The most frequent words cover the most text, so progress here is quick at first.';
+
+  @override
+  String get openVocabulary => 'Open vocabulary';
+
+  @override
+  String get reciteAloud => 'Recite aloud';
+
+  @override
+  String get stopReciting => 'Stop reciting';
+
+  @override
+  String get recitationPreparing => 'Preparing…';
+
+  @override
+  String get recitationStop => 'Stop';
+
+  @override
+  String get hearItRead => 'Hear it read';
+
+  @override
+  String get phraseSpacingTitle => 'Phrase spacing';
+
+  @override
+  String get phraseSpacingDesc =>
+      'Space the Hebrew at the Masoretic accents, so a verse reads in sense units instead of word by word.';
+
+  @override
+  String get recitationVoiceTitle => 'Recitation voice';
+
+  @override
+  String get recitationVoiceDesc =>
+      'Read aloud by your device\'s speech voices: Modern Israeli for Hebrew, Modern Greek for Greek. These are living reading traditions, not reconstructed ancient pronunciation.';
+
+  @override
+  String get voiceMissing =>
+      'No Hebrew or Greek voice is installed on this device. Add one in your system speech settings to hear the text read aloud.';
+
+  @override
+  String get voiceUnsupported => 'This device has no speech engine available.';
+
+  @override
+  String get recitationFailed => 'Recitation could not be started.';
+
+  @override
+  String readBook(String book) {
+    return 'Read $book';
+  }
+
+  @override
+  String readabilityCoverage(int percent, int count) {
+    return 'You know $percent% of its vocabulary — about $count unfamiliar words per chapter.';
+  }
+
+  @override
+  String recitationVerse(int number) {
+    return 'Verse $number';
+  }
+
+  @override
+  String voiceMissingFor(String tradition) {
+    return 'No $tradition voice is installed on this device.';
+  }
+
+  @override
+  String crossReferencesCount(int count) {
+    return '$count cross-references';
+  }
+
+  @override
+  String get onboardingRecitationTitle => 'Hear It Recited';
+
+  @override
+  String get onboardingRecitationDesc =>
+      'Press play to hear any chapter read aloud in Hebrew or Greek, by living voices rather than a reconstructed ancient pronunciation. Slow it right down from the speed control until your ear catches up.';
+
+  @override
+  String get readingHintTitle => 'Three ways in';
+
+  @override
+  String get readingHintBody =>
+      'Tap a word for its full meaning. Long-press for a quick peek without losing your place. Press ▶ above to hear the chapter recited.';
+
+  @override
+  String get readingHintDismiss => 'Got it';
+
+  @override
+  String get explainTitle => 'Explain this passage';
+
+  @override
+  String get explainLoading => 'Reading the passage…';
+
+  @override
+  String get explainDisclaimer =>
+      'Written by AI. It can be wrong — check it against the text.';
+
+  @override
+  String get explainSettingTitle => 'AI passage explanation';
+
+  @override
+  String get explainSettingDesc =>
+      'Off by default. When on, the passage you are reading is sent over the internet to be explained. Everything else in this app works fully offline.';
+
+  @override
+  String get explainErrorOffline =>
+      'No connection. This is the only feature that needs one.';
+
+  @override
+  String get explainErrorRateLimited =>
+      'Too many requests just now. Try again in a moment.';
+
+  @override
+  String get explainErrorGeneric => 'The explanation could not be produced.';
+
+  @override
+  String get explainRetry => 'Try again';
+
+  @override
+  String get explainLowQuality =>
+      'This answer looks off. Try again — and if it keeps happening, the model may need changing.';
+
+  @override
+  String explainFreeRemaining(int count) {
+    return '$count free explanations left today';
+  }
+
+  @override
+  String get explainLimitReached => 'You\'ve used today\'s free explanations.';
+
+  @override
+  String get explainUpgradeTitle => 'Unlimited, and a sharper model';
+
+  @override
+  String get explainDiagnosticsTitle => 'AI diagnostics';
+
+  @override
+  String get explainDiagnosticsDesc =>
+      'Success rate and speed of the model answering your questions. Check here if answers seem worse than usual.';
+
+  @override
+  String get explainNoData => 'No explanations requested yet.';
+
+  @override
+  String get explainClearDiagnostics => 'Clear history';
+
+  @override
+  String get onboardingAiTitle => 'Ask about any passage';
+
+  @override
+  String get onboardingAiDesc =>
+      'A tutor trained on your question: what does the Hebrew actually say, what does the Greek carry that English cannot. Tap the ✨ on any verse.';
+
+  @override
+  String get onboardingAiToggle => 'Enable the AI tutor';
+
+  @override
+  String get onboardingAiPrivacy =>
+      'This is the only part of the app that uses the internet: the verse you ask about is sent to be explained. Everything else — the text, dictionaries, grammar, audio — works fully offline. You can change this any time in Settings.';
 }
