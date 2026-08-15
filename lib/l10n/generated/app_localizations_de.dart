@@ -676,4 +676,36 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get readingHintDismiss => 'Verstanden';
+
+  @override
+  String get explainTitle => 'Diese Stelle erklären';
+
+  @override
+  String get explainLoading => 'Die Stelle wird gelesen …';
+
+  @override
+  String get explainDisclaimer =>
+      'Von einer KI verfasst. Kann falsch sein — prüfen Sie es am Text.';
+
+  @override
+  String get explainSettingTitle => 'KI-Erklärung von Bibelstellen';
+
+  @override
+  String get explainSettingDesc =>
+      'Standardmäßig aus. Wenn aktiviert, wird die gelesene Stelle über das Internet zur Erklärung gesendet. Alles andere in dieser App funktioniert vollständig offline.';
+
+  @override
+  String get explainErrorOffline =>
+      'Keine Verbindung. Dies ist die einzige Funktion, die eine benötigt.';
+
+  @override
+  String get explainErrorRateLimited =>
+      'Zu viele Anfragen im Moment. Versuchen Sie es gleich noch einmal.';
+
+  @override
+  String get explainErrorGeneric =>
+      'Die Erklärung konnte nicht erstellt werden.';
+
+  @override
+  String get explainRetry => 'Erneut versuchen';
 }

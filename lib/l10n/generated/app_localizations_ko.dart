@@ -658,4 +658,32 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get readingHintDismiss => '확인';
+
+  @override
+  String get explainTitle => '이 구절 설명하기';
+
+  @override
+  String get explainLoading => '구절을 읽는 중…';
+
+  @override
+  String get explainDisclaimer => 'AI가 작성했습니다. 틀릴 수 있으니 본문과 대조해 보세요.';
+
+  @override
+  String get explainSettingTitle => 'AI 구절 설명';
+
+  @override
+  String get explainSettingDesc =>
+      '기본적으로 꺼져 있습니다. 켜면 읽고 있는 구절이 설명을 위해 인터넷으로 전송됩니다. 그 밖의 모든 기능은 완전히 오프라인으로 동작합니다.';
+
+  @override
+  String get explainErrorOffline => '연결이 없습니다. 인터넷이 필요한 유일한 기능입니다.';
+
+  @override
+  String get explainErrorRateLimited => '요청이 너무 많습니다. 잠시 후 다시 시도해 주세요.';
+
+  @override
+  String get explainErrorGeneric => '설명을 생성하지 못했습니다.';
+
+  @override
+  String get explainRetry => '다시 시도';
 }

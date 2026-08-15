@@ -289,5 +289,14 @@
   "onboardingRecitationDesc": "Pulsa reproducir para escuchar cualquier capítulo leído en voz alta en hebreo o griego, con voces vivas en lugar de una pronunciación antigua reconstruida. Reduce la velocidad hasta que tu oído se acostumbre.",
   "readingHintTitle": "Tres formas de empezar",
   "readingHintBody": "Toca una palabra para ver su significado completo. Mantén pulsado para una vista rápida sin perder tu lugar. Pulsa ▶ arriba para escuchar el capítulo recitado.",
-  "readingHintDismiss": "Entendido"
+  "readingHintDismiss": "Entendido",
+  "explainTitle": "Explicar este pasaje",
+  "explainLoading": "Leyendo el pasaje…",
+  "explainDisclaimer": "Escrito por IA. Puede equivocarse: contrástalo con el texto.",
+  "explainSettingTitle": "Explicación de pasajes con IA",
+  "explainSettingDesc": "Desactivado por defecto. Al activarlo, el pasaje que estás leyendo se envía por internet para ser explicado. Todo lo demás en la app funciona totalmente sin conexión.",
+  "explainErrorOffline": "Sin conexión. Esta es la única función que la necesita.",
+  "explainErrorRateLimited": "Demasiadas solicitudes ahora mismo. Inténtalo en un momento.",
+  "explainErrorGeneric": "No se pudo generar la explicación.",
+  "explainRetry": "Reintentar"
 }

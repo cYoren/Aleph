@@ -677,4 +677,35 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get readingHintDismiss => 'Compris';
+
+  @override
+  String get explainTitle => 'Expliquer ce passage';
+
+  @override
+  String get explainLoading => 'Lecture du passage…';
+
+  @override
+  String get explainDisclaimer =>
+      'Rédigé par une IA. Peut se tromper — vérifiez avec le texte.';
+
+  @override
+  String get explainSettingTitle => 'Explication de passage par IA';
+
+  @override
+  String get explainSettingDesc =>
+      'Désactivé par défaut. Une fois activé, le passage que vous lisez est envoyé par internet pour être expliqué. Tout le reste de l\'application fonctionne entièrement hors ligne.';
+
+  @override
+  String get explainErrorOffline =>
+      'Pas de connexion. C\'est la seule fonction qui en a besoin.';
+
+  @override
+  String get explainErrorRateLimited =>
+      'Trop de requêtes en ce moment. Réessayez dans un instant.';
+
+  @override
+  String get explainErrorGeneric => 'L\'explication n\'a pas pu être produite.';
+
+  @override
+  String get explainRetry => 'Réessayer';
 }

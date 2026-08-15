@@ -142,58 +142,56 @@ numbering, while the lexicon is keyed by lemma numbers only.
 
 ---
 
-## Task 4 — AI passage explanation (not yet built)
+## Task 4 — AI passage explanation
 
-**Status:** open — needs the exact model id before it can be built
-**Decision made:** opt-in feature, API key shipped in the build
+**Status:** done. Built against OpenRouter, opt-in and off by default. See
+`lib/features/explain/`. The notes below are kept because several were found
+only by testing the live model, and a regression in any of them is visible to
+the reader.
 
-The app is otherwise 100% offline (a hard constraint in `ROADMAP.md` and
-`AGENTS.md`), so this feature must be off by default and must say plainly that
-the passage leaves the device when it is on.
+**Model:** `nvidia/nemotron-3.5-lightning:free` via
+`https://openrouter.ai/api/v1/chat/completions` (OpenAI-compatible).
 
-**Blocking question:** the exact model identifier as it appears in the NVIDIA
-catalogue. "GLM 5.2" does not uniquely identify an endpoint — NVIDIA hosts
-third-party models under ids like `zai-org/glm-…`. Copy the exact string from
-your NVIDIA model page before starting.
+### Two non-obvious things that will break the feature if changed
 
-**Key handling.** The key must never be committed. Pass it at build time and
-read it with `String.fromEnvironment`:
+1. **It is a reasoning model, and it will print its own thinking as the
+   answer.** Without `"reasoning": {"exclude": true}` in the request body, the
+   reader sees `Here's a thinking process: 1. Analyze User Request...` instead
+   of an explanation.
+2. **It needs a large `max_tokens`.** It spends roughly 900 tokens reasoning
+   before writing anything. At a few hundred it returns a truncated fragment
+   with `finish_reason: length` — and note that `reasoning.exclude` hides the
+   reasoning but does *not* stop it consuming the budget. 3000 is the shipped
+   value; measured latency is about 5 seconds.
+
+Both are asserted in `test/explain_service_test.dart`, and
+`test/explain_live_smoke_test.dart` catches a regression against the real
+endpoint (it skips unless a key is supplied).
+
+### Key handling
+
+The key is never committed. It is read with `String.fromEnvironment` and
+supplied at build time:
 
 ```bash
-flutter build ios --dart-define=NVIDIA_API_KEY=your_key_here
+flutter build ios --dart-define=OPENROUTER_API_KEY=sk-or-v1-...
 ```
 
-Note the tradeoff you accepted: a key compiled into the binary can be
-extracted by anyone who downloads the app, and usage bills to you. Consider a
-spend cap on the key, and rotating it if the app gets popular.
+With no key the feature is hidden entirely — no button, no settings switch —
+so a source build with no key is a clean offline app rather than one with a
+dead affordance.
 
-### Prompt
+**The accepted tradeoff:** a key compiled into the binary can be extracted by
+anyone who downloads the app, and usage bills to the key owner. Put a spend
+cap on it, and rotate it if the app gets popular. Rotate immediately if the
+key was ever pasted into a chat, an issue, or a log.
 
-> Add an opt-in "Explain this passage" feature to a Flutter Bible app.
->
-> - New file `lib/features/explain/explain_service.dart`: POST to NVIDIA's
->   OpenAI-compatible endpoint (`https://integrate.api.nvidia.com/v1/chat/completions`)
->   with the model id `<PASTE EXACT MODEL ID>`. Read the key with
->   `const String.fromEnvironment('NVIDIA_API_KEY')`; if it is empty, the
->   feature must be hidden entirely, not shown as broken.
-> - New file `lib/features/explain/explain_provider.dart`: Riverpod state with
->   idle/loading/ready/failed, holding the explanation text.
-> - Entry point: a button on the verse card in `lib/features/reading/reading_screen.dart`.
-> - Settings: a switch, default OFF, with copy stating that turning it on sends
->   the passage text to NVIDIA's servers, and that everything else in the app
->   works offline. Persist via `SettingsNotifier` like `showSenseUnits`.
-> - The prompt sent to the model should ask for a short, plain explanation of
->   the passage aimed at a beginner, mentioning the original-language wording
->   where it matters. Send the reference and the original text plus the user's
->   selected translation.
-> - Localize all new user-facing strings into `lib/l10n/app_en.arb` and
->   `app_pt.arb`, and copy the English value into the other six locales so key
->   parity holds; then add them to Task 2's scope.
-> - Handle no-network and non-200 responses with a clear message; never leave
->   a spinner running.
->
-> Verify with `flutter analyze` and `flutter test`, and confirm that with no
-> `--dart-define` the app builds and the feature is absent.
+### Possible follow-ups
+
+- The free tier will rate-limit under real usage; `ExplainFailure.rateLimited`
+  already surfaces a clear message, but a paid model id may be worth it.
+- Explanations are re-fetched every time. Caching per verse would cut cost and
+  latency, at the price of storing generated text on device.
 
 ---
 

@@ -671,4 +671,35 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get readingHintDismiss => 'Got it';
+
+  @override
+  String get explainTitle => 'Explain this passage';
+
+  @override
+  String get explainLoading => 'Reading the passage…';
+
+  @override
+  String get explainDisclaimer =>
+      'Written by AI. It can be wrong — check it against the text.';
+
+  @override
+  String get explainSettingTitle => 'AI passage explanation';
+
+  @override
+  String get explainSettingDesc =>
+      'Off by default. When on, the passage you are reading is sent over the internet to be explained. Everything else in this app works fully offline.';
+
+  @override
+  String get explainErrorOffline =>
+      'No connection. This is the only feature that needs one.';
+
+  @override
+  String get explainErrorRateLimited =>
+      'Too many requests just now. Try again in a moment.';
+
+  @override
+  String get explainErrorGeneric => 'The explanation could not be produced.';
+
+  @override
+  String get explainRetry => 'Try again';
 }

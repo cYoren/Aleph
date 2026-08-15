@@ -341,5 +341,14 @@
   "onboardingRecitationDesc": "Press play to hear any chapter read aloud in Hebrew or Greek, by living voices rather than a reconstructed ancient pronunciation. Slow it right down from the speed control until your ear catches up.",
   "readingHintTitle": "Three ways in",
   "readingHintBody": "Tap a word for its full meaning. Long-press for a quick peek without losing your place. Press ▶ above to hear the chapter recited.",
-  "readingHintDismiss": "Got it"
+  "readingHintDismiss": "Got it",
+  "explainTitle": "Explain this passage",
+  "explainLoading": "Reading the passage…",
+  "explainDisclaimer": "Written by AI. It can be wrong — check it against the text.",
+  "explainSettingTitle": "AI passage explanation",
+  "explainSettingDesc": "Off by default. When on, the passage you are reading is sent over the internet to be explained. Everything else in this app works fully offline.",
+  "explainErrorOffline": "No connection. This is the only feature that needs one.",
+  "explainErrorRateLimited": "Too many requests just now. Try again in a moment.",
+  "explainErrorGeneric": "The explanation could not be produced.",
+  "explainRetry": "Try again"
 }

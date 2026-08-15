@@ -289,5 +289,14 @@
   "onboardingRecitationDesc": "Drücken Sie auf Wiedergabe, um jedes Kapitel auf Hebräisch oder Griechisch vorlesen zu lassen – mit lebendigen Stimmen statt einer rekonstruierten antiken Aussprache. Verlangsamen Sie das Tempo, bis Ihr Ohr mithalten kann.",
   "readingHintTitle": "Drei Wege zum Einstieg",
   "readingHintBody": "Tippen Sie auf ein Wort für die vollständige Bedeutung. Halten Sie es gedrückt für eine kurze Vorschau, ohne die Stelle zu verlieren. Tippen Sie oben auf ▶, um das Kapitel vorlesen zu lassen.",
-  "readingHintDismiss": "Verstanden"
+  "readingHintDismiss": "Verstanden",
+  "explainTitle": "Diese Stelle erklären",
+  "explainLoading": "Die Stelle wird gelesen …",
+  "explainDisclaimer": "Von einer KI verfasst. Kann falsch sein — prüfen Sie es am Text.",
+  "explainSettingTitle": "KI-Erklärung von Bibelstellen",
+  "explainSettingDesc": "Standardmäßig aus. Wenn aktiviert, wird die gelesene Stelle über das Internet zur Erklärung gesendet. Alles andere in dieser App funktioniert vollständig offline.",
+  "explainErrorOffline": "Keine Verbindung. Dies ist die einzige Funktion, die eine benötigt.",
+  "explainErrorRateLimited": "Zu viele Anfragen im Moment. Versuchen Sie es gleich noch einmal.",
+  "explainErrorGeneric": "Die Erklärung konnte nicht erstellt werden.",
+  "explainRetry": "Erneut versuchen"
 }

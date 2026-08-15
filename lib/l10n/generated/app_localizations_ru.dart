@@ -686,4 +686,35 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get readingHintDismiss => 'Понятно';
+
+  @override
+  String get explainTitle => 'Объяснить этот отрывок';
+
+  @override
+  String get explainLoading => 'Читаем отрывок…';
+
+  @override
+  String get explainDisclaimer =>
+      'Написано ИИ. Может ошибаться — сверьте с текстом.';
+
+  @override
+  String get explainSettingTitle => 'Объяснение отрывков ИИ';
+
+  @override
+  String get explainSettingDesc =>
+      'По умолчанию выключено. При включении читаемый отрывок отправляется через интернет для объяснения. Всё остальное в приложении работает полностью офлайн.';
+
+  @override
+  String get explainErrorOffline =>
+      'Нет соединения. Это единственная функция, которой оно требуется.';
+
+  @override
+  String get explainErrorRateLimited =>
+      'Слишком много запросов сейчас. Повторите попытку чуть позже.';
+
+  @override
+  String get explainErrorGeneric => 'Не удалось получить объяснение.';
+
+  @override
+  String get explainRetry => 'Повторить';
 }
