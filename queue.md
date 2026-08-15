@@ -178,7 +178,7 @@ key was ever pasted into a chat, an issue, or a log.
 
 ## Task 5 — Fill the translated glosses and alphabet hints
 
-**Status:** in progress — pt glosses 50/13,281 (0.4%), pt alphabet hints 55/55 (100%), other locales 0/13,281 (0%). Pipeline verified with OpenRouter Nemotron model.
+**Status:** in progress — alphabet hints 100% complete across all 8 locales (55/55 each in `assets/alphabet_hints.json`: `en`, `pt`, `de`, `fr`, `es`, `ru`, `zh`, `ko`); pt glosses 50/13,281 (0.4%), other gloss locales 0/13,281 (0%). Pipeline verified with OpenRouter Nemotron model.
 **Size:** one long unattended run (13,433 glosses × 7 languages) plus one short one.
 **Cost:** free-tier model; the only real cost is wall-clock time and rate limits.
 
