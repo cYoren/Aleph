@@ -83,6 +83,11 @@ class SettingsState {
   /// user who taps Skip there should still learn them somewhere.
   final bool hasSeenReadingHint;
 
+  /// Opt-in AI passage explanation. **Off by default**, and the only feature
+  /// in the app that sends anything over the network — the passage text
+  /// leaves the device when it is on. Everything else works offline.
+  final bool aiExplainEnabled;
+
   final bool hasManuallySelectedTranslation;
   final bool isLoaded;
 
@@ -100,6 +105,7 @@ class SettingsState {
     this.hebrewTextDisplay = HebrewTextDisplay.full,
     this.showSenseUnits = true,
     this.hasSeenReadingHint = false,
+    this.aiExplainEnabled = false,
     this.hasManuallySelectedTranslation = false,
     this.isLoaded = false,
   });
@@ -118,6 +124,7 @@ class SettingsState {
     HebrewTextDisplay? hebrewTextDisplay,
     bool? showSenseUnits,
     bool? hasSeenReadingHint,
+    bool? aiExplainEnabled,
     bool? hasManuallySelectedTranslation,
     bool? isLoaded,
   }) {
@@ -136,6 +143,7 @@ class SettingsState {
       hebrewTextDisplay: hebrewTextDisplay ?? this.hebrewTextDisplay,
       showSenseUnits: showSenseUnits ?? this.showSenseUnits,
       hasSeenReadingHint: hasSeenReadingHint ?? this.hasSeenReadingHint,
+      aiExplainEnabled: aiExplainEnabled ?? this.aiExplainEnabled,
       hasManuallySelectedTranslation:
           hasManuallySelectedTranslation ?? this.hasManuallySelectedTranslation,
       isLoaded: isLoaded ?? this.isLoaded,
@@ -170,6 +178,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
       );
       final showSenseUnits = prefs.getBool('showSenseUnits') ?? true;
       final hasSeenReadingHint = prefs.getBool('hasSeenReadingHint') ?? false;
+      final aiExplainEnabled = prefs.getBool('aiExplainEnabled') ?? false;
       final hasManuallySelectedTranslation =
           prefs.getBool('hasManuallySelectedTranslation') ?? false;
 
@@ -198,6 +207,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         hebrewTextDisplay: hebrewTextDisplay,
         showSenseUnits: showSenseUnits,
         hasSeenReadingHint: hasSeenReadingHint,
+        aiExplainEnabled: aiExplainEnabled,
         hasManuallySelectedTranslation: hasManuallySelectedTranslation,
         isLoaded: true,
       );
@@ -336,6 +346,12 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     state = state.copyWith(showSenseUnits: enabled);
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('showSenseUnits', enabled);
+  }
+
+  Future<void> setAiExplainEnabled(bool enabled) async {
+    state = state.copyWith(aiExplainEnabled: enabled);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('aiExplainEnabled', enabled);
   }
 
   Future<void> dismissReadingHint() async {

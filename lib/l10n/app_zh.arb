@@ -289,5 +289,14 @@
   "onboardingRecitationDesc": "点按播放键，即可听到任意一章用希伯来语或希腊语朗读——使用的是现代通行的发音，而非重建的古代发音。可将语速调慢，直到耳朵跟得上为止。",
   "readingHintTitle": "三种入门方式",
   "readingHintBody": "点按词语可查看完整释义。长按可快速预览而不失去阅读位置。点按上方的 ▶ 即可听到本章朗读。",
-  "readingHintDismiss": "知道了"
+  "readingHintDismiss": "知道了",
+  "explainTitle": "解释这段经文",
+  "explainLoading": "正在阅读经文…",
+  "explainDisclaimer": "由 AI 生成，可能有误，请对照原文核查。",
+  "explainSettingTitle": "AI 经文解释",
+  "explainSettingDesc": "默认关闭。开启后，你正在阅读的经文会通过网络发送以获取解释。本应用的其他功能均可完全离线使用。",
+  "explainErrorOffline": "无网络连接。这是唯一需要联网的功能。",
+  "explainErrorRateLimited": "当前请求过多，请稍后再试。",
+  "explainErrorGeneric": "无法生成解释。",
+  "explainRetry": "重试"
 }

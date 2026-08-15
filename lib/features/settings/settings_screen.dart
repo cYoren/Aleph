@@ -5,6 +5,7 @@ import '../../l10n/generated/app_localizations.dart';
 import '../../features/settings/settings_provider.dart';
 import '../../providers/translations_provider.dart';
 import '../../shared/utils/hebrew_display.dart';
+import '../explain/explain_provider.dart';
 
 const _interfaceLanguages = <String, String>{
   'en': 'English',
@@ -170,6 +171,21 @@ class SettingsScreen extends ConsumerWidget {
               notifier.setReaderMode(value);
             },
           ),
+          // Only shown when a key was compiled into this build; otherwise the
+          // feature does not exist and the setting would be a dead switch.
+          if (ref.watch(explainConfiguredProvider)) ...[
+            const Divider(),
+            _buildSectionHeader(l10n.explainSettingTitle, colorScheme),
+            SwitchListTile(
+              secondary: const Icon(Icons.auto_awesome_outlined),
+              title: Text(l10n.explainSettingTitle),
+              subtitle: Text(l10n.explainSettingDesc),
+              value: settings.aiExplainEnabled,
+              onChanged: (bool value) {
+                notifier.setAiExplainEnabled(value);
+              },
+            ),
+          ],
           const Divider(),
 
           // Translation Section

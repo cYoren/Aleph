@@ -650,4 +650,32 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get readingHintDismiss => '知道了';
+
+  @override
+  String get explainTitle => '解释这段经文';
+
+  @override
+  String get explainLoading => '正在阅读经文…';
+
+  @override
+  String get explainDisclaimer => '由 AI 生成，可能有误，请对照原文核查。';
+
+  @override
+  String get explainSettingTitle => 'AI 经文解释';
+
+  @override
+  String get explainSettingDesc =>
+      '默认关闭。开启后，你正在阅读的经文会通过网络发送以获取解释。本应用的其他功能均可完全离线使用。';
+
+  @override
+  String get explainErrorOffline => '无网络连接。这是唯一需要联网的功能。';
+
+  @override
+  String get explainErrorRateLimited => '当前请求过多，请稍后再试。';
+
+  @override
+  String get explainErrorGeneric => '无法生成解释。';
+
+  @override
+  String get explainRetry => '重试';
 }

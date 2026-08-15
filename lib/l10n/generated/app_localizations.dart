@@ -1243,6 +1243,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Got it'**
   String get readingHintDismiss;
+
+  /// No description provided for @explainTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Explain this passage'**
+  String get explainTitle;
+
+  /// No description provided for @explainLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading the passage…'**
+  String get explainLoading;
+
+  /// No description provided for @explainDisclaimer.
+  ///
+  /// In en, this message translates to:
+  /// **'Written by AI. It can be wrong — check it against the text.'**
+  String get explainDisclaimer;
+
+  /// No description provided for @explainSettingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'AI passage explanation'**
+  String get explainSettingTitle;
+
+  /// No description provided for @explainSettingDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Off by default. When on, the passage you are reading is sent over the internet to be explained. Everything else in this app works fully offline.'**
+  String get explainSettingDesc;
+
+  /// No description provided for @explainErrorOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'No connection. This is the only feature that needs one.'**
+  String get explainErrorOffline;
+
+  /// No description provided for @explainErrorRateLimited.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many requests just now. Try again in a moment.'**
+  String get explainErrorRateLimited;
+
+  /// No description provided for @explainErrorGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'The explanation could not be produced.'**
+  String get explainErrorGeneric;
+
+  /// No description provided for @explainRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get explainRetry;
 }
 
 class _AppLocalizationsDelegate

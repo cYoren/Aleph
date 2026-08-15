@@ -18,6 +18,8 @@ import 'widgets/visual_context_overlay.dart';
 import 'widgets/dynamic_translation_text.dart';
 import 'widgets/cross_references_sheet.dart';
 import '../audio/recitation_provider.dart';
+import '../explain/explain_provider.dart';
+import '../explain/widgets/explain_sheet.dart';
 import '../audio/widgets/recitation_bar.dart';
 
 class ReadingScreen extends ConsumerStatefulWidget {
@@ -518,6 +520,31 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
                     ),
                   ),
                   const Spacer(),
+                  // AI explanation, only when a key was compiled in AND the
+                  // reader switched it on. Hidden entirely otherwise, so an
+                  // offline build shows no dead affordance.
+                  if (ref.watch(explainAvailableProvider))
+                    IconButton(
+                      icon: Icon(
+                        Icons.auto_awesome_outlined,
+                        color: colorScheme.onSurfaceVariant,
+                        size: 22,
+                      ),
+                      visualDensity: VisualDensity.compact,
+                      tooltip: l10n.explainTitle,
+                      onPressed: () => ExplainSheet.show(
+                        context,
+                        ref,
+                        reference: verseReference,
+                        request: ExplainRequest(
+                          reference: verseReference,
+                          originalText: verse.textContent,
+                          translationText:
+                              translationText ?? verse.textContent,
+                          isHebrew: isOT,
+                        ),
+                      ),
+                    ),
                   // Cross-references button. Badged with the reference count,
                   // loaded once for the whole chapter: an unlabeled link icon
                   // among four others read as "not implemented" rather than

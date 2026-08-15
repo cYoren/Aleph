@@ -169,10 +169,14 @@ our data provides. Implemented in `lib/shared/utils/cantillation.dart`
 - [x] Widget test for the tap word → definition flow (gloss, Strong's definition,
       BDB expandable section, concordance entry point).
 - [ ] Keep 100% offline as a hard constraint; any future sync must be opt-in and E2E
-      encrypted. **One sanctioned exception is planned**: an opt-in AI passage
-      explainer (queue.md Task 4), off by default, which states plainly that the
-      passage leaves the device. Everything else stays offline. Recitation uses
-      the OS speech engine and sends nothing anywhere.
+      encrypted. **One sanctioned exception has shipped**: the opt-in AI passage
+      explainer in `lib/features/explain/`, off by default, which states plainly in
+      Settings that the passage leaves the device. It is the only code in the app
+      that touches the network — recitation uses the OS speech engine and sends
+      nothing anywhere. With no API key compiled in, the feature is hidden
+      entirely and the app is fully offline again. See queue.md Task 4 for the two
+      model quirks (reasoning leakage, token budget) that will break it visibly if
+      changed.
 
 ### Localization
 

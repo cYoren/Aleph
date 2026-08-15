@@ -677,4 +677,35 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get readingHintDismiss => 'Entendi';
+
+  @override
+  String get explainTitle => 'Explicar esta passagem';
+
+  @override
+  String get explainLoading => 'Lendo a passagem…';
+
+  @override
+  String get explainDisclaimer =>
+      'Escrito por IA. Pode estar errado — confira com o texto.';
+
+  @override
+  String get explainSettingTitle => 'Explicação de passagens por IA';
+
+  @override
+  String get explainSettingDesc =>
+      'Desativado por padrão. Quando ativado, a passagem que você está lendo é enviada pela internet para ser explicada. Todo o resto do app funciona totalmente offline.';
+
+  @override
+  String get explainErrorOffline =>
+      'Sem conexão. Este é o único recurso que precisa dela.';
+
+  @override
+  String get explainErrorRateLimited =>
+      'Muitas solicitações agora. Tente novamente em instantes.';
+
+  @override
+  String get explainErrorGeneric => 'Não foi possível gerar a explicação.';
+
+  @override
+  String get explainRetry => 'Tentar novamente';
 }
