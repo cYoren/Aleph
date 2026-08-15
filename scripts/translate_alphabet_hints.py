@@ -97,7 +97,7 @@ def main() -> int:
             continue
 
         items = list(pending.items())
-        batch_size = 6
+        batch_size = 1
         translated: dict[str, str] = {}
 
         for start in range(0, len(items), batch_size):
