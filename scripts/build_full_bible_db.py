@@ -21,6 +21,7 @@ import re
 import shutil
 import sqlite3
 import tempfile
+import unicodedata
 import urllib.request
 import xml.etree.ElementTree as ET
 from collections import Counter, defaultdict
@@ -756,6 +757,71 @@ def compose_strongs_definition(entry: dict) -> str:
     return "\n\n".join(parts)
 
 
+_STRIP_DIACRITICS_RE = re.compile(
+    r"[\u0591-\u05BD\u05BF-\u05C7\u0300-\u036F\u1F00-\u1FFF]"
+)
+
+
+def select_canonical_strongs(
+    lemma: str,
+    strong_counter: Optional[Counter],
+    strongs_dicts: Optional[Dict[str, dict]] = None,
+) -> Optional[str]:
+    """Select the canonical root Strong's ID for a lemma.
+
+    When multiple Strong's numbers attach to a lemma in the source text (e.g.
+    inflected forms of Greek pronouns or verbs like G1473 vs G3450 for ἐγώ,
+    G4771 vs G5213 for σύ, G1510 vs G2076 for εἰμί), this resolves to the head
+    dictionary entry rather than whichever inflected form happens to appear most
+    frequently.
+    """
+    if not strong_counter:
+        return None
+    if len(strong_counter) == 1 or not strongs_dicts:
+        return strong_counter.most_common(1)[0][0]
+
+    clean_lem = _STRIP_DIACRITICS_RE.sub("", lemma).strip().lower()
+
+    matching_candidates = []
+    for candidate, _count in strong_counter.most_common():
+        for lookup in strongs_lookup_candidates(candidate):
+            entry = strongs_dicts.get(lookup)
+            if entry:
+                dict_lemma = entry.get("lemma") or ""
+                clean_dict_lem = _STRIP_DIACRITICS_RE.sub(
+                    "", dict_lemma
+                ).strip().lower()
+                if clean_dict_lem and (
+                    clean_dict_lem == clean_lem
+                    or clean_dict_lem in clean_lem
+                    or clean_lem in clean_dict_lem
+                ):
+                    matching_candidates.append(candidate)
+                    break
+
+    if matching_candidates:
+        # Prefer root lemma over derived / inflected entries
+        for cand in matching_candidates:
+            for lookup in strongs_lookup_candidates(cand):
+                entry = strongs_dicts.get(lookup)
+                if entry:
+                    deriv = entry.get("derivation") or ""
+                    # If derivation does not cite another candidate in the list, it's the root lemma
+                    is_derived = any(
+                        other != cand
+                        and any(
+                            c in deriv
+                            for c in strongs_lookup_candidates(other)
+                        )
+                        for other in matching_candidates
+                    )
+                    if not is_derived:
+                        return cand
+        return matching_candidates[0]
+
+    return strong_counter.most_common(1)[0][0]
+
+
 def strongs_lookup_candidates(strongs_id: str) -> List[str]:
     """Candidate dictionary keys for a token Strong's id.
 
@@ -773,6 +839,45 @@ def strongs_lookup_candidates(strongs_id: str) -> List[str]:
         if canonical not in candidates:
             candidates.append(canonical)
     return candidates
+
+
+def strip_greek_accents(text: str) -> str:
+    """Strips polytonic diacritics and accents from Greek text for lemma matching."""
+    if not text:
+        return ""
+    return "".join(
+        ch
+        for ch in unicodedata.normalize("NFD", text)
+        if unicodedata.category(ch) != "Mn"
+    ).lower().strip()
+
+
+def select_canonical_strongs(
+    lemma: str,
+    strong_counter: Counter,
+    strongs_dicts: Optional[Dict[str, dict]] = None,
+) -> Optional[str]:
+    """Select the canonical Strong's id for a lemma.
+
+    Prefers dictionary headword entries (e.g. G1473 for ἐγώ, G4771 for σύ,
+    G1510 for εἰμί, G3778 for οὗτος, G1438 for ἑαυτοῦ) over high-frequency
+    inflected forms (G3450, G5213, G2076). Falls back to the most common
+    candidate in the token stream.
+    """
+    if not strong_counter:
+        return None
+
+    if strongs_dicts and len(strong_counter) > 1:
+        norm_lemma = strip_greek_accents(lemma)
+        for strong_id in strong_counter.keys():
+            for candidate in strongs_lookup_candidates(strong_id):
+                dict_entry = strongs_dicts.get(candidate)
+                if dict_entry:
+                    dict_lemma = dict_entry.get("lemma") or ""
+                    if dict_lemma and strip_greek_accents(dict_lemma) == norm_lemma:
+                        return strong_id
+
+    return strong_counter.most_common(1)[0][0]
 
 
 def parse_openbible_ref(raw: str) -> Optional[Tuple[str, int, int]]:
@@ -1379,6 +1484,9 @@ def build_verses_and_words(
             if lemma:
                 if gloss:
                     lex_glosses[lemma][gloss] += 1
+                else:
+                    if lemma not in lex_glosses:
+                        lex_glosses[lemma] = Counter()
                 if pos:
                     lex_pos[lemma][pos] += 1
                 if strong:
@@ -1422,13 +1530,13 @@ def build_verses_and_words(
     strongs_entry_count = 0
     extended_count = 0
     for lemma, gloss_counter in lex_glosses.items():
-        gloss = gloss_counter.most_common(1)[0][0] if gloss_counter else lemma
-
         pos_counter = lex_pos.get(lemma, Counter())
         pos_label = pos_counter.most_common(1)[0][0] if pos_counter else None
 
         strong_counter = lex_strong.get(lemma, Counter())
-        strong_label = strong_counter.most_common(1)[0][0] if strong_counter else None
+        strong_label = select_canonical_strongs(
+            lemma, strong_counter, strongs_dicts
+        )
 
         lang_counter = lex_language.get(lemma, Counter())
         language = lang_counter.most_common(1)[0][0] if lang_counter else None
@@ -1444,6 +1552,26 @@ def build_verses_and_words(
             if pronunciation_counter
             else transliteration
         )
+
+        if gloss_counter:
+            gloss = gloss_counter.most_common(1)[0][0]
+        else:
+            # Fall back to Strong's dictionary definition/kjv_def, or lemma
+            dict_entry = None
+            if strongs_dicts and strong_label:
+                for candidate in strongs_lookup_candidates(strong_label):
+                    dict_entry = strongs_dicts.get(candidate)
+                    if dict_entry:
+                        break
+            if dict_entry:
+                raw_gloss = (
+                    dict_entry.get("kjv_def")
+                    or dict_entry.get("strongs_def")
+                    or lemma
+                )
+                gloss = raw_gloss.split(",")[0].split(";")[0].strip() or lemma
+            else:
+                gloss = lemma
 
         definition = gloss
         if strong_label:
@@ -1509,6 +1637,22 @@ def build_verses_and_words(
         lex_rows,
     )
     print(f"  inserted {len(lex_rows):,} lexicon entries")
+
+    print("Normalizing words table Strong's keys to lexicon entries...")
+    conn.execute(
+        """
+        UPDATE words
+        SET strongs = (SELECT lx.strongs_id FROM lexicon lx WHERE lx.lemma = words.lemma)
+        WHERE lemma IS NOT NULL
+          AND lemma != ''
+          AND EXISTS (
+              SELECT 1 FROM lexicon lx
+              WHERE lx.lemma = words.lemma
+                AND lx.strongs_id IS NOT NULL
+                AND lx.strongs_id != ''
+          )
+        """
+    )
 
     if strongs_dicts:
         print(
@@ -2290,14 +2434,21 @@ def print_summary(conn: sqlite3.Connection, source_commit: str, open_bibles_comm
 
 def finalize_sqlite_files(conn: sqlite3.Connection, output_path: Path) -> None:
     # Ensure the release asset is a single-file SQLite DB (no -wal/-shm sidecars).
-    conn.execute("PRAGMA wal_checkpoint(FULL);")
-    conn.execute("PRAGMA journal_mode=DELETE;")
-    conn.commit()
+    try:
+        conn.commit()
+        conn.isolation_level = None
+        conn.execute("PRAGMA wal_checkpoint(TRUNCATE);")
+        conn.execute("PRAGMA journal_mode=DELETE;")
+    except Exception as e:
+        print(f"Note during sqlite finalize: {e}")
 
     for suffix in ("-wal", "-shm"):
         sidecar = Path(f"{output_path}{suffix}")
         if sidecar.exists():
-            sidecar.unlink()
+            try:
+                sidecar.unlink()
+            except Exception:
+                pass
 
 
 def main() -> None:
@@ -2354,9 +2505,10 @@ def main() -> None:
                 hebrew_commit=args.macula_hebrew_commit,
             )
 
-        if output_path.exists():
-            print(f"Removing existing DB: {output_path}")
-            output_path.unlink()
+        for p in (output_path, Path(f"{output_path}-wal"), Path(f"{output_path}-shm")):
+            if p.exists():
+                print(f"Removing existing file: {p}")
+                p.unlink()
 
         conn = sqlite3.connect(str(output_path))
         try:
@@ -2434,9 +2586,13 @@ def main() -> None:
 
         print(f"\nDone. Wrote {output_path}")
     except Exception:
-        if output_path.exists() and output_path.stat().st_size > 0:
-            print(f"Removing incomplete DB after failure: {output_path}")
-            output_path.unlink()
+        for p in (output_path, Path(f"{output_path}-wal"), Path(f"{output_path}-shm")):
+            if p.exists():
+                print(f"Removing incomplete file after failure: {p}")
+                try:
+                    p.unlink()
+                except Exception:
+                    pass
         raise
     finally:
         if cleanup_tmp:
