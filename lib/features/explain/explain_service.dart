@@ -21,23 +21,17 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
-/// Model used for explanations.
-///
-/// This is a *reasoning* model: it spends most of its token budget thinking
-/// before answering. Two consequences are baked into the request below and
-/// both were found by testing rather than assumption — get either wrong and
-/// the feature visibly breaks.
+import 'explain_health.dart';
+import 'explain_model.dart';
+
+/// Default model id, kept for tests and for callers that do not choose a
+/// tier. The real choice lives in `explain_model.dart`.
 const String kExplainModel = 'nvidia/nemotron-3.5-lightning:free';
 
 const String _endpoint = 'https://openrouter.ai/api/v1/chat/completions';
 
 /// Compile-time key. Empty unless supplied with `--dart-define`.
 const String kCompiledApiKey = String.fromEnvironment('OPENROUTER_API_KEY');
-
-/// Generous, because the model burns roughly 900 tokens on hidden reasoning
-/// before it writes a word. At the default of a few hundred it returns a
-/// truncated fragment with `finish_reason: length`.
-const int _maxTokens = 3000;
 
 /// Why an explanation could not be produced.
 enum ExplainFailure {
@@ -69,12 +63,17 @@ class ExplainException implements Exception {
 
 /// Requests short, beginner-facing explanations of a passage.
 class ExplainService {
-  ExplainService({http.Client? client, String? apiKeyOverride})
-      : _client = client ?? http.Client(),
-        _apiKey = apiKeyOverride ?? kCompiledApiKey;
+  ExplainService({
+    http.Client? client,
+    String? apiKeyOverride,
+    ExplainHealthStore? health,
+  })  : _client = client ?? http.Client(),
+        _apiKey = apiKeyOverride ?? kCompiledApiKey,
+        _health = health ?? ExplainHealthStore();
 
   final http.Client _client;
   final String _apiKey;
+  final ExplainHealthStore _health;
 
   /// False when no key was compiled in; the UI hides the feature entirely
   /// rather than offering a button that cannot work.
@@ -91,33 +90,31 @@ class ExplainService {
     required String translationText,
     required bool isHebrew,
     required String languageName,
+    ExplainModelConfig config = kFreeModel,
   }) async {
     if (!isConfigured) {
       throw const ExplainException(ExplainFailure.notConfigured);
     }
 
     final language = isHebrew ? 'Hebrew' : 'Greek';
+    final stopwatch = Stopwatch()..start();
 
     final body = jsonEncode({
-      'model': kExplainModel,
-      'max_tokens': _maxTokens,
+      'model': config.modelId,
+      'max_tokens': config.maxTokens,
       'temperature': 0.3,
       // Without this the model prints its chain of thought as the answer,
       // so the reader sees "Here's a thinking process: 1. Analyze User
       // Request..." instead of an explanation.
-      'reasoning': {'exclude': true},
+      if (kExplainReasoningExcluded)
+        'reasoning': {
+          'exclude': true,
+          if (config.reasoningEffort != null) 'effort': config.reasoningEffort,
+        },
       'messages': [
         {
           'role': 'system',
-          'content':
-              'You explain Bible passages to people learning to read Hebrew '
-                  'and Greek in the original. Be clear, warm, and concise. Aim '
-                  'at a beginner: do not use grammatical jargon without '
-                  'explaining it. Where the original wording carries something '
-                  'a translation loses, say so briefly. Do not moralize, '
-                  'preach, or give devotional application. Answer in '
-                  '$languageName. 150 words maximum. Reply with the '
-                  'explanation only.',
+          'content': buildExplainSystemPrompt(languageName: languageName),
         },
         {
           'role': 'user',
@@ -143,26 +140,70 @@ class ExplainService {
             },
             body: utf8.encode(body),
           )
-          .timeout(const Duration(seconds: 60));
+          .timeout(const Duration(seconds: 90));
     } catch (e) {
       if (kDebugMode) debugPrint('ExplainService network failure: $e');
+      await _recordError(config, stopwatch, 'network/timeout');
       throw const ExplainException(ExplainFailure.offline);
     }
 
     if (response.statusCode == 401 || response.statusCode == 403) {
+      await _recordError(config, stopwatch, 'auth ${response.statusCode}');
       throw ExplainException(ExplainFailure.badKey, response.body);
     }
     if (response.statusCode == 429) {
+      await _recordError(config, stopwatch, 'rate limited');
       throw ExplainException(ExplainFailure.rateLimited, response.body);
     }
     if (response.statusCode != 200) {
+      await _recordError(config, stopwatch, 'HTTP ${response.statusCode}');
       throw ExplainException(
         ExplainFailure.failed,
         'HTTP ${response.statusCode}',
       );
     }
 
-    return _extractContent(response.bodyBytes);
+    final String text;
+    try {
+      text = _extractContent(response.bodyBytes);
+    } on ExplainException catch (e) {
+      await _recordError(config, stopwatch, e.detail ?? 'bad body');
+      rethrow;
+    }
+
+    // A 200 with a useless answer is the failure mode that would otherwise go
+    // unnoticed — the model degrades, nothing throws, and the reader just gets
+    // something worse. Record it so the diagnostics screen can show it.
+    stopwatch.stop();
+    final problem = ExplainQualityCheck.problemWith(text);
+    await _health.record(
+      ExplainSample(
+        modelId: config.modelId,
+        outcome: problem == null ? ExplainOutcome.ok : ExplainOutcome.suspect,
+        milliseconds: stopwatch.elapsedMilliseconds,
+        at: DateTime.now(),
+        note: problem,
+      ),
+    );
+
+    return text;
+  }
+
+  Future<void> _recordError(
+    ExplainModelConfig config,
+    Stopwatch stopwatch,
+    String note,
+  ) async {
+    stopwatch.stop();
+    await _health.record(
+      ExplainSample(
+        modelId: config.modelId,
+        outcome: ExplainOutcome.error,
+        milliseconds: stopwatch.elapsedMilliseconds,
+        at: DateTime.now(),
+        note: note,
+      ),
+    );
   }
 
   /// Pulls the explanation out of an OpenRouter completion.

@@ -83,10 +83,25 @@ class SettingsState {
   /// user who taps Skip there should still learn them somewhere.
   final bool hasSeenReadingHint;
 
-  /// Opt-in AI passage explanation. **Off by default**, and the only feature
-  /// in the app that sends anything over the network — the passage text
-  /// leaves the device when it is on. Everything else works offline.
+  /// AI passage explanation. Offered during onboarding and **on by default**
+  /// once accepted there. This is the only feature in the app that sends
+  /// anything over the network — the passage text leaves the device when it is
+  /// on — so onboarding states that plainly and the switch stays reachable in
+  /// Settings.
   final bool aiExplainEnabled;
+
+  /// True once the reader has bought the unlimited, better-model tier.
+  ///
+  /// Currently a local flag: there is no purchase flow yet, so nothing sets it
+  /// outside of Settings. Wiring it to a real StoreKit / Play Billing
+  /// entitlement is the remaining work before charging anyone.
+  final bool aiProUnlocked;
+
+  /// Free-tier usage, reset each day.
+  final int aiExplainUsedToday;
+
+  /// Day the counter above belongs to, as yyyy-mm-dd.
+  final String aiExplainUsageDay;
 
   final bool hasManuallySelectedTranslation;
   final bool isLoaded;
@@ -105,7 +120,10 @@ class SettingsState {
     this.hebrewTextDisplay = HebrewTextDisplay.full,
     this.showSenseUnits = true,
     this.hasSeenReadingHint = false,
-    this.aiExplainEnabled = false,
+    this.aiExplainEnabled = true,
+    this.aiProUnlocked = false,
+    this.aiExplainUsedToday = 0,
+    this.aiExplainUsageDay = '',
     this.hasManuallySelectedTranslation = false,
     this.isLoaded = false,
   });
@@ -125,6 +143,9 @@ class SettingsState {
     bool? showSenseUnits,
     bool? hasSeenReadingHint,
     bool? aiExplainEnabled,
+    bool? aiProUnlocked,
+    int? aiExplainUsedToday,
+    String? aiExplainUsageDay,
     bool? hasManuallySelectedTranslation,
     bool? isLoaded,
   }) {
@@ -144,6 +165,9 @@ class SettingsState {
       showSenseUnits: showSenseUnits ?? this.showSenseUnits,
       hasSeenReadingHint: hasSeenReadingHint ?? this.hasSeenReadingHint,
       aiExplainEnabled: aiExplainEnabled ?? this.aiExplainEnabled,
+      aiProUnlocked: aiProUnlocked ?? this.aiProUnlocked,
+      aiExplainUsedToday: aiExplainUsedToday ?? this.aiExplainUsedToday,
+      aiExplainUsageDay: aiExplainUsageDay ?? this.aiExplainUsageDay,
       hasManuallySelectedTranslation:
           hasManuallySelectedTranslation ?? this.hasManuallySelectedTranslation,
       isLoaded: isLoaded ?? this.isLoaded,
@@ -178,7 +202,10 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
       );
       final showSenseUnits = prefs.getBool('showSenseUnits') ?? true;
       final hasSeenReadingHint = prefs.getBool('hasSeenReadingHint') ?? false;
-      final aiExplainEnabled = prefs.getBool('aiExplainEnabled') ?? false;
+      final aiExplainEnabled = prefs.getBool('aiExplainEnabled') ?? true;
+      final aiProUnlocked = prefs.getBool('aiProUnlocked') ?? false;
+      final aiExplainUsedToday = prefs.getInt('aiExplainUsedToday') ?? 0;
+      final aiExplainUsageDay = prefs.getString('aiExplainUsageDay') ?? '';
       final hasManuallySelectedTranslation =
           prefs.getBool('hasManuallySelectedTranslation') ?? false;
 
@@ -208,6 +235,9 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         showSenseUnits: showSenseUnits,
         hasSeenReadingHint: hasSeenReadingHint,
         aiExplainEnabled: aiExplainEnabled,
+        aiProUnlocked: aiProUnlocked,
+        aiExplainUsedToday: aiExplainUsedToday,
+        aiExplainUsageDay: aiExplainUsageDay,
         hasManuallySelectedTranslation: hasManuallySelectedTranslation,
         isLoaded: true,
       );
@@ -352,6 +382,31 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     state = state.copyWith(aiExplainEnabled: enabled);
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('aiExplainEnabled', enabled);
+  }
+
+  Future<void> setAiProUnlocked(bool unlocked) async {
+    state = state.copyWith(aiProUnlocked: unlocked);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('aiProUnlocked', unlocked);
+  }
+
+  /// Records one free-tier explanation, rolling the counter over at midnight.
+  Future<void> recordAiExplainUse() async {
+    final today = _todayKey();
+    final isNewDay = state.aiExplainUsageDay != today;
+    final used = isNewDay ? 1 : state.aiExplainUsedToday + 1;
+
+    state = state.copyWith(aiExplainUsedToday: used, aiExplainUsageDay: today);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('aiExplainUsedToday', used);
+    await prefs.setString('aiExplainUsageDay', today);
+  }
+
+  static String _todayKey() {
+    final now = DateTime.now();
+    final month = now.month.toString().padLeft(2, '0');
+    final day = now.day.toString().padLeft(2, '0');
+    return '${now.year}-$month-$day';
   }
 
   Future<void> dismissReadingHint() async {

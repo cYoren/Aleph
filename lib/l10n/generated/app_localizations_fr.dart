@@ -708,4 +708,47 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get explainRetry => 'Réessayer';
+
+  @override
+  String get explainLowQuality =>
+      'Cette réponse semble incorrecte. Réessayez — si cela persiste, il faudra peut-être changer de modèle.';
+
+  @override
+  String explainFreeRemaining(int count) {
+    return '$count explications gratuites restantes aujourd\'hui';
+  }
+
+  @override
+  String get explainLimitReached =>
+      'Vous avez utilisé vos explications gratuites du jour.';
+
+  @override
+  String get explainUpgradeTitle => 'Illimité, avec un modèle plus fin';
+
+  @override
+  String get explainDiagnosticsTitle => 'Diagnostic de l\'IA';
+
+  @override
+  String get explainDiagnosticsDesc =>
+      'Taux de réussite et rapidité du modèle qui répond à vos questions. À consulter si les réponses semblent moins bonnes que d\'habitude.';
+
+  @override
+  String get explainNoData => 'Aucune explication demandée pour l\'instant.';
+
+  @override
+  String get explainClearDiagnostics => 'Effacer l\'historique';
+
+  @override
+  String get onboardingAiTitle => 'Posez une question sur un passage';
+
+  @override
+  String get onboardingAiDesc =>
+      'Un tuteur pour votre question : ce que dit vraiment l\'hébreu, ce que porte le grec qu\'une traduction ne rend pas. Touchez le ✨ sur n\'importe quel verset.';
+
+  @override
+  String get onboardingAiToggle => 'Activer le tuteur IA';
+
+  @override
+  String get onboardingAiPrivacy =>
+      'C\'est la seule partie de l\'application qui utilise internet : le verset sur lequel vous posez une question est envoyé pour être expliqué. Tout le reste — texte, dictionnaires, grammaire, audio — fonctionne entièrement hors ligne. Vous pouvez changer cela à tout moment dans les Réglages.';
 }

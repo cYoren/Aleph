@@ -298,5 +298,24 @@
   "explainErrorOffline": "Pas de connexion. C'est la seule fonction qui en a besoin.",
   "explainErrorRateLimited": "Trop de requêtes en ce moment. Réessayez dans un instant.",
   "explainErrorGeneric": "L'explication n'a pas pu être produite.",
-  "explainRetry": "Réessayer"
+  "explainRetry": "Réessayer",
+  "explainLowQuality": "Cette réponse semble incorrecte. Réessayez — si cela persiste, il faudra peut-être changer de modèle.",
+  "explainFreeRemaining": "{count} explications gratuites restantes aujourd'hui",
+  "@explainFreeRemaining": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "explainLimitReached": "Vous avez utilisé vos explications gratuites du jour.",
+  "explainUpgradeTitle": "Illimité, avec un modèle plus fin",
+  "explainDiagnosticsTitle": "Diagnostic de l'IA",
+  "explainDiagnosticsDesc": "Taux de réussite et rapidité du modèle qui répond à vos questions. À consulter si les réponses semblent moins bonnes que d'habitude.",
+  "explainNoData": "Aucune explication demandée pour l'instant.",
+  "explainClearDiagnostics": "Effacer l'historique",
+  "onboardingAiTitle": "Posez une question sur un passage",
+  "onboardingAiDesc": "Un tuteur pour votre question : ce que dit vraiment l'hébreu, ce que porte le grec qu'une traduction ne rend pas. Touchez le ✨ sur n'importe quel verset.",
+  "onboardingAiToggle": "Activer le tuteur IA",
+  "onboardingAiPrivacy": "C'est la seule partie de l'application qui utilise internet : le verset sur lequel vous posez une question est envoyé pour être expliqué. Tout le reste — texte, dictionnaires, grammaire, audio — fonctionne entièrement hors ligne. Vous pouvez changer cela à tout moment dans les Réglages."
 }

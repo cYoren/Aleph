@@ -702,4 +702,46 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get explainRetry => 'Try again';
+
+  @override
+  String get explainLowQuality =>
+      'This answer looks off. Try again — and if it keeps happening, the model may need changing.';
+
+  @override
+  String explainFreeRemaining(int count) {
+    return '$count free explanations left today';
+  }
+
+  @override
+  String get explainLimitReached => 'You\'ve used today\'s free explanations.';
+
+  @override
+  String get explainUpgradeTitle => 'Unlimited, and a sharper model';
+
+  @override
+  String get explainDiagnosticsTitle => 'AI diagnostics';
+
+  @override
+  String get explainDiagnosticsDesc =>
+      'Success rate and speed of the model answering your questions. Check here if answers seem worse than usual.';
+
+  @override
+  String get explainNoData => 'No explanations requested yet.';
+
+  @override
+  String get explainClearDiagnostics => 'Clear history';
+
+  @override
+  String get onboardingAiTitle => 'Ask about any passage';
+
+  @override
+  String get onboardingAiDesc =>
+      'A tutor trained on your question: what does the Hebrew actually say, what does the Greek carry that English cannot. Tap the ✨ on any verse.';
+
+  @override
+  String get onboardingAiToggle => 'Enable the AI tutor';
+
+  @override
+  String get onboardingAiPrivacy =>
+      'This is the only part of the app that uses the internet: the verse you ask about is sent to be explained. Everything else — the text, dictionaries, grammar, audio — works fully offline. You can change this any time in Settings.';
 }

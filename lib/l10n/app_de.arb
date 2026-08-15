@@ -298,5 +298,24 @@
   "explainErrorOffline": "Keine Verbindung. Dies ist die einzige Funktion, die eine benötigt.",
   "explainErrorRateLimited": "Zu viele Anfragen im Moment. Versuchen Sie es gleich noch einmal.",
   "explainErrorGeneric": "Die Erklärung konnte nicht erstellt werden.",
-  "explainRetry": "Erneut versuchen"
+  "explainRetry": "Erneut versuchen",
+  "explainLowQuality": "Diese Antwort wirkt fehlerhaft. Versuchen Sie es erneut — wenn es weiter passiert, sollte das Modell gewechselt werden.",
+  "explainFreeRemaining": "Noch {count} kostenlose Erklärungen heute",
+  "@explainFreeRemaining": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "explainLimitReached": "Sie haben die kostenlosen Erklärungen für heute aufgebraucht.",
+  "explainUpgradeTitle": "Unbegrenzt und ein besseres Modell",
+  "explainDiagnosticsTitle": "KI-Diagnose",
+  "explainDiagnosticsDesc": "Erfolgsquote und Geschwindigkeit des Modells, das Ihre Fragen beantwortet. Prüfen Sie hier, wenn die Antworten schlechter wirken als sonst.",
+  "explainNoData": "Noch keine Erklärungen angefordert.",
+  "explainClearDiagnostics": "Verlauf löschen",
+  "onboardingAiTitle": "Fragen Sie zu jeder Bibelstelle",
+  "onboardingAiDesc": "Ein Tutor für Ihre Frage: was der hebräische Text wirklich sagt, was das Griechische trägt, das eine Übersetzung nicht fassen kann. Tippen Sie auf das ✨ bei jedem Vers.",
+  "onboardingAiToggle": "KI-Tutor aktivieren",
+  "onboardingAiPrivacy": "Dies ist der einzige Teil der App, der das Internet nutzt: der Vers, zu dem Sie fragen, wird zur Erklärung gesendet. Alles andere — Text, Wörterbücher, Grammatik, Audio — funktioniert vollständig offline. Sie können das jederzeit in den Einstellungen ändern."
 }

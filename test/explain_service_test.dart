@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:original_bible/features/explain/explain_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 const _key = 'test-key';
 
@@ -45,6 +46,11 @@ Future<String> _explain(ExplainService service) {
 }
 
 void main() {
+  // The service records every  call's outcome for the diagnostics screen, and that
+  // write goes through SharedPreferences.
+  TestWidgetsFlutterBinding.ensureInitialized();
+  setUp(() => SharedPreferences.setMockInitialValues({}));
+
   group('configuration', () {
     test('reports unconfigured when no key was compiled in', () {
       final service = _service((_) async => _completion('x'), apiKey: '');

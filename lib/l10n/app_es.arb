@@ -298,5 +298,24 @@
   "explainErrorOffline": "Sin conexión. Esta es la única función que la necesita.",
   "explainErrorRateLimited": "Demasiadas solicitudes ahora mismo. Inténtalo en un momento.",
   "explainErrorGeneric": "No se pudo generar la explicación.",
-  "explainRetry": "Reintentar"
+  "explainRetry": "Reintentar",
+  "explainLowQuality": "Esta respuesta parece defectuosa. Inténtalo de nuevo; si sigue pasando, quizá haya que cambiar el modelo.",
+  "explainFreeRemaining": "Te quedan {count} explicaciones gratuitas hoy",
+  "@explainFreeRemaining": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "explainLimitReached": "Has usado tus explicaciones gratuitas de hoy.",
+  "explainUpgradeTitle": "Ilimitado y con un modelo mejor",
+  "explainDiagnosticsTitle": "Diagnóstico de la IA",
+  "explainDiagnosticsDesc": "Tasa de acierto y velocidad del modelo que responde a tus preguntas. Consúltalo si las respuestas parecen peores de lo normal.",
+  "explainNoData": "Aún no se han pedido explicaciones.",
+  "explainClearDiagnostics": "Borrar historial",
+  "onboardingAiTitle": "Pregunta sobre cualquier pasaje",
+  "onboardingAiDesc": "Un tutor para tu pregunta: qué dice realmente el hebreo, qué lleva el griego que una traducción no alcanza. Toca el ✨ en cualquier versículo.",
+  "onboardingAiToggle": "Activar el tutor de IA",
+  "onboardingAiPrivacy": "Esta es la única parte de la app que usa internet: el versículo sobre el que preguntas se envía para ser explicado. Todo lo demás — texto, diccionarios, gramática, audio — funciona totalmente sin conexión. Puedes cambiarlo cuando quieras en Ajustes."
 }

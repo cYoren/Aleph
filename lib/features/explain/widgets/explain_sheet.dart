@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../l10n/generated/app_localizations.dart';
+import '../../../shared/utils/inline_markdown.dart';
+import '../explain_health.dart';
 import '../explain_provider.dart';
 import '../explain_service.dart';
 
@@ -153,13 +155,52 @@ class _Body extends StatelessWidget {
         );
 
       case ExplainReady(:final text):
+        // Both shipped models emphasise original-language words with markdown.
+        // Rendering it keeps that emphasis; not rendering it would show the
+        // reader literal asterisks.
+        final problem = ExplainQualityCheck.problemWith(text);
         return ListView(
           controller: scrollController,
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
           children: [
-            SelectableText(
-              text,
-              style: const TextStyle(fontSize: 15, height: 1.55),
+            if (problem != null) ...[
+              Container(
+                padding: const EdgeInsets.all(10),
+                margin: const EdgeInsets.only(bottom: 12),
+                decoration: BoxDecoration(
+                  color: colorScheme.errorContainer.withValues(alpha: 0.5),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.warning_amber_outlined,
+                      size: 18,
+                      color: colorScheme.onErrorContainer,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        l10n.explainLowQuality,
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: colorScheme.onErrorContainer,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+            SelectableText.rich(
+              inlineMarkdownSpan(
+                text,
+                baseStyle: TextStyle(
+                  fontSize: 15,
+                  height: 1.55,
+                  color: colorScheme.onSurface,
+                ),
+              ),
             ),
             const SizedBox(height: 20),
             Row(

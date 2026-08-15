@@ -5,6 +5,9 @@ import '../../l10n/generated/app_localizations.dart';
 import '../../features/settings/settings_provider.dart';
 import '../../providers/translations_provider.dart';
 import '../../shared/utils/hebrew_display.dart';
+import 'package:go_router/go_router.dart';
+
+import '../explain/explain_model.dart';
 import '../explain/explain_provider.dart';
 
 const _interfaceLanguages = <String, String>{
@@ -185,6 +188,33 @@ class SettingsScreen extends ConsumerWidget {
                 notifier.setAiExplainEnabled(value);
               },
             ),
+            if (settings.aiExplainEnabled) ...[
+              Builder(
+                builder: (context) {
+                  final remaining = ref.watch(explainRemainingTodayProvider);
+                  return ListTile(
+                    leading: const Icon(Icons.bolt_outlined),
+                    title: Text(l10n.explainUpgradeTitle),
+                    subtitle: Text(
+                      remaining == null
+                          ? kProModel.modelId
+                          : l10n.explainFreeRemaining(remaining),
+                    ),
+                    trailing: Switch(
+                      value: settings.aiProUnlocked,
+                      onChanged: (value) => notifier.setAiProUnlocked(value),
+                    ),
+                  );
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.monitor_heart_outlined),
+                title: Text(l10n.explainDiagnosticsTitle),
+                subtitle: Text(l10n.explainDiagnosticsDesc),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => context.push('/ai-diagnostics'),
+              ),
+            ],
           ],
           const Divider(),
 
