@@ -13,7 +13,7 @@
   "onboardingGreekTitle": "Greek - New Testament",
   "onboardingGreekDesc": "The New Testament was written in Greek, read left to right. The Gospels and Epistles were composed between 50-100 AD.",
   "onboardingTapTitle": "Tap Any Word",
-  "onboardingTapDesc": "Tap on any word to see its definition, pronunciation, and grammatical information. Toggle the pronunciation button to see how words are spoken.",
+  "onboardingTapDesc": "Tap any word to see its definition, pronunciation, and grammatical information. Long-press a word for a quick meaning without leaving your place.",
   "settings": "Settings",
   "translation": "Translation",
   "pronunciation": "Show Pronunciation",
@@ -328,5 +328,18 @@
         "type": "String"
       }
     }
-  }
+  },
+  "crossReferencesCount": "{count} cross-references",
+  "@crossReferencesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onboardingRecitationTitle": "Hear It Recited",
+  "onboardingRecitationDesc": "Press play to hear any chapter read aloud in Hebrew or Greek, by living voices rather than a reconstructed ancient pronunciation. Slow it right down from the speed control until your ear catches up.",
+  "readingHintTitle": "Three ways in",
+  "readingHintBody": "Tap a word for its full meaning. Long-press for a quick peek without losing your place. Press ▶ above to hear the chapter recited.",
+  "readingHintDismiss": "Got it"
 }

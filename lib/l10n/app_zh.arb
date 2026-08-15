@@ -13,7 +13,7 @@
   "onboardingGreekTitle": "希腊文 - 新约",
   "onboardingGreekDesc": "新约写于希腊文，阅读方向为从左到右。福音书与书信写于公元 50-100 年间。",
   "onboardingTapTitle": "点按任意词语",
-  "onboardingTapDesc": "点按任意词语即可查看释义、发音和语法信息。开启发音按钮可查看词语读音。",
+  "onboardingTapDesc": "点按任意词语即可查看释义、发音和语法信息。长按词语可快速查看含义，而不会失去阅读位置。",
   "settings": "设置",
   "translation": "译本",
   "pronunciation": "显示发音",
@@ -222,27 +222,27 @@
   "syntaxSourceMacula": "句法树：MACULA 希伯来文与希腊文（Clear Bible），CC BY 4.0",
   "showMore": "显示更多",
   "showLess": "收起",
-  "readabilityTitle": "What can I read?",
-  "readabilityAllBooks": "Every book, most readable first",
-  "readabilityNoText": "No text is loaded yet.",
-  "readabilityCanReadNow": "You can read this now",
-  "readabilityClosest": "Closest to readable",
-  "readabilityEmptyTitle": "Start learning words to see this map fill in",
-  "readabilityEmptyBody": "As you master vocabulary, each book shows how much of it you can already read. The most frequent words cover the most text, so progress here is quick at first.",
-  "openVocabulary": "Open vocabulary",
-  "reciteAloud": "Recite aloud",
-  "stopReciting": "Stop reciting",
-  "recitationPreparing": "Preparing…",
-  "recitationStop": "Stop",
-  "hearItRead": "Hear it read",
-  "phraseSpacingTitle": "Phrase spacing",
-  "phraseSpacingDesc": "Space the Hebrew at the Masoretic accents, so a verse reads in sense units instead of word by word.",
-  "recitationVoiceTitle": "Recitation voice",
-  "recitationVoiceDesc": "Read aloud by your device's speech voices: Modern Israeli for Hebrew, Modern Greek for Greek. These are living reading traditions, not reconstructed ancient pronunciation.",
-  "voiceMissing": "No Hebrew or Greek voice is installed on this device. Add one in your system speech settings to hear the text read aloud.",
-  "voiceUnsupported": "This device has no speech engine available.",
-  "recitationFailed": "Recitation could not be started.",
-  "readBook": "Read {book}",
+  "readabilityTitle": "我能读哪些书卷？",
+  "readabilityAllBooks": "全部书卷，按易读程度排列",
+  "readabilityNoText": "尚未加载经文。",
+  "readabilityCanReadNow": "你现在就能读这卷",
+  "readabilityClosest": "最接近可以读的一卷",
+  "readabilityEmptyTitle": "开始学习单词，这张图就会逐渐填满",
+  "readabilityEmptyBody": "随着你掌握的词汇增加，每卷书都会显示你已经能读懂多少。最常见的词覆盖了大部分经文，所以起步阶段进展很快。",
+  "openVocabulary": "打开词汇",
+  "reciteAloud": "朗读",
+  "stopReciting": "停止朗读",
+  "recitationPreparing": "准备中…",
+  "recitationStop": "停止",
+  "hearItRead": "听朗读",
+  "phraseSpacingTitle": "按语义分组",
+  "phraseSpacingDesc": "依照马所拉重音在希伯来文中加入间隔，使经文以语义单位阅读，而不是逐字阅读。",
+  "recitationVoiceTitle": "朗读语音",
+  "recitationVoiceDesc": "使用设备的语音朗读：希伯来文为现代以色列发音，希腊文为现代希腊发音。这是沿用至今的诵读传统，并非重建的古代发音。",
+  "voiceMissing": "本设备未安装希伯来文或希腊文语音。请在系统的语音设置中添加，以便朗读经文。",
+  "voiceUnsupported": "本设备没有可用的语音引擎。",
+  "recitationFailed": "无法开始朗读。",
+  "readBook": "阅读{book}",
   "@readBook": {
     "placeholders": {
       "book": {
@@ -250,7 +250,7 @@
       }
     }
   },
-  "readabilityCoverage": "You know {percent}% of its vocabulary — about {count} unfamiliar words per chapter.",
+  "readabilityCoverage": "你认识其中 {percent}% 的词汇——每章约有 {count} 个生词。",
   "@readabilityCoverage": {
     "placeholders": {
       "percent": {
@@ -261,7 +261,7 @@
       }
     }
   },
-  "recitationVerse": "Verse {number}",
+  "recitationVerse": "第 {number} 节",
   "@recitationVerse": {
     "placeholders": {
       "number": {
@@ -269,12 +269,25 @@
       }
     }
   },
-  "voiceMissingFor": "No {tradition} voice is installed on this device.",
+  "voiceMissingFor": "本设备未安装{tradition}语音。",
   "@voiceMissingFor": {
     "placeholders": {
       "tradition": {
         "type": "String"
       }
     }
-  }
+  },
+  "crossReferencesCount": "{count} 处交叉引用",
+  "@crossReferencesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onboardingRecitationTitle": "聆听朗读",
+  "onboardingRecitationDesc": "点按播放键，即可听到任意一章用希伯来语或希腊语朗读——使用的是现代通行的发音，而非重建的古代发音。可将语速调慢，直到耳朵跟得上为止。",
+  "readingHintTitle": "三种入门方式",
+  "readingHintBody": "点按词语可查看完整释义。长按可快速预览而不失去阅读位置。点按上方的 ▶ 即可听到本章朗读。",
+  "readingHintDismiss": "知道了"
 }

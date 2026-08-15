@@ -13,7 +13,7 @@
   "onboardingGreekTitle": "그리스어 - 신약",
   "onboardingGreekDesc": "신약은 그리스어로 기록되었고 왼쪽에서 오른쪽으로 읽습니다. 복음서와 서신서는 서기 50-100년 사이에 기록되었습니다.",
   "onboardingTapTitle": "단어를 눌러보세요",
-  "onboardingTapDesc": "단어를 누르면 정의, 발음, 문법 정보를 볼 수 있습니다. 발음 버튼을 켜면 단어 발음을 확인할 수 있습니다.",
+  "onboardingTapDesc": "단어를 누르면 정의, 발음, 문법 정보를 볼 수 있습니다. 단어를 길게 누르면 읽던 자리를 벗어나지 않고 빠르게 뜻을 확인할 수 있습니다.",
   "settings": "설정",
   "translation": "번역",
   "pronunciation": "발음 표시",
@@ -222,27 +222,27 @@
   "syntaxSourceMacula": "구문 트리: MACULA 히브리어·그리스어 (Clear Bible), CC BY 4.0",
   "showMore": "더 보기",
   "showLess": "접기",
-  "readabilityTitle": "What can I read?",
-  "readabilityAllBooks": "Every book, most readable first",
-  "readabilityNoText": "No text is loaded yet.",
-  "readabilityCanReadNow": "You can read this now",
-  "readabilityClosest": "Closest to readable",
-  "readabilityEmptyTitle": "Start learning words to see this map fill in",
-  "readabilityEmptyBody": "As you master vocabulary, each book shows how much of it you can already read. The most frequent words cover the most text, so progress here is quick at first.",
-  "openVocabulary": "Open vocabulary",
-  "reciteAloud": "Recite aloud",
-  "stopReciting": "Stop reciting",
-  "recitationPreparing": "Preparing…",
-  "recitationStop": "Stop",
-  "hearItRead": "Hear it read",
-  "phraseSpacingTitle": "Phrase spacing",
-  "phraseSpacingDesc": "Space the Hebrew at the Masoretic accents, so a verse reads in sense units instead of word by word.",
-  "recitationVoiceTitle": "Recitation voice",
-  "recitationVoiceDesc": "Read aloud by your device's speech voices: Modern Israeli for Hebrew, Modern Greek for Greek. These are living reading traditions, not reconstructed ancient pronunciation.",
-  "voiceMissing": "No Hebrew or Greek voice is installed on this device. Add one in your system speech settings to hear the text read aloud.",
-  "voiceUnsupported": "This device has no speech engine available.",
-  "recitationFailed": "Recitation could not be started.",
-  "readBook": "Read {book}",
+  "readabilityTitle": "무엇을 읽을 수 있나요?",
+  "readabilityAllBooks": "모든 책, 읽기 쉬운 순서",
+  "readabilityNoText": "아직 본문이 불러와지지 않았습니다.",
+  "readabilityCanReadNow": "지금 읽을 수 있습니다",
+  "readabilityClosest": "가장 읽기에 가까운 책",
+  "readabilityEmptyTitle": "단어를 익히면 이 지도가 채워집니다",
+  "readabilityEmptyBody": "어휘를 익혀 갈수록 각 책에서 이미 읽을 수 있는 비율이 표시됩니다. 자주 쓰이는 단어가 본문의 대부분을 차지하므로 처음에는 빠르게 늘어납니다.",
+  "openVocabulary": "어휘 열기",
+  "reciteAloud": "소리내어 읽기",
+  "stopReciting": "읽기 중지",
+  "recitationPreparing": "준비 중…",
+  "recitationStop": "중지",
+  "hearItRead": "발음 듣기",
+  "phraseSpacingTitle": "의미 단위 띄어쓰기",
+  "phraseSpacingDesc": "마소라 악센트에 따라 히브리어 본문을 띄어, 절을 단어 단위가 아니라 의미 단위로 읽게 합니다.",
+  "recitationVoiceTitle": "낭독 음성",
+  "recitationVoiceDesc": "기기의 음성으로 읽어 줍니다. 히브리어는 현대 이스라엘 발음, 그리스어는 현대 그리스 발음입니다. 재구성한 고대 발음이 아니라 지금도 사용되는 낭독 전통입니다.",
+  "voiceMissing": "이 기기에 히브리어 또는 그리스어 음성이 설치되어 있지 않습니다. 시스템 음성 설정에서 추가하면 본문을 들을 수 있습니다.",
+  "voiceUnsupported": "이 기기에는 사용할 수 있는 음성 엔진이 없습니다.",
+  "recitationFailed": "낭독을 시작할 수 없습니다.",
+  "readBook": "{book} 읽기",
   "@readBook": {
     "placeholders": {
       "book": {
@@ -250,7 +250,7 @@
       }
     }
   },
-  "readabilityCoverage": "You know {percent}% of its vocabulary — about {count} unfamiliar words per chapter.",
+  "readabilityCoverage": "이 책 어휘의 {percent}%를 알고 있습니다. 장마다 모르는 단어가 약 {count}개입니다.",
   "@readabilityCoverage": {
     "placeholders": {
       "percent": {
@@ -261,7 +261,7 @@
       }
     }
   },
-  "recitationVerse": "Verse {number}",
+  "recitationVerse": "{number}절",
   "@recitationVerse": {
     "placeholders": {
       "number": {
@@ -269,12 +269,25 @@
       }
     }
   },
-  "voiceMissingFor": "No {tradition} voice is installed on this device.",
+  "voiceMissingFor": "이 기기에 {tradition} 음성이 설치되어 있지 않습니다.",
   "@voiceMissingFor": {
     "placeholders": {
       "tradition": {
         "type": "String"
       }
     }
-  }
+  },
+  "crossReferencesCount": "교차 참조 {count}개",
+  "@crossReferencesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onboardingRecitationTitle": "낭독으로 들어보세요",
+  "onboardingRecitationDesc": "재생 버튼을 누르면 어느 장이든 히브리어나 그리스어로 낭독되는 것을 들을 수 있습니다. 복원된 고대 발음이 아니라 지금도 쓰이는 살아 있는 발음입니다. 속도 조절로 천천히 낮춰 귀에 익을 때까지 들어 보세요.",
+  "readingHintTitle": "시작하는 세 가지 방법",
+  "readingHintBody": "단어를 누르면 전체 뜻을 볼 수 있습니다. 길게 누르면 자리를 벗어나지 않고 빠르게 미리 볼 수 있습니다. 위쪽의 ▶를 누르면 이 장의 낭독을 들을 수 있습니다.",
+  "readingHintDismiss": "확인"
 }

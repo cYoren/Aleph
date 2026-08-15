@@ -52,7 +52,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get onboardingTapDesc =>
-      'Toque em qualquer palavra para ver sua definição, pronúncia e informação gramatical. Ative o botão de pronúncia para ver como as palavras são faladas.';
+      'Toque em qualquer palavra para ver sua definição, pronúncia e informação gramatical. Toque e segure uma palavra para ver o significado rápido sem perder o lugar.';
 
   @override
   String get settings => 'Configurações';
@@ -655,4 +655,26 @@ class AppLocalizationsPt extends AppLocalizations {
   String voiceMissingFor(String tradition) {
     return 'Nenhuma voz de $tradition está instalada neste aparelho.';
   }
+
+  @override
+  String crossReferencesCount(int count) {
+    return '$count referências cruzadas';
+  }
+
+  @override
+  String get onboardingRecitationTitle => 'Ouça a Recitação';
+
+  @override
+  String get onboardingRecitationDesc =>
+      'Toque em reproduzir para ouvir qualquer capítulo lido em voz alta em hebraico ou grego, com vozes vivas em vez de uma pronúncia antiga reconstruída. Diminua a velocidade até o seu ouvido acompanhar.';
+
+  @override
+  String get readingHintTitle => 'Três formas de começar';
+
+  @override
+  String get readingHintBody =>
+      'Toque em uma palavra para ver o significado completo. Toque e segure para uma prévia rápida sem perder o lugar. Toque em ▶ acima para ouvir o capítulo recitado.';
+
+  @override
+  String get readingHintDismiss => 'Entendi';
 }

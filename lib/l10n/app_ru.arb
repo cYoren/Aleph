@@ -13,7 +13,7 @@
   "onboardingGreekTitle": "Греческий - Новый Завет",
   "onboardingGreekDesc": "Новый Завет был написан на греческом языке, который читается слева направо. Евангелия и Послания были написаны между 50 и 100 гг. н.э.",
   "onboardingTapTitle": "Нажмите на любое слово",
-  "onboardingTapDesc": "Нажмите на любое слово, чтобы увидеть его определение, произношение и грамматическую информацию. Включите кнопку произношения, чтобы видеть, как звучат слова.",
+  "onboardingTapDesc": "Нажмите на любое слово, чтобы увидеть его определение, произношение и грамматическую информацию. Нажмите и удерживайте слово, чтобы быстро увидеть значение, не теряя место.",
   "settings": "Настройки",
   "translation": "Перевод",
   "pronunciation": "Показывать произношение",
@@ -222,27 +222,27 @@
   "syntaxSourceMacula": "Синтаксические деревья: MACULA Hebrew & Greek (Clear Bible), CC BY 4.0",
   "showMore": "Показать больше",
   "showLess": "Свернуть",
-  "readabilityTitle": "What can I read?",
-  "readabilityAllBooks": "Every book, most readable first",
-  "readabilityNoText": "No text is loaded yet.",
-  "readabilityCanReadNow": "You can read this now",
-  "readabilityClosest": "Closest to readable",
-  "readabilityEmptyTitle": "Start learning words to see this map fill in",
-  "readabilityEmptyBody": "As you master vocabulary, each book shows how much of it you can already read. The most frequent words cover the most text, so progress here is quick at first.",
-  "openVocabulary": "Open vocabulary",
-  "reciteAloud": "Recite aloud",
-  "stopReciting": "Stop reciting",
-  "recitationPreparing": "Preparing…",
-  "recitationStop": "Stop",
-  "hearItRead": "Hear it read",
-  "phraseSpacingTitle": "Phrase spacing",
-  "phraseSpacingDesc": "Space the Hebrew at the Masoretic accents, so a verse reads in sense units instead of word by word.",
-  "recitationVoiceTitle": "Recitation voice",
-  "recitationVoiceDesc": "Read aloud by your device's speech voices: Modern Israeli for Hebrew, Modern Greek for Greek. These are living reading traditions, not reconstructed ancient pronunciation.",
-  "voiceMissing": "No Hebrew or Greek voice is installed on this device. Add one in your system speech settings to hear the text read aloud.",
-  "voiceUnsupported": "This device has no speech engine available.",
-  "recitationFailed": "Recitation could not be started.",
-  "readBook": "Read {book}",
+  "readabilityTitle": "Что я могу читать?",
+  "readabilityAllBooks": "Все книги, от самых доступных",
+  "readabilityNoText": "Текст ещё не загружен.",
+  "readabilityCanReadNow": "Это вы уже можете читать",
+  "readabilityClosest": "Ближе всего к доступному",
+  "readabilityEmptyTitle": "Начните учить слова, и эта карта заполнится",
+  "readabilityEmptyBody": "По мере освоения лексики каждая книга показывает, какую её часть вы уже можете читать. Самые частые слова покрывают большую часть текста, поэтому вначале прогресс идёт быстро.",
+  "openVocabulary": "Открыть словарь",
+  "reciteAloud": "Читать вслух",
+  "stopReciting": "Остановить чтение",
+  "recitationPreparing": "Подготовка…",
+  "recitationStop": "Стоп",
+  "hearItRead": "Прослушать",
+  "phraseSpacingTitle": "Деление на смысловые части",
+  "phraseSpacingDesc": "Расставляет пробелы в еврейском тексте по масоретским акцентам, чтобы стих читался смысловыми единицами, а не слово за словом.",
+  "recitationVoiceTitle": "Голос чтения",
+  "recitationVoiceDesc": "Чтение голосами вашего устройства: современный израильский для иврита и современный греческий для греческого. Это живые традиции чтения, а не реконструированное древнее произношение.",
+  "voiceMissing": "На этом устройстве не установлен голос для иврита или греческого. Добавьте его в системных настройках синтеза речи, чтобы слышать текст.",
+  "voiceUnsupported": "На этом устройстве нет доступного синтезатора речи.",
+  "recitationFailed": "Не удалось начать чтение.",
+  "readBook": "Читать: {book}",
   "@readBook": {
     "placeholders": {
       "book": {
@@ -250,7 +250,7 @@
       }
     }
   },
-  "readabilityCoverage": "You know {percent}% of its vocabulary — about {count} unfamiliar words per chapter.",
+  "readabilityCoverage": "Вы знаете {percent} % его лексики — около {count} незнакомых слов на главу.",
   "@readabilityCoverage": {
     "placeholders": {
       "percent": {
@@ -261,7 +261,7 @@
       }
     }
   },
-  "recitationVerse": "Verse {number}",
+  "recitationVerse": "Стих {number}",
   "@recitationVerse": {
     "placeholders": {
       "number": {
@@ -269,12 +269,25 @@
       }
     }
   },
-  "voiceMissingFor": "No {tradition} voice is installed on this device.",
+  "voiceMissingFor": "На этом устройстве не установлен голос «{tradition}».",
   "@voiceMissingFor": {
     "placeholders": {
       "tradition": {
         "type": "String"
       }
     }
-  }
+  },
+  "crossReferencesCount": "Перекрёстных ссылок: {count}",
+  "@crossReferencesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onboardingRecitationTitle": "Послушайте чтение вслух",
+  "onboardingRecitationDesc": "Нажмите кнопку воспроизведения, чтобы услышать любую главу на иврите или греческом — живыми голосами, а не реконструированным древним произношением. Замедлите темп, пока ухо не привыкнет.",
+  "readingHintTitle": "Три способа начать",
+  "readingHintBody": "Нажмите на слово, чтобы увидеть его полное значение. Нажмите и удерживайте для быстрого предпросмотра, не теряя место. Нажмите ▶ вверху, чтобы услышать главу вслух.",
+  "readingHintDismiss": "Понятно"
 }

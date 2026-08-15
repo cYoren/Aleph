@@ -14,16 +14,10 @@ python3 scripts/find_untranslated.py
 
 ## Task 1 — Translate book names into 6 languages
 
-**Status:** open
-**Size:** 66 books × 6 locales = 396 strings
-**File:** `assets/book_names.json`
-
-`en` and `pt` are already filled in. The file's shape is
-`{ "<locale>": { "<ABBREV>": "<name>" } }`. Add the six missing locales as
-sibling keys. Do not change `en` or `pt`, and do not change any abbreviation
-key — they must match `bible.db` exactly.
-
-Missing locales: `de`, `fr`, `es`, `ru`, `zh`, `ko`
+**Status:** done. All 8 locales (`en`, `pt`, `de`, `fr`, `es`, `ru`, `zh`, `ko`)
+are filled in `assets/book_names.json`, 66 books each, keys verified against
+the `en` abbreviation set. Kept here as a reference for the naming
+conventions used, in case a name needs correcting later.
 
 ### Prompt
 
@@ -56,19 +50,9 @@ Missing locales: `de`, `fr`, `es`, `ru`, `zh`, `ko`
 
 ## Task 2 — Translate the remaining UI strings
 
-**Status:** open
-**Size:** ~28 keys × 6 locales
-**Files:** `lib/l10n/app_de.arb`, `app_fr.arb`, `app_es.arb`, `app_ru.arb`, `app_zh.arb`, `app_ko.arb`
-
-These keys were added recently and copied verbatim from English so that key
-parity holds and the app falls back to English rather than crashing. They now
-need real translations.
-
-Find the exact list per locale with:
-
-```bash
-python3 scripts/find_untranslated.py --locale de
-```
+**Status:** done. `python3 scripts/find_untranslated.py` reports 0 untranslated
+ARB values across all 8 locales as of this writing. Re-run it after adding any
+new user-facing string — the workflow below still applies to future additions.
 
 ### Prompt
 

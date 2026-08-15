@@ -78,6 +78,11 @@ class SettingsState {
   /// reads as phrases rather than a flat row of words.
   final bool showSenseUnits;
 
+  /// Whether the reader has dismissed the one-time hint about tap /
+  /// long-press / recite. Onboarding teaches the same affordances, but a
+  /// user who taps Skip there should still learn them somewhere.
+  final bool hasSeenReadingHint;
+
   final bool hasManuallySelectedTranslation;
   final bool isLoaded;
 
@@ -94,6 +99,7 @@ class SettingsState {
     this.readerModeEnabled = false,
     this.hebrewTextDisplay = HebrewTextDisplay.full,
     this.showSenseUnits = true,
+    this.hasSeenReadingHint = false,
     this.hasManuallySelectedTranslation = false,
     this.isLoaded = false,
   });
@@ -111,6 +117,7 @@ class SettingsState {
     bool? readerModeEnabled,
     HebrewTextDisplay? hebrewTextDisplay,
     bool? showSenseUnits,
+    bool? hasSeenReadingHint,
     bool? hasManuallySelectedTranslation,
     bool? isLoaded,
   }) {
@@ -128,6 +135,7 @@ class SettingsState {
       readerModeEnabled: readerModeEnabled ?? this.readerModeEnabled,
       hebrewTextDisplay: hebrewTextDisplay ?? this.hebrewTextDisplay,
       showSenseUnits: showSenseUnits ?? this.showSenseUnits,
+      hasSeenReadingHint: hasSeenReadingHint ?? this.hasSeenReadingHint,
       hasManuallySelectedTranslation:
           hasManuallySelectedTranslation ?? this.hasManuallySelectedTranslation,
       isLoaded: isLoaded ?? this.isLoaded,
@@ -161,6 +169,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         prefs.getString('hebrewTextDisplay'),
       );
       final showSenseUnits = prefs.getBool('showSenseUnits') ?? true;
+      final hasSeenReadingHint = prefs.getBool('hasSeenReadingHint') ?? false;
       final hasManuallySelectedTranslation =
           prefs.getBool('hasManuallySelectedTranslation') ?? false;
 
@@ -188,6 +197,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         readerModeEnabled: readerModeEnabled,
         hebrewTextDisplay: hebrewTextDisplay,
         showSenseUnits: showSenseUnits,
+        hasSeenReadingHint: hasSeenReadingHint,
         hasManuallySelectedTranslation: hasManuallySelectedTranslation,
         isLoaded: true,
       );
@@ -326,6 +336,12 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     state = state.copyWith(showSenseUnits: enabled);
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('showSenseUnits', enabled);
+  }
+
+  Future<void> dismissReadingHint() async {
+    state = state.copyWith(hasSeenReadingHint: true);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('hasSeenReadingHint', true);
   }
 }
 

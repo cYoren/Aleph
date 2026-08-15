@@ -49,7 +49,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get onboardingTapTitle => '点按任意词语';
 
   @override
-  String get onboardingTapDesc => '点按任意词语即可查看释义、发音和语法信息。开启发音按钮可查看词语读音。';
+  String get onboardingTapDesc => '点按任意词语即可查看释义、发音和语法信息。长按词语可快速查看含义，而不会失去阅读位置。';
 
   @override
   String get settings => '设置';
@@ -549,87 +549,105 @@ class AppLocalizationsZh extends AppLocalizations {
   String get showLess => '收起';
 
   @override
-  String get readabilityTitle => 'What can I read?';
+  String get readabilityTitle => '我能读哪些书卷？';
 
   @override
-  String get readabilityAllBooks => 'Every book, most readable first';
+  String get readabilityAllBooks => '全部书卷，按易读程度排列';
 
   @override
-  String get readabilityNoText => 'No text is loaded yet.';
+  String get readabilityNoText => '尚未加载经文。';
 
   @override
-  String get readabilityCanReadNow => 'You can read this now';
+  String get readabilityCanReadNow => '你现在就能读这卷';
 
   @override
-  String get readabilityClosest => 'Closest to readable';
+  String get readabilityClosest => '最接近可以读的一卷';
 
   @override
-  String get readabilityEmptyTitle =>
-      'Start learning words to see this map fill in';
+  String get readabilityEmptyTitle => '开始学习单词，这张图就会逐渐填满';
 
   @override
   String get readabilityEmptyBody =>
-      'As you master vocabulary, each book shows how much of it you can already read. The most frequent words cover the most text, so progress here is quick at first.';
+      '随着你掌握的词汇增加，每卷书都会显示你已经能读懂多少。最常见的词覆盖了大部分经文，所以起步阶段进展很快。';
 
   @override
-  String get openVocabulary => 'Open vocabulary';
+  String get openVocabulary => '打开词汇';
 
   @override
-  String get reciteAloud => 'Recite aloud';
+  String get reciteAloud => '朗读';
 
   @override
-  String get stopReciting => 'Stop reciting';
+  String get stopReciting => '停止朗读';
 
   @override
-  String get recitationPreparing => 'Preparing…';
+  String get recitationPreparing => '准备中…';
 
   @override
-  String get recitationStop => 'Stop';
+  String get recitationStop => '停止';
 
   @override
-  String get hearItRead => 'Hear it read';
+  String get hearItRead => '听朗读';
 
   @override
-  String get phraseSpacingTitle => 'Phrase spacing';
+  String get phraseSpacingTitle => '按语义分组';
 
   @override
-  String get phraseSpacingDesc =>
-      'Space the Hebrew at the Masoretic accents, so a verse reads in sense units instead of word by word.';
+  String get phraseSpacingDesc => '依照马所拉重音在希伯来文中加入间隔，使经文以语义单位阅读，而不是逐字阅读。';
 
   @override
-  String get recitationVoiceTitle => 'Recitation voice';
+  String get recitationVoiceTitle => '朗读语音';
 
   @override
   String get recitationVoiceDesc =>
-      'Read aloud by your device\'s speech voices: Modern Israeli for Hebrew, Modern Greek for Greek. These are living reading traditions, not reconstructed ancient pronunciation.';
+      '使用设备的语音朗读：希伯来文为现代以色列发音，希腊文为现代希腊发音。这是沿用至今的诵读传统，并非重建的古代发音。';
 
   @override
-  String get voiceMissing =>
-      'No Hebrew or Greek voice is installed on this device. Add one in your system speech settings to hear the text read aloud.';
+  String get voiceMissing => '本设备未安装希伯来文或希腊文语音。请在系统的语音设置中添加，以便朗读经文。';
 
   @override
-  String get voiceUnsupported => 'This device has no speech engine available.';
+  String get voiceUnsupported => '本设备没有可用的语音引擎。';
 
   @override
-  String get recitationFailed => 'Recitation could not be started.';
+  String get recitationFailed => '无法开始朗读。';
 
   @override
   String readBook(String book) {
-    return 'Read $book';
+    return '阅读$book';
   }
 
   @override
   String readabilityCoverage(int percent, int count) {
-    return 'You know $percent% of its vocabulary — about $count unfamiliar words per chapter.';
+    return '你认识其中 $percent% 的词汇——每章约有 $count 个生词。';
   }
 
   @override
   String recitationVerse(int number) {
-    return 'Verse $number';
+    return '第 $number 节';
   }
 
   @override
   String voiceMissingFor(String tradition) {
-    return 'No $tradition voice is installed on this device.';
+    return '本设备未安装$tradition语音。';
   }
+
+  @override
+  String crossReferencesCount(int count) {
+    return '$count 处交叉引用';
+  }
+
+  @override
+  String get onboardingRecitationTitle => '聆听朗读';
+
+  @override
+  String get onboardingRecitationDesc =>
+      '点按播放键，即可听到任意一章用希伯来语或希腊语朗读——使用的是现代通行的发音，而非重建的古代发音。可将语速调慢，直到耳朵跟得上为止。';
+
+  @override
+  String get readingHintTitle => '三种入门方式';
+
+  @override
+  String get readingHintBody => '点按词语可查看完整释义。长按可快速预览而不失去阅读位置。点按上方的 ▶ 即可听到本章朗读。';
+
+  @override
+  String get readingHintDismiss => '知道了';
 }

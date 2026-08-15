@@ -109,6 +109,15 @@ things currently undercut the "in depth" promise:
       - The bundled Greek writes every comma tight against the next word
         (`λόγος,καὶ`) in all 5,414 NT verses that have one; a space is inserted
         before speaking or the voice runs straight through the phrase break.
+      - [x] **iOS audio session fixed.** Without configuration, iOS applies the
+        default `ambientSolo` session: recitation was silenced by the
+        Ring/Silent switch and stopped the instant the screen locked — the
+        flagship feature going silent for a large share of iPhone users. Fixed
+        with `setIosAudioCategory(.playback, [.duckOthers], .spokenAudio)` in
+        `recitation_service.dart` plus `UIBackgroundModes: audio` in
+        `Info.plist`, so listening continues through both. Verified by a real
+        `flutter build ios` (simulator) rather than analyze alone; not yet
+        verified on a physical device — see PAPERCUTS.
 - [ ] Bundled recordings remain an option later if a properly licensed set is
       found; the player interface would not need to change.
 
@@ -171,7 +180,9 @@ our data provides. Implemented in `lib/shared/utils/cantillation.dart`
 - **Book names are NOT in the database** — `books.name` and `books.name_en` are
   both English. Localized names live in `assets/book_names.json`, served by
   `lib/providers/book_names_provider.dart` with a per-book fallback to English.
-  Filled for `en` and `pt`; the other six are queue.md Task 1.
+  **All 8 app languages are filled**, 66 books each, in each language's
+  standard edition convention (e.g. Luther-tradition German, Synodal Russian
+  numbering for Samuel/Kings).
 - `python3 scripts/find_untranslated.py` inventories what is still English:
   ARB values byte-identical to the English original, plus user-facing string
   literals hardcoded in Dart. **Run it before claiming a localization is done.**
@@ -183,16 +194,10 @@ our data provides. Implemented in `lib/shared/utils/cantillation.dart`
 
 ## Known findings (do not re-investigate)
 
-- **Cross-references are not broken.** Reported as "missing" from real use, but
-  the data and the code are both fine: 343,556 pairs in `cross_references`
-  (Gen 1:1 has 61, John 1:1 has 36), and the DAO, provider, and sheet all work.
-  The entry point is an unlabeled grey link icon sitting among four other icons
-  in the verse header, so it reads as absent. **This is a discoverability
-  problem.** The obvious fix — showing the reference count on each verse — costs
-  a per-verse query inside a scrolling list, so it needs care not to introduce
-  scroll jank. Still open.
-- **Book names are English in the database.** See Localization above. Not a
-  display bug; the translated data did not exist.
+- **Cross-references are not broken.** The data was always fine — 343,556
+  pairs in `cross_references` (Gen 1:1 has 61) — the entry point just read as
+  absent (unlabeled icon among four others). Fixed: badged with the count,
+  loaded once per chapter via `getCrossReferenceCountsForChapter`.
 - **~35 Greek Strong's ids have no lexicon row**, including common words a
   beginner needs (ἐγώ, ἦν, σοῦ, ὑμῶν). They appear to be inflected-form numbers
   while the lexicon is keyed by lemma number. queue.md Task 3.

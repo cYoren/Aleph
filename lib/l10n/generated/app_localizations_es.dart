@@ -52,7 +52,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get onboardingTapDesc =>
-      'Toca cualquier palabra para ver su definición, pronunciación e información gramatical. Activa el botón de pronunciación para ver cómo se pronuncian las palabras.';
+      'Toca cualquier palabra para ver su definición, pronunciación e información gramatical. Mantén pulsada una palabra para ver su significado rápido sin perder tu lugar.';
 
   @override
   String get settings => 'Ajustes';
@@ -573,87 +573,111 @@ class AppLocalizationsEs extends AppLocalizations {
   String get showLess => 'Mostrar menos';
 
   @override
-  String get readabilityTitle => 'What can I read?';
+  String get readabilityTitle => '¿Qué puedo leer?';
 
   @override
-  String get readabilityAllBooks => 'Every book, most readable first';
+  String get readabilityAllBooks =>
+      'Todos los libros, del más legible al menos';
 
   @override
-  String get readabilityNoText => 'No text is loaded yet.';
+  String get readabilityNoText => 'Todavía no hay texto cargado.';
 
   @override
-  String get readabilityCanReadNow => 'You can read this now';
+  String get readabilityCanReadNow => 'Ya puedes leer este';
 
   @override
-  String get readabilityClosest => 'Closest to readable';
+  String get readabilityClosest => 'El más cercano a poder leerse';
 
   @override
   String get readabilityEmptyTitle =>
-      'Start learning words to see this map fill in';
+      'Empieza a aprender palabras para llenar este mapa';
 
   @override
   String get readabilityEmptyBody =>
-      'As you master vocabulary, each book shows how much of it you can already read. The most frequent words cover the most text, so progress here is quick at first.';
+      'A medida que domines el vocabulario, cada libro mostrará cuánto puedes leer ya. Las palabras más frecuentes cubren la mayor parte del texto, así que al principio se avanza rápido.';
 
   @override
-  String get openVocabulary => 'Open vocabulary';
+  String get openVocabulary => 'Abrir vocabulario';
 
   @override
-  String get reciteAloud => 'Recite aloud';
+  String get reciteAloud => 'Leer en voz alta';
 
   @override
-  String get stopReciting => 'Stop reciting';
+  String get stopReciting => 'Detener la lectura';
 
   @override
-  String get recitationPreparing => 'Preparing…';
+  String get recitationPreparing => 'Preparando…';
 
   @override
-  String get recitationStop => 'Stop';
+  String get recitationStop => 'Detener';
 
   @override
-  String get hearItRead => 'Hear it read';
+  String get hearItRead => 'Escuchar la lectura';
 
   @override
-  String get phraseSpacingTitle => 'Phrase spacing';
+  String get phraseSpacingTitle => 'Espaciado por frases';
 
   @override
   String get phraseSpacingDesc =>
-      'Space the Hebrew at the Masoretic accents, so a verse reads in sense units instead of word by word.';
+      'Espacia el texto hebreo en los acentos masoréticos, para leer el versículo en unidades de sentido y no palabra por palabra.';
 
   @override
-  String get recitationVoiceTitle => 'Recitation voice';
+  String get recitationVoiceTitle => 'Voz de lectura';
 
   @override
   String get recitationVoiceDesc =>
-      'Read aloud by your device\'s speech voices: Modern Israeli for Hebrew, Modern Greek for Greek. These are living reading traditions, not reconstructed ancient pronunciation.';
+      'Lectura con las voces de tu dispositivo: hebreo israelí moderno y griego moderno. Son tradiciones vivas de lectura, no la pronunciación antigua reconstruida.';
 
   @override
   String get voiceMissing =>
-      'No Hebrew or Greek voice is installed on this device. Add one in your system speech settings to hear the text read aloud.';
+      'No hay ninguna voz de hebreo o griego instalada en este dispositivo. Añade una en los ajustes de voz del sistema para escuchar el texto.';
 
   @override
-  String get voiceUnsupported => 'This device has no speech engine available.';
+  String get voiceUnsupported =>
+      'Este dispositivo no tiene ningún motor de voz disponible.';
 
   @override
-  String get recitationFailed => 'Recitation could not be started.';
+  String get recitationFailed => 'No se pudo iniciar la lectura.';
 
   @override
   String readBook(String book) {
-    return 'Read $book';
+    return 'Leer $book';
   }
 
   @override
   String readabilityCoverage(int percent, int count) {
-    return 'You know $percent% of its vocabulary — about $count unfamiliar words per chapter.';
+    return 'Conoces el $percent % de su vocabulario: unas $count palabras desconocidas por capítulo.';
   }
 
   @override
   String recitationVerse(int number) {
-    return 'Verse $number';
+    return 'Versículo $number';
   }
 
   @override
   String voiceMissingFor(String tradition) {
-    return 'No $tradition voice is installed on this device.';
+    return 'No hay ninguna voz de $tradition instalada en este dispositivo.';
   }
+
+  @override
+  String crossReferencesCount(int count) {
+    return '$count referencias cruzadas';
+  }
+
+  @override
+  String get onboardingRecitationTitle => 'Escucha la recitación';
+
+  @override
+  String get onboardingRecitationDesc =>
+      'Pulsa reproducir para escuchar cualquier capítulo leído en voz alta en hebreo o griego, con voces vivas en lugar de una pronunciación antigua reconstruida. Reduce la velocidad hasta que tu oído se acostumbre.';
+
+  @override
+  String get readingHintTitle => 'Tres formas de empezar';
+
+  @override
+  String get readingHintBody =>
+      'Toca una palabra para ver su significado completo. Mantén pulsado para una vista rápida sin perder tu lugar. Pulsa ▶ arriba para escuchar el capítulo recitado.';
+
+  @override
+  String get readingHintDismiss => 'Entendido';
 }

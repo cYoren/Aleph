@@ -51,7 +51,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get onboardingTapDesc =>
-      '단어를 누르면 정의, 발음, 문법 정보를 볼 수 있습니다. 발음 버튼을 켜면 단어 발음을 확인할 수 있습니다.';
+      '단어를 누르면 정의, 발음, 문법 정보를 볼 수 있습니다. 단어를 길게 누르면 읽던 자리를 벗어나지 않고 빠르게 뜻을 확인할 수 있습니다.';
 
   @override
   String get settings => '설정';
@@ -554,87 +554,108 @@ class AppLocalizationsKo extends AppLocalizations {
   String get showLess => '접기';
 
   @override
-  String get readabilityTitle => 'What can I read?';
+  String get readabilityTitle => '무엇을 읽을 수 있나요?';
 
   @override
-  String get readabilityAllBooks => 'Every book, most readable first';
+  String get readabilityAllBooks => '모든 책, 읽기 쉬운 순서';
 
   @override
-  String get readabilityNoText => 'No text is loaded yet.';
+  String get readabilityNoText => '아직 본문이 불러와지지 않았습니다.';
 
   @override
-  String get readabilityCanReadNow => 'You can read this now';
+  String get readabilityCanReadNow => '지금 읽을 수 있습니다';
 
   @override
-  String get readabilityClosest => 'Closest to readable';
+  String get readabilityClosest => '가장 읽기에 가까운 책';
 
   @override
-  String get readabilityEmptyTitle =>
-      'Start learning words to see this map fill in';
+  String get readabilityEmptyTitle => '단어를 익히면 이 지도가 채워집니다';
 
   @override
   String get readabilityEmptyBody =>
-      'As you master vocabulary, each book shows how much of it you can already read. The most frequent words cover the most text, so progress here is quick at first.';
+      '어휘를 익혀 갈수록 각 책에서 이미 읽을 수 있는 비율이 표시됩니다. 자주 쓰이는 단어가 본문의 대부분을 차지하므로 처음에는 빠르게 늘어납니다.';
 
   @override
-  String get openVocabulary => 'Open vocabulary';
+  String get openVocabulary => '어휘 열기';
 
   @override
-  String get reciteAloud => 'Recite aloud';
+  String get reciteAloud => '소리내어 읽기';
 
   @override
-  String get stopReciting => 'Stop reciting';
+  String get stopReciting => '읽기 중지';
 
   @override
-  String get recitationPreparing => 'Preparing…';
+  String get recitationPreparing => '준비 중…';
 
   @override
-  String get recitationStop => 'Stop';
+  String get recitationStop => '중지';
 
   @override
-  String get hearItRead => 'Hear it read';
+  String get hearItRead => '발음 듣기';
 
   @override
-  String get phraseSpacingTitle => 'Phrase spacing';
+  String get phraseSpacingTitle => '의미 단위 띄어쓰기';
 
   @override
   String get phraseSpacingDesc =>
-      'Space the Hebrew at the Masoretic accents, so a verse reads in sense units instead of word by word.';
+      '마소라 악센트에 따라 히브리어 본문을 띄어, 절을 단어 단위가 아니라 의미 단위로 읽게 합니다.';
 
   @override
-  String get recitationVoiceTitle => 'Recitation voice';
+  String get recitationVoiceTitle => '낭독 음성';
 
   @override
   String get recitationVoiceDesc =>
-      'Read aloud by your device\'s speech voices: Modern Israeli for Hebrew, Modern Greek for Greek. These are living reading traditions, not reconstructed ancient pronunciation.';
+      '기기의 음성으로 읽어 줍니다. 히브리어는 현대 이스라엘 발음, 그리스어는 현대 그리스 발음입니다. 재구성한 고대 발음이 아니라 지금도 사용되는 낭독 전통입니다.';
 
   @override
   String get voiceMissing =>
-      'No Hebrew or Greek voice is installed on this device. Add one in your system speech settings to hear the text read aloud.';
+      '이 기기에 히브리어 또는 그리스어 음성이 설치되어 있지 않습니다. 시스템 음성 설정에서 추가하면 본문을 들을 수 있습니다.';
 
   @override
-  String get voiceUnsupported => 'This device has no speech engine available.';
+  String get voiceUnsupported => '이 기기에는 사용할 수 있는 음성 엔진이 없습니다.';
 
   @override
-  String get recitationFailed => 'Recitation could not be started.';
+  String get recitationFailed => '낭독을 시작할 수 없습니다.';
 
   @override
   String readBook(String book) {
-    return 'Read $book';
+    return '$book 읽기';
   }
 
   @override
   String readabilityCoverage(int percent, int count) {
-    return 'You know $percent% of its vocabulary — about $count unfamiliar words per chapter.';
+    return '이 책 어휘의 $percent%를 알고 있습니다. 장마다 모르는 단어가 약 $count개입니다.';
   }
 
   @override
   String recitationVerse(int number) {
-    return 'Verse $number';
+    return '$number절';
   }
 
   @override
   String voiceMissingFor(String tradition) {
-    return 'No $tradition voice is installed on this device.';
+    return '이 기기에 $tradition 음성이 설치되어 있지 않습니다.';
   }
+
+  @override
+  String crossReferencesCount(int count) {
+    return '교차 참조 $count개';
+  }
+
+  @override
+  String get onboardingRecitationTitle => '낭독으로 들어보세요';
+
+  @override
+  String get onboardingRecitationDesc =>
+      '재생 버튼을 누르면 어느 장이든 히브리어나 그리스어로 낭독되는 것을 들을 수 있습니다. 복원된 고대 발음이 아니라 지금도 쓰이는 살아 있는 발음입니다. 속도 조절로 천천히 낮춰 귀에 익을 때까지 들어 보세요.';
+
+  @override
+  String get readingHintTitle => '시작하는 세 가지 방법';
+
+  @override
+  String get readingHintBody =>
+      '단어를 누르면 전체 뜻을 볼 수 있습니다. 길게 누르면 자리를 벗어나지 않고 빠르게 미리 볼 수 있습니다. 위쪽의 ▶를 누르면 이 장의 낭독을 들을 수 있습니다.';
+
+  @override
+  String get readingHintDismiss => '확인';
 }

@@ -19,6 +19,14 @@ final crossReferencesProvider =
       return dao.getCrossReferencesForVerse(args.$1, args.$2, args.$3);
     });
 
+/// Cross-reference count per verse for a whole chapter, loaded once so the
+/// reader can badge the button instead of leaving it an unlabeled icon.
+final crossReferenceCountsForChapterProvider =
+    FutureProvider.family<Map<int, int>, (String, int)>((ref, args) async {
+      final dao = ref.watch(bibleDaoProvider);
+      return dao.getCrossReferenceCountsForChapter(args.$1, args.$2);
+    });
+
 /// Preview text of a referenced verse in the user's translation.
 final crossReferencePreviewProvider =
     FutureProvider.family<String?, (String, int, int)>((ref, args) async {
