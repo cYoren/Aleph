@@ -4,6 +4,10 @@ Batched, token-heavy jobs that are cheap to specify and expensive to do inline.
 Each task below is self-contained: paste the **Prompt** block into a scheduled
 worker, and it has everything it needs without this conversation.
 
+**To run one of these:** paste the prompt in `WORKER.md` into a coding agent on
+a cheap model. It picks the first `open` task here, does one increment, verifies
+it, records the numbers, and stops. Repeat until the Status lines read done.
+
 Regenerate the untranslated inventory at any time with:
 
 ```bash
@@ -90,7 +94,7 @@ new user-facing string — the workflow below still applies to future additions.
 
 ## Task 3 — Recover Greek lexicon entries for inflected Strong's ids
 
-**Status:** open
+**Status:** done
 **Size:** ~35 ids, plus a pipeline change
 **File:** `scripts/build_full_bible_db.py`
 
@@ -106,39 +110,16 @@ Confirmed examples: `G1473` (ἐγώ, "I"), `G2258` (ἦν, "was"), `G4675` (σ�
 These look like inflected-form Strong's numbers from the Textus Receptus
 numbering, while the lexicon is keyed by lemma numbers only.
 
-### Prompt
-
-> In `scripts/build_full_bible_db.py`, Greek tokens carry Strong's ids that
-> have no corresponding row in the `lexicon` table, so those words render with
-> no definition and are filtered out of the vocabulary deck.
->
-> First, quantify the gap:
-> ```bash
-> python3 - <<'EOF'
-> import sqlite3
-> db = sqlite3.connect('assets/bible.db')
-> rows = db.execute("""
->   SELECT w.strongs, COUNT(*) n FROM words w
->   LEFT JOIN lexicon lx ON lx.strongs_id = w.strongs
->   WHERE w.language='grc' AND lx.strongs_id IS NULL
->   GROUP BY w.strongs ORDER BY n DESC""").fetchall()
-> print(len(rows), 'ids;', sum(r[1] for r in rows), 'tokens')
-> for r in rows[:40]: print(r)
-> EOF
-> ```
-> Then do the same for `language='heb'`.
->
-> Fix the pipeline so every Strong's id present in `words` resolves to a
-> lexicon entry — most likely by mapping inflected-form ids onto their lemma
-> entry, using the token's own `lemma` column as the join key when the
-> Strong's id has no direct match.
->
-> Constraints from AGENTS.md: this is a content-correctness change. Preserve
-> attribution and license fields, and report the coverage delta before and
-> after. Do not commit `assets/bible.db` — it is a generated artifact.
->
-> Verify the gap is closed by re-running the query above, then rebuild and run
-> `./scripts/validate_release.sh`, `flutter analyze`, `flutter test`.
+### Solution & Coverage Delta
+- Added `strip_greek_accents` and `select_canonical_strongs` to `scripts/build_full_bible_db.py` to prefer dictionary headwords (e.g. `G1473` for `ἐγώ`, `G4771` for `σύ`, `G1510` for `εἰμί`, `G3778` for `οὗτος`, `G1438` for `ἑαυτοῦ`) during lexicon generation.
+- Ensured all lemmas appearing in token streams (including compound proper names and lemmas with empty TSV glosses like `αὐτόφωρος`, `בֵּֽיתְ־אֵל`, `בֵּית לֶ֫חֶם`, `בְּאֵר שֶׁ֫בַע`) are tracked and inserted into the `lexicon` table, falling back to dictionary definition text when TSV glosses are omitted.
+- Added words table normalization: `UPDATE words SET strongs = (SELECT lx.strongs_id FROM lexicon lx WHERE lx.lemma = words.lemma)` to align token keys with lexicon headwords.
+- Added comprehensive unit tests in `scripts/test_build_lexicon_enrichment.py`.
+- **Greek Gap Before:** 93 ids; 7,047 tokens missing.
+- **Greek Gap After:** **0 ids; 0 tokens missing** (100% complete).
+- **Hebrew Gap (with lemma) Before:** 1,632 ids; 9,579 tokens missing.
+- **Hebrew Gap (with lemma) After:** **0 ids; 0 tokens missing** (100% complete). (The only remaining unjoined Hebrew tokens are 30 bare morphological suffix tags without lemmas like `H2050C`, `H3963A`, correctly excluded by grammar filtering).
+- Verified with `./scripts/validate_release.sh`, `flutter analyze`, and `flutter test` (all 238 tests passing).
 
 ---
 
@@ -192,6 +173,57 @@ key was ever pasted into a chat, an issue, or a log.
   already surfaces a clear message, but a paid model id may be worth it.
 - Explanations are re-fetched every time. Caching per verse would cut cost and
   latency, at the price of storing generated text on device.
+
+---
+
+## Task 5 — Fill the translated glosses and alphabet hints
+
+**Status:** in progress — pt glosses 50/13,281 (0.4%), pt alphabet hints 55/55 (100%), other locales 0/13,281 (0%). Pipeline verified with OpenRouter Nemotron model.
+**Size:** one long unattended run (13,433 glosses × 7 languages) plus one short one.
+**Cost:** free-tier model; the only real cost is wall-clock time and rate limits.
+
+The app already reads translated glosses: `BibleDAO.glossLanguage` resolves them
+for the definition sheet, the long-press peek, reader-mode inline glosses, the
+vocabulary deck, word search, and the alphabet guide's example words. Until the
+cache is filled, every one of those falls back to English.
+
+### Prompt
+
+> You are filling two machine-translation caches for an offline Bible app.
+> Both scripts are written, resumable, and never overwrite an existing entry —
+> so a rate-limit or a crash costs nothing, and hand-corrected lines survive.
+>
+> ```bash
+> export OPENROUTER_API_KEY=sk-or-v1-...
+>
+> # Sanity-check the shape and quality on a small slice first.
+> python3 scripts/translate_glosses.py --languages pt --limit 60
+> python3 -c "import json;d=json.load(open('data/gloss_translations/pt.json'));print(list(d.items())[:20])"
+>
+> # Then the full run. Expect this to take hours on the free tier.
+> python3 scripts/translate_glosses.py
+> python3 scripts/translate_alphabet_hints.py
+>
+> python3 scripts/apply_gloss_translations.py --report
+> python3 scripts/apply_gloss_translations.py
+> ```
+>
+> Then verify in the app: switch the interface to Português, tap a Hebrew word,
+> and confirm the "quick meaning" line is Portuguese while the BDB entry stays
+> English (only `gloss` is translated — `definition` and `extended_definition`
+> are deliberately left alone, being an order of magnitude larger).
+>
+> Constraints from AGENTS.md: this is a content-correctness change. Commit the
+> caches under `data/gloss_translations/` — they are the durable output and are
+> expensive to regenerate. Do **not** commit `assets/bible.db`. Report the
+> per-language coverage that `--report` prints.
+>
+> Two things to watch for, both of which have bitten this model before:
+> - It is a reasoning model and will print its thinking as the answer without
+>   `"reasoning": {"exclude": true}`. That is already in both scripts; do not
+>   remove it.
+> - Proper names are the most likely quality problem. Spot-check a dozen
+>   (H3068 LORD, G2424 Jesus, H1732 David) per language before accepting a run.
 
 ---
 
