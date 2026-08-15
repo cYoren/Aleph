@@ -686,4 +686,46 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get explainRetry => '다시 시도';
+
+  @override
+  String get explainLowQuality =>
+      '이 답변은 이상해 보입니다. 다시 시도해 보세요. 계속 반복되면 모델을 교체해야 할 수 있습니다.';
+
+  @override
+  String explainFreeRemaining(int count) {
+    return '오늘 남은 무료 설명 $count회';
+  }
+
+  @override
+  String get explainLimitReached => '오늘의 무료 설명을 모두 사용했습니다.';
+
+  @override
+  String get explainUpgradeTitle => '무제한, 그리고 더 뛰어난 모델';
+
+  @override
+  String get explainDiagnosticsTitle => 'AI 진단';
+
+  @override
+  String get explainDiagnosticsDesc =>
+      '질문에 답하는 모델의 성공률과 속도입니다. 답변이 평소보다 나빠 보이면 여기를 확인하세요.';
+
+  @override
+  String get explainNoData => '아직 요청한 설명이 없습니다.';
+
+  @override
+  String get explainClearDiagnostics => '기록 지우기';
+
+  @override
+  String get onboardingAiTitle => '어떤 구절이든 물어보세요';
+
+  @override
+  String get onboardingAiDesc =>
+      '당신의 질문을 위한 선생님: 히브리어가 실제로 무엇을 말하는지, 그리스어가 번역이 담지 못한 무엇을 지니는지. 어떤 절에서든 ✨를 누르세요.';
+
+  @override
+  String get onboardingAiToggle => 'AI 선생님 사용';
+
+  @override
+  String get onboardingAiPrivacy =>
+      '이 기능만 인터넷을 사용합니다. 질문한 절이 설명을 위해 전송됩니다. 본문, 사전, 문법, 음성 등 나머지는 모두 완전히 오프라인으로 동작합니다. 설정에서 언제든 변경할 수 있습니다.';
 }

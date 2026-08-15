@@ -678,4 +678,44 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get explainRetry => '重试';
+
+  @override
+  String get explainLowQuality => '这条回答看起来有问题。请重试——如果持续出现，可能需要更换模型。';
+
+  @override
+  String explainFreeRemaining(int count) {
+    return '今日还剩 $count 次免费解释';
+  }
+
+  @override
+  String get explainLimitReached => '你已用完今天的免费解释次数。';
+
+  @override
+  String get explainUpgradeTitle => '无限次数，且模型更强';
+
+  @override
+  String get explainDiagnosticsTitle => 'AI 诊断';
+
+  @override
+  String get explainDiagnosticsDesc => '回答你问题的模型的成功率与速度。若回答质量下降，可在此查看。';
+
+  @override
+  String get explainNoData => '尚未请求过解释。';
+
+  @override
+  String get explainClearDiagnostics => '清除记录';
+
+  @override
+  String get onboardingAiTitle => '随时提问任何经文';
+
+  @override
+  String get onboardingAiDesc =>
+      '为你的疑问而设的导师：希伯来文究竟说了什么，希腊文承载了译文无法传达的哪些含义。点按任意经文旁的 ✨。';
+
+  @override
+  String get onboardingAiToggle => '启用 AI 导师';
+
+  @override
+  String get onboardingAiPrivacy =>
+      '这是本应用唯一联网的部分：你所提问的经文会被发送以获取解释。其余一切——经文、词典、语法、音频——均可完全离线使用。你可以随时在设置中更改。';
 }

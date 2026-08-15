@@ -711,4 +711,47 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get explainRetry => 'Reintentar';
+
+  @override
+  String get explainLowQuality =>
+      'Esta respuesta parece defectuosa. Inténtalo de nuevo; si sigue pasando, quizá haya que cambiar el modelo.';
+
+  @override
+  String explainFreeRemaining(int count) {
+    return 'Te quedan $count explicaciones gratuitas hoy';
+  }
+
+  @override
+  String get explainLimitReached =>
+      'Has usado tus explicaciones gratuitas de hoy.';
+
+  @override
+  String get explainUpgradeTitle => 'Ilimitado y con un modelo mejor';
+
+  @override
+  String get explainDiagnosticsTitle => 'Diagnóstico de la IA';
+
+  @override
+  String get explainDiagnosticsDesc =>
+      'Tasa de acierto y velocidad del modelo que responde a tus preguntas. Consúltalo si las respuestas parecen peores de lo normal.';
+
+  @override
+  String get explainNoData => 'Aún no se han pedido explicaciones.';
+
+  @override
+  String get explainClearDiagnostics => 'Borrar historial';
+
+  @override
+  String get onboardingAiTitle => 'Pregunta sobre cualquier pasaje';
+
+  @override
+  String get onboardingAiDesc =>
+      'Un tutor para tu pregunta: qué dice realmente el hebreo, qué lleva el griego que una traducción no alcanza. Toca el ✨ en cualquier versículo.';
+
+  @override
+  String get onboardingAiToggle => 'Activar el tutor de IA';
+
+  @override
+  String get onboardingAiPrivacy =>
+      'Esta es la única parte de la app que usa internet: el versículo sobre el que preguntas se envía para ser explicado. Todo lo demás — texto, diccionarios, gramática, audio — funciona totalmente sin conexión. Puedes cambiarlo cuando quieras en Ajustes.';
 }

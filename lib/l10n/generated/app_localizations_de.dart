@@ -708,4 +708,47 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get explainRetry => 'Erneut versuchen';
+
+  @override
+  String get explainLowQuality =>
+      'Diese Antwort wirkt fehlerhaft. Versuchen Sie es erneut — wenn es weiter passiert, sollte das Modell gewechselt werden.';
+
+  @override
+  String explainFreeRemaining(int count) {
+    return 'Noch $count kostenlose Erklärungen heute';
+  }
+
+  @override
+  String get explainLimitReached =>
+      'Sie haben die kostenlosen Erklärungen für heute aufgebraucht.';
+
+  @override
+  String get explainUpgradeTitle => 'Unbegrenzt und ein besseres Modell';
+
+  @override
+  String get explainDiagnosticsTitle => 'KI-Diagnose';
+
+  @override
+  String get explainDiagnosticsDesc =>
+      'Erfolgsquote und Geschwindigkeit des Modells, das Ihre Fragen beantwortet. Prüfen Sie hier, wenn die Antworten schlechter wirken als sonst.';
+
+  @override
+  String get explainNoData => 'Noch keine Erklärungen angefordert.';
+
+  @override
+  String get explainClearDiagnostics => 'Verlauf löschen';
+
+  @override
+  String get onboardingAiTitle => 'Fragen Sie zu jeder Bibelstelle';
+
+  @override
+  String get onboardingAiDesc =>
+      'Ein Tutor für Ihre Frage: was der hebräische Text wirklich sagt, was das Griechische trägt, das eine Übersetzung nicht fassen kann. Tippen Sie auf das ✨ bei jedem Vers.';
+
+  @override
+  String get onboardingAiToggle => 'KI-Tutor aktivieren';
+
+  @override
+  String get onboardingAiPrivacy =>
+      'Dies ist der einzige Teil der App, der das Internet nutzt: der Vers, zu dem Sie fragen, wird zur Erklärung gesendet. Alles andere — Text, Wörterbücher, Grammatik, Audio — funktioniert vollständig offline. Sie können das jederzeit in den Einstellungen ändern.';
 }

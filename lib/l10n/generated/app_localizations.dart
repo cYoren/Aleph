@@ -1297,6 +1297,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Try again'**
   String get explainRetry;
+
+  /// No description provided for @explainLowQuality.
+  ///
+  /// In en, this message translates to:
+  /// **'This answer looks off. Try again — and if it keeps happening, the model may need changing.'**
+  String get explainLowQuality;
+
+  /// No description provided for @explainFreeRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} free explanations left today'**
+  String explainFreeRemaining(int count);
+
+  /// No description provided for @explainLimitReached.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve used today\'s free explanations.'**
+  String get explainLimitReached;
+
+  /// No description provided for @explainUpgradeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlimited, and a sharper model'**
+  String get explainUpgradeTitle;
+
+  /// No description provided for @explainDiagnosticsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'AI diagnostics'**
+  String get explainDiagnosticsTitle;
+
+  /// No description provided for @explainDiagnosticsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Success rate and speed of the model answering your questions. Check here if answers seem worse than usual.'**
+  String get explainDiagnosticsDesc;
+
+  /// No description provided for @explainNoData.
+  ///
+  /// In en, this message translates to:
+  /// **'No explanations requested yet.'**
+  String get explainNoData;
+
+  /// No description provided for @explainClearDiagnostics.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear history'**
+  String get explainClearDiagnostics;
+
+  /// No description provided for @onboardingAiTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask about any passage'**
+  String get onboardingAiTitle;
+
+  /// No description provided for @onboardingAiDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'A tutor trained on your question: what does the Hebrew actually say, what does the Greek carry that English cannot. Tap the ✨ on any verse.'**
+  String get onboardingAiDesc;
+
+  /// No description provided for @onboardingAiToggle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable the AI tutor'**
+  String get onboardingAiToggle;
+
+  /// No description provided for @onboardingAiPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'This is the only part of the app that uses the internet: the verse you ask about is sent to be explained. Everything else — the text, dictionaries, grammar, audio — works fully offline. You can change this any time in Settings.'**
+  String get onboardingAiPrivacy;
 }
 
 class _AppLocalizationsDelegate

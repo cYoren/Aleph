@@ -717,4 +717,47 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get explainRetry => 'Повторить';
+
+  @override
+  String get explainLowQuality =>
+      'Этот ответ выглядит неправильно. Повторите попытку — если повторяется, возможно, пора сменить модель.';
+
+  @override
+  String explainFreeRemaining(int count) {
+    return 'Осталось бесплатных объяснений сегодня: $count';
+  }
+
+  @override
+  String get explainLimitReached =>
+      'Вы использовали бесплатные объяснения на сегодня.';
+
+  @override
+  String get explainUpgradeTitle => 'Без ограничений и с более сильной моделью';
+
+  @override
+  String get explainDiagnosticsTitle => 'Диагностика ИИ';
+
+  @override
+  String get explainDiagnosticsDesc =>
+      'Доля успешных ответов и скорость модели. Загляните сюда, если ответы стали хуже обычного.';
+
+  @override
+  String get explainNoData => 'Объяснения ещё не запрашивались.';
+
+  @override
+  String get explainClearDiagnostics => 'Очистить историю';
+
+  @override
+  String get onboardingAiTitle => 'Спросите о любом отрывке';
+
+  @override
+  String get onboardingAiDesc =>
+      'Наставник для вашего вопроса: что на самом деле говорит еврейский текст, что несёт греческий, чего не передаёт перевод. Нажмите ✨ у любого стиха.';
+
+  @override
+  String get onboardingAiToggle => 'Включить ИИ-наставника';
+
+  @override
+  String get onboardingAiPrivacy =>
+      'Это единственная часть приложения, использующая интернет: стих, о котором вы спрашиваете, отправляется для объяснения. Всё остальное — текст, словари, грамматика, аудио — работает полностью офлайн. Это можно изменить в любой момент в настройках.';
 }
