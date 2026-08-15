@@ -13,7 +13,7 @@
   "onboardingGreekTitle": "Grego - Novo Testamento",
   "onboardingGreekDesc": "O Novo Testamento foi escrito em grego, lido da esquerda para a direita. Os Evangelhos e Epístolas foram compostos entre 50-100 d.C.",
   "onboardingTapTitle": "Toque em Qualquer Palavra",
-  "onboardingTapDesc": "Toque em qualquer palavra para ver sua definição, pronúncia e informação gramatical. Ative o botão de pronúncia para ver como as palavras são faladas.",
+  "onboardingTapDesc": "Toque em qualquer palavra para ver sua definição, pronúncia e informação gramatical. Toque e segure uma palavra para ver o significado rápido sem perder o lugar.",
   "settings": "Configurações",
   "translation": "Tradução",
   "pronunciation": "Mostrar Pronúncia",
@@ -221,5 +221,101 @@
   "doneButton": "Concluir",
   "syntaxSourceMacula": "Árvores sintáticas: MACULA Hebraico e Grego (Clear Bible), CC BY 4.0",
   "showMore": "Mostrar mais",
-  "showLess": "Mostrar menos"
+  "showLess": "Mostrar menos",
+  "readabilityTitle": "O que eu consigo ler?",
+  "readabilityAllBooks": "Todos os livros, do mais legível ao menos",
+  "readabilityNoText": "Nenhum texto carregado ainda.",
+  "readabilityCanReadNow": "Você já consegue ler este",
+  "readabilityClosest": "Mais próximo de conseguir ler",
+  "readabilityEmptyTitle": "Comece a aprender palavras para preencher este mapa",
+  "readabilityEmptyBody": "Conforme você domina o vocabulário, cada livro mostra quanto dele você já consegue ler. As palavras mais frequentes cobrem a maior parte do texto, então o progresso é rápido no início.",
+  "openVocabulary": "Abrir vocabulário",
+  "reciteAloud": "Recitar em voz alta",
+  "stopReciting": "Parar a recitação",
+  "recitationPreparing": "Preparando…",
+  "recitationStop": "Parar",
+  "hearItRead": "Ouvir a leitura",
+  "phraseSpacingTitle": "Espaçamento por frases",
+  "phraseSpacingDesc": "Espaça o hebraico nos acentos massoréticos, para que o versículo seja lido em unidades de sentido, e não palavra por palavra.",
+  "recitationVoiceTitle": "Voz da recitação",
+  "recitationVoiceDesc": "Leitura em voz alta pelas vozes do seu aparelho: hebraico israelense moderno e grego moderno. São tradições vivas de leitura, não a pronúncia antiga reconstruída.",
+  "voiceMissing": "Nenhuma voz de hebraico ou grego está instalada neste aparelho. Adicione uma nas configurações de fala do sistema para ouvir o texto.",
+  "voiceUnsupported": "Este aparelho não possui mecanismo de fala disponível.",
+  "recitationFailed": "Não foi possível iniciar a recitação.",
+  "readBook": "Ler {book}",
+  "@readBook": {
+    "placeholders": {
+      "book": {
+        "type": "String"
+      }
+    }
+  },
+  "readabilityCoverage": "Você conhece {percent}% do vocabulário dele — cerca de {count} palavras desconhecidas por capítulo.",
+  "@readabilityCoverage": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recitationVerse": "Versículo {number}",
+  "@recitationVerse": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "voiceMissingFor": "Nenhuma voz de {tradition} está instalada neste aparelho.",
+  "@voiceMissingFor": {
+    "placeholders": {
+      "tradition": {
+        "type": "String"
+      }
+    }
+  },
+  "crossReferencesCount": "{count} referências cruzadas",
+  "@crossReferencesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onboardingRecitationTitle": "Ouça a Recitação",
+  "onboardingRecitationDesc": "Toque em reproduzir para ouvir qualquer capítulo lido em voz alta em hebraico ou grego, com vozes vivas em vez de uma pronúncia antiga reconstruída. Diminua a velocidade até o seu ouvido acompanhar.",
+  "readingHintTitle": "Três formas de começar",
+  "readingHintBody": "Toque em uma palavra para ver o significado completo. Toque e segure para uma prévia rápida sem perder o lugar. Toque em ▶ acima para ouvir o capítulo recitado.",
+  "readingHintDismiss": "Entendi",
+  "explainTitle": "Explicar esta passagem",
+  "explainLoading": "Lendo a passagem…",
+  "explainDisclaimer": "Escrito por IA. Pode estar errado — confira com o texto.",
+  "explainSettingTitle": "Explicação de passagens por IA",
+  "explainSettingDesc": "Desativado por padrão. Quando ativado, a passagem que você está lendo é enviada pela internet para ser explicada. Todo o resto do app funciona totalmente offline.",
+  "explainErrorOffline": "Sem conexão. Este é o único recurso que precisa dela.",
+  "explainErrorRateLimited": "Muitas solicitações agora. Tente novamente em instantes.",
+  "explainErrorGeneric": "Não foi possível gerar a explicação.",
+  "explainRetry": "Tentar novamente",
+  "explainLowQuality": "Esta resposta parece estranha. Tente novamente — se continuar, talvez seja preciso trocar o modelo.",
+  "explainFreeRemaining": "{count} explicações gratuitas restantes hoje",
+  "@explainFreeRemaining": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "explainLimitReached": "Você usou as explicações gratuitas de hoje.",
+  "explainUpgradeTitle": "Ilimitado, com um modelo melhor",
+  "explainDiagnosticsTitle": "Diagnóstico da IA",
+  "explainDiagnosticsDesc": "Taxa de sucesso e velocidade do modelo que responde às suas perguntas. Confira aqui se as respostas parecerem piores que o normal.",
+  "explainNoData": "Nenhuma explicação solicitada ainda.",
+  "explainClearDiagnostics": "Limpar histórico",
+  "onboardingAiTitle": "Pergunte sobre qualquer passagem",
+  "onboardingAiDesc": "Um tutor para a sua dúvida: o que o hebraico realmente diz, o que o grego carrega que a tradução não alcança. Toque no ✨ em qualquer versículo.",
+  "onboardingAiToggle": "Ativar o tutor de IA",
+  "onboardingAiPrivacy": "Esta é a única parte do app que usa a internet: o versículo sobre o qual você pergunta é enviado para ser explicado. Todo o resto — texto, dicionários, gramática, áudio — funciona totalmente offline. Você pode mudar isso quando quiser nas Configurações."
 }

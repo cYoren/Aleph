@@ -460,6 +460,20 @@ class HomeScreen extends ConsumerWidget {
                 ),
               ],
             ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                  child: _buildQuickButton(
+                    context,
+                    colorScheme,
+                    Icons.insights_outlined,
+                    'What can I read?',
+                    () => context.push('/readability'),
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),

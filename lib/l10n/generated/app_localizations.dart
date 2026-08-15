@@ -191,7 +191,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingTapDesc.
   ///
   /// In en, this message translates to:
-  /// **'Tap on any word to see its definition, pronunciation, and grammatical information. Toggle the pronunciation button to see how words are spoken.'**
+  /// **'Tap any word to see its definition, pronunciation, and grammatical information. Long-press a word for a quick meaning without leaving your place.'**
   String get onboardingTapDesc;
 
   /// No description provided for @settings.
@@ -1063,6 +1063,312 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Show less'**
   String get showLess;
+
+  /// No description provided for @readabilityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What can I read?'**
+  String get readabilityTitle;
+
+  /// No description provided for @readabilityAllBooks.
+  ///
+  /// In en, this message translates to:
+  /// **'Every book, most readable first'**
+  String get readabilityAllBooks;
+
+  /// No description provided for @readabilityNoText.
+  ///
+  /// In en, this message translates to:
+  /// **'No text is loaded yet.'**
+  String get readabilityNoText;
+
+  /// No description provided for @readabilityCanReadNow.
+  ///
+  /// In en, this message translates to:
+  /// **'You can read this now'**
+  String get readabilityCanReadNow;
+
+  /// No description provided for @readabilityClosest.
+  ///
+  /// In en, this message translates to:
+  /// **'Closest to readable'**
+  String get readabilityClosest;
+
+  /// No description provided for @readabilityEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Start learning words to see this map fill in'**
+  String get readabilityEmptyTitle;
+
+  /// No description provided for @readabilityEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'As you master vocabulary, each book shows how much of it you can already read. The most frequent words cover the most text, so progress here is quick at first.'**
+  String get readabilityEmptyBody;
+
+  /// No description provided for @openVocabulary.
+  ///
+  /// In en, this message translates to:
+  /// **'Open vocabulary'**
+  String get openVocabulary;
+
+  /// No description provided for @reciteAloud.
+  ///
+  /// In en, this message translates to:
+  /// **'Recite aloud'**
+  String get reciteAloud;
+
+  /// No description provided for @stopReciting.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop reciting'**
+  String get stopReciting;
+
+  /// No description provided for @recitationPreparing.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing…'**
+  String get recitationPreparing;
+
+  /// No description provided for @recitationStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get recitationStop;
+
+  /// No description provided for @hearItRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Hear it read'**
+  String get hearItRead;
+
+  /// No description provided for @phraseSpacingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Phrase spacing'**
+  String get phraseSpacingTitle;
+
+  /// No description provided for @phraseSpacingDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Space the Hebrew at the Masoretic accents, so a verse reads in sense units instead of word by word.'**
+  String get phraseSpacingDesc;
+
+  /// No description provided for @recitationVoiceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recitation voice'**
+  String get recitationVoiceTitle;
+
+  /// No description provided for @recitationVoiceDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Read aloud by your device\'s speech voices: Modern Israeli for Hebrew, Modern Greek for Greek. These are living reading traditions, not reconstructed ancient pronunciation.'**
+  String get recitationVoiceDesc;
+
+  /// No description provided for @voiceMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'No Hebrew or Greek voice is installed on this device. Add one in your system speech settings to hear the text read aloud.'**
+  String get voiceMissing;
+
+  /// No description provided for @voiceUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'This device has no speech engine available.'**
+  String get voiceUnsupported;
+
+  /// No description provided for @recitationFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Recitation could not be started.'**
+  String get recitationFailed;
+
+  /// No description provided for @readBook.
+  ///
+  /// In en, this message translates to:
+  /// **'Read {book}'**
+  String readBook(String book);
+
+  /// No description provided for @readabilityCoverage.
+  ///
+  /// In en, this message translates to:
+  /// **'You know {percent}% of its vocabulary — about {count} unfamiliar words per chapter.'**
+  String readabilityCoverage(int percent, int count);
+
+  /// No description provided for @recitationVerse.
+  ///
+  /// In en, this message translates to:
+  /// **'Verse {number}'**
+  String recitationVerse(int number);
+
+  /// No description provided for @voiceMissingFor.
+  ///
+  /// In en, this message translates to:
+  /// **'No {tradition} voice is installed on this device.'**
+  String voiceMissingFor(String tradition);
+
+  /// No description provided for @crossReferencesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} cross-references'**
+  String crossReferencesCount(int count);
+
+  /// No description provided for @onboardingRecitationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Hear It Recited'**
+  String get onboardingRecitationTitle;
+
+  /// No description provided for @onboardingRecitationDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Press play to hear any chapter read aloud in Hebrew or Greek, by living voices rather than a reconstructed ancient pronunciation. Slow it right down from the speed control until your ear catches up.'**
+  String get onboardingRecitationDesc;
+
+  /// No description provided for @readingHintTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Three ways in'**
+  String get readingHintTitle;
+
+  /// No description provided for @readingHintBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a word for its full meaning. Long-press for a quick peek without losing your place. Press ▶ above to hear the chapter recited.'**
+  String get readingHintBody;
+
+  /// No description provided for @readingHintDismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get readingHintDismiss;
+
+  /// No description provided for @explainTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Explain this passage'**
+  String get explainTitle;
+
+  /// No description provided for @explainLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading the passage…'**
+  String get explainLoading;
+
+  /// No description provided for @explainDisclaimer.
+  ///
+  /// In en, this message translates to:
+  /// **'Written by AI. It can be wrong — check it against the text.'**
+  String get explainDisclaimer;
+
+  /// No description provided for @explainSettingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'AI passage explanation'**
+  String get explainSettingTitle;
+
+  /// No description provided for @explainSettingDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Off by default. When on, the passage you are reading is sent over the internet to be explained. Everything else in this app works fully offline.'**
+  String get explainSettingDesc;
+
+  /// No description provided for @explainErrorOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'No connection. This is the only feature that needs one.'**
+  String get explainErrorOffline;
+
+  /// No description provided for @explainErrorRateLimited.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many requests just now. Try again in a moment.'**
+  String get explainErrorRateLimited;
+
+  /// No description provided for @explainErrorGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'The explanation could not be produced.'**
+  String get explainErrorGeneric;
+
+  /// No description provided for @explainRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get explainRetry;
+
+  /// No description provided for @explainLowQuality.
+  ///
+  /// In en, this message translates to:
+  /// **'This answer looks off. Try again — and if it keeps happening, the model may need changing.'**
+  String get explainLowQuality;
+
+  /// No description provided for @explainFreeRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} free explanations left today'**
+  String explainFreeRemaining(int count);
+
+  /// No description provided for @explainLimitReached.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve used today\'s free explanations.'**
+  String get explainLimitReached;
+
+  /// No description provided for @explainUpgradeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlimited, and a sharper model'**
+  String get explainUpgradeTitle;
+
+  /// No description provided for @explainDiagnosticsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'AI diagnostics'**
+  String get explainDiagnosticsTitle;
+
+  /// No description provided for @explainDiagnosticsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Success rate and speed of the model answering your questions. Check here if answers seem worse than usual.'**
+  String get explainDiagnosticsDesc;
+
+  /// No description provided for @explainNoData.
+  ///
+  /// In en, this message translates to:
+  /// **'No explanations requested yet.'**
+  String get explainNoData;
+
+  /// No description provided for @explainClearDiagnostics.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear history'**
+  String get explainClearDiagnostics;
+
+  /// No description provided for @onboardingAiTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask about any passage'**
+  String get onboardingAiTitle;
+
+  /// No description provided for @onboardingAiDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'A tutor trained on your question: what does the Hebrew actually say, what does the Greek carry that English cannot. Tap the ✨ on any verse.'**
+  String get onboardingAiDesc;
+
+  /// No description provided for @onboardingAiToggle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable the AI tutor'**
+  String get onboardingAiToggle;
+
+  /// No description provided for @onboardingAiPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'This is the only part of the app that uses the internet: the verse you ask about is sent to be explained. Everything else — the text, dictionaries, grammar, audio — works fully offline. You can change this any time in Settings.'**
+  String get onboardingAiPrivacy;
 }
 
 class _AppLocalizationsDelegate

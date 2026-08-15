@@ -5,6 +5,10 @@ import '../../l10n/generated/app_localizations.dart';
 import '../../features/settings/settings_provider.dart';
 import '../../providers/translations_provider.dart';
 import '../../shared/utils/hebrew_display.dart';
+import 'package:go_router/go_router.dart';
+
+import '../explain/explain_model.dart';
+import '../explain/explain_provider.dart';
 
 const _interfaceLanguages = <String, String>{
   'en': 'English',
@@ -134,6 +138,20 @@ class SettingsScreen extends ConsumerWidget {
               ],
             ),
           ),
+          SwitchListTile(
+            secondary: const Icon(Icons.format_align_right),
+            title: Text(l10n.phraseSpacingTitle),
+            subtitle: Text(l10n.phraseSpacingDesc),
+            value: settings.showSenseUnits,
+            onChanged: (bool value) {
+              notifier.setShowSenseUnits(value);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.graphic_eq),
+            title: Text(l10n.recitationVoiceTitle),
+            subtitle: Text(l10n.recitationVoiceDesc),
+          ),
           const Divider(),
 
           // Learning Section
@@ -156,6 +174,48 @@ class SettingsScreen extends ConsumerWidget {
               notifier.setReaderMode(value);
             },
           ),
+          // Only shown when a key was compiled into this build; otherwise the
+          // feature does not exist and the setting would be a dead switch.
+          if (ref.watch(explainConfiguredProvider)) ...[
+            const Divider(),
+            _buildSectionHeader(l10n.explainSettingTitle, colorScheme),
+            SwitchListTile(
+              secondary: const Icon(Icons.auto_awesome_outlined),
+              title: Text(l10n.explainSettingTitle),
+              subtitle: Text(l10n.explainSettingDesc),
+              value: settings.aiExplainEnabled,
+              onChanged: (bool value) {
+                notifier.setAiExplainEnabled(value);
+              },
+            ),
+            if (settings.aiExplainEnabled) ...[
+              Builder(
+                builder: (context) {
+                  final remaining = ref.watch(explainRemainingTodayProvider);
+                  return ListTile(
+                    leading: const Icon(Icons.bolt_outlined),
+                    title: Text(l10n.explainUpgradeTitle),
+                    subtitle: Text(
+                      remaining == null
+                          ? kProModel.modelId
+                          : l10n.explainFreeRemaining(remaining),
+                    ),
+                    trailing: Switch(
+                      value: settings.aiProUnlocked,
+                      onChanged: (value) => notifier.setAiProUnlocked(value),
+                    ),
+                  );
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.monitor_heart_outlined),
+                title: Text(l10n.explainDiagnosticsTitle),
+                subtitle: Text(l10n.explainDiagnosticsDesc),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => context.push('/ai-diagnostics'),
+              ),
+            ],
+          ],
           const Divider(),
 
           // Translation Section
@@ -219,11 +279,6 @@ class SettingsScreen extends ConsumerWidget {
 
           // Responsible Entity Section
           _buildSectionHeader(l10n.appResponsible, colorScheme),
-          ListTile(
-            leading: const Icon(Icons.business_outlined),
-            title: Text(l10n.legalNameLabel),
-            subtitle: const Text(AppIdentity.responsibleLegalName),
-          ),
           ListTile(
             leading: const Icon(Icons.storefront_outlined),
             title: Text(l10n.tradeNameLabel),

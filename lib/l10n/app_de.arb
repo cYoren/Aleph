@@ -13,7 +13,7 @@
   "onboardingGreekTitle": "Griechisch - Neues Testament",
   "onboardingGreekDesc": "Das Neue Testament wurde auf Griechisch geschrieben und von links nach rechts gelesen. Die Evangelien und Briefe entstanden zwischen 50-100 n.Chr.",
   "onboardingTapTitle": "Tippen Sie auf ein Wort",
-  "onboardingTapDesc": "Tippen Sie auf ein beliebiges Wort, um Definition, Aussprache und grammatikalische Informationen zu sehen. Aktivieren Sie die Aussprache-Taste, um zu hören, wie Wörter gesprochen werden.",
+  "onboardingTapDesc": "Tippen Sie auf ein beliebiges Wort, um Definition, Aussprache und grammatikalische Informationen zu sehen. Halten Sie ein Wort gedrückt, um die Bedeutung kurz zu sehen, ohne die Stelle zu verlieren.",
   "settings": "Einstellungen",
   "translation": "Übersetzung",
   "pronunciation": "Aussprache anzeigen",
@@ -221,5 +221,101 @@
   "doneButton": "Fertig",
   "syntaxSourceMacula": "Syntaxbäume: MACULA Hebräisch & Griechisch (Clear Bible), CC BY 4.0",
   "showMore": "Mehr anzeigen",
-  "showLess": "Weniger anzeigen"
+  "showLess": "Weniger anzeigen",
+  "readabilityTitle": "Was kann ich lesen?",
+  "readabilityAllBooks": "Alle Bücher, die lesbarsten zuerst",
+  "readabilityNoText": "Noch kein Text geladen.",
+  "readabilityCanReadNow": "Das können Sie jetzt lesen",
+  "readabilityClosest": "Am ehesten lesbar",
+  "readabilityEmptyTitle": "Lernen Sie Wörter, damit sich diese Übersicht füllt",
+  "readabilityEmptyBody": "Je mehr Wortschatz Sie beherrschen, desto mehr zeigt jedes Buch, wie viel davon Sie bereits lesen können. Die häufigsten Wörter decken den meisten Text ab, daher geht es am Anfang schnell voran.",
+  "openVocabulary": "Wortschatz öffnen",
+  "reciteAloud": "Vorlesen",
+  "stopReciting": "Vorlesen beenden",
+  "recitationPreparing": "Wird vorbereitet …",
+  "recitationStop": "Stopp",
+  "hearItRead": "Vorlesen lassen",
+  "phraseSpacingTitle": "Satzgliederung",
+  "phraseSpacingDesc": "Gliedert den hebräischen Text an den masoretischen Akzenten, sodass ein Vers in Sinneinheiten statt Wort für Wort gelesen wird.",
+  "recitationVoiceTitle": "Stimme für das Vorlesen",
+  "recitationVoiceDesc": "Vorgelesen von den Sprachstimmen Ihres Geräts: modernes Israelisch für Hebräisch, modernes Griechisch für Griechisch. Das sind lebendige Lesetraditionen, nicht die rekonstruierte antike Aussprache.",
+  "voiceMissing": "Auf diesem Gerät ist keine hebräische oder griechische Stimme installiert. Fügen Sie in den Sprachausgabe-Einstellungen Ihres Systems eine hinzu, um den Text zu hören.",
+  "voiceUnsupported": "Auf diesem Gerät ist keine Sprachausgabe verfügbar.",
+  "recitationFailed": "Das Vorlesen konnte nicht gestartet werden.",
+  "readBook": "{book} lesen",
+  "@readBook": {
+    "placeholders": {
+      "book": {
+        "type": "String"
+      }
+    }
+  },
+  "readabilityCoverage": "Sie kennen {percent} % des Wortschatzes – etwa {count} unbekannte Wörter pro Kapitel.",
+  "@readabilityCoverage": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recitationVerse": "Vers {number}",
+  "@recitationVerse": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "voiceMissingFor": "Auf diesem Gerät ist keine Stimme für {tradition} installiert.",
+  "@voiceMissingFor": {
+    "placeholders": {
+      "tradition": {
+        "type": "String"
+      }
+    }
+  },
+  "crossReferencesCount": "{count} Querverweise",
+  "@crossReferencesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onboardingRecitationTitle": "Lassen Sie es sich vorlesen",
+  "onboardingRecitationDesc": "Drücken Sie auf Wiedergabe, um jedes Kapitel auf Hebräisch oder Griechisch vorlesen zu lassen – mit lebendigen Stimmen statt einer rekonstruierten antiken Aussprache. Verlangsamen Sie das Tempo, bis Ihr Ohr mithalten kann.",
+  "readingHintTitle": "Drei Wege zum Einstieg",
+  "readingHintBody": "Tippen Sie auf ein Wort für die vollständige Bedeutung. Halten Sie es gedrückt für eine kurze Vorschau, ohne die Stelle zu verlieren. Tippen Sie oben auf ▶, um das Kapitel vorlesen zu lassen.",
+  "readingHintDismiss": "Verstanden",
+  "explainTitle": "Diese Stelle erklären",
+  "explainLoading": "Die Stelle wird gelesen …",
+  "explainDisclaimer": "Von einer KI verfasst. Kann falsch sein — prüfen Sie es am Text.",
+  "explainSettingTitle": "KI-Erklärung von Bibelstellen",
+  "explainSettingDesc": "Standardmäßig aus. Wenn aktiviert, wird die gelesene Stelle über das Internet zur Erklärung gesendet. Alles andere in dieser App funktioniert vollständig offline.",
+  "explainErrorOffline": "Keine Verbindung. Dies ist die einzige Funktion, die eine benötigt.",
+  "explainErrorRateLimited": "Zu viele Anfragen im Moment. Versuchen Sie es gleich noch einmal.",
+  "explainErrorGeneric": "Die Erklärung konnte nicht erstellt werden.",
+  "explainRetry": "Erneut versuchen",
+  "explainLowQuality": "Diese Antwort wirkt fehlerhaft. Versuchen Sie es erneut — wenn es weiter passiert, sollte das Modell gewechselt werden.",
+  "explainFreeRemaining": "Noch {count} kostenlose Erklärungen heute",
+  "@explainFreeRemaining": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "explainLimitReached": "Sie haben die kostenlosen Erklärungen für heute aufgebraucht.",
+  "explainUpgradeTitle": "Unbegrenzt und ein besseres Modell",
+  "explainDiagnosticsTitle": "KI-Diagnose",
+  "explainDiagnosticsDesc": "Erfolgsquote und Geschwindigkeit des Modells, das Ihre Fragen beantwortet. Prüfen Sie hier, wenn die Antworten schlechter wirken als sonst.",
+  "explainNoData": "Noch keine Erklärungen angefordert.",
+  "explainClearDiagnostics": "Verlauf löschen",
+  "onboardingAiTitle": "Fragen Sie zu jeder Bibelstelle",
+  "onboardingAiDesc": "Ein Tutor für Ihre Frage: was der hebräische Text wirklich sagt, was das Griechische trägt, das eine Übersetzung nicht fassen kann. Tippen Sie auf das ✨ bei jedem Vers.",
+  "onboardingAiToggle": "KI-Tutor aktivieren",
+  "onboardingAiPrivacy": "Dies ist der einzige Teil der App, der das Internet nutzt: der Vers, zu dem Sie fragen, wird zur Erklärung gesendet. Alles andere — Text, Wörterbücher, Grammatik, Audio — funktioniert vollständig offline. Sie können das jederzeit in den Einstellungen ändern."
 }

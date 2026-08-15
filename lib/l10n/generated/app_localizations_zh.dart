@@ -49,7 +49,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get onboardingTapTitle => '点按任意词语';
 
   @override
-  String get onboardingTapDesc => '点按任意词语即可查看释义、发音和语法信息。开启发音按钮可查看词语读音。';
+  String get onboardingTapDesc => '点按任意词语即可查看释义、发音和语法信息。长按词语可快速查看含义，而不会失去阅读位置。';
 
   @override
   String get settings => '设置';
@@ -547,4 +547,175 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get showLess => '收起';
+
+  @override
+  String get readabilityTitle => '我能读哪些书卷？';
+
+  @override
+  String get readabilityAllBooks => '全部书卷，按易读程度排列';
+
+  @override
+  String get readabilityNoText => '尚未加载经文。';
+
+  @override
+  String get readabilityCanReadNow => '你现在就能读这卷';
+
+  @override
+  String get readabilityClosest => '最接近可以读的一卷';
+
+  @override
+  String get readabilityEmptyTitle => '开始学习单词，这张图就会逐渐填满';
+
+  @override
+  String get readabilityEmptyBody =>
+      '随着你掌握的词汇增加，每卷书都会显示你已经能读懂多少。最常见的词覆盖了大部分经文，所以起步阶段进展很快。';
+
+  @override
+  String get openVocabulary => '打开词汇';
+
+  @override
+  String get reciteAloud => '朗读';
+
+  @override
+  String get stopReciting => '停止朗读';
+
+  @override
+  String get recitationPreparing => '准备中…';
+
+  @override
+  String get recitationStop => '停止';
+
+  @override
+  String get hearItRead => '听朗读';
+
+  @override
+  String get phraseSpacingTitle => '按语义分组';
+
+  @override
+  String get phraseSpacingDesc => '依照马所拉重音在希伯来文中加入间隔，使经文以语义单位阅读，而不是逐字阅读。';
+
+  @override
+  String get recitationVoiceTitle => '朗读语音';
+
+  @override
+  String get recitationVoiceDesc =>
+      '使用设备的语音朗读：希伯来文为现代以色列发音，希腊文为现代希腊发音。这是沿用至今的诵读传统，并非重建的古代发音。';
+
+  @override
+  String get voiceMissing => '本设备未安装希伯来文或希腊文语音。请在系统的语音设置中添加，以便朗读经文。';
+
+  @override
+  String get voiceUnsupported => '本设备没有可用的语音引擎。';
+
+  @override
+  String get recitationFailed => '无法开始朗读。';
+
+  @override
+  String readBook(String book) {
+    return '阅读$book';
+  }
+
+  @override
+  String readabilityCoverage(int percent, int count) {
+    return '你认识其中 $percent% 的词汇——每章约有 $count 个生词。';
+  }
+
+  @override
+  String recitationVerse(int number) {
+    return '第 $number 节';
+  }
+
+  @override
+  String voiceMissingFor(String tradition) {
+    return '本设备未安装$tradition语音。';
+  }
+
+  @override
+  String crossReferencesCount(int count) {
+    return '$count 处交叉引用';
+  }
+
+  @override
+  String get onboardingRecitationTitle => '聆听朗读';
+
+  @override
+  String get onboardingRecitationDesc =>
+      '点按播放键，即可听到任意一章用希伯来语或希腊语朗读——使用的是现代通行的发音，而非重建的古代发音。可将语速调慢，直到耳朵跟得上为止。';
+
+  @override
+  String get readingHintTitle => '三种入门方式';
+
+  @override
+  String get readingHintBody => '点按词语可查看完整释义。长按可快速预览而不失去阅读位置。点按上方的 ▶ 即可听到本章朗读。';
+
+  @override
+  String get readingHintDismiss => '知道了';
+
+  @override
+  String get explainTitle => '解释这段经文';
+
+  @override
+  String get explainLoading => '正在阅读经文…';
+
+  @override
+  String get explainDisclaimer => '由 AI 生成，可能有误，请对照原文核查。';
+
+  @override
+  String get explainSettingTitle => 'AI 经文解释';
+
+  @override
+  String get explainSettingDesc =>
+      '默认关闭。开启后，你正在阅读的经文会通过网络发送以获取解释。本应用的其他功能均可完全离线使用。';
+
+  @override
+  String get explainErrorOffline => '无网络连接。这是唯一需要联网的功能。';
+
+  @override
+  String get explainErrorRateLimited => '当前请求过多，请稍后再试。';
+
+  @override
+  String get explainErrorGeneric => '无法生成解释。';
+
+  @override
+  String get explainRetry => '重试';
+
+  @override
+  String get explainLowQuality => '这条回答看起来有问题。请重试——如果持续出现，可能需要更换模型。';
+
+  @override
+  String explainFreeRemaining(int count) {
+    return '今日还剩 $count 次免费解释';
+  }
+
+  @override
+  String get explainLimitReached => '你已用完今天的免费解释次数。';
+
+  @override
+  String get explainUpgradeTitle => '无限次数，且模型更强';
+
+  @override
+  String get explainDiagnosticsTitle => 'AI 诊断';
+
+  @override
+  String get explainDiagnosticsDesc => '回答你问题的模型的成功率与速度。若回答质量下降，可在此查看。';
+
+  @override
+  String get explainNoData => '尚未请求过解释。';
+
+  @override
+  String get explainClearDiagnostics => '清除记录';
+
+  @override
+  String get onboardingAiTitle => '随时提问任何经文';
+
+  @override
+  String get onboardingAiDesc =>
+      '为你的疑问而设的导师：希伯来文究竟说了什么，希腊文承载了译文无法传达的哪些含义。点按任意经文旁的 ✨。';
+
+  @override
+  String get onboardingAiToggle => '启用 AI 导师';
+
+  @override
+  String get onboardingAiPrivacy =>
+      '这是本应用唯一联网的部分：你所提问的经文会被发送以获取解释。其余一切——经文、词典、语法、音频——均可完全离线使用。你可以随时在设置中更改。';
 }

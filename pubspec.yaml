@@ -37,6 +37,12 @@ dependencies:
   flutter_hooks: ^0.20.5
   share_plus: ^10.0.0
 
+  # Audio (original-language recitation via platform TTS)
+  flutter_tts: ^4.2.0
+
+  # Networking (opt-in AI passage explanation only; everything else is offline)
+  http: ^1.2.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

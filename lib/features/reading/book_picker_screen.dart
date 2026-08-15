@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../providers/books_provider.dart';
+import '../../providers/book_names_provider.dart';
 import '../../data/models/book.dart';
 import 'reading_provider.dart';
 
@@ -28,7 +29,7 @@ class _BookPickerScreenState extends ConsumerState<BookPickerScreen> {
         title: Text(
           _selectedBook == null
               ? l10n.books
-              : '${_selectedBook!.name} - ${l10n.selectChapter}',
+              : '${ref.read(bookNamesProvider).of(_selectedBook!)} - ${l10n.selectChapter}',
         ),
         leading: _selectedBook != null
             ? IconButton(
@@ -155,7 +156,7 @@ class _BookPickerScreenState extends ConsumerState<BookPickerScreen> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
           child: Text(
-            book.name,
+            ref.watch(bookNamesProvider).of(book),
             style: TextStyle(
               fontSize: 14,
               fontWeight: isCurrentBook ? FontWeight.bold : FontWeight.normal,
@@ -186,7 +187,7 @@ class _BookPickerScreenState extends ConsumerState<BookPickerScreen> {
           padding: const EdgeInsets.all(16),
           color: colorScheme.surfaceContainerHighest,
           child: Text(
-            '${book.name} - ${l10n.chapters(chapterCount)}',
+            '${ref.watch(bookNamesProvider).of(book)} - ${l10n.chapters(chapterCount)}',
             style: TextStyle(color: colorScheme.onSurfaceVariant, fontSize: 14),
           ),
         ),

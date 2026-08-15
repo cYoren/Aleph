@@ -52,7 +52,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get onboardingTapDesc =>
-      'Toca cualquier palabra para ver su definición, pronunciación e información gramatical. Activa el botón de pronunciación para ver cómo se pronuncian las palabras.';
+      'Toca cualquier palabra para ver su definición, pronunciación e información gramatical. Mantén pulsada una palabra para ver su significado rápido sin perder tu lugar.';
 
   @override
   String get settings => 'Ajustes';
@@ -571,4 +571,187 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get showLess => 'Mostrar menos';
+
+  @override
+  String get readabilityTitle => '¿Qué puedo leer?';
+
+  @override
+  String get readabilityAllBooks =>
+      'Todos los libros, del más legible al menos';
+
+  @override
+  String get readabilityNoText => 'Todavía no hay texto cargado.';
+
+  @override
+  String get readabilityCanReadNow => 'Ya puedes leer este';
+
+  @override
+  String get readabilityClosest => 'El más cercano a poder leerse';
+
+  @override
+  String get readabilityEmptyTitle =>
+      'Empieza a aprender palabras para llenar este mapa';
+
+  @override
+  String get readabilityEmptyBody =>
+      'A medida que domines el vocabulario, cada libro mostrará cuánto puedes leer ya. Las palabras más frecuentes cubren la mayor parte del texto, así que al principio se avanza rápido.';
+
+  @override
+  String get openVocabulary => 'Abrir vocabulario';
+
+  @override
+  String get reciteAloud => 'Leer en voz alta';
+
+  @override
+  String get stopReciting => 'Detener la lectura';
+
+  @override
+  String get recitationPreparing => 'Preparando…';
+
+  @override
+  String get recitationStop => 'Detener';
+
+  @override
+  String get hearItRead => 'Escuchar la lectura';
+
+  @override
+  String get phraseSpacingTitle => 'Espaciado por frases';
+
+  @override
+  String get phraseSpacingDesc =>
+      'Espacia el texto hebreo en los acentos masoréticos, para leer el versículo en unidades de sentido y no palabra por palabra.';
+
+  @override
+  String get recitationVoiceTitle => 'Voz de lectura';
+
+  @override
+  String get recitationVoiceDesc =>
+      'Lectura con las voces de tu dispositivo: hebreo israelí moderno y griego moderno. Son tradiciones vivas de lectura, no la pronunciación antigua reconstruida.';
+
+  @override
+  String get voiceMissing =>
+      'No hay ninguna voz de hebreo o griego instalada en este dispositivo. Añade una en los ajustes de voz del sistema para escuchar el texto.';
+
+  @override
+  String get voiceUnsupported =>
+      'Este dispositivo no tiene ningún motor de voz disponible.';
+
+  @override
+  String get recitationFailed => 'No se pudo iniciar la lectura.';
+
+  @override
+  String readBook(String book) {
+    return 'Leer $book';
+  }
+
+  @override
+  String readabilityCoverage(int percent, int count) {
+    return 'Conoces el $percent % de su vocabulario: unas $count palabras desconocidas por capítulo.';
+  }
+
+  @override
+  String recitationVerse(int number) {
+    return 'Versículo $number';
+  }
+
+  @override
+  String voiceMissingFor(String tradition) {
+    return 'No hay ninguna voz de $tradition instalada en este dispositivo.';
+  }
+
+  @override
+  String crossReferencesCount(int count) {
+    return '$count referencias cruzadas';
+  }
+
+  @override
+  String get onboardingRecitationTitle => 'Escucha la recitación';
+
+  @override
+  String get onboardingRecitationDesc =>
+      'Pulsa reproducir para escuchar cualquier capítulo leído en voz alta en hebreo o griego, con voces vivas en lugar de una pronunciación antigua reconstruida. Reduce la velocidad hasta que tu oído se acostumbre.';
+
+  @override
+  String get readingHintTitle => 'Tres formas de empezar';
+
+  @override
+  String get readingHintBody =>
+      'Toca una palabra para ver su significado completo. Mantén pulsado para una vista rápida sin perder tu lugar. Pulsa ▶ arriba para escuchar el capítulo recitado.';
+
+  @override
+  String get readingHintDismiss => 'Entendido';
+
+  @override
+  String get explainTitle => 'Explicar este pasaje';
+
+  @override
+  String get explainLoading => 'Leyendo el pasaje…';
+
+  @override
+  String get explainDisclaimer =>
+      'Escrito por IA. Puede equivocarse: contrástalo con el texto.';
+
+  @override
+  String get explainSettingTitle => 'Explicación de pasajes con IA';
+
+  @override
+  String get explainSettingDesc =>
+      'Desactivado por defecto. Al activarlo, el pasaje que estás leyendo se envía por internet para ser explicado. Todo lo demás en la app funciona totalmente sin conexión.';
+
+  @override
+  String get explainErrorOffline =>
+      'Sin conexión. Esta es la única función que la necesita.';
+
+  @override
+  String get explainErrorRateLimited =>
+      'Demasiadas solicitudes ahora mismo. Inténtalo en un momento.';
+
+  @override
+  String get explainErrorGeneric => 'No se pudo generar la explicación.';
+
+  @override
+  String get explainRetry => 'Reintentar';
+
+  @override
+  String get explainLowQuality =>
+      'Esta respuesta parece defectuosa. Inténtalo de nuevo; si sigue pasando, quizá haya que cambiar el modelo.';
+
+  @override
+  String explainFreeRemaining(int count) {
+    return 'Te quedan $count explicaciones gratuitas hoy';
+  }
+
+  @override
+  String get explainLimitReached =>
+      'Has usado tus explicaciones gratuitas de hoy.';
+
+  @override
+  String get explainUpgradeTitle => 'Ilimitado y con un modelo mejor';
+
+  @override
+  String get explainDiagnosticsTitle => 'Diagnóstico de la IA';
+
+  @override
+  String get explainDiagnosticsDesc =>
+      'Tasa de acierto y velocidad del modelo que responde a tus preguntas. Consúltalo si las respuestas parecen peores de lo normal.';
+
+  @override
+  String get explainNoData => 'Aún no se han pedido explicaciones.';
+
+  @override
+  String get explainClearDiagnostics => 'Borrar historial';
+
+  @override
+  String get onboardingAiTitle => 'Pregunta sobre cualquier pasaje';
+
+  @override
+  String get onboardingAiDesc =>
+      'Un tutor para tu pregunta: qué dice realmente el hebreo, qué lleva el griego que una traducción no alcanza. Toca el ✨ en cualquier versículo.';
+
+  @override
+  String get onboardingAiToggle => 'Activar el tutor de IA';
+
+  @override
+  String get onboardingAiPrivacy =>
+      'Esta es la única parte de la app que usa internet: el versículo sobre el que preguntas se envía para ser explicado. Todo lo demás — texto, diccionarios, gramática, audio — funciona totalmente sin conexión. Puedes cambiarlo cuando quieras en Ajustes.';
 }

@@ -52,7 +52,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get onboardingTapDesc =>
-      'Нажмите на любое слово, чтобы увидеть его определение, произношение и грамматическую информацию. Включите кнопку произношения, чтобы видеть, как звучат слова.';
+      'Нажмите на любое слово, чтобы увидеть его определение, произношение и грамматическую информацию. Нажмите и удерживайте слово, чтобы быстро увидеть значение, не теряя место.';
 
   @override
   String get settings => 'Настройки';
@@ -578,4 +578,186 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get showLess => 'Свернуть';
+
+  @override
+  String get readabilityTitle => 'Что я могу читать?';
+
+  @override
+  String get readabilityAllBooks => 'Все книги, от самых доступных';
+
+  @override
+  String get readabilityNoText => 'Текст ещё не загружен.';
+
+  @override
+  String get readabilityCanReadNow => 'Это вы уже можете читать';
+
+  @override
+  String get readabilityClosest => 'Ближе всего к доступному';
+
+  @override
+  String get readabilityEmptyTitle =>
+      'Начните учить слова, и эта карта заполнится';
+
+  @override
+  String get readabilityEmptyBody =>
+      'По мере освоения лексики каждая книга показывает, какую её часть вы уже можете читать. Самые частые слова покрывают большую часть текста, поэтому вначале прогресс идёт быстро.';
+
+  @override
+  String get openVocabulary => 'Открыть словарь';
+
+  @override
+  String get reciteAloud => 'Читать вслух';
+
+  @override
+  String get stopReciting => 'Остановить чтение';
+
+  @override
+  String get recitationPreparing => 'Подготовка…';
+
+  @override
+  String get recitationStop => 'Стоп';
+
+  @override
+  String get hearItRead => 'Прослушать';
+
+  @override
+  String get phraseSpacingTitle => 'Деление на смысловые части';
+
+  @override
+  String get phraseSpacingDesc =>
+      'Расставляет пробелы в еврейском тексте по масоретским акцентам, чтобы стих читался смысловыми единицами, а не слово за словом.';
+
+  @override
+  String get recitationVoiceTitle => 'Голос чтения';
+
+  @override
+  String get recitationVoiceDesc =>
+      'Чтение голосами вашего устройства: современный израильский для иврита и современный греческий для греческого. Это живые традиции чтения, а не реконструированное древнее произношение.';
+
+  @override
+  String get voiceMissing =>
+      'На этом устройстве не установлен голос для иврита или греческого. Добавьте его в системных настройках синтеза речи, чтобы слышать текст.';
+
+  @override
+  String get voiceUnsupported =>
+      'На этом устройстве нет доступного синтезатора речи.';
+
+  @override
+  String get recitationFailed => 'Не удалось начать чтение.';
+
+  @override
+  String readBook(String book) {
+    return 'Читать: $book';
+  }
+
+  @override
+  String readabilityCoverage(int percent, int count) {
+    return 'Вы знаете $percent % его лексики — около $count незнакомых слов на главу.';
+  }
+
+  @override
+  String recitationVerse(int number) {
+    return 'Стих $number';
+  }
+
+  @override
+  String voiceMissingFor(String tradition) {
+    return 'На этом устройстве не установлен голос «$tradition».';
+  }
+
+  @override
+  String crossReferencesCount(int count) {
+    return 'Перекрёстных ссылок: $count';
+  }
+
+  @override
+  String get onboardingRecitationTitle => 'Послушайте чтение вслух';
+
+  @override
+  String get onboardingRecitationDesc =>
+      'Нажмите кнопку воспроизведения, чтобы услышать любую главу на иврите или греческом — живыми голосами, а не реконструированным древним произношением. Замедлите темп, пока ухо не привыкнет.';
+
+  @override
+  String get readingHintTitle => 'Три способа начать';
+
+  @override
+  String get readingHintBody =>
+      'Нажмите на слово, чтобы увидеть его полное значение. Нажмите и удерживайте для быстрого предпросмотра, не теряя место. Нажмите ▶ вверху, чтобы услышать главу вслух.';
+
+  @override
+  String get readingHintDismiss => 'Понятно';
+
+  @override
+  String get explainTitle => 'Объяснить этот отрывок';
+
+  @override
+  String get explainLoading => 'Читаем отрывок…';
+
+  @override
+  String get explainDisclaimer =>
+      'Написано ИИ. Может ошибаться — сверьте с текстом.';
+
+  @override
+  String get explainSettingTitle => 'Объяснение отрывков ИИ';
+
+  @override
+  String get explainSettingDesc =>
+      'По умолчанию выключено. При включении читаемый отрывок отправляется через интернет для объяснения. Всё остальное в приложении работает полностью офлайн.';
+
+  @override
+  String get explainErrorOffline =>
+      'Нет соединения. Это единственная функция, которой оно требуется.';
+
+  @override
+  String get explainErrorRateLimited =>
+      'Слишком много запросов сейчас. Повторите попытку чуть позже.';
+
+  @override
+  String get explainErrorGeneric => 'Не удалось получить объяснение.';
+
+  @override
+  String get explainRetry => 'Повторить';
+
+  @override
+  String get explainLowQuality =>
+      'Этот ответ выглядит неправильно. Повторите попытку — если повторяется, возможно, пора сменить модель.';
+
+  @override
+  String explainFreeRemaining(int count) {
+    return 'Осталось бесплатных объяснений сегодня: $count';
+  }
+
+  @override
+  String get explainLimitReached =>
+      'Вы использовали бесплатные объяснения на сегодня.';
+
+  @override
+  String get explainUpgradeTitle => 'Без ограничений и с более сильной моделью';
+
+  @override
+  String get explainDiagnosticsTitle => 'Диагностика ИИ';
+
+  @override
+  String get explainDiagnosticsDesc =>
+      'Доля успешных ответов и скорость модели. Загляните сюда, если ответы стали хуже обычного.';
+
+  @override
+  String get explainNoData => 'Объяснения ещё не запрашивались.';
+
+  @override
+  String get explainClearDiagnostics => 'Очистить историю';
+
+  @override
+  String get onboardingAiTitle => 'Спросите о любом отрывке';
+
+  @override
+  String get onboardingAiDesc =>
+      'Наставник для вашего вопроса: что на самом деле говорит еврейский текст, что несёт греческий, чего не передаёт перевод. Нажмите ✨ у любого стиха.';
+
+  @override
+  String get onboardingAiToggle => 'Включить ИИ-наставника';
+
+  @override
+  String get onboardingAiPrivacy =>
+      'Это единственная часть приложения, использующая интернет: стих, о котором вы спрашиваете, отправляется для объяснения. Всё остальное — текст, словари, грамматика, аудио — работает полностью офлайн. Это можно изменить в любой момент в настройках.';
 }
