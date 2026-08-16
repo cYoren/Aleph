@@ -217,7 +217,7 @@ key was ever pasted into a chat, an issue, or a log.
 
 ## Task 5 — Fill the translated glosses and alphabet hints
 
-**Status:** in progress — alphabet hints 100% complete across all 8 locales (55/55 each in `assets/alphabet_hints.json`: `en`, `pt`, `de`, `fr`, `es`, `ru`, `zh`, `ko`); glosses translated: pt 2,037/13,281 (15.3%), es 1,000/13,281 (7.5%), de 1,000/13,281 (7.5%), fr 1,000/13,281 (7.5%), ru 1,000/13,281 (7.5%), zh 1,000/13,281 (7.5%), ko 1,000/13,281 (7.5%). Total: 8,037 translated glosses. Prompt updated for divine title capitalization and participle verb aspect.
+**Status:** in progress — alphabet hints 100% complete across all 8 locales (55/55 each in `assets/alphabet_hints.json`: `en`, `pt`, `de`, `fr`, `es`, `ru`, `zh`, `ko`); glosses translated: pt 4,037/13,281 (30.4%), es 3,000/13,281 (22.6%), de 3,000/13,281 (22.6%), fr 3,000/13,281 (22.6%), ru 3,000/13,281 (22.6%), zh 3,000/13,281 (22.6%), ko 3,000/13,281 (22.6%). Total: 22,037 translated glosses. Prompt updated for divine title capitalization and participle verb aspect.
 **Size:** one long unattended run (13,433 glosses × 7 languages) plus one short one.
 **Cost:** free-tier model; the only real cost is wall-clock time and rate limits.
 
