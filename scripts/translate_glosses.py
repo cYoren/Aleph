@@ -82,9 +82,12 @@ as printed in a concordance. Translate each into {language}.
 Rules:
 - Keep it as short as the English. A gloss is a label, not a definition.
 - Translate the sense a lexicon intends. "LORD" (God's covenant name) is not
-  the same as "lord" (a human master); "steadfast love" is the covenant term.
-- Keep the part of speech. An English infinitive like "to walk" stays an
-  infinitive; a plural stays plural.
+  the same as "lord" (a human master); divine titles (Lord, God, Almighty) keep
+  their capitalization in the target language (e.g. "Senhor", "Señor", "Herr").
+- Keep the part of speech and verbal aspect. English participles or phrasal
+  verbs like "set apart" or "to separate" are verbs and must stay verbs in the
+  target language (e.g. "separar" / "dividir", not an adjective like "santo").
+  An English infinitive like "to walk" stays an infinitive; a plural stays plural.
 - Leave proper names (people, places) in their conventional {language} biblical
   form; if you are unsure, leave the name unchanged.
 - Leave anything in parentheses, and any bare grammatical marker such as "(et)",

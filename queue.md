@@ -92,11 +92,50 @@ new user-facing string — the workflow below still applies to future additions.
 
 ---
 
-## Task 3 — Recover Greek lexicon entries for inflected Strong's ids
+## Task 3 — Recover lexicon entries for inflected Strong's ids
 
-**Status:** done
-**Size:** ~35 ids, plus a pipeline change
+**Status:** reopened — Greek is closed (0 unresolved), **Hebrew is not**
+(30 ids, 44,752 tokens), and the fix is not in the pipeline.
+**Size:** 30 Hebrew ids, plus the pipeline change that was skipped
 **File:** `scripts/build_full_bible_db.py`
+
+### What was done, and what was missed
+
+A previous worker marked this done after closing the Greek half. Two things are
+still outstanding, and the second is the dangerous one:
+
+1. **Hebrew was never done.** The task prompt asked for `language='heb'` as
+   well. It is still 30 unresolved ids covering 44,752 tokens — an order of
+   magnitude more than the Greek gap ever was. The worst offenders are
+   `H2050C` (11,944 tokens), `H3963A` (7,077), `H2967A` (7,055) and `H3509B`
+   (6,969): prefix/suffix particle ids, so a large share of every Hebrew verse
+   renders with no definition and drops out of the vocabulary deck.
+2. **`scripts/build_full_bible_db.py` is unchanged**, so whatever closed the
+   Greek gap was applied to `assets/bible.db` directly. That file is a
+   generated artifact — the next `build_full_bible_db.py` run silently throws
+   the fix away and nobody will notice until the ids are missing again in a
+   release. The fix has to live in the pipeline, per AGENTS.md.
+
+Verify the current state at any time with:
+
+```bash
+python3 - <<'EOF'
+import sqlite3
+db = sqlite3.connect("assets/bible.db")
+query = """
+  SELECT COUNT(DISTINCT w.strongs), COUNT(*) FROM words w
+  LEFT JOIN lexicon lx ON lx.strongs_id = w.strongs
+  WHERE w.language = ? AND lx.strongs_id IS NULL
+    AND w.strongs IS NOT NULL AND w.strongs != ''
+"""
+for lang in ("grc", "heb"):
+    ids, tokens = db.execute(query, (lang,)).fetchone()
+    print(lang, ids, "ids,", tokens, "tokens")
+EOF
+```
+
+Both must read `0 ids, 0 tokens` **after a fresh pipeline rebuild**, not just
+against the database currently on disk.
 
 The `words` table references Strong's ids that have no row in `lexicon`, so
 those words are dropped from the vocabulary deck by
@@ -178,7 +217,7 @@ key was ever pasted into a chat, an issue, or a log.
 
 ## Task 5 — Fill the translated glosses and alphabet hints
 
-**Status:** in progress — alphabet hints 100% complete across all 8 locales (55/55 each in `assets/alphabet_hints.json`: `en`, `pt`, `de`, `fr`, `es`, `ru`, `zh`, `ko`); pt glosses 50/13,281 (0.4%), other gloss locales 0/13,281 (0%). Pipeline verified with OpenRouter Nemotron model.
+**Status:** in progress — alphabet hints 100% complete across all 8 locales (55/55 each in `assets/alphabet_hints.json`: `en`, `pt`, `de`, `fr`, `es`, `ru`, `zh`, `ko`); pt glosses 109/13,281 (0.8%), other gloss locales 0/13,281 (0%). Prompt updated for divine title capitalization and participle verb aspect.
 **Size:** one long unattended run (13,433 glosses × 7 languages) plus one short one.
 **Cost:** free-tier model; the only real cost is wall-clock time and rate limits.
 
@@ -186,6 +225,28 @@ The app already reads translated glosses: `BibleDAO.glossLanguage` resolves them
 for the definition sheet, the long-press peek, reader-mode inline glosses, the
 vocabulary deck, word search, and the alphabet guide's example words. Until the
 cache is filled, every one of those falls back to English.
+
+### Quality note from the first 50 glosses (read before the next run)
+
+Proper names came through correctly — Jesus, Paulo, Pedro, Abraão, Davi — and
+bare grammatical markers were left alone, including `(et)`. Two misses, both
+worth fixing in `SYSTEM_PROMPT` rather than by hand, since the same mistake
+will otherwise repeat 13,000 times:
+
+- **`G2962` "Lord" → "senhor"**, lowercase. This is κύριος, the divine title;
+  Portuguese Bibles set it as **Senhor**. The prompt already says "LORD" is not
+  "lord" — it needs to add that the divine title keeps its capital in the
+  target language.
+- **`H0914` "set apart" → "santo"**. That is "holy", an adjective; בָּדַל is a
+  verb, *to separate/divide*. The "keep the part of speech" rule was not enough
+  because the English gloss is a participle — say so explicitly.
+
+`H2617` "steadfast love" → "misericórdia" is defensible: it is the Almeida
+convention for חֶסֶד, though "amor leal" carries the covenant sense the lexicon
+intends. Left as is.
+
+To re-ask for a gloss, delete its key from `data/gloss_translations/pt.json` —
+the script skips only ids that are already cached.
 
 ### Prompt
 
