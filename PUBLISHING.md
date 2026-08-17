@@ -45,12 +45,12 @@ Categories:
   - Reference
 License: MIT
 AuthorName: Gustavo Marcelino
-WebSite: https://github.com/cYoren/original-bible-open-source
-SourceCode: https://github.com/cYoren/original-bible-open-source
-IssueTracker: https://github.com/cYoren/original-bible-open-source/issues
+WebSite: https://github.com/cYoren/Aleph
+SourceCode: https://github.com/cYoren/Aleph
+IssueTracker: https://github.com/cYoren/Aleph/issues
 
 RepoType: git
-Repo: https://github.com/cYoren/original-bible-open-source.git
+Repo: https://github.com/cYoren/Aleph.git
 
 Builds:
   - versionName: 1.0.0
@@ -83,7 +83,7 @@ The KDE Store (OpenDesktop/pling.com) is a popular open-source software director
 3. Fill in the title, description (you can copy the text from `DEPLOYMENT.md` or `README.md`), and upload screenshots.
 4. Under the **Files** section, instead of uploading a static APK file directly, select **Add Link**.
 5. Set the Link URL to dynamically point to your latest GitHub release:
-   `https://github.com/cYoren/original-bible-open-source/releases/latest/download/app-release.apk`
+   `https://github.com/cYoren/Aleph/releases/latest/download/app-release.apk`
 6. Give it a label like `Download Latest Release APK`.
 
 ### How Updates Work

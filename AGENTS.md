@@ -2,7 +2,7 @@
 
 ## Mission and canonical location
 
-Offline-first original-language Bible reader for iOS, Android, and macOS with Hebrew and Greek text, morphology, lexicons, translations, and SQLite data. Canonical VPS working copy: `/root/projects/original-bible-open-source`. GitHub: `https://github.com/cYoren/original-bible-open-source`.
+Offline-first original-language Bible reader for iOS, Android, and macOS with Hebrew and Greek text, morphology, lexicons, translations, and SQLite data. Canonical VPS working copy: `/root/projects/original-bible-open-source`. GitHub: `https://github.com/cYoren/Aleph`.
 
 ## Start here
 
