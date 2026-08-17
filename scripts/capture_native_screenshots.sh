@@ -34,4 +34,4 @@ capture "iPhone 15 Pro Max" "$(read_device 'iPhone 15 Pro Max')" "iphone-67.png"
 capture "iPhone 11 Pro Max" "$(read_device 'iPhone 11 Pro Max')" "iphone-65.png"
 capture "iPad Pro (12.9-inch) (6th generation)" "$(read_device 'iPad Pro (12.9-inch) (6th generation)')" "ipad-129.png"
 file "$OUTPUT_DIR"/*.png
-printf '\nCommit temporarily and push:\n  git add store-screenshots && git commit -m "capture native Original Bible screenshots" && git push origin main\n'
+printf '\nCommit temporarily and push:\n  git add store-screenshots && git commit -m "capture native Aleph screenshots" && git push origin main\n'

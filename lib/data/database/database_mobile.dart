@@ -6,6 +6,16 @@ import 'package:path/path.dart' as path;
 import 'package:sqflite/sqflite.dart';
 import 'package:original_bible/shared/utils/async_once.dart';
 
+/// Bumped whenever the bundled `assets/bible.db` gains content an already
+/// installed copy would not have.
+///
+/// The on-device copy is written once and then reused forever, so without a
+/// stamp a reader who installed an older build keeps that older database
+/// indefinitely — which is exactly how cross-references came to look "not
+/// implemented" for existing users while the asset had 343k of them.
+/// Bump this on every regenerated release database.
+const int kBundledDatabaseVersion = 2;
+
 class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._init();
   static final AsyncOnce<Database> _databaseLoader = AsyncOnce<Database>();
@@ -17,6 +27,8 @@ class DatabaseHelper {
     'translation_ref_map',
     'words',
     'lexicon',
+    'cross_references',
+    'syntax_trees',
   };
 
   DatabaseHelper._init();
@@ -37,9 +49,24 @@ class DatabaseHelper {
   Future<Database> _initDB(String fileName) async {
     final dbPath = await getDatabasesPath();
     final dbFilePath = path.join(dbPath, fileName);
+    final stampFile = File('$dbFilePath.version');
 
     // Check if database file exists AND has data
     bool needsCopy = true;
+
+    // A stale stamp forces a recopy even when every table is present: the
+    // schema can be complete while the *content* is a release behind.
+    final bool stampIsCurrent =
+        await _readStamp(stampFile) == kBundledDatabaseVersion;
+
+    if (!stampIsCurrent && await File(dbFilePath).exists()) {
+      if (kDebugMode) {
+        debugPrint('Bundled database is newer than the local copy, recopying');
+      }
+      try {
+        await File(dbFilePath).delete();
+      } catch (_) {}
+    }
 
     if (await File(dbFilePath).exists()) {
       // Check if the database has ALL required tables (including translations)
@@ -99,6 +126,10 @@ class DatabaseHelper {
         // Write to file system
         await File(dbFilePath).writeAsBytes(bytes, flush: true);
 
+        // Written only after the copy succeeds, so an interrupted copy is
+        // retried on the next launch rather than being trusted.
+        await stampFile.writeAsString('$kBundledDatabaseVersion', flush: true);
+
         if (kDebugMode) {
           debugPrint(
             'Database copied successfully (${bytes.length} bytes) to $dbFilePath',
@@ -113,5 +144,15 @@ class DatabaseHelper {
     }
 
     return await openDatabase(dbFilePath, readOnly: true);
+  }
+
+  /// Version of the database currently on disk, or null when unknown.
+  Future<int?> _readStamp(File stampFile) async {
+    try {
+      if (!await stampFile.exists()) return null;
+      return int.tryParse((await stampFile.readAsString()).trim());
+    } catch (_) {
+      return null;
+    }
   }
 }

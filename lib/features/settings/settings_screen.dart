@@ -5,9 +5,9 @@ import '../../l10n/generated/app_localizations.dart';
 import '../../features/settings/settings_provider.dart';
 import '../../providers/translations_provider.dart';
 import '../../shared/utils/hebrew_display.dart';
+import '../../shared/utils/reading_tradition.dart';
 import 'package:go_router/go_router.dart';
 
-import '../explain/explain_model.dart';
 import '../explain/explain_provider.dart';
 
 const _interfaceLanguages = <String, String>{
@@ -90,7 +90,7 @@ class SettingsScreen extends ConsumerWidget {
                   : 'en',
               onChanged: (String? newValue) {
                 if (newValue != null) {
-                  notifier.setAppLanguageOnly(newValue);
+                  notifier.setAppLanguage(newValue);
                 }
               },
               items: _interfaceLanguages.entries.map((entry) {
@@ -147,6 +147,48 @@ class SettingsScreen extends ConsumerWidget {
               notifier.setShowSenseUnits(value);
             },
           ),
+          SwitchListTile(
+            secondary: const Icon(Icons.timeline),
+            title: Text(l10n.wordConnections),
+            subtitle: Text(l10n.wordConnectionsDesc),
+            value: settings.showWordConnections,
+            onChanged: (bool value) {
+              notifier.setShowWordConnections(value);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.import_contacts_outlined),
+            title: Text(l10n.traditionSettingTitle),
+            subtitle: Text(
+              settings.tradition == ReadingTradition.jewish
+                  ? l10n.traditionJewish
+                  : l10n.traditionChristian,
+            ),
+            trailing: DropdownButton<ReadingTradition>(
+              value: settings.tradition,
+              underline: const SizedBox.shrink(),
+              onChanged: (value) {
+                if (value != null) notifier.setTradition(value);
+              },
+              items: [
+                DropdownMenuItem(
+                  value: ReadingTradition.christian,
+                  child: Text(l10n.traditionChristian),
+                ),
+                DropdownMenuItem(
+                  value: ReadingTradition.jewish,
+                  child: Text(l10n.traditionJewish),
+                ),
+              ],
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.abc_outlined),
+            title: Text(l10n.alphabetTitle),
+            subtitle: Text(l10n.alphabetLettersSection),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push('/alphabet'),
+          ),
           ListTile(
             leading: const Icon(Icons.graphic_eq),
             title: Text(l10n.recitationVoiceTitle),
@@ -179,34 +221,30 @@ class SettingsScreen extends ConsumerWidget {
           if (ref.watch(explainConfiguredProvider)) ...[
             const Divider(),
             _buildSectionHeader(l10n.explainSettingTitle, colorScheme),
-            SwitchListTile(
-              secondary: const Icon(Icons.auto_awesome_outlined),
-              title: Text(l10n.explainSettingTitle),
-              subtitle: Text(l10n.explainSettingDesc),
-              value: settings.aiExplainEnabled,
-              onChanged: (bool value) {
-                notifier.setAiExplainEnabled(value);
+            // The daily allowance lives on the switch itself. It used to sit on
+            // a separate "upgrade" row whose toggle unlocked the paid tier for
+            // free — a control that either lies about a purchase or gives the
+            // paid model away. `aiProUnlocked` stays in state, waiting on a
+            // real StoreKit / Play Billing entitlement to set it.
+            Builder(
+              builder: (context) {
+                final remaining = ref.watch(explainRemainingTodayProvider);
+                final subtitle = settings.aiExplainEnabled && remaining != null
+                    ? l10n.explainFreeRemaining(remaining)
+                    : l10n.explainSettingDesc;
+
+                return SwitchListTile(
+                  secondary: const Icon(Icons.auto_awesome_outlined),
+                  title: Text(l10n.explainSettingTitle),
+                  subtitle: Text(subtitle),
+                  value: settings.aiExplainEnabled,
+                  onChanged: (bool value) {
+                    notifier.setAiExplainEnabled(value);
+                  },
+                );
               },
             ),
             if (settings.aiExplainEnabled) ...[
-              Builder(
-                builder: (context) {
-                  final remaining = ref.watch(explainRemainingTodayProvider);
-                  return ListTile(
-                    leading: const Icon(Icons.bolt_outlined),
-                    title: Text(l10n.explainUpgradeTitle),
-                    subtitle: Text(
-                      remaining == null
-                          ? kProModel.modelId
-                          : l10n.explainFreeRemaining(remaining),
-                    ),
-                    trailing: Switch(
-                      value: settings.aiProUnlocked,
-                      onChanged: (value) => notifier.setAiProUnlocked(value),
-                    ),
-                  );
-                },
-              ),
               ListTile(
                 leading: const Icon(Icons.monitor_heart_outlined),
                 title: Text(l10n.explainDiagnosticsTitle),

@@ -36,6 +36,10 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
   /// view as the voice reaches it.
   final Map<int, GlobalKey> _verseKeys = {};
 
+  /// The verse list itself, so playback can tell which verse the reader is
+  /// actually looking at.
+  final GlobalKey _verseListKey = GlobalKey();
+
   @override
   void initState() {
     super.initState();
@@ -63,8 +67,44 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
     );
   }
 
+  /// The topmost verse the reader can actually see right now.
+  ///
+  /// A verse scrolled almost entirely off the top is not where the reader is,
+  /// so it only counts once a reasonable slice of it is still on screen.
+  int? _firstVisibleVerseNumber() {
+    final listObject = _verseListKey.currentContext?.findRenderObject();
+    if (listObject is! RenderBox || !listObject.attached) return null;
+    final listTop = listObject.localToGlobal(Offset.zero).dy;
+
+    int? bestVerse;
+    double bestTop = double.infinity;
+    for (final entry in _verseKeys.entries) {
+      final verseContext = entry.value.currentContext;
+      if (verseContext == null) continue;
+      final box = verseContext.findRenderObject();
+      if (box is! RenderBox || !box.attached) continue;
+
+      final top = box.localToGlobal(Offset.zero).dy;
+      if (top + box.size.height < listTop + 32) continue;
+      if (top < bestTop) {
+        bestTop = top;
+        bestVerse = entry.key;
+      }
+    }
+    return bestVerse;
+  }
+
   /// Starts or stops reciting the chapter on screen.
-  Future<void> _toggleRecitation(ReadingState readingState, bool isOT) async {
+  ///
+  /// Playback begins at the verse in front of the reader, not at verse 1:
+  /// someone who has scrolled to the middle of Psalm 119 and pressed play is
+  /// asking to hear *this*, and restarting from the top made the button
+  /// useless anywhere but the start of a chapter.
+  Future<void> _toggleRecitation(
+    ReadingState readingState,
+    bool isOT, {
+    int? startVerse,
+  }) async {
     final notifier = ref.read(recitationProvider.notifier);
     final recitation = ref.read(recitationProvider);
 
@@ -78,6 +118,7 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
       chapter: readingState.chapter,
       verses: readingState.verses,
       isHebrew: isOT,
+      startVerse: startVerse ?? _firstVisibleVerseNumber(),
     );
   }
 
@@ -247,8 +288,7 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
             ),
           ),
           RecitationBar(
-            reference:
-                '$bookTitle ${readingState.chapter}',
+            reference: '$bookTitle ${readingState.chapter}',
             onStop: () => ref.read(recitationProvider.notifier).stop(),
           ),
         ],
@@ -321,127 +361,31 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
         }
       },
       child: VisualContextOverlay(
-        child: Stack(
-          children: [
-            // Main content
-            ListView.builder(
-              itemCount: readingState.verses.length,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              itemBuilder: (context, index) {
-                final verse = readingState.verses[index];
-                final isBeingRecited = ref.watch(
-                  recitationProvider.select(
-                    (r) => r.isSpeaking(
-                      readingState.bookId,
-                      readingState.chapter,
-                      verse.verseNumber,
-                    ),
-                  ),
-                );
-                return _buildVerseCard(
-                  verse,
-                  readingState,
-                  settings,
-                  isOT,
-                  colorScheme,
-                  isBeingRecited: isBeingRecited,
-                );
-              },
-            ),
-            // Swipe indicators
-            _buildSwipeIndicators(readingState, maxChapter, colorScheme),
-          ],
+        child: ListView.builder(
+          key: _verseListKey,
+          itemCount: readingState.verses.length,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          itemBuilder: (context, index) {
+            final verse = readingState.verses[index];
+            final isBeingRecited = ref.watch(
+              recitationProvider.select(
+                (r) => r.isSpeaking(
+                  readingState.bookId,
+                  readingState.chapter,
+                  verse.verseNumber,
+                ),
+              ),
+            );
+            return _buildVerseCard(
+              verse,
+              readingState,
+              settings,
+              isOT,
+              colorScheme,
+              isBeingRecited: isBeingRecited,
+            );
+          },
         ),
-      ),
-    );
-  }
-
-  Widget _buildSwipeIndicators(
-    ReadingState readingState,
-    int maxChapter,
-    ColorScheme colorScheme,
-  ) {
-    return Positioned(
-      bottom: 16,
-      left: 0,
-      right: 0,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // Previous indicator
-          if (readingState.chapter > 1)
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: colorScheme.surfaceContainerHighest.withValues(
-                  alpha: 0.9,
-                ),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.chevron_left,
-                    size: 16,
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-                  Text(
-                    '${readingState.chapter - 1}',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          // Current chapter indicator
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 8),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: colorScheme.primaryContainer,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Text(
-              '${readingState.chapter}',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: colorScheme.onPrimaryContainer,
-              ),
-            ),
-          ),
-          // Next indicator
-          if (readingState.chapter < maxChapter)
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: colorScheme.surfaceContainerHighest.withValues(
-                  alpha: 0.9,
-                ),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    '${readingState.chapter + 1}',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                  Icon(
-                    Icons.chevron_right,
-                    size: 16,
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-                ],
-              ),
-            ),
-        ],
       ),
     );
   }
@@ -539,8 +483,7 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
                         request: ExplainRequest(
                           reference: verseReference,
                           originalText: verse.textContent,
-                          translationText:
-                              translationText ?? verse.textContent,
+                          translationText: translationText ?? verse.textContent,
                           isHebrew: isOT,
                         ),
                       ),
@@ -606,9 +549,8 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
                   color: colorScheme.surface,
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
-                    color: isOT
-                        ? Colors.amber.withValues(alpha: 0.3)
-                        : Colors.blue.withValues(alpha: 0.3),
+                    color: (isOT ? colorScheme.primary : colorScheme.secondary)
+                        .withValues(alpha: 0.28),
                   ),
                 ),
                 child: VerseWithWords(
@@ -693,6 +635,24 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
                 ),
               ),
               const SizedBox(height: 16),
+              // Start the voice here rather than at the top of the chapter.
+              ListTile(
+                leading: const Icon(Icons.play_circle_outline),
+                title: Text(l10n.reciteFromHere),
+                onTap: () {
+                  Navigator.pop(context);
+                  final readingState = ref.read(readingProvider);
+                  ref
+                      .read(recitationProvider.notifier)
+                      .startChapter(
+                        bookId: readingState.bookId,
+                        chapter: readingState.chapter,
+                        verses: readingState.verses,
+                        isHebrew: _isOldTestament(readingState.bookId),
+                        startVerse: verse.verseNumber,
+                      );
+                },
+              ),
               // Copy option
               ListTile(
                 leading: const Icon(Icons.copy),

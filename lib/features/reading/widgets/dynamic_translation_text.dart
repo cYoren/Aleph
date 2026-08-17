@@ -3,8 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../data/models/verse.dart';
 import '../../../data/models/word.dart';
-import '../../../l10n/generated/app_localizations.dart';
-import '../../../providers/translations_provider.dart';
 import '../../../providers/word_provider.dart';
 import '../../settings/settings_provider.dart';
 import '../../../shared/widgets/tappable_word.dart';
@@ -29,34 +27,24 @@ class DynamicTranslationText extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsProvider);
     final colorScheme = Theme.of(context).colorScheme;
-    final l10n = AppLocalizations.of(context)!;
-    final translationsAsync = ref.watch(translationsProvider);
 
-    final selectedTranslation = settings.translation.trim().toUpperCase();
-    final selectedLanguage = translationsAsync.whenOrNull(
-      data: (translations) => translations
-          .where((t) => t.id.toUpperCase() == selectedTranslation)
-          .firstOrNull
-          ?.language
-          .toLowerCase(),
-    );
-    final isEnglishTranslation =
-        (selectedLanguage == null && selectedTranslation == 'KJV') ||
-        selectedLanguage == 'en';
-
-    // Normal rendering when learning mode is off, or if selected translation is
-    // not English in this first multilingual rollout.
-    if (!settings.learningModeEnabled || !isEnglishTranslation) {
-      final notice = settings.learningModeEnabled && !isEnglishTranslation
-          ? l10n.learningModeEnglishOnlyNotice
-          : null;
+    // Learning mode is language-agnostic now. It swaps a translated word for
+    // the original by matching the lexicon gloss against the verse, and the
+    // gloss already arrives in the reader's own language through
+    // `BibleDAO.glossLanguage` — so the same matching works in Portuguese
+    // against a Portuguese Bible.
+    //
+    // Where a gloss has not been translated yet, nothing matches and the verse
+    // renders plainly. That silent fallback replaces the old apology ("learning
+    // mode currently only supports English"), which told the reader about our
+    // rollout schedule instead of doing anything for them.
+    if (!settings.learningModeEnabled) {
       return AnimatedSwitcher(
         duration: const Duration(milliseconds: 300),
-        child: _buildPlainTextWithOptionalNotice(
-          translationText: translationText,
-          colorScheme: colorScheme,
-          key: ValueKey('plain_text_$notice'),
-          notice: notice,
+        child: _buildPlainText(
+          translationText,
+          colorScheme,
+          key: const ValueKey('plain_text_off'),
         ),
       );
     }
@@ -124,10 +112,10 @@ class DynamicTranslationText extends ConsumerWidget {
           data: (lexicons) {
             // Find the first word that has a gloss present in the translation text
             Word? wordToSwap;
-            String? englishWordToSwapOut;
+            String? matchedWord;
 
-            // We iterate through available words and check if their gloss matches
-            // a whole word in the english translation.
+            // Check whether any word's gloss appears as a whole word in the
+            // translation on screen, in whatever language that translation is.
             for (final word in words) {
               final lookupKey = word.lexiconLookupKey;
               if (lookupKey == null) continue;
@@ -153,7 +141,7 @@ class DynamicTranslationText extends ConsumerWidget {
                 final match = regex.firstMatch(translationText);
                 if (match != null) {
                   wordToSwap = word;
-                  englishWordToSwapOut = translationText.substring(
+                  matchedWord = translationText.substring(
                     match.start,
                     match.end,
                   );
@@ -163,7 +151,7 @@ class DynamicTranslationText extends ConsumerWidget {
               if (wordToSwap != null) break;
             }
 
-            if (wordToSwap == null || englishWordToSwapOut == null) {
+            if (wordToSwap == null || matchedWord == null) {
               return _buildAnimatedWrapper(
                 _buildPlainText(
                   translationText,
@@ -174,7 +162,7 @@ class DynamicTranslationText extends ConsumerWidget {
             }
 
             // Split the translation text around the word to swap
-            final parts = translationText.split(englishWordToSwapOut);
+            final parts = translationText.split(matchedWord);
 
             // We found a word to swap!
             return _buildAnimatedWrapper(
@@ -229,7 +217,7 @@ class DynamicTranslationText extends ConsumerWidget {
                           SrsMicroQuizSheet.show(
                             context,
                             originalWord: wordToSwap!,
-                            englishWord: englishWordToSwapOut!,
+                            translatedWord: matchedWord!,
                             isOT: isOT,
                           );
                         },
@@ -238,7 +226,7 @@ class DynamicTranslationText extends ConsumerWidget {
                   ),
                   if (parts.length > 1)
                     Text(
-                      parts.sublist(1).join(englishWordToSwapOut),
+                      parts.sublist(1).join(matchedWord),
                       style: TextStyle(
                         fontSize: fontSize,
                         height: 1.6,
@@ -282,32 +270,6 @@ class DynamicTranslationText extends ConsumerWidget {
         height: 1.6,
         color: colorScheme.onSurface,
       ),
-    );
-  }
-
-  Widget _buildPlainTextWithOptionalNotice({
-    required String translationText,
-    required ColorScheme colorScheme,
-    required Key key,
-    String? notice,
-  }) {
-    return Column(
-      key: key,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildPlainText(translationText, colorScheme),
-        if (notice != null) ...[
-          const SizedBox(height: 10),
-          Text(
-            notice,
-            style: TextStyle(
-              fontSize: fontSize - 2,
-              fontStyle: FontStyle.italic,
-              color: colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ],
-      ],
     );
   }
 }

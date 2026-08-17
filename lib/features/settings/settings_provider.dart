@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../shared/utils/hebrew_display.dart';
+import '../../shared/utils/reading_tradition.dart';
 
 // Language to default translation mapping (applied during onboarding only).
 const Map<String, String> languageToTranslation = {
@@ -67,6 +68,10 @@ class SettingsState {
   final String translation;
   final String lastReadBook;
   final int lastReadChapter;
+
+  /// Latin transliteration above each word. **On by default**: a reader who
+  /// cannot yet sound out the alphabet has no way in without it, and someone
+  /// fluent enough to be annoyed by it can find the toggle in the reader.
   final bool showPronunciation;
   final String appLanguage;
   final bool hasCompletedOnboarding;
@@ -77,6 +82,16 @@ class SettingsState {
   /// Space the Hebrew text at the Masoretic disjunctive accents, so a verse
   /// reads as phrases rather than a flat row of words.
   final bool showSenseUnits;
+
+  /// Which scriptures the reader came for, and how they are arranged and
+  /// named. Chosen once in onboarding, changeable in Settings.
+  final ReadingTradition tradition;
+
+  /// Draw curved connectors between every other occurrence of the word you
+  /// tapped. **Off by default**: the lines cross the text you are trying to
+  /// read, which is the opposite of a calm page. The same information is in
+  /// the definition sheet's usage graph and the concordance.
+  final bool showWordConnections;
 
   /// Whether the reader has dismissed the one-time hint about tap /
   /// long-press / recite. Onboarding teaches the same affordances, but a
@@ -112,13 +127,15 @@ class SettingsState {
     this.translation = 'KJV',
     this.lastReadBook = 'GEN',
     this.lastReadChapter = 1,
-    this.showPronunciation = false,
+    this.showPronunciation = true,
     this.appLanguage = 'en',
     this.hasCompletedOnboarding = false,
     this.learningModeEnabled = false,
     this.readerModeEnabled = false,
     this.hebrewTextDisplay = HebrewTextDisplay.full,
     this.showSenseUnits = true,
+    this.tradition = ReadingTradition.christian,
+    this.showWordConnections = false,
     this.hasSeenReadingHint = false,
     this.aiExplainEnabled = true,
     this.aiProUnlocked = false,
@@ -141,6 +158,8 @@ class SettingsState {
     bool? readerModeEnabled,
     HebrewTextDisplay? hebrewTextDisplay,
     bool? showSenseUnits,
+    ReadingTradition? tradition,
+    bool? showWordConnections,
     bool? hasSeenReadingHint,
     bool? aiExplainEnabled,
     bool? aiProUnlocked,
@@ -163,6 +182,8 @@ class SettingsState {
       readerModeEnabled: readerModeEnabled ?? this.readerModeEnabled,
       hebrewTextDisplay: hebrewTextDisplay ?? this.hebrewTextDisplay,
       showSenseUnits: showSenseUnits ?? this.showSenseUnits,
+      tradition: tradition ?? this.tradition,
+      showWordConnections: showWordConnections ?? this.showWordConnections,
       hasSeenReadingHint: hasSeenReadingHint ?? this.hasSeenReadingHint,
       aiExplainEnabled: aiExplainEnabled ?? this.aiExplainEnabled,
       aiProUnlocked: aiProUnlocked ?? this.aiProUnlocked,
@@ -187,10 +208,9 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
       final themeIndex = prefs.getInt('themeMode') ?? 0;
       final fontSize = prefs.getDouble('fontSize') ?? 18.0;
       final storedTranslation = prefs.getString('translation');
-      final translation = normalizeTranslationCode(storedTranslation);
       final lastReadBook = prefs.getString('lastReadBook') ?? 'GEN';
       final lastReadChapter = prefs.getInt('lastReadChapter') ?? 1;
-      final showPronunciation = prefs.getBool('showPronunciation') ?? false;
+      final showPronunciation = prefs.getBool('showPronunciation') ?? true;
       final storedAppLanguage = prefs.getString('appLanguage');
       final appLanguage = normalizeAppLanguage(storedAppLanguage);
       final hasCompletedOnboarding =
@@ -201,6 +221,8 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         prefs.getString('hebrewTextDisplay'),
       );
       final showSenseUnits = prefs.getBool('showSenseUnits') ?? true;
+      final tradition = ReadingTradition.fromName(prefs.getString('tradition'));
+      final showWordConnections = prefs.getBool('showWordConnections') ?? false;
       final hasSeenReadingHint = prefs.getBool('hasSeenReadingHint') ?? false;
       final aiExplainEnabled = prefs.getBool('aiExplainEnabled') ?? true;
       final aiProUnlocked = prefs.getBool('aiProUnlocked') ?? false;
@@ -212,6 +234,14 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
       ThemeMode mode = ThemeMode.system;
       if (themeIndex == 1) mode = ThemeMode.light;
       if (themeIndex == 2) mode = ThemeMode.dark;
+
+      // Anyone who never picked a translation by hand reads the Bible of their
+      // own language. Earlier builds only applied this during onboarding, so
+      // installs that predate it — or that changed language in Settings — were
+      // left reading the KJV in a Portuguese interface.
+      final translation = hasManuallySelectedTranslation
+          ? normalizeTranslationCode(storedTranslation)
+          : defaultTranslationForLanguage(appLanguage);
 
       if (storedTranslation != translation) {
         await prefs.setString('translation', translation);
@@ -233,6 +263,8 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         readerModeEnabled: readerModeEnabled,
         hebrewTextDisplay: hebrewTextDisplay,
         showSenseUnits: showSenseUnits,
+        tradition: tradition,
+        showWordConnections: showWordConnections,
         hasSeenReadingHint: hasSeenReadingHint,
         aiExplainEnabled: aiExplainEnabled,
         aiProUnlocked: aiProUnlocked,
@@ -325,7 +357,14 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     await prefs.setString('translation', fallbackTranslation);
   }
 
-  Future<void> applyOnboardingLanguageDefault(String language) async {
+  /// Points the reader at the Bible of [language], unless they have chosen a
+  /// translation by hand — in which case that choice wins and only the
+  /// interface language moves.
+  ///
+  /// Called from onboarding *and* from Settings: picking Português there and
+  /// still getting the King James was the single loudest complaint about the
+  /// language switch.
+  Future<void> applyLanguageDefaultTranslation(String language) async {
     final normalizedLanguage = normalizeAppLanguage(language);
     if (state.hasManuallySelectedTranslation) {
       await setAppLanguageOnly(normalizedLanguage);
@@ -342,10 +381,10 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     await prefs.setString('translation', translation);
   }
 
-  @Deprecated('Use setAppLanguageOnly + applyOnboardingLanguageDefault')
+  /// Switches the interface language and, with it, the Bible the reader sees.
   Future<void> setAppLanguage(String language) async {
     await setAppLanguageOnly(language);
-    await applyOnboardingLanguageDefault(language);
+    await applyLanguageDefaultTranslation(language);
   }
 
   Future<void> completeOnboarding() async {
@@ -376,6 +415,18 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     state = state.copyWith(showSenseUnits: enabled);
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('showSenseUnits', enabled);
+  }
+
+  Future<void> setTradition(ReadingTradition tradition) async {
+    state = state.copyWith(tradition: tradition);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('tradition', tradition.name);
+  }
+
+  Future<void> setShowWordConnections(bool enabled) async {
+    state = state.copyWith(showWordConnections: enabled);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('showWordConnections', enabled);
   }
 
   Future<void> setAiExplainEnabled(bool enabled) async {

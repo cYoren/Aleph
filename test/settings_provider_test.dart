@@ -26,7 +26,7 @@ void main() {
         final notifier = SettingsNotifier();
         await _waitUntilLoaded(notifier);
 
-        await notifier.applyOnboardingLanguageDefault('de');
+        await notifier.applyLanguageDefaultTranslation('de');
         expect(notifier.state.appLanguage, 'de');
         expect(notifier.state.translation, 'LUTHER1912');
         expect(notifier.state.hasManuallySelectedTranslation, isFalse);
@@ -35,7 +35,7 @@ void main() {
         expect(notifier.state.hasManuallySelectedTranslation, isTrue);
 
         await notifier.setAppLanguageOnly('ru');
-        await notifier.applyOnboardingLanguageDefault('ru');
+        await notifier.applyLanguageDefaultTranslation('ru');
 
         // Manual translation choice should be preserved.
         expect(notifier.state.appLanguage, 'ru');
@@ -95,11 +95,11 @@ void main() {
       final notifier = SettingsNotifier();
       await _waitUntilLoaded(notifier);
 
-      await notifier.applyOnboardingLanguageDefault('zh');
+      await notifier.applyLanguageDefaultTranslation('zh');
       expect(notifier.state.appLanguage, 'zh');
       expect(notifier.state.translation, 'CUVS');
 
-      await notifier.applyOnboardingLanguageDefault('ko');
+      await notifier.applyLanguageDefaultTranslation('ko');
       expect(notifier.state.appLanguage, 'ko');
       expect(notifier.state.translation, 'KOREAN');
     });

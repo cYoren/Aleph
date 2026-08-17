@@ -44,8 +44,7 @@ class LanguageSelectionScreen extends ConsumerWidget {
     String code,
   ) async {
     final notifier = ref.read(settingsProvider.notifier);
-    await notifier.setAppLanguageOnly(code);
-    await notifier.applyOnboardingLanguageDefault(code);
+    await notifier.setAppLanguage(code);
     if (context.mounted) {
       context.go('/onboarding');
     }

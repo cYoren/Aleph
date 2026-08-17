@@ -288,6 +288,77 @@ the script skips only ids that are already cached.
 
 ---
 
+## Task 6 — Deuterocanon, for a Catholic canon that is honest
+
+**Status:** open — not started, and **not** to be started as a UI change.
+**Size:** a data and licensing project. Weeks, not an afternoon.
+**Blocker found:** the obvious morphology source is licence-incompatible (below).
+
+### Why this is not a settings toggle
+
+`ReadingTradition` already handles the Jewish/Christian split, and adding a
+`catholic` case to it is a twenty-line change. **Do not make that change.** The
+database has 66 books and zero deuterocanonical ones — no Tobit, Judith, Wisdom,
+Sirach, Baruch, 1–2 Maccabees, and none of the Greek additions to Esther or
+Daniel. A Catholic mode over that data is a promise the app cannot keep: the
+reader goes looking for Sirach in the first week and it is not there, which
+turns "this app lacks my books" into "this app lied to me".
+
+The Jewish tradition worked because it only reordered and renamed text the app
+already had. This one needs text the app does not have. Get the books first;
+the mode is the last step, not the first.
+
+### The licensing blocker, already checked
+
+The standard morphologically analysed Septuagint is **CATSS/CCAT** (University
+of Pennsylvania). Its user declaration restricts it to non-commercial academic
+use and states that recipients agree *"Not to use or make available these
+materials for commercial purposes without first obtaining the written
+consent"*, with redistribution requiring downstream parties to sign their own
+agreement. Aleph is a commercial app. **CATSS cannot ship in it** without
+written permission from CCAT — which is worth asking for, but is a negotiation,
+not a download.
+
+That is the whole difficulty. Public-domain *text* is easy; permissively
+licensed *morphology and lemmas* for the LXX is the scarce thing, and the
+morphology is what makes this app worth using.
+
+### What to establish, in order
+
+1. **Find a licence-clean tagged LXX, or conclude there isn't one.** Check
+   STEPBible/Tyndale House (CC BY, already the kind of licence this project
+   uses), openscriptures Greek resources, and whether Rahlfs 1935 (author died
+   1935, so public domain in life+70 jurisdictions) has a tagged derivative.
+   Untagged fallbacks exist — Swete 1930, Brenton 1851 — but a deuterocanon
+   with no morphology is a different, lesser feature, and shipping it silently
+   alongside fully tagged books would be inconsistent in a way readers notice.
+   **If nothing clean exists, stop and report that.** That answer is worth as
+   much as a successful import, and it is a decision for a human.
+2. **Public-domain Catholic translations**, per shipping language. Confirmed
+   candidates: Douay-Rheims (Challoner 1899) for English, Figueiredo (1790) for
+   Portuguese, Torres Amat (1825) for Spanish. Verify each carries the
+   deuterocanon and check provenance the same way `open-bibles` sources are
+   checked today.
+3. **Size.** `assets/bible.db` is already 224 MB. Estimate the delta before
+   importing, not after.
+4. **Only then**, the canon plumbing: book records, `TanakhSection`'s Catholic
+   equivalent (the deuterocanonical books are interleaved among the historical
+   and wisdom books, not appended), and the `ReadingTradition.catholic` case.
+
+### The cheap, honest thing to do in the meantime
+
+Do **not** ship a Catholic mode. Do consider adding a public-domain Catholic
+*translation* of the 66 books already present — Figueiredo for `pt` is the
+highest-value one, since the Portuguese Bible currently shipped (Almeida) is
+the Protestant translation and Brazil is the app's largest Catholic-majority
+market. Listed among the other translations, it serves Catholic readers without
+claiming a canon the app does not have.
+
+**Protestant needs nothing.** The current Christian tradition already *is* the
+66-book Protestant canon in Protestant order, with Protestant translations.
+There is no work here, only marketing language if it is ever wanted.
+
+
 ## Done
 
 - Localized book-name infrastructure (`assets/book_names.json`,

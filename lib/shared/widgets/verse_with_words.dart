@@ -28,7 +28,6 @@ class VerseWithWords extends ConsumerWidget {
     );
     final settings = ref.watch(settingsProvider);
     final colorScheme = Theme.of(context).colorScheme;
-    final showTransliteration = settings.showPronunciation;
 
     // Reader mode: inline glosses for rare, not-yet-mastered words
     final readerGlosses = settings.readerModeEnabled
@@ -78,21 +77,6 @@ class VerseWithWords extends ConsumerWidget {
           if (rank != null && i < words.length - 1) {
             wordWidgets.add(SizedBox(width: _breakWidth(rank, fontSize)));
           }
-        }
-
-        // Add RTL indicator for Hebrew when transliteration is enabled
-        if (isOT && showTransliteration) {
-          // RTL indicator at the "end" (which is left side in RTL)
-          wordWidgets.add(
-            Padding(
-              padding: const EdgeInsets.only(left: 8),
-              child: Icon(
-                Icons.arrow_back,
-                size: fontSize * 0.7,
-                color: colorScheme.primary.withValues(alpha: 0.5),
-              ),
-            ),
-          );
         }
 
         // Render each word as a tappable widget

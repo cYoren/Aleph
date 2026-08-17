@@ -9,7 +9,7 @@ class AppLocalizationsKo extends AppLocalizations {
   AppLocalizationsKo([String locale = 'ko']) : super(locale);
 
   @override
-  String get appTitle => '원문 성경';
+  String get appTitle => 'Aleph';
 
   @override
   String get continueReading => '계속 읽기';
@@ -247,9 +247,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get learningModeDesc => '본문 속 원어를 보며 수동적으로 학습하세요.';
-
-  @override
-  String get learningModeEnglishOnlyNotice => '학습 모드는 현재 영어 번역만 지원합니다.';
 
   @override
   String get learningSectionTitle => '학습';
@@ -728,4 +725,85 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String get onboardingAiPrivacy =>
       '이 기능만 인터넷을 사용합니다. 질문한 절이 설명을 위해 전송됩니다. 본문, 사전, 문법, 음성 등 나머지는 모두 완전히 오프라인으로 동작합니다. 설정에서 언제든 변경할 수 있습니다.';
+
+  @override
+  String get reciteFromHere => '여기서부터 낭독';
+
+  @override
+  String get searchEmptyTitle => '성경 검색';
+
+  @override
+  String get searchEmptyBody =>
+      '구절에 나오는 아무 단어나 입력하면 그 구절을 찾을 수 있습니다. 히브리어와 그리스어 사전 항목은 구절 아래에 표시됩니다.';
+
+  @override
+  String get alphabetTitle => '알파벳';
+
+  @override
+  String get alphabetHebrewIntro =>
+      '히브리어는 오른쪽에서 왼쪽으로 읽습니다. 스물두 개의 글자가 있으며 모두 자음입니다. 글자 위아래에 찍힌 점과 선이 모음입니다. 한 번에 한 글자씩, 서두르지 마세요.';
+
+  @override
+  String get alphabetGreekIntro =>
+      '그리스어는 왼쪽에서 오른쪽으로 읽으며 대문자와 소문자가 있습니다. 히브리어와 달리 모음이 그 자체로 글자입니다. 한 번에 한 글자씩, 서두르지 마세요.';
+
+  @override
+  String get alphabetLettersSection => '글자';
+
+  @override
+  String get alphabetVowelsSection => '모음';
+
+  @override
+  String get alphabetVowelsIntro =>
+      '모음은 글자 둘레에 적는 기호입니다. 여기서는 베트(ב) 위에 보여 줍니다.';
+
+  @override
+  String get alphabetFinalForm => '어말형';
+
+  @override
+  String get alphabetExampleLabel => '성경에서';
+
+  @override
+  String get wordConnections => '단어 연결선';
+
+  @override
+  String get wordConnectionsDesc =>
+      '누른 단어가 나오는 다른 곳까지 선을 그립니다. 선이 읽고 있는 본문을 가로지르기 때문에 기본값은 꺼짐입니다.';
+
+  @override
+  String get memorizationSubtitle => '이미 편하게 읽는 본문에서 단어를 가려 보세요.';
+
+  @override
+  String get onboardingTraditionTitle => '어떤 경전을 읽으시나요?';
+
+  @override
+  String get onboardingTraditionDesc =>
+      '책의 순서와 부르는 이름이 이에 따라 정해집니다. 어느 쪽을 골라도 감춰지는 내용은 없으며, 설정에서 바꿀 수 있습니다.';
+
+  @override
+  String get traditionChristian => '구약과 신약';
+
+  @override
+  String get traditionChristianDesc => '창세기부터 요한계시록까지, 기독교의 순서입니다.';
+
+  @override
+  String get traditionJewish => '타나크';
+
+  @override
+  String get traditionJewishDesc => '토라, 네비임, 케투빔을 유대 전통 순서로 봅니다.';
+
+  @override
+  String get tanakhTorah => '토라';
+
+  @override
+  String get tanakhNeviim => '네비임 — 예언서';
+
+  @override
+  String get tanakhKetuvim => '케투빔 — 성문서';
+
+  @override
+  String get hebrewBibleLabel => '히브리 성경';
+
+  @override
+  String get traditionSettingTitle => '경전';
 }
