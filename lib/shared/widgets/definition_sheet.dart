@@ -6,6 +6,8 @@ import '../../providers/word_provider.dart';
 import '../../providers/books_provider.dart';
 import '../utils/morphology_decoder.dart';
 import '../../features/audio/widgets/recitation_bar.dart';
+import '../../features/settings/settings_provider.dart';
+import '../utils/reading_tradition.dart';
 
 class DefinitionSheet extends ConsumerWidget {
   const DefinitionSheet({super.key});
@@ -245,7 +247,7 @@ class DefinitionSheet extends ConsumerWidget {
                           ),
 
                         // Language info
-                        _buildLanguageInfo(isHebrew, colorScheme, l10n),
+                        _buildLanguageInfo(isHebrew, ref, colorScheme, l10n),
                       ],
                     );
                   },
@@ -510,17 +512,30 @@ class DefinitionSheet extends ConsumerWidget {
 
   Widget _buildLanguageInfo(
     bool isHebrew,
+    WidgetRef ref,
     ColorScheme colorScheme,
     AppLocalizations l10n,
   ) {
+    // "Hebrew • Old Testament" is a Christian name for the Hebrew Bible, and
+    // the wrong thing to tell a reader who chose the Tanakh.
+    final jewish =
+        ref.watch(settingsProvider.select((s) => s.tradition)) ==
+        ReadingTradition.jewish;
+    final label = isHebrew
+        ? (jewish ? l10n.hebrewBibleLabel : l10n.hebrewOT)
+        : l10n.greekNT;
+
+    // Gold for Hebrew, lapis for Greek — the palette's own two accents rather
+    // than raw amber and blue.
+    final accent = isHebrew ? colorScheme.primary : colorScheme.secondary;
+
     return Container(
       margin: const EdgeInsets.only(top: 8),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: isHebrew
-            ? Colors.amber.withValues(alpha: 0.15)
-            : Colors.blue.withValues(alpha: 0.15),
+        color: accent.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: accent.withValues(alpha: 0.3), width: 0.8),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -528,15 +543,15 @@ class DefinitionSheet extends ConsumerWidget {
           Icon(
             isHebrew ? Icons.menu_book : Icons.auto_stories,
             size: 16,
-            color: isHebrew ? Colors.amber.shade700 : Colors.blue.shade700,
+            color: accent,
           ),
           const SizedBox(width: 8),
           Text(
-            isHebrew ? l10n.hebrewOT : l10n.greekNT,
+            label,
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w500,
-              color: isHebrew ? Colors.amber.shade800 : Colors.blue.shade800,
+              color: colorScheme.onSurface,
             ),
           ),
         ],

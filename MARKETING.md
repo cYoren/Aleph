@@ -1,4 +1,88 @@
-# Positioning: Original Bible
+# Positioning: Aleph
+
+## The name — decided
+
+**The app is named Aleph**, with the tagline *Learn the Original Bible*. The
+rename is applied through the code, the platform manifests and the fastlane
+metadata; what is left is the listing prose and the icon (see below).
+
+"Original Bible" was accurate and forgettable, and it collided in App Store
+search with every listing containing both words — which is most of the category.
+*Aleph* is the first letter of the first alphabet the app teaches: one word,
+identical in all eight interface languages, and it carries the reverence the
+parchment-and-gold design is reaching for. The searchable words live in the
+subtitle, not in the name.
+
+The shortlist it was chosen from is kept below, because the reasoning is the
+useful part if the decision is ever revisited.
+
+Two constraints worth stating before the list. **"OG Bible" is the fun one and
+the risky one**: to anyone under about 35 it reads as *original gangster*,
+which is either a memorable joke or an irreverence problem depending entirely
+on who is downloading a Bible app — and that is a judgement about the audience,
+not about the wording. And whatever wins, the **CNPJ-linked trade name in
+Settings** (`AppIdentity.responsibleTradeName`) is a legal identifier, so it
+changes only if the registration does.
+
+| Name | The case for it | The case against |
+|---|---|---|
+| **OG Bible** | Rolls off the tongue, impossible to forget, and the joke *is* the explanation — "OG" already means "the original one". Cheap to say out loud, which is how apps actually spread. | Reads as slang to some, as disrespect to others. Hard to walk back once it is on the store. |
+| **Aleph** | One word, the first letter of the first alphabet the app teaches. Quiet, confident, unmistakably about the source text. Pairs perfectly with the parchment-and-gold design. | Says nothing about "Bible" to someone who does not already know; leans on the icon and subtitle to carry meaning. |
+| **In the Beginning** | *Bereshit* / *Ἐν ἀρχῇ* — the opening words of both testaments, in both source languages. Says "we start where the text starts". | Long for a home screen label; several books and albums already use it. |
+| **Bereshit** | The actual first word of the Hebrew Bible. Maximum authenticity, and it teaches the user a word before they open the app. | Unpronounceable to most of the target audience on first sight, which is the opposite of rolling off the tongue. |
+
+### What the rename covered, and what is left
+
+Done: `AppIdentity.publicAppName`, the `appTitle` key in all eight ARB files,
+iOS `CFBundleDisplayName`, Android `android:label` (which was still the raw
+`original_bible`), the macOS `PRODUCT_NAME`, the OpenRouter `X-Title`
+attribution headers, and the `fastlane/` metadata.
+
+Left, and both need a human:
+
+- [ ] **App Store / Play listings** — the fastlane text now says Aleph, but the
+      description prose was written around the old name and reads like it. This
+      is the job for the ASO pass, not a find-and-replace.
+- [ ] **App icon** — drawn for the old name. An aleph (א) in gold leaf on the
+      parchment ground would carry the whole identity in one glyph.
+
+Bundle identifiers are unchanged and must stay unchanged
+(`com.originalbible.originalBible`, `com.originalbible.original_bible`): they
+are the store's identity for an app that already exists, and renaming them
+creates a new app rather than renaming this one.
+
+The trade name in Settings stays **Original Bible**: it is tied to the CNPJ and
+changes only if the registration does. `AppIdentity.responsibleTradeName` is
+deliberately no longer derived from the app name, so renaming again cannot
+silently alter a legal identifier.
+
+### Name and tagline as they ship
+
+| Field | Value | Length |
+|---|---|---|
+| App Store name | `Aleph` | 5 / 30 |
+| App Store subtitle | `Learn the Original Bible` | 24 / 30 |
+| Play title | `Aleph` | 5 / 30 |
+| Play short description | `Learn the Original Bible: read Hebrew and Greek, word by word.` | 62 / 80 |
+
+"Aleph - Learn the Original Bible" reads well but is **32 characters**, and both
+stores cap the name at 30. Splitting it is better than trimming it anyway: the
+name field is for the brand, and the subtitle is where *learn*, *original* and
+*Bible* actually earn their keep in search.
+
+### On Catholic and Protestant editions
+
+Protestant needs nothing — the app already ships the 66-book Protestant canon in
+Protestant order with Protestant translations, so it is the default and always
+has been.
+
+Catholic is a data project, not a variant. The database has none of the
+deuterocanonical books, and the standard tagged Septuagint (CATSS) forbids
+commercial use, so this cannot be bought cheaply. See Task 6 in `queue.md` for
+the full scope. **Do not market a Catholic edition until those books ship**; the
+nearest honest step is a public-domain Catholic translation of the existing 66
+(Figueiredo for Portuguese being the most valuable, since Almeida is Protestant
+and Brazil is the largest Catholic-majority market the app targets).
 
 ## The one-line claim
 

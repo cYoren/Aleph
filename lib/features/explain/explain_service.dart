@@ -136,7 +136,7 @@ class ExplainService {
               'Content-Type': 'application/json',
               // OpenRouter uses these for attribution on its dashboards.
               'HTTP-Referer': 'https://github.com/cYoren/original-bible-open-source',
-              'X-Title': 'Original Bible',
+              'X-Title': 'Aleph',
             },
             body: utf8.encode(body),
           )

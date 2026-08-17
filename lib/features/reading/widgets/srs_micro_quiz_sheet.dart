@@ -11,20 +11,20 @@ import '../../../shared/utils/transliterator.dart';
 
 class SrsMicroQuizSheet extends ConsumerStatefulWidget {
   final Word originalWord;
-  final String englishWord;
+  final String translatedWord;
   final bool isOT;
 
   const SrsMicroQuizSheet({
     super.key,
     required this.originalWord,
-    required this.englishWord,
+    required this.translatedWord,
     required this.isOT,
   });
 
   static Future<void> show(
     BuildContext context, {
     required Word originalWord,
-    required String englishWord,
+    required String translatedWord,
     required bool isOT,
   }) {
     return showModalBottomSheet(
@@ -33,7 +33,7 @@ class SrsMicroQuizSheet extends ConsumerStatefulWidget {
       backgroundColor: Colors.transparent,
       builder: (context) => SrsMicroQuizSheet(
         originalWord: originalWord,
-        englishWord: englishWord,
+        translatedWord: translatedWord,
         isOT: isOT,
       ),
     );
@@ -183,7 +183,7 @@ class _SrsMicroQuizSheetState extends ConsumerState<SrsMicroQuizSheet> {
               ),
               const SizedBox(height: 8),
               Text(
-                widget.englishWord,
+                widget.translatedWord,
                 style: TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,

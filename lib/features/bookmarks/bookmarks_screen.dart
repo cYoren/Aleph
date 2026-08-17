@@ -187,45 +187,36 @@ class _BookmarkCard extends ConsumerWidget {
           borderRadius: BorderRadius.circular(12),
           child: Padding(
             padding: const EdgeInsets.all(16),
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Bookmark icon
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: colorScheme.primaryContainer,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Icon(
-                    Icons.bookmark,
-                    color: colorScheme.onPrimaryContainer,
-                    size: 24,
-                  ),
-                ),
-                const SizedBox(width: 16),
-                // Verse reference
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
                         '$bookName ${bookmark.chapter}:${bookmark.verseNumber}',
-                        style: Theme.of(context).textTheme.titleMedium
-                            ?.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        timeAgo,
                         style: TextStyle(
-                          fontSize: 12,
-                          color: colorScheme.onSurfaceVariant,
+                          fontSize: 13,
+                          letterSpacing: 0.6,
+                          fontWeight: FontWeight.w600,
+                          color: colorScheme.primary,
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                    Text(
+                      timeAgo,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
                 ),
-                // Arrow
-                Icon(Icons.chevron_right, color: colorScheme.onSurfaceVariant),
+                const SizedBox(height: 8),
+                // The verse itself, which is what the reader saved. The old
+                // card showed a bookmark icon, a reference and a timestamp —
+                // three pieces of chrome and none of the text.
+                _BookmarkVerseText(bookmark: bookmark),
               ],
             ),
           ),
@@ -253,6 +244,50 @@ class _BookmarkCard extends ConsumerWidget {
     } else {
       return l10n.bookmarkTimeJustNow;
     }
+  }
+}
+
+/// The saved verse, in the reader's translation.
+///
+/// Held to four lines: a favourites list is for recognising a verse at a
+/// glance, and a full psalm in one card pushes the next bookmark off screen.
+class _BookmarkVerseText extends ConsumerWidget {
+  const _BookmarkVerseText({required this.bookmark});
+
+  final Bookmark bookmark;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textAsync = ref.watch(
+      bookmarkPreviewProvider((
+        bookmark.bookId,
+        bookmark.chapter,
+        bookmark.verseNumber,
+      )),
+    );
+
+    return textAsync.when(
+      // Reserve the space rather than letting the card jump a line taller once
+      // the text arrives.
+      loading: () => const LoadingSkeleton(width: double.infinity, height: 34),
+      error: (err, stack) => const SizedBox.shrink(),
+      data: (text) {
+        if (text == null || text.trim().isEmpty) {
+          return const SizedBox.shrink();
+        }
+        return Text(
+          text,
+          maxLines: 4,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            fontSize: 15,
+            height: 1.5,
+            color: colorScheme.onSurface,
+          ),
+        );
+      },
+    );
   }
 }
 

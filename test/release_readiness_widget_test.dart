@@ -253,7 +253,9 @@ void main() {
       await tester.tap(find.text('Skip'));
       await tester.pumpAndSettle();
 
-      expect(find.byIcon(Icons.settings), findsOneWidget);
+      // Home itself has no settings button; the bar underneath it does, and
+      // its unselected icon is the outlined one.
+      expect(find.byIcon(Icons.settings_outlined), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
   });

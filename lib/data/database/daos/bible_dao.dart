@@ -38,6 +38,21 @@ String escapeLikePattern(String query) {
 }
 
 class BibleDAO {
+  /// Interface language the short glosses should be read in.
+  ///
+  /// Applied centrally, in the three lexicon reads below, so the definition
+  /// sheet, the long-press peek, reader-mode inline glosses, the vocabulary
+  /// deck and word search all speak the reader's language without each of
+  /// them having to know that translated glosses exist.
+  BibleDAO({this.glossLanguage = 'en'});
+
+  final String glossLanguage;
+
+  /// True once the reader is on something other than the language the lexicon
+  /// was written in.
+  bool get _needsGlossTranslation =>
+      glossLanguage.isNotEmpty && glossLanguage != 'en';
+
   final DatabaseHelper _dbHelper = DatabaseHelper.instance;
 
   Future<List<Book>> getBooks() async {
@@ -137,10 +152,66 @@ class BibleDAO {
     return List.generate(maps.length, (i) => Word.fromMap(maps[i]));
   }
 
+  /// Translated short glosses for [strongsIds], keyed by Strong's id.
+  ///
+  /// Returns empty for English readers, and also for any database built before
+  /// `lexicon_gloss_i18n` existed — an untranslated gloss is a far better
+  /// outcome than a crash, so a missing table is silently an empty result.
+  Future<Map<String, String>> _translatedGlosses(
+    Iterable<String> strongsIds,
+  ) async {
+    if (!_needsGlossTranslation) return const {};
+    final ids = strongsIds.where((id) => id.isNotEmpty).toSet().toList();
+    if (ids.isEmpty) return const {};
+
+    try {
+      final db = await _dbHelper.database;
+      final placeholders = List.filled(ids.length, '?').join(',');
+      final rows = await db.rawQuery(
+        'SELECT strongs_id, gloss FROM lexicon_gloss_i18n '
+        'WHERE lang = ? AND strongs_id IN ($placeholders)',
+        [glossLanguage, ...ids],
+      );
+
+      final result = <String, String>{};
+      for (final row in rows) {
+        final id = row['strongs_id']?.toString() ?? '';
+        final gloss = row['gloss']?.toString() ?? '';
+        if (id.isNotEmpty && gloss.isNotEmpty) {
+          result[id] = gloss;
+        }
+      }
+      return result;
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('BibleDAO translated glosses unavailable: $e');
+      }
+      return const {};
+    }
+  }
+
+  /// Copy of [row] with its `gloss` replaced by the reader's language, where
+  /// one has been translated.
+  Map<String, dynamic> _withTranslatedGloss(
+    Map<String, dynamic> row,
+    Map<String, String> translations,
+  ) {
+    if (translations.isEmpty) return row;
+    final gloss = translations[row['strongs_id']?.toString() ?? ''];
+    if (gloss == null) return row;
+    return {...row, 'gloss': gloss};
+  }
+
   Future<LexiconEntry?> getLexiconEntry(String key) async {
     if (key.isEmpty) return null;
 
     final db = await _dbHelper.database;
+
+    Future<LexiconEntry> localized(Map<String, dynamic> row) async {
+      final strongsId = row['strongs_id']?.toString() ?? '';
+      final translations = await _translatedGlosses([strongsId]);
+      return LexiconEntry.fromMap(_withTranslatedGloss(row, translations));
+    }
 
     try {
       final maps = await db.query(
@@ -150,7 +221,7 @@ class BibleDAO {
         limit: 1,
       );
       if (maps.isNotEmpty) {
-        return LexiconEntry.fromMap(maps.first);
+        return localized(maps.first);
       }
     } catch (_) {
       // strongs_id may not exist in the current schema.
@@ -164,7 +235,7 @@ class BibleDAO {
         limit: 1,
       );
       if (maps.isNotEmpty) {
-        return LexiconEntry.fromMap(maps.first);
+        return localized(maps.first);
       }
     } catch (_) {
       // No compatible lexicon schema found.
@@ -190,11 +261,17 @@ class BibleDAO {
         strongsNumbers,
       );
 
+      final translations = await _translatedGlosses(
+        maps.map((m) => m['strongs_id']?.toString() ?? ''),
+      );
+
       final Map<String, LexiconEntry> result = {};
       for (final map in maps) {
         final strongsId = map['strongs_id']?.toString() ?? '';
         if (strongsId.isNotEmpty && requestedKeys.contains(strongsId)) {
-          result[strongsId] = LexiconEntry.fromMap(map);
+          result[strongsId] = LexiconEntry.fromMap(
+            _withTranslatedGloss(map, translations),
+          );
         }
       }
 
@@ -214,11 +291,17 @@ class BibleDAO {
         strongsNumbers,
       );
 
+      final translations = await _translatedGlosses(
+        maps.map((m) => m['strongs_id']?.toString() ?? ''),
+      );
+
       final Map<String, LexiconEntry> result = {};
       for (final map in maps) {
         final lemma = map['lemma']?.toString() ?? '';
         if (lemma.isNotEmpty && requestedKeys.contains(lemma)) {
-          result[lemma] = LexiconEntry.fromMap(map);
+          result[lemma] = LexiconEntry.fromMap(
+            _withTranslatedGloss(map, translations),
+          );
         }
       }
 
@@ -500,6 +583,24 @@ class BibleDAO {
   Future<List<Map<String, dynamic>>> getLexiconIndex() async {
     try {
       final db = await _dbHelper.database;
+      // Word search matches on the gloss, so it has to index the gloss the
+      // reader would actually type. LEFT JOIN keeps every entry, translated or
+      // not; COALESCE falls back to the English one.
+      if (_needsGlossTranslation) {
+        try {
+          return await db.rawQuery(
+            'SELECT lx.lemma, lx.strongs_id, lx.transliteration, '
+            'COALESCE(i18n.gloss, lx.gloss) AS gloss, lx.language '
+            'FROM lexicon lx '
+            'LEFT JOIN lexicon_gloss_i18n i18n '
+            '  ON i18n.strongs_id = lx.strongs_id AND i18n.lang = ?',
+            [glossLanguage],
+          );
+        } catch (_) {
+          // Database predates lexicon_gloss_i18n; fall through to English.
+        }
+      }
+
       return await db.rawQuery(
         'SELECT lemma, strongs_id, transliteration, gloss, language '
         'FROM lexicon',

@@ -113,7 +113,7 @@ abstract class AppLocalizations {
   /// No description provided for @appTitle.
   ///
   /// In en, this message translates to:
-  /// **'Original Bible'**
+  /// **'Aleph'**
   String get appTitle;
 
   /// No description provided for @continueReading.
@@ -499,12 +499,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Passively learn original languages by seeing them in the text.'**
   String get learningModeDesc;
-
-  /// No description provided for @learningModeEnglishOnlyNotice.
-  ///
-  /// In en, this message translates to:
-  /// **'Learning Mode currently supports English translations only.'**
-  String get learningModeEnglishOnlyNotice;
 
   /// No description provided for @learningSectionTitle.
   ///
@@ -1369,6 +1363,156 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This is the only part of the app that uses the internet: the verse you ask about is sent to be explained. Everything else — the text, dictionaries, grammar, audio — works fully offline. You can change this any time in Settings.'**
   String get onboardingAiPrivacy;
+
+  /// Verse menu action: start reading the chapter aloud at this verse instead of the first one.
+  ///
+  /// In en, this message translates to:
+  /// **'Recite from here'**
+  String get reciteFromHere;
+
+  /// Heading on the empty search screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Search the Bible'**
+  String get searchEmptyTitle;
+
+  /// Explains that search finds verses, with dictionary entries as a secondary result.
+  ///
+  /// In en, this message translates to:
+  /// **'Type any words from a verse to find it. Hebrew and Greek dictionary entries appear underneath the verses.'**
+  String get searchEmptyBody;
+
+  /// Title of the beginner's Hebrew and Greek letter reference.
+  ///
+  /// In en, this message translates to:
+  /// **'The alphabet'**
+  String get alphabetTitle;
+
+  /// Opening paragraph of the Hebrew alphabet guide.
+  ///
+  /// In en, this message translates to:
+  /// **'Hebrew reads from right to left. There are twenty-two letters and all of them are consonants — the dots and dashes written above and below them are the vowels. Take one letter at a time; there is no hurry.'**
+  String get alphabetHebrewIntro;
+
+  /// Opening paragraph of the Greek alphabet guide.
+  ///
+  /// In en, this message translates to:
+  /// **'Greek reads from left to right and has both capital and small letters. Unlike Hebrew, its vowels are letters in their own right. Take one letter at a time; there is no hurry.'**
+  String get alphabetGreekIntro;
+
+  /// Section heading above the list of letters.
+  ///
+  /// In en, this message translates to:
+  /// **'Letters'**
+  String get alphabetLettersSection;
+
+  /// Section heading above the Hebrew vowel points.
+  ///
+  /// In en, this message translates to:
+  /// **'Vowels'**
+  String get alphabetVowelsSection;
+
+  /// Explains that Hebrew vowels are marks around a consonant.
+  ///
+  /// In en, this message translates to:
+  /// **'The vowels are marks written around a letter. They are shown here on bet (ב).'**
+  String get alphabetVowelsIntro;
+
+  /// Label for a Hebrew letter's word-final shape. Kept lowercase; it sits inline next to the glyph.
+  ///
+  /// In en, this message translates to:
+  /// **'final'**
+  String get alphabetFinalForm;
+
+  /// Label above the example biblical word for a letter.
+  ///
+  /// In en, this message translates to:
+  /// **'In the Bible'**
+  String get alphabetExampleLabel;
+
+  /// Settings switch: draw connector lines between occurrences of a tapped word.
+  ///
+  /// In en, this message translates to:
+  /// **'Word connections'**
+  String get wordConnections;
+
+  /// Explains the word-connection lines and why they are off by default.
+  ///
+  /// In en, this message translates to:
+  /// **'Draw lines between the other occurrences of a word you tap. Off by default, because the lines cross the text you are reading.'**
+  String get wordConnectionsDesc;
+
+  /// Subtitle for the memorization entry inside Vocabulary. States the prerequisite plainly: it is for a passage you can already read.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide words in a passage you already read comfortably.'**
+  String get memorizationSubtitle;
+
+  /// Onboarding heading for the Christian / Jewish scripture choice.
+  ///
+  /// In en, this message translates to:
+  /// **'Which scriptures are you reading?'**
+  String get onboardingTraditionTitle;
+
+  /// Explains that the choice affects ordering and naming only, and is reversible.
+  ///
+  /// In en, this message translates to:
+  /// **'This decides how the books are ordered and what they are called. Nothing is hidden either way, and you can change it in Settings.'**
+  String get onboardingTraditionDesc;
+
+  /// Option label: the Protestant canon and ordering.
+  ///
+  /// In en, this message translates to:
+  /// **'Old and New Testament'**
+  String get traditionChristian;
+
+  /// Option description for the Christian ordering.
+  ///
+  /// In en, this message translates to:
+  /// **'The Christian order, from Genesis through Revelation.'**
+  String get traditionChristianDesc;
+
+  /// Option label: the Tanakh. Transliterate rather than translate this name.
+  ///
+  /// In en, this message translates to:
+  /// **'Tanakh'**
+  String get traditionJewish;
+
+  /// Option description for the Tanakh ordering. Keep Torah/Nevi'im/Ketuvim transliterated.
+  ///
+  /// In en, this message translates to:
+  /// **'Torah, Nevi\'im and Ketuvim, in the traditional Jewish order.'**
+  String get traditionJewishDesc;
+
+  /// Section heading for the five books of the Torah.
+  ///
+  /// In en, this message translates to:
+  /// **'Torah'**
+  String get tanakhTorah;
+
+  /// Section heading for the Prophets. Keep the transliterated name and gloss it.
+  ///
+  /// In en, this message translates to:
+  /// **'Nevi\'im — Prophets'**
+  String get tanakhNeviim;
+
+  /// Section heading for the Writings. Keep the transliterated name and gloss it.
+  ///
+  /// In en, this message translates to:
+  /// **'Ketuvim — Writings'**
+  String get tanakhKetuvim;
+
+  /// Neutral name for the Hebrew scriptures, used instead of 'Old Testament' for a Jewish reader.
+  ///
+  /// In en, this message translates to:
+  /// **'Hebrew Bible'**
+  String get hebrewBibleLabel;
+
+  /// Settings row that opens the scripture-tradition choice.
+  ///
+  /// In en, this message translates to:
+  /// **'Scriptures'**
+  String get traditionSettingTitle;
 }
 
 class _AppLocalizationsDelegate

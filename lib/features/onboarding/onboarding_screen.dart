@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../shared/utils/reading_tradition.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../l10n/generated/app_localizations.dart';
@@ -16,55 +17,70 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
-  List<_OnboardingPageData> _getPages(AppLocalizations l10n) => [
-    _OnboardingPageData(
-      icon: Icons.menu_book,
-      title: l10n.onboardingWelcomeTitle,
-      description: l10n.onboardingWelcomeDesc,
-      color: Colors.indigo,
-    ),
-    _OnboardingPageData(
-      icon: Icons.format_textdirection_r_to_l,
-      title: l10n.onboardingHebrewTitle,
-      description: l10n.onboardingHebrewDesc,
-      color: Colors.amber,
-      exampleText: 'בְּרֵאשִׁית בָּרָא אֱלֹהִים',
-      exampleTranslation: '"In the beginning God created..."',
-      isRTL: true,
-    ),
-    _OnboardingPageData(
-      icon: Icons.format_textdirection_l_to_r,
-      title: l10n.onboardingGreekTitle,
-      description: l10n.onboardingGreekDesc,
-      color: Colors.blue,
-      exampleText: 'Ἐν ἀρχῇ ἦν ὁ λόγος',
-      exampleTranslation: '"In the beginning was the Word..."',
-      isRTL: false,
-    ),
-    _OnboardingPageData(
-      icon: Icons.touch_app,
-      title: l10n.onboardingTapTitle,
-      description: l10n.onboardingTapDesc,
-      color: Colors.teal,
-    ),
-    _OnboardingPageData(
-      icon: Icons.play_circle_outline,
-      title: l10n.onboardingRecitationTitle,
-      description: l10n.onboardingRecitationDesc,
-      color: Colors.deepOrange,
-    ),
-    // Only offered when this build can actually do it. The switch defaults to
-    // on, but the page states plainly what leaves the device, so the reader is
-    // choosing rather than discovering it later.
-    if (ref.read(explainConfiguredProvider))
+  List<_OnboardingPageData> _getPages(AppLocalizations l10n) {
+    // Onboarding used stock Material accents (indigo, amber, teal, purple),
+    // which read as a different app from the parchment-and-gold reader they
+    // introduce. Everything here is drawn from the same palette instead.
+    final scheme = Theme.of(context).colorScheme;
+
+    return [
       _OnboardingPageData(
-        icon: Icons.auto_awesome_outlined,
-        title: l10n.onboardingAiTitle,
-        description: l10n.onboardingAiDesc,
-        color: Colors.purple,
-        isAiConsent: true,
+        icon: Icons.menu_book,
+        title: l10n.onboardingWelcomeTitle,
+        description: l10n.onboardingWelcomeDesc,
+        color: scheme.primary,
       ),
-  ];
+      // Asked early, because it renames and reorders everything after it.
+      _OnboardingPageData(
+        icon: Icons.import_contacts_outlined,
+        title: l10n.onboardingTraditionTitle,
+        description: l10n.onboardingTraditionDesc,
+        color: scheme.primary,
+        isTraditionChoice: true,
+      ),
+      _OnboardingPageData(
+        icon: Icons.format_textdirection_r_to_l,
+        title: l10n.onboardingHebrewTitle,
+        description: l10n.onboardingHebrewDesc,
+        color: scheme.primary,
+        exampleText: 'בְּרֵאשִׁית בָּרָא אֱלֹהִים',
+        exampleTranslation: '"In the beginning God created..."',
+        isRTL: true,
+      ),
+      _OnboardingPageData(
+        icon: Icons.format_textdirection_l_to_r,
+        title: l10n.onboardingGreekTitle,
+        description: l10n.onboardingGreekDesc,
+        color: scheme.secondary,
+        exampleText: 'Ἐν ἀρχῇ ἦν ὁ λόγος',
+        exampleTranslation: '"In the beginning was the Word..."',
+        isRTL: false,
+      ),
+      _OnboardingPageData(
+        icon: Icons.touch_app,
+        title: l10n.onboardingTapTitle,
+        description: l10n.onboardingTapDesc,
+        color: scheme.tertiary,
+      ),
+      _OnboardingPageData(
+        icon: Icons.play_circle_outline,
+        title: l10n.onboardingRecitationTitle,
+        description: l10n.onboardingRecitationDesc,
+        color: scheme.primary,
+      ),
+      // Only offered when this build can actually do it. The switch defaults to
+      // on, but the page states plainly what leaves the device, so the reader is
+      // choosing rather than discovering it later.
+      if (ref.read(explainConfiguredProvider))
+        _OnboardingPageData(
+          icon: Icons.auto_awesome_outlined,
+          title: l10n.onboardingAiTitle,
+          description: l10n.onboardingAiDesc,
+          color: scheme.secondary,
+          isAiConsent: true,
+        ),
+    ];
+  }
 
   void _nextPage() {
     final pages = _getPages(AppLocalizations.of(context)!);
@@ -182,6 +198,9 @@ class _OnboardingPageData {
   /// When true the page shows the AI opt-in switch and its privacy note.
   final bool isAiConsent;
 
+  /// Renders the Christian / Jewish chooser under the description.
+  final bool isTraditionChoice;
+
   const _OnboardingPageData({
     required this.icon,
     required this.title,
@@ -191,6 +210,7 @@ class _OnboardingPageData {
     this.exampleTranslation,
     this.isRTL = false,
     this.isAiConsent = false,
+    this.isTraditionChoice = false,
   });
 }
 
@@ -241,6 +261,41 @@ class _OnboardingPage extends ConsumerWidget {
             ),
             textAlign: TextAlign.center,
           ),
+
+          // Which scriptures, and under which names. Neither answer hides any
+          // text; it decides the arrangement and the vocabulary the app uses
+          // when it talks about the books.
+          if (data.isTraditionChoice) ...[
+            const SizedBox(height: 28),
+            Consumer(
+              builder: (context, ref, _) {
+                final l10n = AppLocalizations.of(context)!;
+                final selected = ref.watch(
+                  settingsProvider.select((s) => s.tradition),
+                );
+                return Column(
+                  children: [
+                    for (final option in ReadingTradition.values)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: _TraditionOption(
+                          label: option == ReadingTradition.jewish
+                              ? l10n.traditionJewish
+                              : l10n.traditionChristian,
+                          description: option == ReadingTradition.jewish
+                              ? l10n.traditionJewishDesc
+                              : l10n.traditionChristianDesc,
+                          selected: selected == option,
+                          onTap: () => ref
+                              .read(settingsProvider.notifier)
+                              .setTradition(option),
+                        ),
+                      ),
+                  ],
+                );
+              },
+            ),
+          ],
 
           // AI opt-in: the switch is on by default, but the note below it
           // says exactly what leaves the device, so the reader is making a
@@ -321,6 +376,73 @@ class _OnboardingPage extends ConsumerWidget {
             ),
           ],
         ],
+      ),
+    );
+  }
+}
+
+/// One selectable tradition, styled as a card rather than a radio row so the
+/// two options read as equals.
+class _TraditionOption extends StatelessWidget {
+  const _TraditionOption({
+    required this.label,
+    required this.description,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String label;
+  final String description;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+
+    return Material(
+      color: selected ? scheme.primaryContainer : Colors.transparent,
+      borderRadius: BorderRadius.circular(14),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(14),
+        onTap: onTap,
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: selected ? scheme.primary : scheme.outlineVariant,
+              width: selected ? 1.4 : 0.8,
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: selected
+                      ? scheme.onPrimaryContainer
+                      : scheme.onSurface,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                description,
+                style: TextStyle(
+                  fontSize: 13,
+                  height: 1.4,
+                  color: selected
+                      ? scheme.onPrimaryContainer
+                      : scheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

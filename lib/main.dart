@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:original_bible/shared/constants/app_identity.dart';
 import 'l10n/generated/app_localizations.dart';
 import '../app/router.dart';
+import '../app/theme.dart';
 import '../features/settings/settings_provider.dart';
 import '../providers/translations_provider.dart';
 
@@ -14,18 +15,9 @@ void main() {
 class OriginalBibleApp extends ConsumerWidget {
   const OriginalBibleApp({super.key});
 
-  String? _fontFamilyForLanguage(String appLanguage) {
-    final normalized = appLanguage.trim().toLowerCase();
-    if (normalized == 'zh' || normalized == 'ko') {
-      return null;
-    }
-    return 'Roboto';
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsProvider);
-    final themeFontFamily = _fontFamilyForLanguage(settings.appLanguage);
     ref.listen(translationsProvider, (previous, next) {
       if (!ref.read(settingsProvider).isLoaded) return;
       final translations = next.valueOrNull;
@@ -62,17 +54,8 @@ class OriginalBibleApp extends ConsumerWidget {
 
       // Theme
       themeMode: settings.themeMode,
-      theme: ThemeData(
-        useMaterial3: true,
-        colorSchemeSeed: Colors.indigo,
-        fontFamily: themeFontFamily,
-      ),
-      darkTheme: ThemeData(
-        useMaterial3: true,
-        brightness: Brightness.dark,
-        colorSchemeSeed: Colors.indigo,
-        fontFamily: themeFontFamily,
-      ),
+      theme: AppTheme.light(settings.appLanguage),
+      darkTheme: AppTheme.dark(settings.appLanguage),
 
       // Router - use static router
       routerConfig: router,

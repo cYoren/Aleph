@@ -1,0 +1,73 @@
+{
+  "_comment": "Beginner reference for the two source alphabets. `id` keys into assets/alphabet_hints.json for the localized sound description. `strongs` points at a lexicon entry so the example word's gloss can be shown in the reader's own language once lexicon_gloss_i18n is populated; `gloss` is the English fallback. Numeric values follow the standard gematria/isopsephy series.",
+  "hebrew": {
+    "direction": "rtl",
+    "font": "EzraSIL",
+    "letters": [
+      { "id": "alef", "glyph": "א", "name": "Alef", "translit": "ʾ", "value": 1, "strongs": "H0430", "lemma": "אֱלֹהִים", "lemmaTranslit": "ʾĕlōhiym", "gloss": "God" },
+      { "id": "bet", "glyph": "ב", "name": "Bet", "translit": "b / v", "value": 2, "strongs": "H1285", "lemma": "בְּרִית", "lemmaTranslit": "bəriyṯ", "gloss": "covenant" },
+      { "id": "gimel", "glyph": "ג", "name": "Gimel", "translit": "g", "value": 3, "strongs": "H1419", "lemma": "גָּדוֹל", "lemmaTranslit": "gāḏôl", "gloss": "great" },
+      { "id": "dalet", "glyph": "ד", "name": "Dalet", "translit": "d", "value": 4, "strongs": "H1697", "lemma": "דָּבָר", "lemmaTranslit": "dāḇār", "gloss": "word" },
+      { "id": "he", "glyph": "ה", "name": "He", "translit": "h", "value": 5, "strongs": "H1961", "lemma": "הָיָה", "lemmaTranslit": "hāyāh", "gloss": "be" },
+      { "id": "vav", "glyph": "ו", "name": "Vav", "translit": "w / v", "value": 6, "strongs": "H2050B", "lemma": "וְ", "lemmaTranslit": "wə", "gloss": "and" },
+      { "id": "zayin", "glyph": "ז", "name": "Zayin", "translit": "z", "value": 7, "strongs": "H2091", "lemma": "זָהָב", "lemmaTranslit": "zāhāḇ", "gloss": "gold" },
+      { "id": "het", "glyph": "ח", "name": "Het", "translit": "ḥ", "value": 8, "strongs": "H2617", "lemma": "חֶ֫סֶד", "lemmaTranslit": "ḥeseḏ", "gloss": "steadfast love" },
+      { "id": "tet", "glyph": "ט", "name": "Tet", "translit": "ṭ", "value": 9, "strongs": "H2896", "lemma": "טוֹב", "lemmaTranslit": "ṭôḇ", "gloss": "good" },
+      { "id": "yod", "glyph": "י", "name": "Yod", "translit": "y", "value": 10, "strongs": "H3068", "lemma": "יהוה", "lemmaTranslit": "yəhwāh", "gloss": "LORD" },
+      { "id": "kaf", "glyph": "כ", "final": "ך", "name": "Kaf", "translit": "k / kh", "value": 20, "strongs": "H3605", "lemma": "כֹּל", "lemmaTranslit": "kol", "gloss": "all" },
+      { "id": "lamed", "glyph": "ל", "name": "Lamed", "translit": "l", "value": 30, "strongs": "H3820", "lemma": "לֵב", "lemmaTranslit": "lēḇ", "gloss": "heart" },
+      { "id": "mem", "glyph": "מ", "final": "ם", "name": "Mem", "translit": "m", "value": 40, "strongs": "H4428", "lemma": "מֶ֫לֶךְ", "lemmaTranslit": "meleḵ", "gloss": "king" },
+      { "id": "nun", "glyph": "נ", "final": "ן", "name": "Nun", "translit": "n", "value": 50, "strongs": "H5315", "lemma": "נֶ֫פֶשׁ", "lemmaTranslit": "nep̄eš", "gloss": "soul" },
+      { "id": "samekh", "glyph": "ס", "name": "Samekh", "translit": "s", "value": 60, "strongs": "H5612", "lemma": "סֵ֫פֶר", "lemmaTranslit": "sēp̄er", "gloss": "book" },
+      { "id": "ayin", "glyph": "ע", "name": "Ayin", "translit": "ʿ", "value": 70, "strongs": "H5971", "lemma": "עַם", "lemmaTranslit": "ʿām", "gloss": "people" },
+      { "id": "pe", "glyph": "פ", "final": "ף", "name": "Pe", "translit": "p / f", "value": 80, "strongs": "H6310", "lemma": "פֶּה", "lemmaTranslit": "peh", "gloss": "mouth" },
+      { "id": "tsade", "glyph": "צ", "final": "ץ", "name": "Tsade", "translit": "ṣ", "value": 90, "strongs": "H6664", "lemma": "צֶ֫דֶק", "lemmaTranslit": "ṣeḏeq", "gloss": "righteousness" },
+      { "id": "qof", "glyph": "ק", "name": "Qof", "translit": "q", "value": 100, "strongs": "H6963", "lemma": "קוֹל", "lemmaTranslit": "qôl", "gloss": "voice" },
+      { "id": "resh", "glyph": "ר", "name": "Resh", "translit": "r", "value": 200, "strongs": "H7307", "lemma": "רוּחַ", "lemmaTranslit": "rûaḥ", "gloss": "spirit" },
+      { "id": "shin", "glyph": "ש", "name": "Shin / Sin", "translit": "š / ś", "value": 300, "strongs": "H7965", "lemma": "שָׁלוֹם", "lemmaTranslit": "šālôm", "gloss": "peace" },
+      { "id": "tav", "glyph": "ת", "name": "Tav", "translit": "t", "value": 400, "strongs": "H8451", "lemma": "תּוֹרָה", "lemmaTranslit": "tôrāh", "gloss": "law" }
+    ],
+    "vowels": [
+      { "id": "patach", "glyph": "בַ", "name": "Patach", "translit": "a" },
+      { "id": "qamats", "glyph": "בָ", "name": "Qamats", "translit": "ā" },
+      { "id": "segol", "glyph": "בֶ", "name": "Segol", "translit": "e" },
+      { "id": "tsere", "glyph": "בֵ", "name": "Tsere", "translit": "ē" },
+      { "id": "hiriq", "glyph": "בִ", "name": "Hiriq", "translit": "i" },
+      { "id": "holam", "glyph": "בֹ", "name": "Holam", "translit": "ō" },
+      { "id": "qubuts", "glyph": "בֻ", "name": "Qubuts", "translit": "u" },
+      { "id": "shuruq", "glyph": "בּוּ", "name": "Shuruq", "translit": "û" },
+      { "id": "sheva", "glyph": "בְ", "name": "Sheva", "translit": "ə" }
+    ]
+  },
+  "greek": {
+    "direction": "ltr",
+    "font": "Gentium",
+    "letters": [
+      { "id": "alpha", "glyph": "Α α", "name": "Alpha", "translit": "a", "value": 1, "strongs": "G26", "lemma": "ἀγάπη", "lemmaTranslit": "agápē", "gloss": "love" },
+      { "id": "beta", "glyph": "Β β", "name": "Beta", "translit": "b", "value": 2, "strongs": "G932", "lemma": "βασιλεία", "lemmaTranslit": "basileía", "gloss": "kingdom" },
+      { "id": "gamma", "glyph": "Γ γ", "name": "Gamma", "translit": "g", "value": 3, "strongs": "G1097", "lemma": "γινώσκω", "lemmaTranslit": "ginṓskō", "gloss": "know" },
+      { "id": "delta", "glyph": "Δ δ", "name": "Delta", "translit": "d", "value": 4, "strongs": "G1391", "lemma": "δόξα", "lemmaTranslit": "dóxa", "gloss": "glory" },
+      { "id": "epsilon", "glyph": "Ε ε", "name": "Epsilon", "translit": "e", "value": 5, "strongs": "G1515", "lemma": "εἰρήνη", "lemmaTranslit": "eirḗnē", "gloss": "peace" },
+      { "id": "zeta", "glyph": "Ζ ζ", "name": "Zeta", "translit": "z", "value": 7, "strongs": "G2222", "lemma": "ζωή", "lemmaTranslit": "zōḗ", "gloss": "life" },
+      { "id": "eta", "glyph": "Η η", "name": "Eta", "translit": "ē", "value": 8, "strongs": "G2250", "lemma": "ἡμέρα", "lemmaTranslit": "hēméra", "gloss": "day" },
+      { "id": "theta", "glyph": "Θ θ", "name": "Theta", "translit": "th", "value": 9, "strongs": "G2316", "lemma": "θεός", "lemmaTranslit": "theós", "gloss": "God" },
+      { "id": "iota", "glyph": "Ι ι", "name": "Iota", "translit": "i", "value": 10, "strongs": "G2424", "lemma": "Ἰησοῦς", "lemmaTranslit": "Iēsoûs", "gloss": "Jesus" },
+      { "id": "kappa", "glyph": "Κ κ", "name": "Kappa", "translit": "k", "value": 20, "strongs": "G2962", "lemma": "κύριος", "lemmaTranslit": "kýrios", "gloss": "Lord" },
+      { "id": "lambda", "glyph": "Λ λ", "name": "Lambda", "translit": "l", "value": 30, "strongs": "G3056", "lemma": "λόγος", "lemmaTranslit": "lógos", "gloss": "word" },
+      { "id": "mu", "glyph": "Μ μ", "name": "Mu", "translit": "m", "value": 40, "strongs": "G3101", "lemma": "μαθητής", "lemmaTranslit": "mathētḗs", "gloss": "disciple" },
+      { "id": "nu", "glyph": "Ν ν", "name": "Nu", "translit": "n", "value": 50, "strongs": "G3551", "lemma": "νόμος", "lemmaTranslit": "nómos", "gloss": "law" },
+      { "id": "xi", "glyph": "Ξ ξ", "name": "Xi", "translit": "x", "value": 60, "strongs": "G3586", "lemma": "ξύλον", "lemmaTranslit": "xýlon", "gloss": "tree" },
+      { "id": "omicron", "glyph": "Ο ο", "name": "Omicron", "translit": "o", "value": 70, "strongs": "G3686", "lemma": "ὄνομα", "lemmaTranslit": "ónoma", "gloss": "name" },
+      { "id": "pi", "glyph": "Π π", "name": "Pi", "translit": "p", "value": 80, "strongs": "G4102", "lemma": "πίστις", "lemmaTranslit": "pístis", "gloss": "faith" },
+      { "id": "rho", "glyph": "Ρ ρ", "name": "Rho", "translit": "r", "value": 100, "strongs": "G4487", "lemma": "ῥῆμα", "lemmaTranslit": "rhēma", "gloss": "word" },
+      { "id": "sigma", "glyph": "Σ σ ς", "name": "Sigma", "translit": "s", "value": 200, "strongs": "G4561", "lemma": "σάρξ", "lemmaTranslit": "sárx", "gloss": "flesh" },
+      { "id": "tau", "glyph": "Τ τ", "name": "Tau", "translit": "t", "value": 300, "strongs": "G5043", "lemma": "τέκνον", "lemmaTranslit": "téknon", "gloss": "child" },
+      { "id": "upsilon", "glyph": "Υ υ", "name": "Upsilon", "translit": "y / u", "value": 400, "strongs": "G5207", "lemma": "υἱός", "lemmaTranslit": "huiós", "gloss": "son" },
+      { "id": "phi", "glyph": "Φ φ", "name": "Phi", "translit": "ph", "value": 500, "strongs": "G5457", "lemma": "φῶς", "lemmaTranslit": "phōs", "gloss": "light" },
+      { "id": "chi", "glyph": "Χ χ", "name": "Chi", "translit": "ch", "value": 600, "strongs": "G5485", "lemma": "χάρις", "lemmaTranslit": "cháris", "gloss": "grace" },
+      { "id": "psi", "glyph": "Ψ ψ", "name": "Psi", "translit": "ps", "value": 700, "strongs": "G5590", "lemma": "ψυχή", "lemmaTranslit": "psychḗ", "gloss": "soul" },
+      { "id": "omega", "glyph": "Ω ω", "name": "Omega", "translit": "ō", "value": 800, "strongs": "G5610", "lemma": "ὥρα", "lemmaTranslit": "hṓra", "gloss": "hour" }
+    ],
+    "vowels": []
+  }
+}

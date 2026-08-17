@@ -54,3 +54,8 @@ android/*.jks
 android/*.keystore
 *.jks
 *.keystore
+
+# Local API keys. `scripts/_secrets.py` reads OPENROUTER_API_KEY from here when
+# it is not in the environment. Never commit this file.
+.env
+.env.*

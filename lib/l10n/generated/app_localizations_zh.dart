@@ -9,7 +9,7 @@ class AppLocalizationsZh extends AppLocalizations {
   AppLocalizationsZh([String locale = 'zh']) : super(locale);
 
   @override
-  String get appTitle => '原文圣经';
+  String get appTitle => 'Aleph';
 
   @override
   String get continueReading => '继续阅读';
@@ -245,9 +245,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get learningModeDesc => '通过在阅读中看到原文来被动学习。';
-
-  @override
-  String get learningModeEnglishOnlyNotice => '学习模式目前仅支持英文译本。';
 
   @override
   String get learningSectionTitle => '学习';
@@ -718,4 +715,82 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get onboardingAiPrivacy =>
       '这是本应用唯一联网的部分：你所提问的经文会被发送以获取解释。其余一切——经文、词典、语法、音频——均可完全离线使用。你可以随时在设置中更改。';
+
+  @override
+  String get reciteFromHere => '从这里开始诵读';
+
+  @override
+  String get searchEmptyTitle => '搜索圣经';
+
+  @override
+  String get searchEmptyBody => '输入经文中的任意词语即可找到该节。希伯来语和希腊语词典条目显示在经文下方。';
+
+  @override
+  String get alphabetTitle => '字母表';
+
+  @override
+  String get alphabetHebrewIntro =>
+      '希伯来文从右向左读。共有二十二个字母，全部是辅音——写在字母上下的点和短横才是元音。一次学一个字母，不必着急。';
+
+  @override
+  String get alphabetGreekIntro =>
+      '希腊文从左向右读，有大写和小写两种形式。与希伯来文不同，它的元音本身就是字母。一次学一个字母，不必着急。';
+
+  @override
+  String get alphabetLettersSection => '字母';
+
+  @override
+  String get alphabetVowelsSection => '元音';
+
+  @override
+  String get alphabetVowelsIntro => '元音是写在字母周围的符号。这里以字母 bet（ב）为例。';
+
+  @override
+  String get alphabetFinalForm => '词尾形';
+
+  @override
+  String get alphabetExampleLabel => '圣经中的例词';
+
+  @override
+  String get wordConnections => '词语连线';
+
+  @override
+  String get wordConnectionsDesc => '在你点击的词与它的其他出处之间画线。默认关闭，因为连线会穿过正在阅读的经文。';
+
+  @override
+  String get memorizationSubtitle => '在你已经读得顺畅的段落里遮住词语。';
+
+  @override
+  String get onboardingTraditionTitle => '你读的是哪一部经典？';
+
+  @override
+  String get onboardingTraditionDesc =>
+      '这决定书卷的排列顺序和称呼方式。两种选择都不会隐藏任何内容，你也可以在设置中更改。';
+
+  @override
+  String get traditionChristian => '旧约与新约';
+
+  @override
+  String get traditionChristianDesc => '基督教的排列顺序，从创世记到启示录。';
+
+  @override
+  String get traditionJewish => '塔纳赫';
+
+  @override
+  String get traditionJewishDesc => '妥拉、先知书与文集，按犹太传统顺序排列。';
+
+  @override
+  String get tanakhTorah => '妥拉';
+
+  @override
+  String get tanakhNeviim => '先知书';
+
+  @override
+  String get tanakhKetuvim => '文集';
+
+  @override
+  String get hebrewBibleLabel => '希伯来圣经';
+
+  @override
+  String get traditionSettingTitle => '经典';
 }

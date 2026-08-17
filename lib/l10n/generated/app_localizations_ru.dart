@@ -9,7 +9,7 @@ class AppLocalizationsRu extends AppLocalizations {
   AppLocalizationsRu([String locale = 'ru']) : super(locale);
 
   @override
-  String get appTitle => 'Оригинальная Библия';
+  String get appTitle => 'Aleph';
 
   @override
   String get continueReading => 'Продолжить чтение';
@@ -260,10 +260,6 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get learningModeDesc =>
       'Пассивно изучайте оригинальные языки, видя их в тексте.';
-
-  @override
-  String get learningModeEnglishOnlyNotice =>
-      'Режим обучения пока поддерживает только английские переводы.';
 
   @override
   String get learningSectionTitle => 'Обучение';
@@ -760,4 +756,88 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get onboardingAiPrivacy =>
       'Это единственная часть приложения, использующая интернет: стих, о котором вы спрашиваете, отправляется для объяснения. Всё остальное — текст, словари, грамматика, аудио — работает полностью офлайн. Это можно изменить в любой момент в настройках.';
+
+  @override
+  String get reciteFromHere => 'Читать вслух отсюда';
+
+  @override
+  String get searchEmptyTitle => 'Поиск по Библии';
+
+  @override
+  String get searchEmptyBody =>
+      'Введите любые слова из стиха, чтобы найти его. Словарные статьи на иврите и греческом появляются под стихами.';
+
+  @override
+  String get alphabetTitle => 'Алфавит';
+
+  @override
+  String get alphabetHebrewIntro =>
+      'Иврит читается справа налево. В нём двадцать две буквы, и все они согласные — точки и чёрточки над ними и под ними обозначают гласные. Изучайте по одной букве, спешить некуда.';
+
+  @override
+  String get alphabetGreekIntro =>
+      'Греческий читается слева направо и имеет заглавные и строчные буквы. В отличие от иврита, гласные здесь — самостоятельные буквы. Изучайте по одной букве, спешить некуда.';
+
+  @override
+  String get alphabetLettersSection => 'Буквы';
+
+  @override
+  String get alphabetVowelsSection => 'Гласные';
+
+  @override
+  String get alphabetVowelsIntro =>
+      'Гласные — это знаки вокруг буквы. Здесь они показаны на букве бет (ב).';
+
+  @override
+  String get alphabetFinalForm => 'конечная';
+
+  @override
+  String get alphabetExampleLabel => 'В Библии';
+
+  @override
+  String get wordConnections => 'Связи между словами';
+
+  @override
+  String get wordConnectionsDesc =>
+      'Проводит линии к другим случаям употребления выбранного слова. По умолчанию отключено: линии пересекают читаемый текст.';
+
+  @override
+  String get memorizationSubtitle =>
+      'Скрывайте слова в отрывке, который вы уже читаете свободно.';
+
+  @override
+  String get onboardingTraditionTitle => 'Какие писания вы читаете?';
+
+  @override
+  String get onboardingTraditionDesc =>
+      'От этого зависит порядок книг и их названия. Ничего не скрывается ни в одном из вариантов, и это можно изменить в настройках.';
+
+  @override
+  String get traditionChristian => 'Ветхий и Новый Завет';
+
+  @override
+  String get traditionChristianDesc =>
+      'Христианский порядок, от Бытия до Откровения.';
+
+  @override
+  String get traditionJewish => 'Танах';
+
+  @override
+  String get traditionJewishDesc =>
+      'Тора, Невиим и Ктувим, в традиционном еврейском порядке.';
+
+  @override
+  String get tanakhTorah => 'Тора';
+
+  @override
+  String get tanakhNeviim => 'Невиим — Пророки';
+
+  @override
+  String get tanakhKetuvim => 'Ктувим — Писания';
+
+  @override
+  String get hebrewBibleLabel => 'Еврейская Библия';
+
+  @override
+  String get traditionSettingTitle => 'Писания';
 }

@@ -178,7 +178,7 @@ def call(model: str, case: dict, api_key: str, max_tokens: int | None) -> tuple[
         headers={
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json",
-            "X-Title": "Original Bible health check",
+            "X-Title": "Aleph health check",
         },
     )
 
