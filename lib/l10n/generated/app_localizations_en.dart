@@ -9,7 +9,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'Original Bible';
+  String get appTitle => 'Aleph';
 
   @override
   String get continueReading => 'Continue Reading';
@@ -250,10 +250,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get learningModeDesc =>
       'Passively learn original languages by seeing them in the text.';
-
-  @override
-  String get learningModeEnglishOnlyNotice =>
-      'Learning Mode currently supports English translations only.';
 
   @override
   String get learningSectionTitle => 'Learning';
@@ -744,4 +740,88 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get onboardingAiPrivacy =>
       'This is the only part of the app that uses the internet: the verse you ask about is sent to be explained. Everything else — the text, dictionaries, grammar, audio — works fully offline. You can change this any time in Settings.';
+
+  @override
+  String get reciteFromHere => 'Recite from here';
+
+  @override
+  String get searchEmptyTitle => 'Search the Bible';
+
+  @override
+  String get searchEmptyBody =>
+      'Type any words from a verse to find it. Hebrew and Greek dictionary entries appear underneath the verses.';
+
+  @override
+  String get alphabetTitle => 'The alphabet';
+
+  @override
+  String get alphabetHebrewIntro =>
+      'Hebrew reads from right to left. There are twenty-two letters and all of them are consonants — the dots and dashes written above and below them are the vowels. Take one letter at a time; there is no hurry.';
+
+  @override
+  String get alphabetGreekIntro =>
+      'Greek reads from left to right and has both capital and small letters. Unlike Hebrew, its vowels are letters in their own right. Take one letter at a time; there is no hurry.';
+
+  @override
+  String get alphabetLettersSection => 'Letters';
+
+  @override
+  String get alphabetVowelsSection => 'Vowels';
+
+  @override
+  String get alphabetVowelsIntro =>
+      'The vowels are marks written around a letter. They are shown here on bet (ב).';
+
+  @override
+  String get alphabetFinalForm => 'final';
+
+  @override
+  String get alphabetExampleLabel => 'In the Bible';
+
+  @override
+  String get wordConnections => 'Word connections';
+
+  @override
+  String get wordConnectionsDesc =>
+      'Draw lines between the other occurrences of a word you tap. Off by default, because the lines cross the text you are reading.';
+
+  @override
+  String get memorizationSubtitle =>
+      'Hide words in a passage you already read comfortably.';
+
+  @override
+  String get onboardingTraditionTitle => 'Which scriptures are you reading?';
+
+  @override
+  String get onboardingTraditionDesc =>
+      'This decides how the books are ordered and what they are called. Nothing is hidden either way, and you can change it in Settings.';
+
+  @override
+  String get traditionChristian => 'Old and New Testament';
+
+  @override
+  String get traditionChristianDesc =>
+      'The Christian order, from Genesis through Revelation.';
+
+  @override
+  String get traditionJewish => 'Tanakh';
+
+  @override
+  String get traditionJewishDesc =>
+      'Torah, Nevi\'im and Ketuvim, in the traditional Jewish order.';
+
+  @override
+  String get tanakhTorah => 'Torah';
+
+  @override
+  String get tanakhNeviim => 'Nevi\'im — Prophets';
+
+  @override
+  String get tanakhKetuvim => 'Ketuvim — Writings';
+
+  @override
+  String get hebrewBibleLabel => 'Hebrew Bible';
+
+  @override
+  String get traditionSettingTitle => 'Scriptures';
 }

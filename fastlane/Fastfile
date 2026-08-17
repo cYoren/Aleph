@@ -1,6 +1,6 @@
 APP_ANDROID_ID = "com.originalbible.original_bible"
 APP_IOS_ID     = "com.originalbible.originalBible"
-APP_NAME       = "Original Bible"
+APP_NAME       = "Aleph"
 
 fastfile_path = File.expand_path("#{ENV['HOME']}/Documents/Coding/.fastlane/FlutterFastfile")
 if File.exist?(fastfile_path)

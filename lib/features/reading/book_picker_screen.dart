@@ -5,6 +5,8 @@ import '../../l10n/generated/app_localizations.dart';
 import '../../providers/books_provider.dart';
 import '../../providers/book_names_provider.dart';
 import '../../data/models/book.dart';
+import '../../shared/utils/reading_tradition.dart';
+import '../settings/settings_provider.dart';
 import 'reading_provider.dart';
 
 class BookPickerScreen extends ConsumerStatefulWidget {
@@ -76,52 +78,98 @@ class _BookPickerScreenState extends ConsumerState<BookPickerScreen> {
   ) {
     final otBooks = books.where((b) => b.testament == 'OT').toList();
     final ntBooks = books.where((b) => b.testament == 'NT').toList();
+    final tradition = ref.watch(settingsProvider.select((s) => s.tradition));
+
+    if (tradition == ReadingTradition.jewish) {
+      // Three divisions in the traditional order, and the New Testament kept
+      // at the bottom under its own name rather than deleted — the Greek text
+      // is in the app either way, and a Jewish reader is perfectly capable of
+      // deciding whether to open it.
+      final byAbbreviation = {
+        for (final book in otBooks) book.abbreviation: book,
+      };
+
+      List<Book> section(TanakhSection division) => [
+        for (final abbreviation in kTanakhOrder[division]!)
+          if (byAbbreviation[abbreviation] != null)
+            byAbbreviation[abbreviation]!,
+      ];
+
+      return ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          _buildCanonSection(
+            l10n.tanakhTorah,
+            section(TanakhSection.torah),
+            colorScheme,
+            currentReading,
+          ),
+          const SizedBox(height: 24),
+          _buildCanonSection(
+            l10n.tanakhNeviim,
+            section(TanakhSection.neviim),
+            colorScheme,
+            currentReading,
+          ),
+          const SizedBox(height: 24),
+          _buildCanonSection(
+            l10n.tanakhKetuvim,
+            section(TanakhSection.ketuvim),
+            colorScheme,
+            currentReading,
+          ),
+          const SizedBox(height: 24),
+          _buildCanonSection(
+            l10n.newTestament,
+            ntBooks,
+            colorScheme,
+            currentReading,
+          ),
+        ],
+      );
+    }
 
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        _buildTestamentSection(
+        _buildCanonSection(
           l10n.oldTestament,
           otBooks,
           colorScheme,
           currentReading,
-          Colors.amber,
         ),
         const SizedBox(height: 24),
-        _buildTestamentSection(
+        _buildCanonSection(
           l10n.newTestament,
           ntBooks,
           colorScheme,
           currentReading,
-          Colors.blue,
         ),
       ],
     );
   }
 
-  Widget _buildTestamentSection(
+  /// One division of the canon. The heading is a small-caps rule rather than a
+  /// coloured pill: amber-for-OT / blue-for-NT was arbitrary, and it fought
+  /// the palette.
+  Widget _buildCanonSection(
     String title,
     List<Book> books,
     ColorScheme colorScheme,
     ReadingState currentReading,
-    Color accentColor,
   ) {
+    if (books.isEmpty) return const SizedBox.shrink();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          decoration: BoxDecoration(
-            color: accentColor.withValues(alpha: 0.2),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Text(
-            title,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              color: accentColor.withValues(alpha: 0.8),
-            ),
+        Text(
+          title.toUpperCase(),
+          style: TextStyle(
+            fontSize: 11,
+            letterSpacing: 1.6,
+            fontWeight: FontWeight.w600,
+            color: colorScheme.primary,
           ),
         ),
         const SizedBox(height: 12),

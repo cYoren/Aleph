@@ -112,16 +112,26 @@ class _VocabularyScreenState extends ConsumerState<VocabularyScreen> {
               );
             },
           ),
+
+          // Memorization sits at the end of this screen rather than on the home
+          // page. Reciting a passage from memory is the last step of learning a
+          // script, not the first, and offering it to someone who cannot yet
+          // sound out a letter is how a learning app makes people feel stupid.
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.psychology_outlined),
+            title: Text(l10n.memorizationTitle),
+            subtitle: Text(l10n.memorizationSubtitle),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push('/memorization'),
+          ),
+          const SizedBox(height: 24),
         ],
       ),
     );
   }
 
-  Widget _sectionHeader(
-    String title,
-    ColorScheme colorScheme, {
-    int? count,
-  }) {
+  Widget _sectionHeader(String title, ColorScheme colorScheme, {int? count}) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
       child: Text(
@@ -194,11 +204,7 @@ class _VocabularyScreenState extends ConsumerState<VocabularyScreen> {
         ],
       ),
       subtitle: entry?.gloss != null
-          ? Text(
-              entry!.gloss!,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            )
+          ? Text(entry!.gloss!, maxLines: 1, overflow: TextOverflow.ellipsis)
           : null,
       trailing: item.frequency > 0
           ? Text(
@@ -221,7 +227,8 @@ class _VocabularyScreenState extends ConsumerState<VocabularyScreen> {
       position: 0,
       displayText: entry?.lemma ?? item.lexiconKey,
       lemma: entry?.lemma,
-      strongs: item.lexiconKey.startsWith('H') || item.lexiconKey.startsWith('G')
+      strongs:
+          item.lexiconKey.startsWith('H') || item.lexiconKey.startsWith('G')
           ? item.lexiconKey
           : null,
       language: item.isHebrew ? 'heb' : 'grc',
@@ -230,7 +237,7 @@ class _VocabularyScreenState extends ConsumerState<VocabularyScreen> {
     await SrsMicroQuizSheet.show(
       context,
       originalWord: pseudoWord,
-      englishWord: entry?.gloss ?? '',
+      translatedWord: entry?.gloss ?? '',
       isOT: item.isHebrew,
     );
 

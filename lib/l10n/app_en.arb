@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "appTitle": "Original Bible",
+  "appTitle": "Aleph",
   "continueReading": "Continue Reading",
   "selectLanguage": "Select Your Language",
   "next": "Next",
@@ -107,7 +107,6 @@
   "error": "Error",
   "learningMode": "Learning Mode",
   "learningModeDesc": "Passively learn original languages by seeing them in the text.",
-  "learningModeEnglishOnlyNotice": "Learning Mode currently supports English translations only.",
   "learningSectionTitle": "Learning",
   "loading": "Loading...",
   "onboardingBibleLabel": "Bible: {translation}",
@@ -369,5 +368,105 @@
   "onboardingAiTitle": "Ask about any passage",
   "onboardingAiDesc": "A tutor trained on your question: what does the Hebrew actually say, what does the Greek carry that English cannot. Tap the ✨ on any verse.",
   "onboardingAiToggle": "Enable the AI tutor",
-  "onboardingAiPrivacy": "This is the only part of the app that uses the internet: the verse you ask about is sent to be explained. Everything else — the text, dictionaries, grammar, audio — works fully offline. You can change this any time in Settings."
+  "onboardingAiPrivacy": "This is the only part of the app that uses the internet: the verse you ask about is sent to be explained. Everything else — the text, dictionaries, grammar, audio — works fully offline. You can change this any time in Settings.",
+  "reciteFromHere": "Recite from here",
+  "@reciteFromHere": {
+    "description": "Verse menu action: start reading the chapter aloud at this verse instead of the first one."
+  },
+  "searchEmptyTitle": "Search the Bible",
+  "@searchEmptyTitle": {
+    "description": "Heading on the empty search screen."
+  },
+  "searchEmptyBody": "Type any words from a verse to find it. Hebrew and Greek dictionary entries appear underneath the verses.",
+  "@searchEmptyBody": {
+    "description": "Explains that search finds verses, with dictionary entries as a secondary result."
+  },
+  "alphabetTitle": "The alphabet",
+  "@alphabetTitle": {
+    "description": "Title of the beginner's Hebrew and Greek letter reference."
+  },
+  "alphabetHebrewIntro": "Hebrew reads from right to left. There are twenty-two letters and all of them are consonants — the dots and dashes written above and below them are the vowels. Take one letter at a time; there is no hurry.",
+  "@alphabetHebrewIntro": {
+    "description": "Opening paragraph of the Hebrew alphabet guide."
+  },
+  "alphabetGreekIntro": "Greek reads from left to right and has both capital and small letters. Unlike Hebrew, its vowels are letters in their own right. Take one letter at a time; there is no hurry.",
+  "@alphabetGreekIntro": {
+    "description": "Opening paragraph of the Greek alphabet guide."
+  },
+  "alphabetLettersSection": "Letters",
+  "@alphabetLettersSection": {
+    "description": "Section heading above the list of letters."
+  },
+  "alphabetVowelsSection": "Vowels",
+  "@alphabetVowelsSection": {
+    "description": "Section heading above the Hebrew vowel points."
+  },
+  "alphabetVowelsIntro": "The vowels are marks written around a letter. They are shown here on bet (ב).",
+  "@alphabetVowelsIntro": {
+    "description": "Explains that Hebrew vowels are marks around a consonant."
+  },
+  "alphabetFinalForm": "final",
+  "@alphabetFinalForm": {
+    "description": "Label for a Hebrew letter's word-final shape. Kept lowercase; it sits inline next to the glyph."
+  },
+  "alphabetExampleLabel": "In the Bible",
+  "@alphabetExampleLabel": {
+    "description": "Label above the example biblical word for a letter."
+  },
+  "wordConnections": "Word connections",
+  "@wordConnections": {
+    "description": "Settings switch: draw connector lines between occurrences of a tapped word."
+  },
+  "wordConnectionsDesc": "Draw lines between the other occurrences of a word you tap. Off by default, because the lines cross the text you are reading.",
+  "@wordConnectionsDesc": {
+    "description": "Explains the word-connection lines and why they are off by default."
+  },
+  "memorizationSubtitle": "Hide words in a passage you already read comfortably.",
+  "@memorizationSubtitle": {
+    "description": "Subtitle for the memorization entry inside Vocabulary. States the prerequisite plainly: it is for a passage you can already read."
+  },
+  "onboardingTraditionTitle": "Which scriptures are you reading?",
+  "@onboardingTraditionTitle": {
+    "description": "Onboarding heading for the Christian / Jewish scripture choice."
+  },
+  "onboardingTraditionDesc": "This decides how the books are ordered and what they are called. Nothing is hidden either way, and you can change it in Settings.",
+  "@onboardingTraditionDesc": {
+    "description": "Explains that the choice affects ordering and naming only, and is reversible."
+  },
+  "traditionChristian": "Old and New Testament",
+  "@traditionChristian": {
+    "description": "Option label: the Protestant canon and ordering."
+  },
+  "traditionChristianDesc": "The Christian order, from Genesis through Revelation.",
+  "@traditionChristianDesc": {
+    "description": "Option description for the Christian ordering."
+  },
+  "traditionJewish": "Tanakh",
+  "@traditionJewish": {
+    "description": "Option label: the Tanakh. Transliterate rather than translate this name."
+  },
+  "traditionJewishDesc": "Torah, Nevi'im and Ketuvim, in the traditional Jewish order.",
+  "@traditionJewishDesc": {
+    "description": "Option description for the Tanakh ordering. Keep Torah/Nevi'im/Ketuvim transliterated."
+  },
+  "tanakhTorah": "Torah",
+  "@tanakhTorah": {
+    "description": "Section heading for the five books of the Torah."
+  },
+  "tanakhNeviim": "Nevi'im — Prophets",
+  "@tanakhNeviim": {
+    "description": "Section heading for the Prophets. Keep the transliterated name and gloss it."
+  },
+  "tanakhKetuvim": "Ketuvim — Writings",
+  "@tanakhKetuvim": {
+    "description": "Section heading for the Writings. Keep the transliterated name and gloss it."
+  },
+  "hebrewBibleLabel": "Hebrew Bible",
+  "@hebrewBibleLabel": {
+    "description": "Neutral name for the Hebrew scriptures, used instead of 'Old Testament' for a Jewish reader."
+  },
+  "traditionSettingTitle": "Scriptures",
+  "@traditionSettingTitle": {
+    "description": "Settings row that opens the scripture-tradition choice."
+  }
 }
