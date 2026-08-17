@@ -9,7 +9,7 @@ class AppLocalizationsDe extends AppLocalizations {
   AppLocalizationsDe([String locale = 'de']) : super(locale);
 
   @override
-  String get appTitle => 'Original Bibel';
+  String get appTitle => 'Aleph';
 
   @override
   String get continueReading => 'Weiterlesen';
@@ -250,10 +250,6 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get learningModeDesc =>
       'Lernen Sie die Originalsprachen passiv, indem Sie sie im Text sehen.';
-
-  @override
-  String get learningModeEnglishOnlyNotice =>
-      'Der Lernmodus unterstützt derzeit nur englische Übersetzungen.';
 
   @override
   String get learningSectionTitle => 'Lernen';
@@ -751,4 +747,88 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get onboardingAiPrivacy =>
       'Dies ist der einzige Teil der App, der das Internet nutzt: der Vers, zu dem Sie fragen, wird zur Erklärung gesendet. Alles andere — Text, Wörterbücher, Grammatik, Audio — funktioniert vollständig offline. Sie können das jederzeit in den Einstellungen ändern.';
+
+  @override
+  String get reciteFromHere => 'Ab hier vorlesen';
+
+  @override
+  String get searchEmptyTitle => 'In der Bibel suchen';
+
+  @override
+  String get searchEmptyBody =>
+      'Gib beliebige Wörter eines Verses ein, um ihn zu finden. Hebräische und griechische Wörterbucheinträge erscheinen unter den Versen.';
+
+  @override
+  String get alphabetTitle => 'Das Alphabet';
+
+  @override
+  String get alphabetHebrewIntro =>
+      'Hebräisch liest man von rechts nach links. Es gibt zweiundzwanzig Buchstaben, und alle sind Konsonanten — die Punkte und Striche darüber und darunter sind die Vokale. Nimm dir einen Buchstaben nach dem anderen vor; es eilt nicht.';
+
+  @override
+  String get alphabetGreekIntro =>
+      'Griechisch liest man von links nach rechts und hat Groß- und Kleinbuchstaben. Anders als im Hebräischen sind die Vokale eigene Buchstaben. Nimm dir einen Buchstaben nach dem anderen vor; es eilt nicht.';
+
+  @override
+  String get alphabetLettersSection => 'Buchstaben';
+
+  @override
+  String get alphabetVowelsSection => 'Vokale';
+
+  @override
+  String get alphabetVowelsIntro =>
+      'Die Vokale sind Zeichen rund um einen Buchstaben. Hier stehen sie am Bet (ב).';
+
+  @override
+  String get alphabetFinalForm => 'Endform';
+
+  @override
+  String get alphabetExampleLabel => 'In der Bibel';
+
+  @override
+  String get wordConnections => 'Wortverbindungen';
+
+  @override
+  String get wordConnectionsDesc =>
+      'Zeichnet Linien zu den anderen Vorkommen eines angetippten Wortes. Standardmäßig aus, weil die Linien den Text kreuzen, den du gerade liest.';
+
+  @override
+  String get memorizationSubtitle =>
+      'Blende Wörter in einem Abschnitt aus, den du schon flüssig liest.';
+
+  @override
+  String get onboardingTraditionTitle => 'Welche Schriften liest du?';
+
+  @override
+  String get onboardingTraditionDesc =>
+      'Das bestimmt die Reihenfolge der Bücher und ihre Bezeichnungen. Verborgen wird so oder so nichts, und du kannst es in den Einstellungen ändern.';
+
+  @override
+  String get traditionChristian => 'Altes und Neues Testament';
+
+  @override
+  String get traditionChristianDesc =>
+      'Die christliche Reihenfolge, von Genesis bis zur Offenbarung.';
+
+  @override
+  String get traditionJewish => 'Tanach';
+
+  @override
+  String get traditionJewishDesc =>
+      'Tora, Newi\'im und Ketuwim, in der traditionellen jüdischen Reihenfolge.';
+
+  @override
+  String get tanakhTorah => 'Tora';
+
+  @override
+  String get tanakhNeviim => 'Newi\'im — Propheten';
+
+  @override
+  String get tanakhKetuvim => 'Ketuwim — Schriften';
+
+  @override
+  String get hebrewBibleLabel => 'Hebräische Bibel';
+
+  @override
+  String get traditionSettingTitle => 'Schriften';
 }

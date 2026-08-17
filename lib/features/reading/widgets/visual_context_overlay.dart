@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../providers/visual_context_provider.dart';
+import '../../settings/settings_provider.dart';
 
 class VisualContextOverlay extends ConsumerStatefulWidget {
   final Widget child;
@@ -29,6 +30,17 @@ class _VisualContextOverlayState extends ConsumerState<VisualContextOverlay> {
 
   @override
   Widget build(BuildContext context) {
+    // Off by default. The connectors are drawn straight across the passage
+    // being read, so they interrupt the very line the reader is on; tapping a
+    // word still tints its other occurrences, which answers the same question
+    // without drawing over the text.
+    final showConnections = ref.watch(
+      settingsProvider.select((s) => s.showWordConnections),
+    );
+    if (!showConnections) {
+      return widget.child;
+    }
+
     return Stack(
       key: _stackKey,
       children: [

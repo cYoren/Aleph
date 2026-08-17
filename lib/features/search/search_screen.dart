@@ -123,26 +123,42 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             ),
           ),
 
-          // Instructions when empty
+          // Instructions when empty. This screen searches the Bible text; the
+          // dictionary hits underneath are a bonus. Saying so plainly is the
+          // whole fix — readers were opening it expecting a word lookup and
+          // never discovering it finds verses.
           if (query.isEmpty)
             Expanded(
               child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.search,
-                      size: 64,
-                      color: colorScheme.onSurfaceVariant.withValues(
-                        alpha: 0.3,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.menu_book_outlined,
+                        size: 56,
+                        color: colorScheme.primary.withValues(alpha: 0.5),
                       ),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      l10n.searchHint,
-                      style: TextStyle(color: colorScheme.onSurfaceVariant),
-                    ),
-                  ],
+                      const SizedBox(height: 20),
+                      Text(
+                        l10n.searchEmptyTitle,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          color: colorScheme.onSurface,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        l10n.searchEmptyBody,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          height: 1.5,
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             )
@@ -166,9 +182,21 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   if (verses.isEmpty && wordResults.isEmpty) {
                     return NoSearchResultsState(query: query);
                   }
+                  // Verses first, always. Leading with dictionary entries made
+                  // the screen read as a lexicon that happened to list some
+                  // verses underneath.
                   return ListView(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     children: [
+                      if (verses.isNotEmpty) ...[
+                        _buildSectionLabel(
+                          l10n.verseResultsSection,
+                          colorScheme,
+                        ),
+                        ...verses.map(
+                          (verse) => _buildSearchResult(verse, colorScheme),
+                        ),
+                      ],
                       if (wordResults.isNotEmpty) ...[
                         _buildSectionLabel(
                           l10n.wordResultsSection,
@@ -177,15 +205,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                         ...wordResults.map(
                           (word) => _buildWordResult(word, colorScheme),
                         ),
-                        if (verses.isNotEmpty)
-                          _buildSectionLabel(
-                            l10n.verseResultsSection,
-                            colorScheme,
-                          ),
                       ],
-                      ...verses.map(
-                        (verse) => _buildSearchResult(verse, colorScheme),
-                      ),
                     ],
                   );
                 },

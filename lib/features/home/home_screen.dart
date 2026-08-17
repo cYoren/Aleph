@@ -7,6 +7,8 @@ import '../../providers/books_provider.dart';
 import '../../providers/database_provider.dart';
 import '../../data/models/verse.dart';
 import '../../shared/utils/transliterator.dart';
+import '../../shared/utils/reading_tradition.dart';
+import '../../app/theme.dart';
 
 const _fallbackTranslationId = 'KJV';
 const _oldTestamentBooks = {
@@ -73,25 +75,11 @@ class VerseOfDayData {
 final verseOfDayProvider = FutureProvider<VerseOfDayData?>((ref) async {
   final dao = ref.watch(bibleDaoProvider);
   final preferredTranslation = ref.watch(settingsProvider).translation;
+  final tradition = ref.watch(settingsProvider.select((s) => s.tradition));
 
-  // List of well-known verse references to pick from randomly
-  const notableVerses = [
-    'GEN.1.1',
-    'GEN.1.3',
-    'JHN.1.1',
-    'JHN.3.16',
-    'PSA.23.1',
-    'PSA.119.105',
-    'PRO.3.5',
-    'ISA.40.31',
-    'JER.29.11',
-    'ROM.8.28',
-    'PHP.4.13',
-    'HEB.11.1',
-    'MAT.5.14',
-    'MAT.6.33',
-    'ROM.12.2',
-  ];
+  // Each tradition draws on its own passages. A Jewish reader being served
+  // John 3:16 as "today's verse" is the whole problem in one card.
+  final notableVerses = dailyVersesFor(tradition);
 
   // Pick a random verse based on day of year for consistency
   final dayOfYear = DateTime.now()
@@ -142,6 +130,13 @@ final verseOfDayProvider = FutureProvider<VerseOfDayData?>((ref) async {
   return null;
 });
 
+/// The opening page.
+///
+/// Deliberately short. It carries only what is *not* one tap away in the
+/// navigation bar: where you left off, today's verse, and the three study
+/// tools that have no bar destination of their own. The app's own name, a
+/// settings shortcut, and duplicate Books/Search buttons were removed — a home
+/// screen that mostly links to the bar directly beneath it is furniture.
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
@@ -151,24 +146,18 @@ class HomeScreen extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.appTitle),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () => context.go('/settings'),
-          ),
-        ],
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          _buildContinueReadingCard(context, ref, colorScheme, l10n),
-          const SizedBox(height: 16),
-          _buildVerseOfDayCard(context, ref, colorScheme, l10n),
-          const SizedBox(height: 16),
-          _buildQuickAccessCard(context, colorScheme, l10n),
-        ],
+      body: SafeArea(
+        bottom: false,
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(20, 24, 20, 32),
+          children: [
+            _buildContinueReadingCard(context, ref, colorScheme, l10n),
+            const DivineRule(),
+            _buildVerseOfDayCard(context, ref, colorScheme, l10n),
+            const DivineRule(),
+            _buildStudyRow(context, colorScheme, l10n),
+          ],
+        ),
       ),
     );
   }
@@ -192,63 +181,41 @@ class HomeScreen extends ConsumerWidget {
         ) ??
         settings.lastReadBook;
 
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: colorScheme.outlineVariant),
-      ),
-      child: InkWell(
-        onTap: () => context.go('/reading'),
-        borderRadius: BorderRadius.circular(16),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
+    // No card, no border: the first thing on the page is a place, set like a
+    // title page rather than boxed like a control.
+    return InkWell(
+      onTap: () => context.go('/reading'),
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: colorScheme.primaryContainer,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Icon(
-                      Icons.menu_book,
-                      color: colorScheme.onPrimaryContainer,
+                  Text(
+                    l10n.continueReading.toUpperCase(),
+                    style: TextStyle(
+                      fontSize: 11,
+                      letterSpacing: 1.6,
+                      fontWeight: FontWeight.w600,
+                      color: colorScheme.onSurfaceVariant,
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        l10n.continueReading,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: colorScheme.onSurfaceVariant,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      Text(
-                        '$bookName ${settings.lastReadChapter}',
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const Spacer(),
-                  Icon(
-                    Icons.arrow_forward_ios,
-                    color: colorScheme.primary,
-                    size: 20,
+                  const SizedBox(height: 6),
+                  Text(
+                    '$bookName ${settings.lastReadChapter}',
+                    style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                      color: colorScheme.onSurface,
+                    ),
                   ),
                 ],
               ),
-            ],
-          ),
+            ),
+            Icon(Icons.arrow_forward, color: colorScheme.primary, size: 22),
+          ],
         ),
       ),
     );
@@ -263,224 +230,184 @@ class HomeScreen extends ConsumerWidget {
     final verseAsync = ref.watch(verseOfDayProvider);
     final booksAsync = ref.watch(booksProvider);
 
-    return Card(
-      elevation: 0,
-      color: colorScheme.primaryContainer.withValues(alpha: 0.3),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(Icons.auto_awesome, color: colorScheme.primary, size: 20),
-                const SizedBox(width: 8),
-                Text(
-                  l10n.verseOfDay,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: colorScheme.primary,
-                  ),
-                ),
-              ],
+    return Container(
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 22),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerLowest,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: colorScheme.outlineVariant, width: 0.8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            l10n.verseOfDay.toUpperCase(),
+            style: TextStyle(
+              fontSize: 11,
+              letterSpacing: 1.6,
+              fontWeight: FontWeight.w600,
+              color: colorScheme.primary,
             ),
-            const SizedBox(height: 16),
-            verseAsync.when(
-              loading: () => const Center(
-                child: SizedBox(height: 60, child: CircularProgressIndicator()),
+          ),
+          const SizedBox(height: 16),
+          verseAsync.when(
+            loading: () => const Center(
+              child: Padding(
+                padding: EdgeInsets.all(24),
+                child: CircularProgressIndicator(strokeWidth: 2),
               ),
-              error: (err, stack) => Text('${l10n.error}: $err'),
-              data: (verseData) {
-                if (verseData == null) {
-                  return Text(l10n.noResults);
-                }
-                final verse = verseData.verse;
-
-                // Get book name
-                final parts = verse.id.split('.');
-                final bookAbbrev = parts.isNotEmpty ? parts[0] : '';
-                final chapterNum = parts.length > 1 ? parts[1] : '';
-                final verseNum = parts.length > 2 ? parts[2] : '';
-
-                final bookName =
-                    booksAsync.whenOrNull(
-                      data: (books) => books
-                          .where((b) => b.abbreviation == bookAbbrev)
-                          .firstOrNull
-                          ?.name,
-                    ) ??
-                    bookAbbrev;
-
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      verse.textContent,
-                      style: TextStyle(
-                        fontFamily: verseData.isOT ? 'EzraSIL' : null,
-                        fontSize: 20,
-                        height: 1.6,
-                        color: colorScheme.onSurface,
-                      ),
-                      textAlign: verseData.isOT
-                          ? TextAlign.right
-                          : TextAlign.left,
-                      textDirection: verseData.isOT
-                          ? TextDirection.rtl
-                          : TextDirection.ltr,
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      l10n.pronunciationLabel,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      verseData.pronunciation,
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontStyle: FontStyle.italic,
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      l10n.translation,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      verseData.translationText.isNotEmpty
-                          ? verseData.translationText
-                          : l10n.translationNotAvailable,
-                      style: TextStyle(
-                        fontSize: 15,
-                        height: 1.4,
-                        color: colorScheme.onSurface,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      '$bookName $chapterNum:$verseNum',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ],
-                );
-              },
             ),
-          ],
-        ),
+            error: (err, stack) => Text('${l10n.error}: $err'),
+            data: (verseData) {
+              if (verseData == null) {
+                return Text(l10n.noResults);
+              }
+              final verse = verseData.verse;
+
+              // Get book name
+              final parts = verse.id.split('.');
+              final bookAbbrev = parts.isNotEmpty ? parts[0] : '';
+              final chapterNum = parts.length > 1 ? parts[1] : '';
+              final verseNum = parts.length > 2 ? parts[2] : '';
+
+              final bookName =
+                  booksAsync.whenOrNull(
+                    data: (books) => books
+                        .where((b) => b.abbreviation == bookAbbrev)
+                        .firstOrNull
+                        ?.name,
+                  ) ??
+                  bookAbbrev;
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // The original comes first and largest. This is the one
+                  // screen in the app where the Hebrew or Greek is the point
+                  // rather than a companion to the translation.
+                  Text(
+                    verse.textContent,
+                    style: TextStyle(
+                      fontFamily: verseData.isOT ? 'EzraSIL' : 'Gentium',
+                      fontSize: 23,
+                      height: 1.75,
+                      color: colorScheme.onSurface,
+                    ),
+                    textAlign: verseData.isOT
+                        ? TextAlign.right
+                        : TextAlign.left,
+                    textDirection: verseData.isOT
+                        ? TextDirection.rtl
+                        : TextDirection.ltr,
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    verseData.pronunciation,
+                    style: TextStyle(
+                      fontSize: 14,
+                      height: 1.5,
+                      fontStyle: FontStyle.italic,
+                      color: colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    verseData.translationText.isNotEmpty
+                        ? verseData.translationText
+                        : l10n.translationNotAvailable,
+                    style: TextStyle(
+                      fontSize: 16,
+                      height: 1.55,
+                      color: colorScheme.onSurface,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    '$bookName $chapterNum:$verseNum',
+                    style: TextStyle(
+                      fontSize: 13,
+                      letterSpacing: 0.6,
+                      fontWeight: FontWeight.w600,
+                      color: colorScheme.primary,
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildQuickAccessCard(
+  /// The three study tools that have no destination in the navigation bar.
+  ///
+  /// Books, Search and Settings used to sit here too; they are one tap away in
+  /// the bar directly below, so repeating them only added weight.
+  Widget _buildStudyRow(
     BuildContext context,
     ColorScheme colorScheme,
     AppLocalizations l10n,
   ) {
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: colorScheme.outlineVariant),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              l10n.quickAccess,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: colorScheme.onSurfaceVariant,
-              ),
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: _buildQuickButton(
-                    context,
-                    colorScheme,
-                    Icons.library_books,
-                    l10n.books,
-                    () => context.push('/book-picker'),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _buildQuickButton(
-                    context,
-                    colorScheme,
-                    Icons.search,
-                    l10n.search,
-                    () => context.go('/search'),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: _buildQuickButton(
-                    context,
-                    colorScheme,
-                    Icons.style,
-                    l10n.vocabularyTitle,
-                    () => context.push('/vocabulary'),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _buildQuickButton(
-                    context,
-                    colorScheme,
-                    Icons.psychology_outlined,
-                    l10n.memorizationTitle,
-                    () => context.push('/memorization'),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: _buildQuickButton(
-                    context,
-                    colorScheme,
-                    Icons.insights_outlined,
-                    'What can I read?',
-                    () => context.push('/readability'),
-                  ),
-                ),
-              ],
-            ),
-          ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          l10n.quickAccess.toUpperCase(),
+          style: TextStyle(
+            fontSize: 11,
+            letterSpacing: 1.6,
+            fontWeight: FontWeight.w600,
+            color: colorScheme.onSurfaceVariant,
+          ),
         ),
-      ),
+        const SizedBox(height: 14),
+        // The order is the learning path: the letters, then the words, then
+        // what those words let you read. Memorization used to sit here too and
+        // no longer does — it asks you to recall a passage in a script you may
+        // not be able to sound out yet, so it lives inside Vocabulary, which is
+        // where someone who has started learning actually goes.
+        IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: _buildStudyTile(
+                  context,
+                  colorScheme,
+                  Icons.abc_outlined,
+                  l10n.alphabetTitle,
+                  () => context.push('/alphabet'),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: _buildStudyTile(
+                  context,
+                  colorScheme,
+                  Icons.style_outlined,
+                  l10n.vocabularyTitle,
+                  () => context.push('/vocabulary'),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: _buildStudyTile(
+                  context,
+                  colorScheme,
+                  Icons.insights_outlined,
+                  l10n.readabilityTitle,
+                  () => context.push('/readability'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
-  Widget _buildQuickButton(
+  Widget _buildStudyTile(
     BuildContext context,
     ColorScheme colorScheme,
     IconData icon,
@@ -488,21 +415,26 @@ class HomeScreen extends ConsumerWidget {
     VoidCallback onTap,
   ) {
     return Material(
-      color: colorScheme.surfaceContainerHighest,
-      borderRadius: BorderRadius.circular(12),
+      color: Colors.transparent,
       child: InkWell(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(14),
         onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 16),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: colorScheme.outlineVariant, width: 0.8),
+          ),
           child: Column(
             children: [
-              Icon(icon, color: colorScheme.primary),
-              const SizedBox(height: 8),
+              Icon(icon, color: colorScheme.primary, size: 22),
+              const SizedBox(height: 10),
               Text(
                 label,
+                textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: 12.5,
+                  height: 1.3,
                   fontWeight: FontWeight.w500,
                   color: colorScheme.onSurface,
                 ),

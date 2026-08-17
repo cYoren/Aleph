@@ -1,4 +1,4 @@
-# Original Bible
+# Aleph
 
 Original-language Bible reader for **iOS**, **Android**, and **macOS**, with:
 - Hebrew and Greek source text
@@ -61,7 +61,15 @@ python3 scripts/build_full_bible_db.py \
   --emit-coverage-report build/coverage_report.json
 ```
 
-3. Run the app:
+3. Fold the translated lexicon glosses into it. The build script recreates
+   `assets/bible.db` from scratch, so this has to run after it every time:
+```bash
+python3 scripts/apply_gloss_translations.py
+```
+   Skipping this is not fatal — the app falls back to English glosses — but
+   readers on the other seven languages lose their word meanings.
+
+4. Run the app:
 ```bash
 flutter run
 ```
@@ -76,7 +84,13 @@ python3 scripts/build_full_bible_db.py \
   --strict-coverage \
   --fill-kjv-gaps \
   --emit-coverage-report build/coverage_report.json
+python3 scripts/apply_gloss_translations.py
 ```
+
+   Then bump `kBundledDatabaseVersion` in
+   `lib/data/database/database_mobile.dart`. Installed copies of the database
+   are reused forever unless that number changes, so a release that ships new
+   data without bumping it reaches nobody who already has the app.
 
 2. Run quality gates:
 ```bash

@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/models/bookmark.dart';
 import '../data/database/daos/user_data_dao.dart';
+import '../features/settings/settings_provider.dart';
+import 'database_provider.dart';
 
 /// Provider for the UserDataDAO singleton
 final userDataDaoProvider = Provider<UserDataDAO>((ref) {
@@ -102,4 +104,23 @@ final bookmarkNotifierProvider =
     StateNotifierProvider<BookmarkNotifier, AsyncValue<void>>((ref) {
       final dao = ref.watch(userDataDaoProvider);
       return BookmarkNotifier(dao, ref);
+    });
+
+/// The text of a bookmarked verse, in the reader's translation.
+///
+/// A list of references — "Genesis 1:1", "John 3:16" — asks the reader to
+/// remember why they saved each one. Showing the verse is the whole point of a
+/// favourites list.
+final bookmarkPreviewProvider =
+    FutureProvider.family<String?, (String, int, int)>((ref, args) async {
+      final dao = ref.watch(bibleDaoProvider);
+      final translation = ref.watch(
+        settingsProvider.select((s) => s.translation),
+      );
+      return dao.getVerseTextWithFallback(
+        translationId: translation,
+        bookId: args.$1,
+        chapter: args.$2,
+        verse: args.$3,
+      );
     });

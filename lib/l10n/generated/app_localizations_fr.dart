@@ -9,7 +9,7 @@ class AppLocalizationsFr extends AppLocalizations {
   AppLocalizationsFr([String locale = 'fr']) : super(locale);
 
   @override
-  String get appTitle => 'Bible Originale';
+  String get appTitle => 'Aleph';
 
   @override
   String get continueReading => 'Continuer la Lecture';
@@ -251,10 +251,6 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get learningModeDesc =>
       'Apprenez passivement les langues originales en les voyant dans le texte.';
-
-  @override
-  String get learningModeEnglishOnlyNotice =>
-      'Le mode apprentissage prend actuellement en charge uniquement les traductions anglaises.';
 
   @override
   String get learningSectionTitle => 'Apprentissage';
@@ -751,4 +747,88 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get onboardingAiPrivacy =>
       'C\'est la seule partie de l\'application qui utilise internet : le verset sur lequel vous posez une question est envoyé pour être expliqué. Tout le reste — texte, dictionnaires, grammaire, audio — fonctionne entièrement hors ligne. Vous pouvez changer cela à tout moment dans les Réglages.';
+
+  @override
+  String get reciteFromHere => 'Réciter à partir d\'ici';
+
+  @override
+  String get searchEmptyTitle => 'Chercher dans la Bible';
+
+  @override
+  String get searchEmptyBody =>
+      'Tapez n\'importe quels mots d\'un verset pour le retrouver. Les entrées du dictionnaire hébreu et grec apparaissent sous les versets.';
+
+  @override
+  String get alphabetTitle => 'L\'alphabet';
+
+  @override
+  String get alphabetHebrewIntro =>
+      'L\'hébreu se lit de droite à gauche. Il compte vingt-deux lettres, toutes des consonnes — les points et les traits écrits au-dessus et au-dessous sont les voyelles. Prenez une lettre à la fois ; rien ne presse.';
+
+  @override
+  String get alphabetGreekIntro =>
+      'Le grec se lit de gauche à droite et possède des majuscules et des minuscules. Contrairement à l\'hébreu, ses voyelles sont des lettres à part entière. Prenez une lettre à la fois ; rien ne presse.';
+
+  @override
+  String get alphabetLettersSection => 'Lettres';
+
+  @override
+  String get alphabetVowelsSection => 'Voyelles';
+
+  @override
+  String get alphabetVowelsIntro =>
+      'Les voyelles sont des signes écrits autour d\'une lettre. Elles sont montrées ici sur le bet (ב).';
+
+  @override
+  String get alphabetFinalForm => 'finale';
+
+  @override
+  String get alphabetExampleLabel => 'Dans la Bible';
+
+  @override
+  String get wordConnections => 'Liens entre les mots';
+
+  @override
+  String get wordConnectionsDesc =>
+      'Trace des lignes vers les autres occurrences du mot touché. Désactivé par défaut, car les lignes traversent le texte que vous lisez.';
+
+  @override
+  String get memorizationSubtitle =>
+      'Masquez des mots dans un passage que vous lisez déjà avec aisance.';
+
+  @override
+  String get onboardingTraditionTitle => 'Quelles Écritures lisez-vous ?';
+
+  @override
+  String get onboardingTraditionDesc =>
+      'Cela détermine l\'ordre des livres et leurs noms. Rien n\'est masqué dans un cas comme dans l\'autre, et vous pouvez le changer dans les réglages.';
+
+  @override
+  String get traditionChristian => 'Ancien et Nouveau Testament';
+
+  @override
+  String get traditionChristianDesc =>
+      'L\'ordre chrétien, de la Genèse à l\'Apocalypse.';
+
+  @override
+  String get traditionJewish => 'Tanakh';
+
+  @override
+  String get traditionJewishDesc =>
+      'Torah, Nevi\'im et Ketouvim, dans l\'ordre juif traditionnel.';
+
+  @override
+  String get tanakhTorah => 'Torah';
+
+  @override
+  String get tanakhNeviim => 'Nevi\'im — Prophètes';
+
+  @override
+  String get tanakhKetuvim => 'Ketouvim — Écrits';
+
+  @override
+  String get hebrewBibleLabel => 'Bible hébraïque';
+
+  @override
+  String get traditionSettingTitle => 'Écritures';
 }

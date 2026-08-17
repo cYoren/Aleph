@@ -15,6 +15,8 @@ import '../features/memorization/memorization_practice_screen.dart';
 import '../features/memorization/memorization_screen.dart';
 import '../features/explain/explain_diagnostics_screen.dart';
 import '../features/readability/readability_screen.dart';
+import '../features/alphabet/alphabet_provider.dart';
+import '../features/alphabet/alphabet_screen.dart';
 import '../features/vocabulary/parsing_quiz_screen.dart';
 import '../features/vocabulary/vocabulary_screen.dart';
 import '../features/word_study/word_study_screen.dart';
@@ -113,6 +115,15 @@ final router = GoRouter(
     GoRoute(
       path: '/readability',
       builder: (context, state) => const ReadabilityScreen(),
+    ),
+    // Letter-by-letter reference for readers new to the script
+    GoRoute(
+      path: '/alphabet',
+      builder: (context, state) => AlphabetScreen(
+        initialAlphabet: state.extra is SourceAlphabet
+            ? state.extra as SourceAlphabet
+            : null,
+      ),
     ),
     // Health of the AI models answering questions
     GoRoute(

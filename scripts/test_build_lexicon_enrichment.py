@@ -8,6 +8,7 @@ import importlib.util
 import sys
 import tempfile
 import unittest
+from collections import Counter
 from pathlib import Path
 
 _SCRIPT_PATH = Path(__file__).resolve().parent / "build_full_bible_db.py"
@@ -253,6 +254,85 @@ class ExtendedLexiconParsingTest(unittest.TestCase):
         self.assertIn("love", result["G26"])
         # occurrence-count notes are metadata, not entry text
         self.assertNotIn("116", result["G26"])
+
+
+class StripGreekAccentsTest(unittest.TestCase):
+    def test_strips_accents_and_breathings(self):
+        self.assertEqual(build_db.strip_greek_accents("ἐγώ"), "εγω")
+        self.assertEqual(build_db.strip_greek_accents("σύ"), "συ")
+        self.assertEqual(build_db.strip_greek_accents("εἰμί"), "ειμι")
+        self.assertEqual(build_db.strip_greek_accents("οὗτος"), "ουτος")
+        self.assertEqual(build_db.strip_greek_accents("ἑαυτοῦ"), "εαυτου")
+        self.assertEqual(build_db.strip_greek_accents(""), "")
+
+
+class SelectCanonicalStrongsTest(unittest.TestCase):
+    def setUp(self):
+        self.dicts = {
+            "G1473": {"lemma": "ἐγώ", "strongs_def": "I (only expressed when emphatic)"},
+            "G3450": {"derivation": "of me"},
+            "G4771": {"lemma": "σύ", "strongs_def": "thou"},
+            "G5213": {"derivation": "to you"},
+            "G1510": {"lemma": "εἰμί", "strongs_def": "to be"},
+            "G2076": {"derivation": "third person singular present indicative of G1510; is"},
+            "G3778": {"lemma": "οὗτος", "strongs_def": "this"},
+            "G5124": {"derivation": "neuter of G3778; this thing"},
+            "G1438": {"lemma": "ἑαυτοῦ", "strongs_def": "of himself"},
+            "G848": {"derivation": "contracted for G1438"},
+        }
+
+    def test_prefers_dictionary_headword_over_frequent_inflections(self):
+        # ἐγώ: G3450 (564 tokens) vs G1473 (452 tokens)
+        c_ego = Counter({"G3450": 564, "G1473": 452, "G2257": 401})
+        self.assertEqual(
+            build_db.select_canonical_strongs("ἐγώ", c_ego, self.dicts),
+            "G1473",
+        )
+
+        # σύ: G5213 (607 tokens) vs G4771 (173 tokens)
+        c_su = Counter({"G5213": 607, "G5216": 558, "G4771": 173})
+        self.assertEqual(
+            build_db.select_canonical_strongs("σύ", c_su, self.dicts),
+            "G4771",
+        )
+
+        # εἰμί: G2076 (896 tokens) vs G1510 (138 tokens)
+        c_eimi = Counter({"G2076": 896, "G2258": 427, "G1510": 138})
+        self.assertEqual(
+            build_db.select_canonical_strongs("εἰμί", c_eimi, self.dicts),
+            "G1510",
+        )
+
+        # οὗτος: G3778 vs G5124
+        c_outos = Counter({"G5124": 318, "G3778": 340})
+        self.assertEqual(
+            build_db.select_canonical_strongs("οὗτος", c_outos, self.dicts),
+            "G3778",
+        )
+
+        # ἑαυτοῦ: G848 (493 tokens) vs G1438 (330 tokens)
+        c_eautou = Counter({"G848": 493, "G1438": 330})
+        self.assertEqual(
+            build_db.select_canonical_strongs("ἑαυτοῦ", c_eautou, self.dicts),
+            "G1438",
+        )
+
+    def test_falls_back_to_most_frequent_when_no_match_or_single_candidate(self):
+        c_single = Counter({"G2532": 9000})
+        self.assertEqual(
+            build_db.select_canonical_strongs("καί", c_single, self.dicts),
+            "G2532",
+        )
+
+        c_unknown = Counter({"G9998": 10, "G9999": 5})
+        self.assertEqual(
+            build_db.select_canonical_strongs("ἄγνωστος", c_unknown, self.dicts),
+            "G9998",
+        )
+
+        self.assertIsNone(
+            build_db.select_canonical_strongs("empty", Counter(), self.dicts)
+        )
 
 
 if __name__ == "__main__":

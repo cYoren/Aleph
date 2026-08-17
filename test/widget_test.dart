@@ -125,7 +125,11 @@ void main() {
       await tester.pumpWidget(_buildTestApp(const HomeScreen()));
       await tester.pump(const Duration(milliseconds: 200));
 
-      expect(find.byIcon(Icons.settings), findsOneWidget);
+      // Home deliberately carries no settings shortcut and no app title:
+      // Settings is a destination in the navigation bar, and repeating it
+      // here was pure furniture.
+      expect(find.byIcon(Icons.settings), findsNothing);
+      expect(find.byType(AppBar), findsNothing);
       expect(find.byType(ListView), findsOneWidget);
     });
   });

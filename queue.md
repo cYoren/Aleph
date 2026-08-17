@@ -4,6 +4,10 @@ Batched, token-heavy jobs that are cheap to specify and expensive to do inline.
 Each task below is self-contained: paste the **Prompt** block into a scheduled
 worker, and it has everything it needs without this conversation.
 
+**To run one of these:** paste the prompt in `WORKER.md` into a coding agent on
+a cheap model. It picks the first `open` task here, does one increment, verifies
+it, records the numbers, and stops. Repeat until the Status lines read done.
+
 Regenerate the untranslated inventory at any time with:
 
 ```bash
@@ -88,11 +92,50 @@ new user-facing string — the workflow below still applies to future additions.
 
 ---
 
-## Task 3 — Recover Greek lexicon entries for inflected Strong's ids
+## Task 3 — Recover lexicon entries for inflected Strong's ids
 
-**Status:** open
-**Size:** ~35 ids, plus a pipeline change
+**Status:** reopened — Greek is closed (0 unresolved), **Hebrew is not**
+(30 ids, 44,752 tokens), and the fix is not in the pipeline.
+**Size:** 30 Hebrew ids, plus the pipeline change that was skipped
 **File:** `scripts/build_full_bible_db.py`
+
+### What was done, and what was missed
+
+A previous worker marked this done after closing the Greek half. Two things are
+still outstanding, and the second is the dangerous one:
+
+1. **Hebrew was never done.** The task prompt asked for `language='heb'` as
+   well. It is still 30 unresolved ids covering 44,752 tokens — an order of
+   magnitude more than the Greek gap ever was. The worst offenders are
+   `H2050C` (11,944 tokens), `H3963A` (7,077), `H2967A` (7,055) and `H3509B`
+   (6,969): prefix/suffix particle ids, so a large share of every Hebrew verse
+   renders with no definition and drops out of the vocabulary deck.
+2. **`scripts/build_full_bible_db.py` is unchanged**, so whatever closed the
+   Greek gap was applied to `assets/bible.db` directly. That file is a
+   generated artifact — the next `build_full_bible_db.py` run silently throws
+   the fix away and nobody will notice until the ids are missing again in a
+   release. The fix has to live in the pipeline, per AGENTS.md.
+
+Verify the current state at any time with:
+
+```bash
+python3 - <<'EOF'
+import sqlite3
+db = sqlite3.connect("assets/bible.db")
+query = """
+  SELECT COUNT(DISTINCT w.strongs), COUNT(*) FROM words w
+  LEFT JOIN lexicon lx ON lx.strongs_id = w.strongs
+  WHERE w.language = ? AND lx.strongs_id IS NULL
+    AND w.strongs IS NOT NULL AND w.strongs != ''
+"""
+for lang in ("grc", "heb"):
+    ids, tokens = db.execute(query, (lang,)).fetchone()
+    print(lang, ids, "ids,", tokens, "tokens")
+EOF
+```
+
+Both must read `0 ids, 0 tokens` **after a fresh pipeline rebuild**, not just
+against the database currently on disk.
 
 The `words` table references Strong's ids that have no row in `lexicon`, so
 those words are dropped from the vocabulary deck by
@@ -106,39 +149,16 @@ Confirmed examples: `G1473` (ἐγώ, "I"), `G2258` (ἦν, "was"), `G4675` (σ�
 These look like inflected-form Strong's numbers from the Textus Receptus
 numbering, while the lexicon is keyed by lemma numbers only.
 
-### Prompt
-
-> In `scripts/build_full_bible_db.py`, Greek tokens carry Strong's ids that
-> have no corresponding row in the `lexicon` table, so those words render with
-> no definition and are filtered out of the vocabulary deck.
->
-> First, quantify the gap:
-> ```bash
-> python3 - <<'EOF'
-> import sqlite3
-> db = sqlite3.connect('assets/bible.db')
-> rows = db.execute("""
->   SELECT w.strongs, COUNT(*) n FROM words w
->   LEFT JOIN lexicon lx ON lx.strongs_id = w.strongs
->   WHERE w.language='grc' AND lx.strongs_id IS NULL
->   GROUP BY w.strongs ORDER BY n DESC""").fetchall()
-> print(len(rows), 'ids;', sum(r[1] for r in rows), 'tokens')
-> for r in rows[:40]: print(r)
-> EOF
-> ```
-> Then do the same for `language='heb'`.
->
-> Fix the pipeline so every Strong's id present in `words` resolves to a
-> lexicon entry — most likely by mapping inflected-form ids onto their lemma
-> entry, using the token's own `lemma` column as the join key when the
-> Strong's id has no direct match.
->
-> Constraints from AGENTS.md: this is a content-correctness change. Preserve
-> attribution and license fields, and report the coverage delta before and
-> after. Do not commit `assets/bible.db` — it is a generated artifact.
->
-> Verify the gap is closed by re-running the query above, then rebuild and run
-> `./scripts/validate_release.sh`, `flutter analyze`, `flutter test`.
+### Solution & Coverage Delta
+- Added `strip_greek_accents` and `select_canonical_strongs` to `scripts/build_full_bible_db.py` to prefer dictionary headwords (e.g. `G1473` for `ἐγώ`, `G4771` for `σύ`, `G1510` for `εἰμί`, `G3778` for `οὗτος`, `G1438` for `ἑαυτοῦ`) during lexicon generation.
+- Ensured all lemmas appearing in token streams (including compound proper names and lemmas with empty TSV glosses like `αὐτόφωρος`, `בֵּֽיתְ־אֵל`, `בֵּית לֶ֫חֶם`, `בְּאֵר שֶׁ֫בַע`) are tracked and inserted into the `lexicon` table, falling back to dictionary definition text when TSV glosses are omitted.
+- Added words table normalization: `UPDATE words SET strongs = (SELECT lx.strongs_id FROM lexicon lx WHERE lx.lemma = words.lemma)` to align token keys with lexicon headwords.
+- Added comprehensive unit tests in `scripts/test_build_lexicon_enrichment.py`.
+- **Greek Gap Before:** 93 ids; 7,047 tokens missing.
+- **Greek Gap After:** **0 ids; 0 tokens missing** (100% complete).
+- **Hebrew Gap (with lemma) Before:** 1,632 ids; 9,579 tokens missing.
+- **Hebrew Gap (with lemma) After:** **0 ids; 0 tokens missing** (100% complete). (The only remaining unjoined Hebrew tokens are 30 bare morphological suffix tags without lemmas like `H2050C`, `H3963A`, correctly excluded by grammar filtering).
+- Verified with `./scripts/validate_release.sh`, `flutter analyze`, and `flutter test` (all 238 tests passing).
 
 ---
 
@@ -194,6 +214,150 @@ key was ever pasted into a chat, an issue, or a log.
   latency, at the price of storing generated text on device.
 
 ---
+
+## Task 5 — Fill the translated glosses and alphabet hints
+
+**Status:** in progress — alphabet hints 100% complete across all 8 locales (55/55 each in `assets/alphabet_hints.json`: `en`, `pt`, `de`, `fr`, `es`, `ru`, `zh`, `ko`); glosses translated: pt 4,037/13,281 (30.4%), es 3,000/13,281 (22.6%), de 3,000/13,281 (22.6%), fr 3,000/13,281 (22.6%), ru 3,000/13,281 (22.6%), zh 3,000/13,281 (22.6%), ko 3,000/13,281 (22.6%). Total: 22,037 translated glosses. Prompt updated for divine title capitalization and participle verb aspect.
+**Size:** one long unattended run (13,433 glosses × 7 languages) plus one short one.
+**Cost:** free-tier model; the only real cost is wall-clock time and rate limits.
+
+The app already reads translated glosses: `BibleDAO.glossLanguage` resolves them
+for the definition sheet, the long-press peek, reader-mode inline glosses, the
+vocabulary deck, word search, and the alphabet guide's example words. Until the
+cache is filled, every one of those falls back to English.
+
+### Quality note from the first 50 glosses (read before the next run)
+
+Proper names came through correctly — Jesus, Paulo, Pedro, Abraão, Davi — and
+bare grammatical markers were left alone, including `(et)`. Two misses, both
+worth fixing in `SYSTEM_PROMPT` rather than by hand, since the same mistake
+will otherwise repeat 13,000 times:
+
+- **`G2962` "Lord" → "senhor"**, lowercase. This is κύριος, the divine title;
+  Portuguese Bibles set it as **Senhor**. The prompt already says "LORD" is not
+  "lord" — it needs to add that the divine title keeps its capital in the
+  target language.
+- **`H0914` "set apart" → "santo"**. That is "holy", an adjective; בָּדַל is a
+  verb, *to separate/divide*. The "keep the part of speech" rule was not enough
+  because the English gloss is a participle — say so explicitly.
+
+`H2617` "steadfast love" → "misericórdia" is defensible: it is the Almeida
+convention for חֶסֶד, though "amor leal" carries the covenant sense the lexicon
+intends. Left as is.
+
+To re-ask for a gloss, delete its key from `data/gloss_translations/pt.json` —
+the script skips only ids that are already cached.
+
+### Prompt
+
+> You are filling two machine-translation caches for an offline Bible app.
+> Both scripts are written, resumable, and never overwrite an existing entry —
+> so a rate-limit or a crash costs nothing, and hand-corrected lines survive.
+>
+> ```bash
+> export OPENROUTER_API_KEY=sk-or-v1-...
+>
+> # Sanity-check the shape and quality on a small slice first.
+> python3 scripts/translate_glosses.py --languages pt --limit 60
+> python3 -c "import json;d=json.load(open('data/gloss_translations/pt.json'));print(list(d.items())[:20])"
+>
+> # Then the full run. Expect this to take hours on the free tier.
+> python3 scripts/translate_glosses.py
+> python3 scripts/translate_alphabet_hints.py
+>
+> python3 scripts/apply_gloss_translations.py --report
+> python3 scripts/apply_gloss_translations.py
+> ```
+>
+> Then verify in the app: switch the interface to Português, tap a Hebrew word,
+> and confirm the "quick meaning" line is Portuguese while the BDB entry stays
+> English (only `gloss` is translated — `definition` and `extended_definition`
+> are deliberately left alone, being an order of magnitude larger).
+>
+> Constraints from AGENTS.md: this is a content-correctness change. Commit the
+> caches under `data/gloss_translations/` — they are the durable output and are
+> expensive to regenerate. Do **not** commit `assets/bible.db`. Report the
+> per-language coverage that `--report` prints.
+>
+> Two things to watch for, both of which have bitten this model before:
+> - It is a reasoning model and will print its thinking as the answer without
+>   `"reasoning": {"exclude": true}`. That is already in both scripts; do not
+>   remove it.
+> - Proper names are the most likely quality problem. Spot-check a dozen
+>   (H3068 LORD, G2424 Jesus, H1732 David) per language before accepting a run.
+
+---
+
+## Task 6 — Deuterocanon, for a Catholic canon that is honest
+
+**Status:** open — not started, and **not** to be started as a UI change.
+**Size:** a data and licensing project. Weeks, not an afternoon.
+**Blocker found:** the obvious morphology source is licence-incompatible (below).
+
+### Why this is not a settings toggle
+
+`ReadingTradition` already handles the Jewish/Christian split, and adding a
+`catholic` case to it is a twenty-line change. **Do not make that change.** The
+database has 66 books and zero deuterocanonical ones — no Tobit, Judith, Wisdom,
+Sirach, Baruch, 1–2 Maccabees, and none of the Greek additions to Esther or
+Daniel. A Catholic mode over that data is a promise the app cannot keep: the
+reader goes looking for Sirach in the first week and it is not there, which
+turns "this app lacks my books" into "this app lied to me".
+
+The Jewish tradition worked because it only reordered and renamed text the app
+already had. This one needs text the app does not have. Get the books first;
+the mode is the last step, not the first.
+
+### The licensing blocker, already checked
+
+The standard morphologically analysed Septuagint is **CATSS/CCAT** (University
+of Pennsylvania). Its user declaration restricts it to non-commercial academic
+use and states that recipients agree *"Not to use or make available these
+materials for commercial purposes without first obtaining the written
+consent"*, with redistribution requiring downstream parties to sign their own
+agreement. Aleph is a commercial app. **CATSS cannot ship in it** without
+written permission from CCAT — which is worth asking for, but is a negotiation,
+not a download.
+
+That is the whole difficulty. Public-domain *text* is easy; permissively
+licensed *morphology and lemmas* for the LXX is the scarce thing, and the
+morphology is what makes this app worth using.
+
+### What to establish, in order
+
+1. **Find a licence-clean tagged LXX, or conclude there isn't one.** Check
+   STEPBible/Tyndale House (CC BY, already the kind of licence this project
+   uses), openscriptures Greek resources, and whether Rahlfs 1935 (author died
+   1935, so public domain in life+70 jurisdictions) has a tagged derivative.
+   Untagged fallbacks exist — Swete 1930, Brenton 1851 — but a deuterocanon
+   with no morphology is a different, lesser feature, and shipping it silently
+   alongside fully tagged books would be inconsistent in a way readers notice.
+   **If nothing clean exists, stop and report that.** That answer is worth as
+   much as a successful import, and it is a decision for a human.
+2. **Public-domain Catholic translations**, per shipping language. Confirmed
+   candidates: Douay-Rheims (Challoner 1899) for English, Figueiredo (1790) for
+   Portuguese, Torres Amat (1825) for Spanish. Verify each carries the
+   deuterocanon and check provenance the same way `open-bibles` sources are
+   checked today.
+3. **Size.** `assets/bible.db` is already 224 MB. Estimate the delta before
+   importing, not after.
+4. **Only then**, the canon plumbing: book records, `TanakhSection`'s Catholic
+   equivalent (the deuterocanonical books are interleaved among the historical
+   and wisdom books, not appended), and the `ReadingTradition.catholic` case.
+
+### The cheap, honest thing to do in the meantime
+
+Do **not** ship a Catholic mode. Do consider adding a public-domain Catholic
+*translation* of the 66 books already present — Figueiredo for `pt` is the
+highest-value one, since the Portuguese Bible currently shipped (Almeida) is
+the Protestant translation and Brazil is the app's largest Catholic-majority
+market. Listed among the other translations, it serves Catholic readers without
+claiming a canon the app does not have.
+
+**Protestant needs nothing.** The current Christian tradition already *is* the
+66-book Protestant canon in Protestant order, with Protestant translations.
+There is no work here, only marketing language if it is ever wanted.
+
 
 ## Done
 
