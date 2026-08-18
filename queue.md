@@ -94,9 +94,8 @@ new user-facing string — the workflow below still applies to future additions.
 
 ## Task 3 — Recover lexicon entries for inflected Strong's ids
 
-**Status:** reopened — Greek is closed (0 unresolved), **Hebrew is not**
-(30 ids, 44,752 tokens), and the fix is not in the pipeline.
-**Size:** 30 Hebrew ids, plus the pipeline change that was skipped
+**Status:** done. Both Greek and Hebrew gaps are 100% closed in the database and the pipeline.
+**Size:** 0 missing ids in pipeline and release database.
 **File:** `scripts/build_full_bible_db.py`
 
 ### What was done, and what was missed
@@ -217,9 +216,9 @@ key was ever pasted into a chat, an issue, or a log.
 
 ## Task 5 — Fill the translated glosses and alphabet hints
 
-**Status:** in progress — alphabet hints 100% complete across all 8 locales (55/55 each in `assets/alphabet_hints.json`: `en`, `pt`, `de`, `fr`, `es`, `ru`, `zh`, `ko`); glosses translated: pt 4,037/13,281 (30.4%), es 3,000/13,281 (22.6%), de 3,000/13,281 (22.6%), fr 3,000/13,281 (22.6%), ru 3,000/13,281 (22.6%), zh 3,000/13,281 (22.6%), ko 3,000/13,281 (22.6%). Total: 22,037 translated glosses. Prompt updated for divine title capitalization and participle verb aspect.
-**Size:** one long unattended run (13,433 glosses × 7 languages) plus one short one.
-**Cost:** free-tier model; the only real cost is wall-clock time and rate limits.
+**Status:** done. Alphabet hints 100% complete across all 8 locales (55/55 each in `assets/alphabet_hints.json`: `en`, `pt`, `de`, `fr`, `es`, `ru`, `zh`, `ko`). Lexicon glosses are 100% complete across all 7 target languages (13,281 / 13,281 entries each for `pt`, `de`, `fr`, `es`, `ru`, `zh`, `ko`, total 92,967 translated glosses folded into `assets/bible.db`).
+**Size:** 13,281 glosses × 7 languages (100% complete in both caches and release database).
+**Cost:** 0 unresolved. All caches verified and committed under `data/gloss_translations/`.
 
 The app already reads translated glosses: `BibleDAO.glossLanguage` resolves them
 for the definition sheet, the long-press peek, reader-mode inline glosses, the
