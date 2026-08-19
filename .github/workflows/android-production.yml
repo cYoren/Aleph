@@ -41,6 +41,11 @@ jobs:
             --emit-coverage-report build/coverage_report.json
       - name: Validate release
         run: bash ./scripts/validate_release.sh
+      - name: Install Android signing assets
+        run: |
+          set -euo pipefail
+          cp "$HOME/Documents/Coding/Original bible/android/key.properties" android/key.properties
+          cp "$HOME/Documents/Coding/Original bible/android/app/release-keystore.jks" android/app/release-keystore.jks
       - name: Build signed Android App Bundle
         run: flutter build appbundle --release
       - name: Upload production bundle
