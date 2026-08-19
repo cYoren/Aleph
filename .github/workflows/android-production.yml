@@ -13,6 +13,11 @@ jobs:
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: gradle
       - name: Install Flutter dependencies
         run: flutter pub get
       - name: Generate providers
@@ -28,7 +33,7 @@ jobs:
             --fill-kjv-gaps \
             --emit-coverage-report build/coverage_report.json
       - name: Validate release
-        run: ./scripts/validate_release.sh
+        run: bash ./scripts/validate_release.sh
       - name: Build signed Android App Bundle
         run: flutter build appbundle --release
       - name: Upload production bundle
