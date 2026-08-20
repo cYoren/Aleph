@@ -1,7 +1,8 @@
 # Worker prompt
 
-Paste the block below into a coding agent on a cheap model, in this repo. It
-does **one increment** of the next open task in `queue.md`, verifies it, records
+Paste the block below into a coding agent on a free model, in this repo. For queue
+planning and research, prefer `stealth/ox-alpha`. It does **one increment** of the
+next open task in `queue.md`, verifies it, records
 what it did, and stops. Paste it again to do the next increment. Nothing else
 is needed — no context from previous sessions.
 
@@ -92,9 +93,11 @@ session, where those tokens are expensive.
 >
 > - **Never commit `assets/bible.db`.** It is a 228 MB generated artifact. The
 >   durable output is the cache under `data/`, which you *should* commit.
-> - **Free models only.** Default to `nvidia/nemotron-3.5-lightning:free`. Do
->   not switch to a paid model to work around a rate limit — wait, or reduce
->   `--batch-size`.
+> - **Free models only.** Use `stealth/ox-alpha` for queue planning, research, and
+>   Kanban handoffs when the harness supports an explicit model. The bulk
+>   translation scripts have their own tested model defaults; do not replace those
+>   defaults without a content-quality benchmark. Do not switch to a paid model to
+>   work around a rate limit — wait, or reduce `--batch-size`.
 > - **Do not redesign anything.** The reading experience, the parchment/gold
 >   theme in `lib/app/theme.dart`, the home screen layout, and the alphabet
 >   guide are settled. Do not add settings, badges, banners, streaks, tooltips,
