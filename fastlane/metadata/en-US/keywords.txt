@@ -1,1 +1,1 @@
-bible,hebrew,greek,scripture,translation,KJV,interlinear,study,faith,word
+septuagint,strongs,koine,morphology,exegesis,concordance,seminary,scripture,torah,verse,study
