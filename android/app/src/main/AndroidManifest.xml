@@ -41,5 +41,24 @@
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
         </intent>
+
+        <!-- Recitation. From Android 11 on, package visibility hides other apps
+             unless they are declared here. A preinstalled speech engine stays
+             visible anyway because system packages are queryable by everyone,
+             which is why this is easy to omit and not notice; an engine the user
+             installed themselves, or an OEM build that does not privilege its
+             own, is not visible without this. Declaring both is what the
+             platform documentation asks for.
+
+             TTS_SERVICE lets the TextToSpeech client bind to the engine at all.
+             INSTALL_TTS_DATA lets us start the engine's voice installer, which
+             is the one-tap route the reader is offered when a voice is missing;
+             an undeclared implicit intent to a hidden package simply throws. -->
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE"/>
+        </intent>
+        <intent>
+            <action android:name="android.speech.tts.engine.INSTALL_TTS_DATA"/>
+        </intent>
     </queries>
 </manifest>

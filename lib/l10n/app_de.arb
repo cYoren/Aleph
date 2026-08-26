@@ -238,8 +238,10 @@
   "phraseSpacingDesc": "Gliedert den hebräischen Text an den masoretischen Akzenten, sodass ein Vers in Sinneinheiten statt Wort für Wort gelesen wird.",
   "recitationVoiceTitle": "Stimme für das Vorlesen",
   "recitationVoiceDesc": "Vorgelesen von den Sprachstimmen Ihres Geräts: modernes Israelisch für Hebräisch, modernes Griechisch für Griechisch. Das sind lebendige Lesetraditionen, nicht die rekonstruierte antike Aussprache.",
-  "voiceMissing": "Auf diesem Gerät ist keine hebräische oder griechische Stimme installiert. Fügen Sie in den Sprachausgabe-Einstellungen Ihres Systems eine hinzu, um den Text zu hören.",
+  "voiceMissing": "Ihr Gerät benötigt eine hebräische oder griechische Sprachausgabe, um den Text vorzulesen. Die Installation dauert nur einen Moment und ist einmalig.",
   "voiceUnsupported": "Auf diesem Gerät ist keine Sprachausgabe verfügbar.",
+  "voiceInstall": "Stimme installieren",
+  "voiceInstallUnavailable": "Auf diesem Gerät lässt sich keine Stimmen-Installation öffnen.",
   "recitationFailed": "Das Vorlesen konnte nicht gestartet werden.",
   "readBook": "{book} lesen",
   "@readBook": {
