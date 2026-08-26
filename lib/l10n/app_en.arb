@@ -290,8 +290,10 @@
   "phraseSpacingDesc": "Space the Hebrew at the Masoretic accents, so a verse reads in sense units instead of word by word.",
   "recitationVoiceTitle": "Recitation voice",
   "recitationVoiceDesc": "Read aloud by your device's speech voices: Modern Israeli for Hebrew, Modern Greek for Greek. These are living reading traditions, not reconstructed ancient pronunciation.",
-  "voiceMissing": "No Hebrew or Greek voice is installed on this device. Add one in your system speech settings to hear the text read aloud.",
+  "voiceMissing": "Your device needs a Hebrew or Greek speech voice to read this aloud. Installing one takes a moment and only has to be done once.",
   "voiceUnsupported": "This device has no speech engine available.",
+  "voiceInstall": "Install voice",
+  "voiceInstallUnavailable": "This device has no voice installer to open.",
   "recitationFailed": "Recitation could not be started.",
   "readBook": "Read {book}",
   "@readBook": {

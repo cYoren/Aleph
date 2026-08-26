@@ -599,10 +599,16 @@ class AppLocalizationsZh extends AppLocalizations {
       '使用设备的语音朗读：希伯来文为现代以色列发音，希腊文为现代希腊发音。这是沿用至今的诵读传统，并非重建的古代发音。';
 
   @override
-  String get voiceMissing => '本设备未安装希伯来文或希腊文语音。请在系统的语音设置中添加，以便朗读经文。';
+  String get voiceMissing => '朗读需要设备安装希伯来语或希腊语语音。安装只需片刻，且只需一次。';
 
   @override
   String get voiceUnsupported => '本设备没有可用的语音引擎。';
+
+  @override
+  String get voiceInstall => '安装语音';
+
+  @override
+  String get voiceInstallUnavailable => '此设备没有可打开的语音安装程序。';
 
   @override
   String get recitationFailed => '无法开始朗读。';

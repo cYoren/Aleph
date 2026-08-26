@@ -626,11 +626,18 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get voiceMissing =>
-      'No hay ninguna voz de hebreo o griego instalada en este dispositivo. Añade una en los ajustes de voz del sistema para escuchar el texto.';
+      'Tu dispositivo necesita una voz en hebreo o griego para leer en voz alta. Instalar una lleva un momento y solo hay que hacerlo una vez.';
 
   @override
   String get voiceUnsupported =>
       'Este dispositivo no tiene ningún motor de voz disponible.';
+
+  @override
+  String get voiceInstall => 'Instalar voz';
+
+  @override
+  String get voiceInstallUnavailable =>
+      'Este dispositivo no tiene un instalador de voces que abrir.';
 
   @override
   String get recitationFailed => 'No se pudo iniciar la lectura.';

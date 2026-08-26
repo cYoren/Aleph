@@ -194,8 +194,14 @@ void main() {
     expect(service.spoken, isEmpty);
     expect(find.byIcon(Icons.volume_off_outlined), findsOneWidget);
     expect(
-      find.textContaining('No Hebrew or Greek voice is installed'),
+      find.textContaining('needs a Hebrew or Greek speech voice'),
       findsOneWidget,
     );
+
+    // The notice says installing is quick and one-off rather than describing a
+    // route through the system settings — on Android the button beside it does
+    // the navigating. These tests run on the host, where there is no installer
+    // to offer, so only the wording is asserted here.
+    expect(find.textContaining('system speech settings'), findsNothing);
   });
 }

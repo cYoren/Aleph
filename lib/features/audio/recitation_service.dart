@@ -26,37 +26,94 @@ enum VoiceAvailability {
   unsupported,
 }
 
+/// Maps a 1.0-is-normal multiplier onto the platform's own speech-rate scale.
+///
+/// The two platforms do not share a scale, and flutter_tts passes the number
+/// through untouched rather than reconciling them:
+///
+/// * iOS wants a 0.0..1.0 position across the engine's range, where 0.5 —
+///   `AVSpeechUtteranceDefaultSpeechRate` — is an ordinary pace.
+/// * Android wants the multiplier itself, where 1.0 is an ordinary pace.
+///
+/// Halving for both, as this once did, leaves every Android reading at half the
+/// pace the reader chose: the default setting drawls along at a quarter speed,
+/// and the slowest one is barely speech at all.
+@visibleForTesting
+double platformSpeechRate(double rate, {required bool isAndroid}) =>
+    isAndroid ? rate.clamp(0.1, 4.0) : (rate * 0.5).clamp(0.0, 1.0);
+
 /// Speaks prepared original-language text.
 class RecitationService {
-  RecitationService({FlutterTts? tts}) : _tts = tts ?? FlutterTts();
+  RecitationService({FlutterTts? tts}) : _tts = tts ?? FlutterTts() {
+    _installUtteranceHandlers();
+  }
 
   final FlutterTts _tts;
   bool _configured = false;
   String? _currentLanguage;
 
-  /// Cache so we do not re-probe the engine on every verse.
-  final Map<String, VoiceAvailability> _availability = {};
+  /// Resolved when the engine reports the current utterance finished, was
+  /// cancelled, or failed. See [speak] for why the `speak` call itself is not
+  /// what we wait on.
+  Completer<bool>? _utterance;
+
+  /// The tag each requested language is actually spoken with.
+  ///
+  /// Only successes are kept. A missing voice is something the reader can go
+  /// and install, and caching "no" would keep the app insisting the voice is
+  /// absent for the rest of the session after they had installed it.
+  final Map<String, String> _resolved = {};
 
   /// Whether the engine has a voice for [languageCode] (a BCP-47 tag).
   Future<VoiceAvailability> availabilityFor(String languageCode) async {
-    final cached = _availability[languageCode];
-    if (cached != null) return cached;
+    if (_resolved.containsKey(languageCode)) return VoiceAvailability.ready;
 
-    VoiceAvailability result;
     try {
-      final available = await _tts.isLanguageAvailable(languageCode);
-      result = (available == true)
-          ? VoiceAvailability.ready
-          : VoiceAvailability.voiceMissing;
+      final voice = await _findVoice(languageCode);
+      if (voice == null) return VoiceAvailability.voiceMissing;
+      _resolved[languageCode] = voice;
+      return VoiceAvailability.ready;
     } catch (e) {
       if (kDebugMode) {
         debugPrint('RecitationService availability probe failed: $e');
       }
-      result = VoiceAvailability.unsupported;
+      return VoiceAvailability.unsupported;
+    }
+  }
+
+  /// Finds a tag the engine will speak [languageCode] with, or null.
+  Future<String?> _findVoice(String languageCode) async {
+    // The exact tag first: it is what a properly installed voice reports, and
+    // what gives the intended regional pronunciation.
+    if (await _tts.isLanguageAvailable(languageCode) == true) {
+      return languageCode;
     }
 
-    _availability[languageCode] = result;
-    return result;
+    // Then any installed voice for the same language. Engines differ on how
+    // they name one — Hebrew turns up as `he-IL`, bare `he`, or the legacy
+    // `iw-IL` that Java still emits — and turning down a voice sitting right
+    // there on the device, to tell the reader none is installed, is the worst
+    // of both answers.
+    final installed = await _tts.getLanguages;
+    if (installed is! List) return null;
+
+    final wanted = _languageOf(languageCode);
+    for (final entry in installed) {
+      final tag = entry?.toString();
+      if (tag == null || tag.isEmpty) continue;
+      if (_languageOf(tag) == wanted) return tag;
+    }
+    return null;
+  }
+
+  /// The language subtag of [tag], with Hebrew's two spellings folded together.
+  ///
+  /// Hebrew changed ISO code from `iw` to `he` decades ago and Java never
+  /// followed, so the same voice answers to either depending on which layer is
+  /// asked. Greek's `el` has no such history.
+  static String _languageOf(String tag) {
+    final language = tag.split(RegExp('[-_]')).first.toLowerCase();
+    return language == 'iw' ? 'he' : language;
   }
 
   /// Points the engine at a language and speaking rate.
@@ -75,9 +132,12 @@ class RecitationService {
       _configured = true;
     }
 
-    if (_currentLanguage != languageCode) {
-      await _tts.setLanguage(languageCode);
-      _currentLanguage = languageCode;
+    // The engine may have answered with a different tag than the one asked for
+    // — see [_findVoice] — and it will only speak with the one it named.
+    final voice = _resolved[languageCode] ?? languageCode;
+    if (_currentLanguage != voice) {
+      await _tts.setLanguage(voice);
+      _currentLanguage = voice;
     }
 
     await _tts.setSpeechRate(_platformRate(rate));
@@ -118,26 +178,68 @@ class RecitationService {
     }
   }
 
-  /// Maps a 1.0-is-normal multiplier onto the platform scale.
+  double _platformRate(double rate) =>
+      platformSpeechRate(rate, isAndroid: Platform.isAndroid);
+
+  /// Subscribes to the engine's own notion of an utterance ending.
   ///
-  /// Both iOS and Android take 0.0..1.0 from flutter_tts, with roughly 0.5 as
-  /// a normal pace, so a plain halving gets us close on both.
-  double _platformRate(double rate) => (rate * 0.5).clamp(0.0, 1.0);
+  /// The chapter loop needs a signal that arrives on **every** outcome, and the
+  /// `speak` call is not one: when an Android utterance errors, the engine
+  /// reports it through this error callback and never answers the pending
+  /// `speak`, so a service that awaited `speak` alone would sit on one verse
+  /// forever with the transport bar showing it as still playing. Listening here
+  /// turns that hang into an ordinary failure the reader can report.
+  void _installUtteranceHandlers() {
+    _tts.setCompletionHandler(() => _settleUtterance(true));
+    _tts.setCancelHandler(() => _settleUtterance(false));
+    _tts.setErrorHandler((dynamic message) {
+      if (kDebugMode) {
+        debugPrint('RecitationService engine reported: $message');
+      }
+      _settleUtterance(false);
+    });
+  }
+
+  /// Ends the wait started by [speak], if one is outstanding.
+  void _settleUtterance(bool spoken) {
+    final pending = _utterance;
+    _utterance = null;
+    if (pending != null && !pending.isCompleted) pending.complete(spoken);
+  }
 
   /// Speaks [text] and returns when the utterance has finished.
   ///
-  /// Returns false when the engine refused the utterance.
+  /// Returns false when the engine refused or failed the utterance.
   Future<bool> speak(String text) async {
     if (text.trim().isEmpty) return true;
-    try {
-      await _tts.speak(text);
-      return true;
-    } catch (e) {
-      if (kDebugMode) {
-        debugPrint('RecitationService speak failed: $e');
-      }
-      return false;
-    }
+
+    // Nothing should still be waiting, but an abandoned utterance must not
+    // capture the callback that belongs to this one.
+    _settleUtterance(false);
+    final utterance = Completer<bool>();
+    _utterance = utterance;
+
+    // Deliberately not awaited — see [_installUtteranceHandlers]. This call is
+    // still worth watching for the one thing the callbacks do not cover: a
+    // refusal, where the engine declines the text up front and so never starts
+    // an utterance to report on.
+    unawaited(
+      _tts
+          .speak(text)
+          .then(
+            (result) {
+              if (result == 0) _settleUtterance(false);
+            },
+            onError: (Object e) {
+              if (kDebugMode) {
+                debugPrint('RecitationService speak failed: $e');
+              }
+              _settleUtterance(false);
+            },
+          ),
+    );
+
+    return utterance.future;
   }
 
   /// Stops the current utterance immediately.
@@ -149,6 +251,10 @@ class RecitationService {
         debugPrint('RecitationService stop failed: $e');
       }
     }
+    // Android reports a stop through the cancel callback, but only for an
+    // utterance that had already begun sounding; releasing the wait here covers
+    // a stop that lands while the engine is still starting up.
+    _settleUtterance(false);
   }
 
   void dispose() {

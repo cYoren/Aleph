@@ -623,11 +623,18 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get voiceMissing =>
-      'Aucune voix hébraïque ou grecque n\'est installée sur cet appareil. Ajoutez-en une dans les réglages de synthèse vocale du système pour entendre le texte.';
+      'Votre appareil a besoin d\'une voix hébraïque ou grecque pour lire à voix haute. L\'installation prend un instant et ne se fait qu\'une fois.';
 
   @override
   String get voiceUnsupported =>
       'Aucun moteur de synthèse vocale n\'est disponible sur cet appareil.';
+
+  @override
+  String get voiceInstall => 'Installer une voix';
+
+  @override
+  String get voiceInstallUnavailable =>
+      'Cet appareil n\'a pas d\'installateur de voix à ouvrir.';
 
   @override
   String get recitationFailed => 'Impossible de démarrer la lecture.';
