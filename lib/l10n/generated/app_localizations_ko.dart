@@ -606,10 +606,16 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get voiceMissing =>
-      '이 기기에 히브리어 또는 그리스어 음성이 설치되어 있지 않습니다. 시스템 음성 설정에서 추가하면 본문을 들을 수 있습니다.';
+      '소리 내어 읽으려면 기기에 히브리어 또는 그리스어 음성이 필요합니다. 설치는 잠시면 되고 한 번만 하면 됩니다.';
 
   @override
   String get voiceUnsupported => '이 기기에는 사용할 수 있는 음성 엔진이 없습니다.';
+
+  @override
+  String get voiceInstall => '음성 설치';
+
+  @override
+  String get voiceInstallUnavailable => '이 기기에는 열 수 있는 음성 설치 프로그램이 없습니다.';
 
   @override
   String get recitationFailed => '낭독을 시작할 수 없습니다.';

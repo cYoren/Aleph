@@ -5,6 +5,7 @@ import '../../../l10n/generated/app_localizations.dart';
 import '../recitation_provider.dart';
 import '../recitation_service.dart';
 import '../recitation_text.dart';
+import '../voice_setup.dart';
 
 /// Transport controls shown while a chapter is being recited.
 ///
@@ -137,6 +138,11 @@ class _RateSelector extends ConsumerWidget {
 
 /// Explains why nothing is being spoken, which on Android is usually a missing
 /// voice download rather than anything the app can fix.
+///
+/// A missing voice gets a button rather than instructions. The reader wanted to
+/// hear a chapter, not to learn where Android files its speech settings, and an
+/// explanation of the route to "Install voice data" is where most people stop
+/// and conclude the feature is broken.
 class _FailureNotice extends StatelessWidget {
   const _FailureNotice({required this.failure, required this.onDismiss});
 
@@ -154,6 +160,11 @@ class _FailureNotice extends StatelessWidget {
       _ => l10n.recitationFailed,
     };
 
+    // Only a missing voice is something the reader can act on: no engine at all
+    // has nothing to install, and a mid-utterance failure is not about voices.
+    final offerInstall =
+        failure == VoiceAvailability.voiceMissing && canInstallVoices;
+
     return Material(
       elevation: 3,
       color: colorScheme.errorContainer,
@@ -161,32 +172,75 @@ class _FailureNotice extends StatelessWidget {
         top: false,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 10, 8, 10),
-          child: Row(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(
-                Icons.volume_off_outlined,
-                size: 20,
-                color: colorScheme.onErrorContainer,
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  message,
-                  style: TextStyle(
-                    fontSize: 12,
+              Row(
+                children: [
+                  Icon(
+                    Icons.volume_off_outlined,
+                    size: 20,
                     color: colorScheme.onErrorContainer,
                   ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      message,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: colorScheme.onErrorContainer,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close, size: 20),
+                    color: colorScheme.onErrorContainer,
+                    onPressed: onDismiss,
+                  ),
+                ],
+              ),
+              if (offerInstall)
+                Padding(
+                  padding: const EdgeInsets.only(left: 32),
+                  child: const _InstallVoiceButton(),
                 ),
-              ),
-              IconButton(
-                icon: const Icon(Icons.close, size: 20),
-                color: colorScheme.onErrorContainer,
-                onPressed: onDismiss,
-              ),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Takes the reader straight to the system's voice installer.
+class _InstallVoiceButton extends StatelessWidget {
+  const _InstallVoiceButton();
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context)!;
+    final messenger = ScaffoldMessenger.of(context);
+
+    return TextButton.icon(
+      icon: const Icon(Icons.download_outlined, size: 18),
+      label: Text(l10n.voiceInstall),
+      style: TextButton.styleFrom(
+        foregroundColor: colorScheme.onErrorContainer,
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        visualDensity: VisualDensity.compact,
+      ),
+      onPressed: () async {
+        final opened = await openVoiceDownload();
+        // Saying so beats a button that silently does nothing on the handful of
+        // builds that ship no installer.
+        if (!opened) {
+          messenger.showSnackBar(
+            SnackBar(content: Text(l10n.voiceInstallUnavailable)),
+          );
+        }
+      },
     );
   }
 }
@@ -229,11 +283,18 @@ class _SpeakWordButtonState extends ConsumerState<SpeakWordButton> {
       final tradition = widget.isHebrew
           ? PronunciationTradition.modernIsraeli
           : PronunciationTradition.modernGreek;
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            AppLocalizations.of(context)!.voiceMissingFor(tradition.label),
-          ),
+          content: Text(l10n.voiceMissingFor(tradition.label)),
+          // Without this the message is a dead end: it names the missing voice
+          // and leaves the reader to find the installer on their own.
+          action: canInstallVoices
+              ? SnackBarAction(
+                  label: l10n.voiceInstall,
+                  onPressed: openVoiceDownload,
+                )
+              : null,
         ),
       );
     }

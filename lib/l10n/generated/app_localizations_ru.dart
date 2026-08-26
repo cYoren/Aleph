@@ -632,11 +632,18 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get voiceMissing =>
-      'На этом устройстве не установлен голос для иврита или греческого. Добавьте его в системных настройках синтеза речи, чтобы слышать текст.';
+      'Чтобы читать вслух, устройству нужен голос для иврита или греческого. Установка занимает минуту и требуется лишь один раз.';
 
   @override
   String get voiceUnsupported =>
       'На этом устройстве нет доступного синтезатора речи.';
+
+  @override
+  String get voiceInstall => 'Установить голос';
+
+  @override
+  String get voiceInstallUnavailable =>
+      'На этом устройстве нет установщика голосов.';
 
   @override
   String get recitationFailed => 'Не удалось начать чтение.';

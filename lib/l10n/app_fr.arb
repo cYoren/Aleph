@@ -238,8 +238,10 @@
   "phraseSpacingDesc": "Espace le texte hébreu aux accents massorétiques, afin de lire le verset par unités de sens plutôt que mot à mot.",
   "recitationVoiceTitle": "Voix de lecture",
   "recitationVoiceDesc": "Lecture par les voix de synthèse de votre appareil : hébreu israélien moderne et grec moderne. Ce sont des traditions de lecture vivantes, et non la prononciation antique reconstituée.",
-  "voiceMissing": "Aucune voix hébraïque ou grecque n'est installée sur cet appareil. Ajoutez-en une dans les réglages de synthèse vocale du système pour entendre le texte.",
+  "voiceMissing": "Votre appareil a besoin d'une voix hébraïque ou grecque pour lire à voix haute. L'installation prend un instant et ne se fait qu'une fois.",
   "voiceUnsupported": "Aucun moteur de synthèse vocale n'est disponible sur cet appareil.",
+  "voiceInstall": "Installer une voix",
+  "voiceInstallUnavailable": "Cet appareil n'a pas d'installateur de voix à ouvrir.",
   "recitationFailed": "Impossible de démarrer la lecture.",
   "readBook": "Lire {book}",
   "@readBook": {
