@@ -24,6 +24,12 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<!-- The app ships no encryption of its own; it uses only what iOS provides
+	     over HTTPS, which is exempt. Declaring it here means each upload arrives
+	     already answered, instead of every build stalling in App Store Connect
+	     on "Uses Non-Exempt Encryption" before it can be submitted. -->
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIApplicationSceneManifest</key>
