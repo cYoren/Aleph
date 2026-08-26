@@ -78,16 +78,20 @@ def compose_one(framed_path: Path, out_path: Path, headline: str, sub: str) -> N
 # simulator window. Patch ONLY the arc; a larger corner patch destroys UI.
 ARC_X0, ARC_Y0 = 2000, 2688
 
-# iPad ships three boards. The copy is deliberately generic: all three captures
-# show a medium board, so a rule-specific headline would be describing a rule
-# the image does not actually demonstrate.
+# iPad ships the same three screens, captured natively on an iPad Pro 13" (M5),
+# which renders at 2064x2752 — exactly the size the App Store wants.
+#
+# The reader shot keeps the app's own "Three ways in" coach mark. It cannot be
+# dismissed without tapping (hasSeenReadingHint is written on "Got it", and
+# seeding it into the simulator's plist does not work), and it is legible English
+# describing a real feature, so it ships rather than being painted out.
 IPAD_SHOTS = [
-    ("01_ipad", "Minesweeper, Rebuilt in Hex",
-     "Six neighbours instead of eight — every deduction changes"),
-    ("02_ipad", "Read Six Neighbours at Once",
-     "The hex grid gives every clue more to say"),
-    ("03_ipad", "Pure Logic, No Timer Pressure",
-     "Play at your own pace — deduction, not reflexes"),
+    ("01_ipad", "Read It in the Language It Was Written",
+     "Hebrew and Greek line by line, with transliteration and English underneath"),
+    ("02_ipad", "Find Any Verse, Then Go Deeper",
+     "Search the text and open the dictionary entry behind every word"),
+    ("03_ipad", "Nine Interface Languages, One Original Text",
+     "Each language reads its own Bible, from the same Hebrew and Greek source"),
 ]
 
 
