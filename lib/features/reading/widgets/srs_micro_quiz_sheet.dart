@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/foundation.dart';
@@ -8,6 +9,7 @@ import '../../../providers/word_provider.dart';
 import '../../../providers/database_provider.dart';
 import '../../settings/settings_provider.dart';
 import '../../../shared/utils/transliterator.dart';
+import '../../../core/review_prompt_service.dart';
 
 class SrsMicroQuizSheet extends ConsumerStatefulWidget {
   final Word originalWord;
@@ -263,6 +265,13 @@ class _SrsMicroQuizSheetState extends ConsumerState<SrsMicroQuizSheet> {
           debugPrint('SRS review recording failed: $e');
         }
       }
+    }
+
+    // Only a correct recall is a moment worth asking on. Getting a word wrong
+    // is a normal part of spaced repetition, so it records nothing rather than
+    // suppressing — but it must never be the moment we ask on.
+    if (isCorrect) {
+      unawaited(ReviewPromptService.record(ReviewMoment.routine));
     }
 
     if (!mounted) return;
