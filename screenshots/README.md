@@ -8,7 +8,16 @@ aso-refresh/
   framed/               raw pasted into the shared house device frame
   final/ios/iphone/     1290x2796  -> App Store APP_IPHONE_67
   final/android/phone/  1290x2796  -> Play phoneScreenshots (same renders)
+  ipad/raw/             native iPad captures, 2064x2752
+  ipad/final/           2064x2752  -> App Store APP_IPAD_PRO_3GEN_129 + Play tablet slots
 ```
+
+The iPad Pro 13-inch (M5) simulator renders at **2064x2752**, exactly the size the App Store
+wants. Terminate the other portfolio apps before launching or iOS bakes a "< AppName" back
+indicator into the status bar — the first iPad run picked up "< Advanced Dual N-Back".
+
+The iPad language picker shows **nine** languages where the phone shows five, which is why its
+headline differs from the iPhone set.
 
 ## Regenerating
 
@@ -29,11 +38,12 @@ Three shots: the interlinear reader (the product), search, and the language pick
 is captured by the script but **held back** — on a fresh install it is an empty state that sells
 nothing.
 
-The reader shot is the committed native capture under `store-screenshots/native/`, not a fresh
-one, because a fresh install shows the "Three ways in" hint banner across the top third. Seeding
-`flutter.hasSeenReadingHint` into the simulator's preference plist does **not** clear it — the
-value is written but the app still renders the banner — so the clean capture is reused until
-someone adds a dart-define to suppress it.
+The **iPhone** reader shot is the committed native capture under `store-screenshots/native/`, not
+a fresh one, because a fresh install shows the "Three ways in" hint banner across the top third.
+`hasSeenReadingHint` is only written when the user taps "Got it" — seeding it into the simulator's
+preference plist does not clear it, and neither does relaunching. The **iPad** reader shot ships
+*with* the banner: it is legible English describing a real feature, and painting it out of a store
+screenshot is worse than showing it. A dart-define to suppress coach marks would fix both.
 
 ## Superseded
 
