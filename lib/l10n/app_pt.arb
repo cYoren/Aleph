@@ -238,8 +238,10 @@
   "phraseSpacingDesc": "Espaça o hebraico nos acentos massoréticos, para que o versículo seja lido em unidades de sentido, e não palavra por palavra.",
   "recitationVoiceTitle": "Voz da recitação",
   "recitationVoiceDesc": "Leitura em voz alta pelas vozes do seu aparelho: hebraico israelense moderno e grego moderno. São tradições vivas de leitura, não a pronúncia antiga reconstruída.",
-  "voiceMissing": "Nenhuma voz de hebraico ou grego está instalada neste aparelho. Adicione uma nas configurações de fala do sistema para ouvir o texto.",
+  "voiceMissing": "Seu dispositivo precisa de uma voz em hebraico ou grego para ler em voz alta. Instalar uma leva um instante e só é preciso fazer uma vez.",
   "voiceUnsupported": "Este aparelho não possui mecanismo de fala disponível.",
+  "voiceInstall": "Instalar voz",
+  "voiceInstallUnavailable": "Este dispositivo não tem um instalador de vozes para abrir.",
   "recitationFailed": "Não foi possível iniciar a recitação.",
   "readBook": "Ler {book}",
   "@readBook": {

@@ -1163,7 +1163,7 @@ abstract class AppLocalizations {
   /// No description provided for @voiceMissing.
   ///
   /// In en, this message translates to:
-  /// **'No Hebrew or Greek voice is installed on this device. Add one in your system speech settings to hear the text read aloud.'**
+  /// **'Your device needs a Hebrew or Greek speech voice to read this aloud. Installing one takes a moment and only has to be done once.'**
   String get voiceMissing;
 
   /// No description provided for @voiceUnsupported.
@@ -1171,6 +1171,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This device has no speech engine available.'**
   String get voiceUnsupported;
+
+  /// No description provided for @voiceInstall.
+  ///
+  /// In en, this message translates to:
+  /// **'Install voice'**
+  String get voiceInstall;
+
+  /// No description provided for @voiceInstallUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'This device has no voice installer to open.'**
+  String get voiceInstallUnavailable;
 
   /// No description provided for @recitationFailed.
   ///

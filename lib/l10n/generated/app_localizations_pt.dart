@@ -623,11 +623,18 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get voiceMissing =>
-      'Nenhuma voz de hebraico ou grego está instalada neste aparelho. Adicione uma nas configurações de fala do sistema para ouvir o texto.';
+      'Seu dispositivo precisa de uma voz em hebraico ou grego para ler em voz alta. Instalar uma leva um instante e só é preciso fazer uma vez.';
 
   @override
   String get voiceUnsupported =>
       'Este aparelho não possui mecanismo de fala disponível.';
+
+  @override
+  String get voiceInstall => 'Instalar voz';
+
+  @override
+  String get voiceInstallUnavailable =>
+      'Este dispositivo não tem um instalador de vozes para abrir.';
 
   @override
   String get recitationFailed => 'Não foi possível iniciar a recitação.';

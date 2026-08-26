@@ -238,8 +238,10 @@
   "phraseSpacingDesc": "마소라 악센트에 따라 히브리어 본문을 띄어, 절을 단어 단위가 아니라 의미 단위로 읽게 합니다.",
   "recitationVoiceTitle": "낭독 음성",
   "recitationVoiceDesc": "기기의 음성으로 읽어 줍니다. 히브리어는 현대 이스라엘 발음, 그리스어는 현대 그리스 발음입니다. 재구성한 고대 발음이 아니라 지금도 사용되는 낭독 전통입니다.",
-  "voiceMissing": "이 기기에 히브리어 또는 그리스어 음성이 설치되어 있지 않습니다. 시스템 음성 설정에서 추가하면 본문을 들을 수 있습니다.",
+  "voiceMissing": "소리 내어 읽으려면 기기에 히브리어 또는 그리스어 음성이 필요합니다. 설치는 잠시면 되고 한 번만 하면 됩니다.",
   "voiceUnsupported": "이 기기에는 사용할 수 있는 음성 엔진이 없습니다.",
+  "voiceInstall": "음성 설치",
+  "voiceInstallUnavailable": "이 기기에는 열 수 있는 음성 설치 프로그램이 없습니다.",
   "recitationFailed": "낭독을 시작할 수 없습니다.",
   "readBook": "{book} 읽기",
   "@readBook": {

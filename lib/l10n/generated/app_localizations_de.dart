@@ -622,11 +622,18 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get voiceMissing =>
-      'Auf diesem Gerät ist keine hebräische oder griechische Stimme installiert. Fügen Sie in den Sprachausgabe-Einstellungen Ihres Systems eine hinzu, um den Text zu hören.';
+      'Ihr Gerät benötigt eine hebräische oder griechische Sprachausgabe, um den Text vorzulesen. Die Installation dauert nur einen Moment und ist einmalig.';
 
   @override
   String get voiceUnsupported =>
       'Auf diesem Gerät ist keine Sprachausgabe verfügbar.';
+
+  @override
+  String get voiceInstall => 'Stimme installieren';
+
+  @override
+  String get voiceInstallUnavailable =>
+      'Auf diesem Gerät lässt sich keine Stimmen-Installation öffnen.';
 
   @override
   String get recitationFailed => 'Das Vorlesen konnte nicht gestartet werden.';
