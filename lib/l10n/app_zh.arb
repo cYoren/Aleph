@@ -343,5 +343,83 @@
   "tanakhNeviim": "先知书",
   "tanakhKetuvim": "文集",
   "hebrewBibleLabel": "希伯来圣经",
-  "traditionSettingTitle": "经典"
+  "traditionSettingTitle": "经典",
+  "backToPrevious": "返回原处",
+  "copyOriginal": "复制原文",
+  "copyBoth": "复制原文与译文",
+  "searchKeepTyping": "请至少输入 {count} 个字母进行搜索。",
+  "@searchKeepTyping": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "verseResultsShowing": "经文 — 显示 {shown} / {total}",
+  "@verseResultsShowing": {
+    "placeholders": {
+      "shown": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "searchFailedBody": "搜索未能完成，请重试。",
+  "errorGenericBody": "加载时出错，请重试。",
+  "verseOfDayUnavailable": "无法加载今日经文。",
+  "wordGestureHint": "点按查看完整词条，长按查看词义",
+  "masteryPercent": "已掌握 {percent}%",
+  "@masteryPercent": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "readingSectionTitle": "阅读",
+  "appearanceSectionTitle": "外观",
+  "audioSectionTitle": "音频",
+  "aboutSectionTitle": "关于",
+  "traditionSettingDesc": "决定书卷的名称与顺序",
+  "fontSizeSample": "您阅读的文字大小",
+  "recitationVoiceUnavailable": "此设备没有语音下载界面。",
+  "recitationPause": "暂停",
+  "recitationResume": "继续",
+  "recitationPreviousVerse": "上一节",
+  "recitationNextVerse": "下一节",
+  "recitationPausedAtVerse": "已在第 {number} 节暂停",
+  "@recitationPausedAtVerse": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarkRemoved": "书签已移除",
+  "undo": "撤销",
+  "bookFilterHint": "查找书卷",
+  "clearFilter": "清除",
+  "databasePreparingTitle": "正在准备书库",
+  "databasePreparingBody": "正在将经文、词典与语法复制到本机。只需一次，之后即可完全离线使用。",
+  "databasePrepareFailed": "无法准备书库。请确认可用空间充足后重试。",
+  "aboutSourcesTitle": "资料来源与致谢",
+  "aboutSourcesDesc": "经文、词典与字体的来源",
+  "aboutSourcesSectionTitle": "本应用包含的内容",
+  "aboutVersionLabel": "版本",
+  "aboutLicensesTitle": "开源许可",
+  "aboutLicensesDesc": "本应用使用的软件库",
+  "sourceOriginalTextTitle": "希伯来文与希腊文原文",
+  "sourceOriginalTextBody": "威斯敏斯特列宁格勒抄本（希伯来文圣经）与 SBL 希腊文新约，均属公有领域或自由授权。",
+  "sourceTranslationsTitle": "译本",
+  "sourceTranslationsBody": "公有领域及自由授权的译本，包括钦定版圣经。每个译本在数据库中保留各自的来源信息。",
+  "sourceLexiconTitle": "词典与词法",
+  "sourceLexiconBody": "斯特朗希伯来文与希腊文词典，词法解析来自 OpenScriptures 与 MorphGNT 项目。",
+  "sourceSyntaxTitle": "句法结构",
+  "sourceSyntaxBody": "句法树来自 Clear Bible 的 MACULA 希伯来文与希腊文数据集，依 CC BY 4.0 授权使用。",
+  "sourceFontsTitle": "字体",
+  "sourceFontsBody": "希伯来文使用 Ezra SIL，希腊文与拉丁文使用 Gentium，均由 SIL International 依 SIL 开放字体许可发布。",
+  "onboardingHebrewExampleGloss": "「起初，神创造…」",
+  "onboardingGreekExampleGloss": "「太初有道…」"
 }

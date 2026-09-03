@@ -4,9 +4,10 @@ import 'package:go_router/go_router.dart';
 
 import '../../data/models/verse.dart';
 import '../../l10n/generated/app_localizations.dart';
-import '../../providers/books_provider.dart';
 import '../../providers/word_provider.dart';
 import '../reading/reading_provider.dart';
+import '../../providers/book_names_provider.dart';
+import '../../shared/widgets/empty_state.dart';
 
 /// Concordance view: every verse where a word (Strong's id / lemma) occurs,
 /// in canonical order. Tapping an occurrence jumps into the reader.
@@ -52,7 +53,8 @@ class WordStudyScreen extends ConsumerWidget {
       ),
       body: occurrencesAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, stack) => Center(child: Text('${l10n.error}: $err')),
+        error: (err, stack) =>
+            Center(child: ErrorState(message: l10n.errorGenericBody)),
         data: (data) {
           if (data.verses.isEmpty) {
             return Center(
@@ -122,14 +124,13 @@ class _BookHeader extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
-    final book = ref.watch(bookByAbbreviationProvider(bookId));
 
     return Container(
       width: double.infinity,
       color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.4),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       child: Text(
-        book?.name ?? bookId,
+        ref.watch(localizedBookNameProvider(bookId)),
         style: TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.bold,
@@ -150,8 +151,7 @@ class _OccurrenceTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
-    final book = ref.watch(bookByAbbreviationProvider(verse.bookId));
-    final bookName = book?.name ?? verse.bookId;
+    final bookName = ref.watch(localizedBookNameProvider(verse.bookId));
     final reference = '$bookName ${verse.chapter}:${verse.verseNumber}';
 
     return ListTile(
@@ -182,7 +182,12 @@ class _OccurrenceTile extends ConsumerWidget {
       onTap: () {
         ref
             .read(readingProvider.notifier)
-            .loadChapter(verse.bookId, verse.chapter);
+            .loadChapter(
+              verse.bookId,
+              verse.chapter,
+              targetVerse: verse.verseNumber,
+              recordHistory: true,
+            );
         context.go('/reading');
       },
     );

@@ -13,6 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../audio/widgets/recitation_bar.dart';
 import 'alphabet_provider.dart';
+import '../../shared/widgets/empty_state.dart';
 
 class AlphabetScreen extends ConsumerStatefulWidget {
   const AlphabetScreen({super.key, this.initialAlphabet});
@@ -43,7 +44,7 @@ class _AlphabetScreenState extends ConsumerState<AlphabetScreen> {
         error: (err, stack) => Center(
           child: Padding(
             padding: const EdgeInsets.all(24),
-            child: Text('${l10n.error}: $err'),
+            child: ErrorState(message: l10n.errorGenericBody),
           ),
         ),
         data: (reference) {

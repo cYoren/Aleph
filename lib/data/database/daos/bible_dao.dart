@@ -7,6 +7,25 @@ import '../../models/lexicon_entry.dart';
 import '../../models/translation.dart';
 import '../database_helper.dart';
 
+/// How many verses one search returns. Generous enough that a common word
+/// still reaches the end of the canon, small enough to build in one frame.
+const int _searchResultLimit = 200;
+
+/// A page of search results, and how many verses matched in total.
+///
+/// The count is what lets the screen say "200 of 431" rather than presenting a
+/// truncated list as the whole answer.
+class SearchResults {
+  const SearchResults({required this.verses, required this.totalMatches});
+
+  final List<Verse> verses;
+  final int totalMatches;
+
+  static const empty = SearchResults(verses: [], totalMatches: 0);
+
+  bool get isTruncated => verses.length < totalMatches;
+}
+
 @visibleForTesting
 List<String> buildSearchQueryVariants(String query) {
   final normalized = query.trim();
@@ -311,14 +330,23 @@ class BibleDAO {
     }
   }
 
-  Future<List<Verse>> search(
+  /// Searches the reader's translation, in canonical order.
+  ///
+  /// The result carries [SearchResults.totalMatches] as well as the page of
+  /// verses, because the cap has to be visible: sorting by `book_id` — the
+  /// abbreviation, as a string — and then cutting at 50 used to drop the
+  /// second half of the canon silently. "shepherd" in the KJV matched 114
+  /// verses, returned 50 of them alphabetically from 1 Chronicles to Isaiah,
+  /// and left out Psalm 23:1.
+  Future<SearchResults> search(
     String query, {
     required String translationId,
+    int limit = _searchResultLimit,
   }) async {
     final db = await _dbHelper.database;
     final normalizedQuery = query.trim();
     if (normalizedQuery.isEmpty) {
-      return [];
+      return SearchResults.empty;
     }
 
     final normalizedTranslationId = translationId.trim().toUpperCase().isEmpty
@@ -326,7 +354,7 @@ class BibleDAO {
         : translationId.trim().toUpperCase();
     final queryVariants = buildSearchQueryVariants(normalizedQuery);
     if (queryVariants.isEmpty) {
-      return [];
+      return SearchResults.empty;
     }
     final escapedPatterns = queryVariants
         .map(escapeLikePattern)
@@ -340,15 +368,12 @@ class BibleDAO {
     final modernArgs = <Object>[normalizedTranslationId, ...escapedPatterns];
 
     try {
-      // Search selected translation with controlled fallback to KJV/canonical text.
-      final List<Map<String, dynamic>> maps = await db.rawQuery('''
-        SELECT DISTINCT
-          v.id,
-          v.book_id,
-          v.chapter,
-          v.verse_number,
-          COALESCE(tv_sel.text, tv_fallback.text, v.text) AS text
+      // Search selected translation with controlled fallback to KJV/canonical
+      // text. `books.book_order` puts Genesis before Exodus; without the join
+      // SQLite sorts '1CH' before 'GEN' and the LIMIT lands mid-alphabet.
+      const modernFrom = '''
         FROM verses v
+        LEFT JOIN books b ON b.abbreviation = v.book_id
         LEFT JOIN translation_verses tv_sel
           ON tv_sel.book_id = v.book_id
          AND tv_sel.chapter = v.chapter
@@ -359,11 +384,42 @@ class BibleDAO {
          AND tv_fallback.chapter = v.chapter
          AND tv_fallback.verse_number = v.verse_number
          AND tv_fallback.translation_id = 'KJV'
+      ''';
+
+      final List<Map<String, dynamic>> maps = await db.rawQuery(
+        '''
+        SELECT DISTINCT
+          v.id,
+          v.book_id,
+          v.chapter,
+          v.verse_number,
+          COALESCE(tv_sel.text, tv_fallback.text, v.text) AS text
+        $modernFrom
         WHERE ($modernWhereClause)
-        ORDER BY v.book_id, v.chapter, v.verse_number
-        LIMIT 50
-      ''', modernArgs);
-      return List.generate(maps.length, (i) => Verse.fromMap(maps[i]));
+        ORDER BY b.book_order, v.chapter, v.verse_number
+        LIMIT ?
+      ''',
+        [...modernArgs, limit],
+      );
+
+      final verses = List.generate(maps.length, (i) => Verse.fromMap(maps[i]));
+
+      // Only worth a second query when the page is full; otherwise the page
+      // is the whole answer.
+      var total = verses.length;
+      if (verses.length >= limit) {
+        final countRows = await db.rawQuery('''
+          SELECT COUNT(*) AS c FROM (
+            SELECT DISTINCT v.id
+            $modernFrom
+            WHERE ($modernWhereClause)
+          )
+        ''', modernArgs);
+        final counted = countRows.isEmpty ? null : countRows.first['c'];
+        if (counted is int && counted > total) total = counted;
+      }
+
+      return SearchResults(verses: verses, totalMatches: total);
     } catch (e) {
       if (kDebugMode) {
         debugPrint('Modern search fallback failed: $e');
@@ -379,10 +435,12 @@ class BibleDAO {
 
     try {
       // Legacy non-FTS schema fallback.
-      final List<Map<String, dynamic>> maps = await db.rawQuery('''
-        SELECT DISTINCT v.id, v.book_id, v.chapter, v.verse, 
+      final List<Map<String, dynamic>> maps = await db.rawQuery(
+        '''
+        SELECT DISTINCT v.id, v.book_id, v.chapter, v.verse,
                COALESCE(tv_sel.text_content, tv_fallback.text_content, v.text_content) AS text_content
         FROM verses v
+        LEFT JOIN books b ON b.abbreviation = v.book_id
         LEFT JOIN translation_verses tv_sel
           ON v.id = tv_sel.verse_id
          AND UPPER(tv_sel.translation_id) = UPPER(?)
@@ -390,15 +448,18 @@ class BibleDAO {
           ON v.id = tv_fallback.verse_id
          AND tv_fallback.translation_id = 'KJV'
         WHERE ($legacyWhereClause)
-        ORDER BY v.book_id, v.chapter, v.verse
-        LIMIT 50
-      ''', legacyArgs);
-      return List.generate(maps.length, (i) => Verse.fromMap(maps[i]));
+        ORDER BY b.book_order, v.chapter, v.verse
+        LIMIT ?
+      ''',
+        [...legacyArgs, limit],
+      );
+      final verses = List.generate(maps.length, (i) => Verse.fromMap(maps[i]));
+      return SearchResults(verses: verses, totalMatches: verses.length);
     } catch (e) {
       if (kDebugMode) {
         debugPrint('Legacy search fallback failed: $e');
       }
-      return [];
+      return SearchResults.empty;
     }
   }
 

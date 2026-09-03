@@ -812,4 +812,159 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get traditionSettingTitle => '경전';
+
+  @override
+  String get backToPrevious => '읽던 곳으로 돌아가기';
+
+  @override
+  String get copyOriginal => '원문 복사';
+
+  @override
+  String get copyBoth => '원문과 번역 복사';
+
+  @override
+  String searchKeepTyping(int count) {
+    return '검색하려면 $count글자 이상 입력하세요.';
+  }
+
+  @override
+  String verseResultsShowing(int shown, int total) {
+    return '구절 — $total개 중 $shown개 표시';
+  }
+
+  @override
+  String get searchFailedBody => '검색을 완료하지 못했습니다. 다시 시도하세요.';
+
+  @override
+  String get errorGenericBody => '불러오는 중 문제가 발생했습니다. 다시 시도하세요.';
+
+  @override
+  String get verseOfDayUnavailable => '오늘의 구절을 불러오지 못했습니다.';
+
+  @override
+  String get wordGestureHint => '누르면 전체 항목, 길게 누르면 뜻이 표시됩니다';
+
+  @override
+  String masteryPercent(int percent) {
+    return '$percent% 학습됨';
+  }
+
+  @override
+  String get readingSectionTitle => '읽기';
+
+  @override
+  String get appearanceSectionTitle => '화면';
+
+  @override
+  String get audioSectionTitle => '오디오';
+
+  @override
+  String get aboutSectionTitle => '정보';
+
+  @override
+  String get traditionSettingDesc => '성경 각 권의 이름과 순서를 정합니다';
+
+  @override
+  String get fontSizeSample => '읽는 본문의 크기';
+
+  @override
+  String get recitationVoiceUnavailable => '이 기기에는 음성 다운로드 화면이 없습니다.';
+
+  @override
+  String get recitationPause => '일시정지';
+
+  @override
+  String get recitationResume => '이어서 재생';
+
+  @override
+  String get recitationPreviousVerse => '이전 절';
+
+  @override
+  String get recitationNextVerse => '다음 절';
+
+  @override
+  String recitationPausedAtVerse(int number) {
+    return '$number절에서 일시정지됨';
+  }
+
+  @override
+  String get bookmarkRemoved => '북마크가 삭제되었습니다';
+
+  @override
+  String get undo => '실행 취소';
+
+  @override
+  String get bookFilterHint => '성경 찾기';
+
+  @override
+  String get clearFilter => '지우기';
+
+  @override
+  String get databasePreparingTitle => '자료를 준비하는 중';
+
+  @override
+  String get databasePreparingBody =>
+      '본문과 사전, 문법 자료를 기기에 복사하고 있습니다. 한 번만 진행되며 이후에는 오프라인으로 사용할 수 있습니다.';
+
+  @override
+  String get databasePrepareFailed => '자료를 준비하지 못했습니다. 저장 공간을 확인한 뒤 다시 시도하세요.';
+
+  @override
+  String get aboutSourcesTitle => '출처 및 저작자 표시';
+
+  @override
+  String get aboutSourcesDesc => '본문과 사전, 글꼴의 출처';
+
+  @override
+  String get aboutSourcesSectionTitle => '이 앱에 담긴 자료';
+
+  @override
+  String get aboutVersionLabel => '버전';
+
+  @override
+  String get aboutLicensesTitle => '오픈 소스 라이선스';
+
+  @override
+  String get aboutLicensesDesc => '이 앱이 사용하는 소프트웨어 라이브러리';
+
+  @override
+  String get sourceOriginalTextTitle => '히브리어·그리스어 본문';
+
+  @override
+  String get sourceOriginalTextBody =>
+      '웨스트민스터 레닌그라드 사본(히브리어 성경)과 SBL 그리스어 신약. 모두 퍼블릭 도메인이거나 자유 라이선스입니다.';
+
+  @override
+  String get sourceTranslationsTitle => '번역본';
+
+  @override
+  String get sourceTranslationsBody =>
+      '퍼블릭 도메인 및 자유 라이선스 번역본(킹제임스 성경 포함). 각 번역본의 출처는 데이터베이스에 함께 보관됩니다.';
+
+  @override
+  String get sourceLexiconTitle => '사전과 형태 분석';
+
+  @override
+  String get sourceLexiconBody =>
+      '스트롱 히브리어·그리스어 사전과 OpenScriptures·MorphGNT 프로젝트의 형태 분석 자료.';
+
+  @override
+  String get sourceSyntaxTitle => '문장 구조';
+
+  @override
+  String get sourceSyntaxBody =>
+      'Clear Bible의 MACULA 히브리어·그리스어 데이터셋에서 가져온 구문 트리. CC BY 4.0 라이선스로 사용합니다.';
+
+  @override
+  String get sourceFontsTitle => '글꼴';
+
+  @override
+  String get sourceFontsBody =>
+      '히브리어는 Ezra SIL, 그리스어와 라틴 문자는 Gentium을 사용합니다. 모두 SIL International의 SIL 오픈 폰트 라이선스를 따릅니다.';
+
+  @override
+  String get onboardingHebrewExampleGloss => '\"태초에 하나님이 창조하시니라…\"';
+
+  @override
+  String get onboardingGreekExampleGloss => '\"태초에 말씀이 계시니라…\"';
 }

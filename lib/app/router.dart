@@ -14,6 +14,7 @@ import '../features/export/export_composer_screen.dart';
 import '../features/memorization/memorization_practice_screen.dart';
 import '../features/memorization/memorization_screen.dart';
 import '../features/explain/explain_diagnostics_screen.dart';
+import '../features/about/about_screen.dart';
 import '../features/readability/readability_screen.dart';
 import '../features/alphabet/alphabet_provider.dart';
 import '../features/alphabet/alphabet_screen.dart';
@@ -125,6 +126,8 @@ final router = GoRouter(
             : null,
       ),
     ),
+    // Where the text, lexicons, syntax data and typefaces came from
+    GoRoute(path: '/about', builder: (context, state) => const AboutScreen()),
     // Health of the AI models answering questions
     GoRoute(
       path: '/ai-diagnostics',

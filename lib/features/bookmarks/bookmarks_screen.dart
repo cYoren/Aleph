@@ -4,10 +4,10 @@ import 'package:go_router/go_router.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../data/models/bookmark.dart';
 import '../../providers/bookmarks_provider.dart';
-import '../../providers/books_provider.dart';
 import '../reading/reading_provider.dart';
 import '../../shared/widgets/empty_state.dart';
 import '../../shared/widgets/loading_skeleton.dart';
+import '../../providers/book_names_provider.dart';
 
 class BookmarksScreen extends ConsumerWidget {
   const BookmarksScreen({super.key});
@@ -58,7 +58,7 @@ class BookmarksScreen extends ConsumerWidget {
           itemBuilder: (context, index) => const _BookmarkSkeletonCard(),
         ),
         error: (error, _) => ErrorState(
-          message: error.toString(),
+          message: l10n.errorGenericBody,
           onRetry: () => ref.invalidate(bookmarksProvider),
         ),
         data: (bookmarks) {
@@ -92,36 +92,40 @@ class BookmarksScreen extends ConsumerWidget {
     // Load the chapter containing this verse
     ref
         .read(readingProvider.notifier)
-        .loadChapter(bookmark.bookId, bookmark.chapter);
+        .loadChapter(
+          bookmark.bookId,
+          bookmark.chapter,
+          targetVerse: bookmark.verseNumber,
+          recordHistory: true,
+        );
     context.go('/reading');
   }
 
+  /// Removes the bookmark and offers to put it back.
+  ///
+  /// This used to animate the swipe, snap the card back, and then ask for
+  /// confirmation in a modal — the card visibly un-deleting itself before the
+  /// question. A bookmark is one tap to recreate, so undo is both fewer steps
+  /// and more forgiving than a dialog.
   void _deleteBookmark(
     BuildContext context,
     WidgetRef ref,
     String verseId,
     AppLocalizations l10n,
   ) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.removeBookmark),
-        content: Text(l10n.removeBookmarkConfirmation),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-          ),
-          FilledButton(
-            onPressed: () {
-              ref
-                  .read(bookmarkNotifierProvider.notifier)
-                  .removeBookmark(verseId);
-              Navigator.of(context).pop();
-            },
-            child: Text(l10n.removeBookmark),
-          ),
-        ],
+    final notifier = ref.read(bookmarkNotifierProvider.notifier);
+    notifier.removeBookmark(verseId);
+
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.hideCurrentSnackBar();
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(l10n.bookmarkRemoved),
+        duration: const Duration(seconds: 5),
+        action: SnackBarAction(
+          label: l10n.undo,
+          onPressed: () => notifier.toggleBookmark(verseId),
+        ),
       ),
     );
   }
@@ -141,17 +145,9 @@ class _BookmarkCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
-    final booksAsync = ref.watch(booksProvider);
 
-    // Get book name
-    final bookName =
-        booksAsync.whenOrNull(
-          data: (books) => books
-              .where((b) => b.abbreviation == bookmark.bookId)
-              .firstOrNull
-              ?.name,
-        ) ??
-        bookmark.bookId;
+    // The reader's language, not the database's English column.
+    final bookName = ref.watch(localizedBookNameProvider(bookmark.bookId));
 
     // Format time ago
     final l10n = AppLocalizations.of(context)!;
@@ -160,10 +156,7 @@ class _BookmarkCard extends ConsumerWidget {
     return Dismissible(
       key: Key(bookmark.verseId),
       direction: DismissDirection.endToStart,
-      confirmDismiss: (_) async {
-        onDelete();
-        return false; // Dialog handles deletion
-      },
+      onDismissed: (_) => onDelete(),
       background: Container(
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.only(right: 16),

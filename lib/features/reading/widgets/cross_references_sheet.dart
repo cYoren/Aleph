@@ -4,10 +4,11 @@ import 'package:go_router/go_router.dart';
 
 import '../../../data/models/cross_reference.dart';
 import '../../../l10n/generated/app_localizations.dart';
-import '../../../providers/books_provider.dart';
 import '../../../providers/database_provider.dart';
 import '../../settings/settings_provider.dart';
 import '../reading_provider.dart';
+import '../../../providers/book_names_provider.dart';
+import '../../../shared/widgets/empty_state.dart';
 
 /// Cross-references for one verse, best-voted first (OpenBible.info data).
 final crossReferencesProvider =
@@ -133,7 +134,7 @@ class CrossReferencesSheet extends ConsumerWidget {
                   loading: () =>
                       const Center(child: CircularProgressIndicator()),
                   error: (err, stack) =>
-                      Center(child: Text('${l10n.error}: $err')),
+                      Center(child: ErrorState(message: l10n.errorGenericBody)),
                   data: (refs) {
                     if (refs.isEmpty) {
                       return Center(
@@ -176,15 +177,16 @@ class _CrossReferenceTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
-    final book = ref.watch(bookByAbbreviationProvider(reference.toBook));
-    final bookName = book?.name ?? reference.toBook;
+    final bookName = ref.watch(localizedBookNameProvider(reference.toBook));
     final label = reference.isRange
         ? '$bookName ${reference.toChapter}:${reference.toVerseStart}–${reference.toVerseEnd}'
         : '$bookName ${reference.toChapter}:${reference.toVerseStart}';
     final previewAsync = ref.watch(
-      crossReferencePreviewProvider(
-        (reference.toBook, reference.toChapter, reference.toVerseStart),
-      ),
+      crossReferencePreviewProvider((
+        reference.toBook,
+        reference.toChapter,
+        reference.toVerseStart,
+      )),
     );
 
     return ListTile(
@@ -207,7 +209,12 @@ class _CrossReferenceTile extends ConsumerWidget {
         Navigator.of(context).pop();
         ref
             .read(readingProvider.notifier)
-            .loadChapter(reference.toBook, reference.toChapter);
+            .loadChapter(
+              reference.toBook,
+              reference.toChapter,
+              targetVerse: reference.toVerseStart,
+              recordHistory: true,
+            );
         context.go('/reading');
       },
     );

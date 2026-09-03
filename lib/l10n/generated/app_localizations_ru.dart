@@ -847,4 +847,164 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get traditionSettingTitle => 'Писания';
+
+  @override
+  String get backToPrevious => 'Назад, где вы были';
+
+  @override
+  String get copyOriginal => 'Копировать оригинал';
+
+  @override
+  String get copyBoth => 'Копировать оригинал и перевод';
+
+  @override
+  String searchKeepTyping(int count) {
+    return 'Введите не менее $count букв для поиска.';
+  }
+
+  @override
+  String verseResultsShowing(int shown, int total) {
+    return 'Стихи — показано $shown из $total';
+  }
+
+  @override
+  String get searchFailedBody =>
+      'Не удалось выполнить поиск. Попробуйте снова.';
+
+  @override
+  String get errorGenericBody => 'Не удалось загрузить. Попробуйте снова.';
+
+  @override
+  String get verseOfDayUnavailable => 'Не удалось загрузить стих дня.';
+
+  @override
+  String get wordGestureHint =>
+      'Нажмите для полной статьи, удерживайте для значения';
+
+  @override
+  String masteryPercent(int percent) {
+    return 'Выучено $percent%';
+  }
+
+  @override
+  String get readingSectionTitle => 'Чтение';
+
+  @override
+  String get appearanceSectionTitle => 'Оформление';
+
+  @override
+  String get audioSectionTitle => 'Звук';
+
+  @override
+  String get aboutSectionTitle => 'О приложении';
+
+  @override
+  String get traditionSettingDesc => 'Определяет названия и порядок книг';
+
+  @override
+  String get fontSizeSample => 'Размер текста, который вы читаете';
+
+  @override
+  String get recitationVoiceUnavailable =>
+      'На этом устройстве нет экрана загрузки голосов.';
+
+  @override
+  String get recitationPause => 'Пауза';
+
+  @override
+  String get recitationResume => 'Продолжить';
+
+  @override
+  String get recitationPreviousVerse => 'Предыдущий стих';
+
+  @override
+  String get recitationNextVerse => 'Следующий стих';
+
+  @override
+  String recitationPausedAtVerse(int number) {
+    return 'Пауза на стихе $number';
+  }
+
+  @override
+  String get bookmarkRemoved => 'Закладка удалена';
+
+  @override
+  String get undo => 'Отменить';
+
+  @override
+  String get bookFilterHint => 'Найти книгу';
+
+  @override
+  String get clearFilter => 'Очистить';
+
+  @override
+  String get databasePreparingTitle => 'Подготовка библиотеки';
+
+  @override
+  String get databasePreparingBody =>
+      'Текст, словари и грамматика копируются на устройство. Это происходит один раз, дальше всё работает офлайн.';
+
+  @override
+  String get databasePrepareFailed =>
+      'Не удалось подготовить библиотеку. Проверьте свободное место и попробуйте снова.';
+
+  @override
+  String get aboutSourcesTitle => 'Источники и благодарности';
+
+  @override
+  String get aboutSourcesDesc => 'Откуда взяты текст, словари и шрифты';
+
+  @override
+  String get aboutSourcesSectionTitle => 'Что входит в приложение';
+
+  @override
+  String get aboutVersionLabel => 'Версия';
+
+  @override
+  String get aboutLicensesTitle => 'Лицензии открытого кода';
+
+  @override
+  String get aboutLicensesDesc =>
+      'Программные библиотеки, на которых работает приложение';
+
+  @override
+  String get sourceOriginalTextTitle => 'Еврейский и греческий текст';
+
+  @override
+  String get sourceOriginalTextBody =>
+      'Ленинградский кодекс (Вестминстерская редакция) и греческий Новый Завет SBL — общественное достояние либо свободная лицензия.';
+
+  @override
+  String get sourceTranslationsTitle => 'Переводы';
+
+  @override
+  String get sourceTranslationsBody =>
+      'Переводы в общественном достоянии или со свободной лицензией, включая King James Version. Происхождение каждого перевода хранится в базе.';
+
+  @override
+  String get sourceLexiconTitle => 'Словари и морфология';
+
+  @override
+  String get sourceLexiconBody =>
+      'Еврейский и греческий словари Стронга с морфологическим разбором из проектов OpenScriptures и MorphGNT.';
+
+  @override
+  String get sourceSyntaxTitle => 'Синтаксис предложений';
+
+  @override
+  String get sourceSyntaxBody =>
+      'Синтаксические деревья из наборов MACULA (иврит и греческий) от Clear Bible, лицензия CC BY 4.0.';
+
+  @override
+  String get sourceFontsTitle => 'Шрифты';
+
+  @override
+  String get sourceFontsBody =>
+      'Ezra SIL для иврита и Gentium для греческого и латиницы — обе от SIL International по лицензии SIL Open Font License.';
+
+  @override
+  String get onboardingHebrewExampleGloss => '«В начале сотворил Бог…»';
+
+  @override
+  String get onboardingGreekExampleGloss => '«В начале было Слово…»';
 }

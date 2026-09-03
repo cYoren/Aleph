@@ -343,5 +343,83 @@
   "tanakhNeviim": "Nevi'im — Prophètes",
   "tanakhKetuvim": "Ketouvim — Écrits",
   "hebrewBibleLabel": "Bible hébraïque",
-  "traditionSettingTitle": "Écritures"
+  "traditionSettingTitle": "Écritures",
+  "backToPrevious": "Revenir où vous étiez",
+  "copyOriginal": "Copier le texte original",
+  "copyBoth": "Copier l'original et la traduction",
+  "searchKeepTyping": "Saisissez au moins {count} lettres pour rechercher.",
+  "@searchKeepTyping": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "verseResultsShowing": "Versets — {shown} sur {total}",
+  "@verseResultsShowing": {
+    "placeholders": {
+      "shown": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "searchFailedBody": "La recherche n'a pas abouti. Réessayez.",
+  "errorGenericBody": "Le chargement a échoué. Réessayez.",
+  "verseOfDayUnavailable": "Le verset du jour n'a pas pu être chargé.",
+  "wordGestureHint": "Touchez pour l'entrée complète, appuyez longuement pour le sens",
+  "masteryPercent": "{percent}% appris",
+  "@masteryPercent": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "readingSectionTitle": "Lecture",
+  "appearanceSectionTitle": "Apparence",
+  "audioSectionTitle": "Audio",
+  "aboutSectionTitle": "À propos",
+  "traditionSettingDesc": "Définit le nom et l'ordre des livres",
+  "fontSizeSample": "La taille du texte que vous lisez",
+  "recitationVoiceUnavailable": "Cet appareil n'a pas d'écran de téléchargement de voix.",
+  "recitationPause": "Pause",
+  "recitationResume": "Reprendre",
+  "recitationPreviousVerse": "Verset précédent",
+  "recitationNextVerse": "Verset suivant",
+  "recitationPausedAtVerse": "En pause au verset {number}",
+  "@recitationPausedAtVerse": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarkRemoved": "Signet supprimé",
+  "undo": "Annuler",
+  "bookFilterHint": "Trouver un livre",
+  "clearFilter": "Effacer",
+  "databasePreparingTitle": "Préparation de la bibliothèque",
+  "databasePreparingBody": "Copie du texte, des dictionnaires et de la grammaire sur cet appareil. Cela n'arrive qu'une fois ; ensuite tout fonctionne hors ligne.",
+  "databasePrepareFailed": "La bibliothèque n'a pas pu être préparée. Vérifiez l'espace libre et réessayez.",
+  "aboutSourcesTitle": "Sources et crédits",
+  "aboutSourcesDesc": "D'où viennent le texte, les dictionnaires et les polices",
+  "aboutSourcesSectionTitle": "Ce que contient cette application",
+  "aboutVersionLabel": "Version",
+  "aboutLicensesTitle": "Licences open source",
+  "aboutLicensesDesc": "Les bibliothèques logicielles utilisées par cette application",
+  "sourceOriginalTextTitle": "Texte hébreu et grec",
+  "sourceOriginalTextBody": "Codex de Leningrad de Westminster (Bible hébraïque) et le Nouveau Testament grec SBL, dans le domaine public ou sous licence libre.",
+  "sourceTranslationsTitle": "Traductions",
+  "sourceTranslationsBody": "Traductions du domaine public ou sous licence libre, dont la King James Version. Chaque traduction conserve sa provenance dans la base.",
+  "sourceLexiconTitle": "Dictionnaires et morphologie",
+  "sourceLexiconBody": "Dictionnaires hébreu et grec de Strong, avec l'analyse morphologique des projets OpenScriptures et MorphGNT.",
+  "sourceSyntaxTitle": "Structure des phrases",
+  "sourceSyntaxBody": "Arbres syntaxiques des jeux de données MACULA (hébreu et grec) de Clear Bible, sous licence CC BY 4.0.",
+  "sourceFontsTitle": "Polices",
+  "sourceFontsBody": "Ezra SIL pour l'hébreu et Gentium pour le grec et le latin, toutes deux de SIL International sous la SIL Open Font License.",
+  "onboardingHebrewExampleGloss": "« Au commencement, Dieu créa… »",
+  "onboardingGreekExampleGloss": "« Au commencement était la Parole… »"
 }

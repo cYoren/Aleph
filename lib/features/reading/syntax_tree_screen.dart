@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/models/real_syntax_node.dart';
 import '../../data/models/word.dart';
 import '../../l10n/generated/app_localizations.dart';
-import '../../providers/books_provider.dart';
 import '../../providers/database_provider.dart';
 import '../../providers/word_provider.dart';
 import '../../shared/utils/syntax_tree_parser.dart';
@@ -12,6 +11,7 @@ import '../../shared/utils/morphology_decoder.dart';
 import '../../shared/widgets/definition_sheet.dart';
 import 'widgets/real_syntax_tree_view.dart';
 import 'widgets/syntax_tree_view.dart';
+import '../../providers/book_names_provider.dart';
 
 /// Resolves a verse identifier (verses-table row id, or "GEN.1.1") to
 /// (bookId, chapter, verse).
@@ -70,9 +70,8 @@ class SyntaxTreeScreen extends ConsumerWidget {
         .valueOrNull;
     String displayReference = verseReference;
     if (resolvedRef != null) {
-      final book = ref.watch(bookByAbbreviationProvider(resolvedRef.$1));
       displayReference =
-          '${book?.name ?? resolvedRef.$1} ${resolvedRef.$2}:${resolvedRef.$3}';
+          '${ref.watch(localizedBookNameProvider(resolvedRef.$1))} ${resolvedRef.$2}:${resolvedRef.$3}';
     }
 
     return Scaffold(
@@ -106,11 +105,11 @@ class SyntaxTreeScreen extends ConsumerWidget {
               avatar: Icon(
                 isOT ? Icons.menu_book : Icons.auto_stories,
                 size: 16,
-                color: isOT ? Colors.amber.shade700 : Colors.blue.shade700,
+                color: isOT ? colorScheme.primary : colorScheme.secondary,
               ),
-              backgroundColor: isOT
-                  ? Colors.amber.withValues(alpha: 0.15)
-                  : Colors.blue.withValues(alpha: 0.15),
+              backgroundColor:
+                  (isOT ? colorScheme.primary : colorScheme.secondary)
+                      .withValues(alpha: 0.15),
             ),
           ),
         ],
@@ -142,10 +141,7 @@ class SyntaxTreeScreen extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
           child: Text(
             l10n.syntaxSourceMacula,
-            style: TextStyle(
-              fontSize: 11,
-              color: colorScheme.onSurfaceVariant,
-            ),
+            style: TextStyle(fontSize: 11, color: colorScheme.onSurfaceVariant),
           ),
         ),
         Padding(
@@ -164,8 +160,7 @@ class SyntaxTreeScreen extends ConsumerWidget {
           child: ListView.separated(
             padding: const EdgeInsets.all(16),
             itemCount: trees.length,
-            separatorBuilder: (context, index) =>
-                const Divider(height: 32),
+            separatorBuilder: (context, index) => const Divider(height: 32),
             itemBuilder: (context, index) => RealSyntaxTreeView(
               root: trees[index],
               isHebrew: isOT,
@@ -198,10 +193,7 @@ class SyntaxTreeScreen extends ConsumerWidget {
 
   /// Fallback for DBs without the syntax_trees table: the POS-ordering
   /// sketch, clearly labeled as such.
-  Widget _buildHeuristicBody(
-    ColorScheme colorScheme,
-    AppLocalizations l10n,
-  ) {
+  Widget _buildHeuristicBody(ColorScheme colorScheme, AppLocalizations l10n) {
     final root = SyntaxTreeParser.parse(words, isHebrew: isOT);
 
     return Column(

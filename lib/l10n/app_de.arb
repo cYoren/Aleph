@@ -343,5 +343,83 @@
   "tanakhNeviim": "Newi'im — Propheten",
   "tanakhKetuvim": "Ketuwim — Schriften",
   "hebrewBibleLabel": "Hebräische Bibel",
-  "traditionSettingTitle": "Schriften"
+  "traditionSettingTitle": "Schriften",
+  "backToPrevious": "Zurück zur vorherigen Stelle",
+  "copyOriginal": "Originaltext kopieren",
+  "copyBoth": "Original und Übersetzung kopieren",
+  "searchKeepTyping": "Geben Sie mindestens {count} Buchstaben ein.",
+  "@searchKeepTyping": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "verseResultsShowing": "Verse — {shown} von {total}",
+  "@verseResultsShowing": {
+    "placeholders": {
+      "shown": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "searchFailedBody": "Die Suche konnte nicht abgeschlossen werden. Versuchen Sie es erneut.",
+  "errorGenericBody": "Beim Laden ist etwas schiefgegangen. Versuchen Sie es erneut.",
+  "verseOfDayUnavailable": "Der Vers des Tages konnte nicht geladen werden.",
+  "wordGestureHint": "Tippen für den ganzen Eintrag, gedrückt halten für die Bedeutung",
+  "masteryPercent": "{percent}% gelernt",
+  "@masteryPercent": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "readingSectionTitle": "Lesen",
+  "appearanceSectionTitle": "Darstellung",
+  "audioSectionTitle": "Audio",
+  "aboutSectionTitle": "Über",
+  "traditionSettingDesc": "Bestimmt Benennung und Reihenfolge der Bücher",
+  "fontSizeSample": "Die Größe des Lesetexts",
+  "recitationVoiceUnavailable": "Dieses Gerät hat keinen Bildschirm für Sprachdownloads.",
+  "recitationPause": "Pause",
+  "recitationResume": "Fortsetzen",
+  "recitationPreviousVerse": "Vorheriger Vers",
+  "recitationNextVerse": "Nächster Vers",
+  "recitationPausedAtVerse": "Pausiert bei Vers {number}",
+  "@recitationPausedAtVerse": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarkRemoved": "Lesezeichen entfernt",
+  "undo": "Rückgängig",
+  "bookFilterHint": "Buch suchen",
+  "clearFilter": "Löschen",
+  "databasePreparingTitle": "Bibliothek wird vorbereitet",
+  "databasePreparingBody": "Text, Wörterbücher und Grammatik werden auf dieses Gerät kopiert. Das geschieht einmal, danach funktioniert alles offline.",
+  "databasePrepareFailed": "Die Bibliothek konnte nicht vorbereitet werden. Prüfen Sie den freien Speicher und versuchen Sie es erneut.",
+  "aboutSourcesTitle": "Quellen und Nachweise",
+  "aboutSourcesDesc": "Woher Text, Wörterbücher und Schriften stammen",
+  "aboutSourcesSectionTitle": "Was in dieser App steckt",
+  "aboutVersionLabel": "Version",
+  "aboutLicensesTitle": "Open-Source-Lizenzen",
+  "aboutLicensesDesc": "Die Softwarebibliotheken hinter dieser App",
+  "sourceOriginalTextTitle": "Hebräischer und griechischer Text",
+  "sourceOriginalTextBody": "Westminster Leningrad Codex (Hebräische Bibel) und das SBL Greek New Testament, beide gemeinfrei oder frei lizenziert.",
+  "sourceTranslationsTitle": "Übersetzungen",
+  "sourceTranslationsBody": "Gemeinfreie und frei lizenzierte Übersetzungen, darunter die King James Version. Jede Übersetzung führt ihre Herkunft in der Datenbank mit.",
+  "sourceLexiconTitle": "Wörterbücher und Morphologie",
+  "sourceLexiconBody": "Strongs hebräische und griechische Wörterbücher, mit morphologischer Analyse aus den Projekten OpenScriptures und MorphGNT.",
+  "sourceSyntaxTitle": "Satzbau",
+  "sourceSyntaxBody": "Syntaxbäume aus den MACULA-Datensätzen (Hebräisch und Griechisch) von Clear Bible, genutzt unter CC BY 4.0.",
+  "sourceFontsTitle": "Schriften",
+  "sourceFontsBody": "Ezra SIL für Hebräisch und Gentium für Griechisch und Latein, beide von SIL International unter der SIL Open Font License.",
+  "onboardingHebrewExampleGloss": "„Am Anfang schuf Gott …\"",
+  "onboardingGreekExampleGloss": "„Im Anfang war das Wort …\""
 }

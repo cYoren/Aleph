@@ -66,10 +66,11 @@ class _FakeBibleDao extends BibleDAO {
   }
 
   @override
-  Future<List<Verse>> search(
+  Future<SearchResults> search(
     String query, {
     required String translationId,
-  }) async => [];
+    int limit = 200,
+  }) async => SearchResults.empty;
 
   @override
   Future<List<Word>> getWordsForVerse(String verseId) async => [];
@@ -141,7 +142,7 @@ void main() {
       expect(find.text('Favoritos'), findsOneWidget);
     });
 
-    testWidgets('bookmark delete dialog shows confirmation copy', (
+    testWidgets('removing a bookmark is immediate and offers undo', (
       WidgetTester tester,
     ) async {
       final bookmarks = [
@@ -178,7 +179,11 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.text('Remove this bookmark?'), findsOneWidget);
+      // Removing a bookmark is immediate and undoable, rather than a modal
+      // confirmation. The card used to animate the swipe, snap back, and then
+      // ask — visibly un-deleting itself before the question.
+      expect(find.text('Bookmark removed'), findsOneWidget);
+      expect(find.text('Undo'), findsOneWidget);
     });
 
     testWidgets('bookmark time formatting is localized for Portuguese', (

@@ -34,7 +34,13 @@ class AppTheme {
   static const _parchment = Color(0xFFF7F2E8);
   static const _parchmentRaised = Color(0xFFFDFAF3);
   static const _parchmentSunk = Color(0xFFEFE7D8);
-  static const _goldLight = Color(0xFF8A6D25);
+  // Darker than the original 0xFF8A6D25, which measured 4.38:1 on parchment —
+  // under the 4.5:1 AA floor, and this is the colour the Hebrew and Greek text
+  // itself is set in, because every word in the database carries a Strong's
+  // number. Chosen to clear 4.5:1 against *every* light surface, not only the
+  // page: 5.34 on surface, 5.72 raised, 4.85 sunk, 4.55 on the highest
+  // container. Visually the same gold.
+  static const _goldLight = Color(0xFF7A6021);
   static const _goldLightContainer = Color(0xFFEFE1BE);
   static const _lapis = Color(0xFF3E5171);
   static const _lapisContainer = Color(0xFFDCE3EF);
@@ -208,7 +214,9 @@ class AppTheme {
         indicatorColor: scheme.primaryContainer,
         elevation: 0,
         height: 68,
-        labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
+        // Five destinations, four of them unlabelled, with a bookmark and a
+        // book icon side by side: hiding the labels bought nothing here.
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
         labelTextStyle: WidgetStateProperty.resolveWith(
           (states) => TextStyle(
             fontFamily: fontFamily,

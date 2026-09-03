@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,6 +9,7 @@ import '../../features/settings/settings_provider.dart';
 import '../../providers/visual_context_provider.dart';
 import '../utils/hebrew_display.dart';
 import 'definition_sheet.dart';
+import '../../l10n/generated/app_localizations.dart';
 
 class TappableWord extends ConsumerStatefulWidget {
   final Word word;
@@ -34,7 +36,12 @@ class TappableWord extends ConsumerStatefulWidget {
 }
 
 /// How long a peeked gloss stays on screen before fading out on its own.
-const Duration _kPeekDuration = Duration(milliseconds: 2600);
+/// Long enough to read a gloss in a second language, which 2.6s was not.
+const Duration _kPeekDuration = Duration(milliseconds: 6000);
+
+/// Width of the peek bubble, clamped to the screen so a word at the edge of a
+/// right-to-left line does not get a bubble running off the display.
+const double _kPeekWidth = 220;
 
 class _TappableWordState extends ConsumerState<TappableWord> {
   final GlobalKey _wordKey = GlobalKey();
@@ -97,8 +104,15 @@ class _TappableWordState extends ConsumerState<TappableWord> {
     final entry = await ref.read(lexiconEntryProvider(lookupKey).future);
     if (!mounted) return;
 
-    final gloss = entry?.gloss?.trim();
-    if (gloss == null || gloss.isEmpty) return;
+    // Falling back to the headword means the gesture always answers. Silently
+    // doing nothing left the reader unable to tell "no entry" from "my
+    // long-press didn't register".
+    final rawGloss = entry?.gloss?.trim();
+    final fallback = entry?.lemma.trim();
+    final gloss = (rawGloss != null && rawGloss.isNotEmpty)
+        ? rawGloss
+        : (fallback ?? '');
+    if (gloss.isEmpty) return;
 
     final overlay = Overlay.maybeOf(context);
     if (overlay == null) return;
@@ -108,7 +122,7 @@ class _TappableWordState extends ConsumerState<TappableWord> {
     final colorScheme = Theme.of(context).colorScheme;
     _peekEntry = OverlayEntry(
       builder: (context) => Positioned(
-        width: 220,
+        width: math.min(_kPeekWidth, MediaQuery.sizeOf(context).width - 32),
         child: CompositedTransformFollower(
           link: _peekLink,
           showWhenUnlinked: false,
@@ -116,54 +130,59 @@ class _TappableWordState extends ConsumerState<TappableWord> {
           targetAnchor: Alignment.topCenter,
           followerAnchor: Alignment.bottomCenter,
           offset: const Offset(0, -6),
-          child: IgnorePointer(
-            child: Center(
-              child: Material(
-                color: Colors.transparent,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    color: colorScheme.inverseSurface,
-                    borderRadius: BorderRadius.circular(8),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.2),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        gloss,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: colorScheme.onInverseSurface,
-                        ),
-                      ),
-                      if (widget.transliteration != null &&
-                          widget.transliteration!.isNotEmpty) ...[
-                        const SizedBox(height: 2),
-                        Text(
-                          widget.transliteration!,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontStyle: FontStyle.italic,
-                            color: colorScheme.onInverseSurface.withValues(
-                              alpha: 0.75,
-                            ),
-                          ),
+          child: Semantics(
+            liveRegion: true,
+            label: gloss,
+            child: GestureDetector(
+              onTap: _removePeek,
+              child: Center(
+                child: Material(
+                  color: Colors.transparent,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: colorScheme.inverseSurface,
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.2),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
                         ),
                       ],
-                    ],
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          gloss,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: colorScheme.onInverseSurface,
+                          ),
+                        ),
+                        if (widget.transliteration != null &&
+                            widget.transliteration!.isNotEmpty) ...[
+                          const SizedBox(height: 2),
+                          Text(
+                            widget.transliteration!,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontStyle: FontStyle.italic,
+                              color: colorScheme.onInverseSurface.withValues(
+                                alpha: 0.75,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -214,52 +233,71 @@ class _TappableWordState extends ConsumerState<TappableWord> {
         widget.transliteration != null &&
         widget.transliteration!.isNotEmpty;
 
-    return GestureDetector(
-      onLongPress: _showPeek,
-      onTap: () {
-        _removePeek();
+    // Named for a screen reader, which otherwise read a bare Hebrew string
+    // with no indication that it was tappable or what it meant.
+    return Semantics(
+      button: true,
+      label: widget.readerGloss?.isNotEmpty == true
+          ? '${widget.word.displayText}, ${widget.readerGloss}'
+          : widget.word.displayText,
+      hint: widget.onTapOverride == null ? _l10nHint(context) : null,
+      child: GestureDetector(
+        onLongPress: _showPeek,
+        onTap: () {
+          _removePeek();
 
-        if (widget.onTapOverride != null) {
-          widget.onTapOverride!();
-          return;
-        }
+          if (widget.onTapOverride != null) {
+            widget.onTapOverride!();
+            return;
+          }
 
-        // Handle normal definition selection
-        ref.read(selectedWordProvider.notifier).state = widget.word;
+          // Handle normal definition selection
+          ref.read(selectedWordProvider.notifier).state = widget.word;
 
-        // Handle visual context engine
-        // If they tap a word with a lexicon key, activate it across the screen.
-        if (lookupKey != null) {
-          ref.read(activeStrongsProvider.notifier).state = lookupKey;
-        } else {
-          ref.read(activeStrongsProvider.notifier).state = null;
-        }
+          // Handle visual context engine
+          // If they tap a word with a lexicon key, activate it across the screen.
+          if (lookupKey != null) {
+            ref.read(activeStrongsProvider.notifier).state = lookupKey;
+          } else {
+            ref.read(activeStrongsProvider.notifier).state = null;
+          }
 
-        DefinitionSheet.show(context);
-      },
-      child: CompositedTransformTarget(
-        link: _peekLink,
-        child: Container(
-          key: _wordKey,
-          padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 2),
-          decoration: BoxDecoration(
-            color: isSelected
-                ? colorScheme.primaryContainer.withValues(alpha: 0.5)
-                : isContextActive
-                ? colorScheme.secondaryContainer.withValues(alpha: 0.3)
-                : null,
-            borderRadius: BorderRadius.circular(4),
-            border: isContextActive && !isSelected
-                ? Border.all(
-                    color: colorScheme.secondary.withValues(alpha: 0.5),
-                  )
-                : null,
+          DefinitionSheet.show(context);
+        },
+        child: CompositedTransformTarget(
+          link: _peekLink,
+          child: Container(
+            key: _wordKey,
+            // The primary interaction of the whole app, and it carries two
+            // gestures. 3x2 gave roughly a 26x24 pt target against a 44 pt
+            // minimum; the Wrap's own runSpacing absorbs most of the extra
+            // height, so the line does not visibly loosen.
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 7),
+            decoration: BoxDecoration(
+              color: isSelected
+                  ? colorScheme.primaryContainer.withValues(alpha: 0.5)
+                  : isContextActive
+                  ? colorScheme.secondaryContainer.withValues(alpha: 0.3)
+                  : null,
+              borderRadius: BorderRadius.circular(4),
+              border: isContextActive && !isSelected
+                  ? Border.all(
+                      color: colorScheme.secondary.withValues(alpha: 0.5),
+                    )
+                  : null,
+            ),
+            child: ExcludeSemantics(
+              child: _buildWordStack(colorScheme, showTransliteration),
+            ),
           ),
-          child: _buildWordStack(colorScheme, showTransliteration),
         ),
       ),
     );
   }
+
+  /// What the two gestures on a word actually do.
+  String _l10nHint(BuildContext context) =>
+      AppLocalizations.of(context)!.wordGestureHint;
 
   Widget _buildWordStack(ColorScheme colorScheme, bool showTransliteration) {
     final hasGloss =
@@ -278,7 +316,9 @@ class _TappableWordState extends ConsumerState<TappableWord> {
             widget.transliteration!,
             style: TextStyle(
               fontSize: widget.fontSize * 0.6,
-              color: colorScheme.primary.withValues(alpha: 0.8),
+              // Full strength: at 80% this measured 3.07:1 on parchment, and
+              // it is set at 0.6x the body size, so it needs the contrast most.
+              color: colorScheme.primary,
               fontWeight: FontWeight.w500,
               fontStyle: FontStyle.italic,
             ),

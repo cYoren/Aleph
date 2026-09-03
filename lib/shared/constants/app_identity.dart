@@ -18,5 +18,14 @@ class AppIdentity {
   static const responsibleTradeName = 'Original Bible';
   static const responsibleCnpj = '64.661.660/0001-04';
 
+  /// Shown on the About screen. A reader reporting a problem is asked for
+  /// this, and it appeared nowhere in the app before.
+  ///
+  /// Kept in step with `version:` in pubspec.yaml by
+  /// `test/app_identity_version_test.dart`, so a release bump that forgets
+  /// this fails the suite rather than shipping a stale number.
+  static const version = '1.0.4';
+  static const buildNumber = '25';
+
   const AppIdentity._();
 }

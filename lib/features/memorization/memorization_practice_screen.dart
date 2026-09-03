@@ -9,6 +9,8 @@ import '../../shared/utils/hebrew_display.dart';
 import '../../shared/utils/memorization.dart';
 import '../settings/settings_provider.dart';
 import 'memorization_provider.dart';
+import '../../providers/book_names_provider.dart';
+import '../../shared/widgets/empty_state.dart';
 
 /// Cloze-deletion practice for one passage: words are hidden by difficulty
 /// level; tap a hidden word to reveal it, then self-grade to feed SM-2.
@@ -48,7 +50,9 @@ class _MemorizationPracticeScreenState
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('${book?.name ?? passage.bookId} ${passage.chapter}'),
+        title: Text(
+          '${ref.watch(localizedBookNameProvider(passage.bookId))} ${passage.chapter}',
+        ),
       ),
       body: Column(
         children: [
@@ -94,7 +98,7 @@ class _MemorizationPracticeScreenState
             child: versesAsync.when(
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (err, stack) =>
-                  Center(child: Text('${l10n.error}: $err')),
+                  Center(child: ErrorState(message: l10n.errorGenericBody)),
               data: (verses) => ListView.builder(
                 padding: const EdgeInsets.all(16),
                 itemCount: verses.length,
@@ -141,8 +145,7 @@ class _MemorizationPracticeScreenState
       for (var i = 0; i < tokens.length; i++)
         _buildToken(
           tokens[i],
-          isHidden: hidden.contains(i) &&
-              !_revealed.contains('$verseIndex:$i'),
+          isHidden: hidden.contains(i) && !_revealed.contains('$verseIndex:$i'),
           revealKey: '$verseIndex:$i',
           fontFamily: fontFamily,
           fontSize: fontSize,
@@ -193,9 +196,7 @@ class _MemorizationPracticeScreenState
         decoration: BoxDecoration(
           color: colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(6),
-          border: Border.all(
-            color: colorScheme.outlineVariant,
-          ),
+          border: Border.all(color: colorScheme.outlineVariant),
         ),
         child: Text(
           hint ?? '•••',

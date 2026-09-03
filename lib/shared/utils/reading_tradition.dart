@@ -62,11 +62,25 @@ const Map<TanakhSection, List<String>> kTanakhOrder = {
   ],
 };
 
+/// Every book of the Hebrew Bible, by database abbreviation.
+///
+/// Derived from [kTanakhOrder] rather than written out again: this set decides
+/// which script, font and text direction a verse renders in, and it was
+/// previously duplicated as a literal in two screens. Two copies of a list
+/// that decides right-to-left will drift.
+final Set<String> kHebrewBibleBooks = {
+  for (final books in kTanakhOrder.values) ...books,
+};
+
+/// Whether [bookId] is in the Hebrew Bible — that is, Hebrew and right-to-left
+/// rather than Greek and left-to-right.
+bool isOldTestamentBook(String bookId) =>
+    kHebrewBibleBooks.contains(bookId.trim().toUpperCase());
+
 /// Position of each Tanakh book in the traditional order, for sorting.
 final Map<String, int> kTanakhPositions = {
-  for (final (index, abbreviation) in kTanakhOrder.values
-      .expand((books) => books)
-      .indexed)
+  for (final (index, abbreviation)
+      in kTanakhOrder.values.expand((books) => books).indexed)
     abbreviation: index,
 };
 
@@ -103,19 +117,47 @@ List<T> sortForTradition<T>(
 /// Hebrew Bible verses chosen for how often they are quoted in the New
 /// Testament.
 const List<String> kChristianDailyVerses = [
-  'GEN.1.1', 'GEN.1.3', 'JHN.1.1', 'JHN.3.16', 'PSA.23.1',
-  'PSA.119.105', 'PRO.3.5', 'ISA.40.31', 'JER.29.11', 'ROM.8.28',
-  'PHP.4.13', 'HEB.11.1', 'MAT.5.14', 'MAT.6.33', 'ROM.12.2',
+  'GEN.1.1',
+  'GEN.1.3',
+  'JHN.1.1',
+  'JHN.3.16',
+  'PSA.23.1',
+  'PSA.119.105',
+  'PRO.3.5',
+  'ISA.40.31',
+  'JER.29.11',
+  'ROM.8.28',
+  'PHP.4.13',
+  'HEB.11.1',
+  'MAT.5.14',
+  'MAT.6.33',
+  'ROM.12.2',
 ];
 
 const List<String> kJewishDailyVerses = [
-  'GEN.1.1', 'GEN.1.3', 'GEN.12.2', 'EXO.3.14', 'EXO.20.2',
-  'LEV.19.18', 'NUM.6.24', 'DEU.6.4', 'DEU.30.19', 'JOS.1.9',
-  '1SA.16.7', 'PSA.23.1', 'PSA.121.1', 'PSA.119.105', 'PRO.3.5',
-  'ECC.3.1', 'ISA.40.31', 'JER.29.11', 'MIC.6.8', 'JOB.19.25',
+  'GEN.1.1',
+  'GEN.1.3',
+  'GEN.12.2',
+  'EXO.3.14',
+  'EXO.20.2',
+  'LEV.19.18',
+  'NUM.6.24',
+  'DEU.6.4',
+  'DEU.30.19',
+  'JOS.1.9',
+  '1SA.16.7',
+  'PSA.23.1',
+  'PSA.121.1',
+  'PSA.119.105',
+  'PRO.3.5',
+  'ECC.3.1',
+  'ISA.40.31',
+  'JER.29.11',
+  'MIC.6.8',
+  'JOB.19.25',
 ];
 
 List<String> dailyVersesFor(ReadingTradition tradition) =>
     tradition == ReadingTradition.jewish
-        ? kJewishDailyVerses
-        : kChristianDailyVerses;
+    ? kJewishDailyVerses
+    : kChristianDailyVerses;

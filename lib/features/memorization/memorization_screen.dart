@@ -7,6 +7,8 @@ import '../../data/models/memorization_passage.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../providers/books_provider.dart';
 import 'memorization_provider.dart';
+import '../../providers/book_names_provider.dart';
+import '../../shared/widgets/empty_state.dart';
 
 /// List of passages the user is memorizing, with SM-2 review scheduling.
 class MemorizationScreen extends ConsumerWidget {
@@ -26,7 +28,8 @@ class MemorizationScreen extends ConsumerWidget {
       ),
       body: passagesAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, stack) => Center(child: Text('${l10n.error}: $err')),
+        error: (err, stack) =>
+            Center(child: ErrorState(message: l10n.errorGenericBody)),
         data: (passages) {
           if (passages.isEmpty) {
             return Center(
@@ -91,8 +94,8 @@ class _PassageTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
-    final book = ref.watch(bookByAbbreviationProvider(passage.bookId));
-    final title = '${book?.name ?? passage.bookId} ${passage.chapter}';
+    final title =
+        '${ref.watch(localizedBookNameProvider(passage.bookId))} ${passage.chapter}';
     final masteryPercent = (passage.masteryScore * 100).round();
 
     return ListTile(
@@ -226,9 +229,7 @@ class _AddPassageSheetState extends ConsumerState<_AddPassageSheet> {
                     labelText: l10n.selectChapterLabel,
                   ),
                   items: List.generate(_chapterCount, (i) => i + 1)
-                      .map(
-                        (c) => DropdownMenuItem(value: c, child: Text('$c')),
-                      )
+                      .map((c) => DropdownMenuItem(value: c, child: Text('$c')))
                       .toList(),
                   onChanged: (c) {
                     if (c != null) setState(() => _chapter = c);

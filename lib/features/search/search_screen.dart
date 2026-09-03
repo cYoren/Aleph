@@ -4,21 +4,25 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../providers/database_provider.dart';
-import '../../providers/books_provider.dart';
+import '../../data/database/daos/bible_dao.dart';
 import '../../data/models/verse.dart';
 import '../reading/reading_provider.dart';
 import '../settings/settings_provider.dart';
 import '../../shared/widgets/empty_state.dart';
 import '../../shared/widgets/loading_skeleton.dart';
 import 'word_search_provider.dart';
+import '../../providers/book_names_provider.dart';
 
 final searchQueryProvider = StateProvider<String>((ref) => '');
 
-final searchResultsProvider = FutureProvider.autoDispose<List<Verse>>((
-  ref,
-) async {
+/// Kept alive rather than auto-disposed: the search tab is a [ShellRoute]
+/// child, so tapping a result and coming back rebuilt this from scratch and
+/// the reader lost the results they had just navigated from.
+final searchResultsProvider = FutureProvider<SearchResults>((ref) async {
   final query = ref.watch(searchQueryProvider);
-  if (query.isEmpty || query.length < 3) return [];
+  if (query.isEmpty || query.length < kMinSearchLength) {
+    return SearchResults.empty;
+  }
 
   final dao = ref.watch(bibleDaoProvider);
   final selectedTranslation = ref.watch(
@@ -26,6 +30,9 @@ final searchResultsProvider = FutureProvider.autoDispose<List<Verse>>((
   );
   return dao.search(query, translationId: selectedTranslation);
 });
+
+/// Shortest query worth running. Below this every chapter matches.
+const int kMinSearchLength = 3;
 
 class SearchScreen extends ConsumerStatefulWidget {
   const SearchScreen({super.key});
@@ -56,7 +63,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     _debounce?.cancel();
     _searchController.removeListener(_onControllerChanged);
     _searchController.dispose();
-    ref.read(searchQueryProvider.notifier).state = '';
+    // The query deliberately survives this screen. Clearing it here meant
+    // opening a result and coming back to an empty field and no results.
     super.dispose();
   }
 
@@ -75,8 +83,15 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       final bookId = parts[0];
       final chapter = int.tryParse(parts[1]) ?? 1;
 
-      // Navigate to reading view
-      ref.read(readingProvider.notifier).loadChapter(bookId, chapter);
+      final verseNumber = parts.length > 2 ? int.tryParse(parts[2]) : null;
+      ref
+          .read(readingProvider.notifier)
+          .loadChapter(
+            bookId,
+            chapter,
+            targetVerse: verseNumber,
+            recordHistory: true,
+          );
       context.go('/reading');
     }
   }
@@ -97,7 +112,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             padding: const EdgeInsets.all(16.0),
             child: TextField(
               controller: _searchController,
-              autofocus: true,
+              // Only when there is nothing to come back to. Focusing on every
+              // visit threw the keyboard over results the reader had just
+              // returned to read.
+              autofocus: _searchController.text.isEmpty,
+              textInputAction: TextInputAction.search,
               decoration: InputDecoration(
                 hintText: l10n.searchHint,
                 prefixIcon: const Icon(Icons.search),
@@ -162,12 +181,16 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 ),
               ),
             )
-          else if (query.length < 3)
+          else if (query.length < kMinSearchLength)
             Expanded(
               child: Center(
-                child: Text(
-                  '${l10n.search}... (${3 - query.length})',
-                  style: TextStyle(color: colorScheme.onSurfaceVariant),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32),
+                  child: Text(
+                    l10n.searchKeepTyping(kMinSearchLength),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: colorScheme.onSurfaceVariant),
+                  ),
                 ),
               ),
             )
@@ -175,7 +198,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             // Results
             Expanded(
               child: searchResults.when(
-                data: (verses) {
+                data: (results) {
+                  final verses = results.verses;
                   final wordResults =
                       ref.watch(wordSearchResultsProvider).valueOrNull ??
                       const <WordSearchResult>[];
@@ -190,11 +214,19 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     children: [
                       if (verses.isNotEmpty) ...[
                         _buildSectionLabel(
-                          l10n.verseResultsSection,
+                          // The cap has to be visible, or a truncated list
+                          // reads as the whole answer.
+                          results.isTruncated
+                              ? l10n.verseResultsShowing(
+                                  verses.length,
+                                  results.totalMatches,
+                                )
+                              : l10n.verseResultsSection,
                           colorScheme,
                         ),
                         ...verses.map(
-                          (verse) => _buildSearchResult(verse, colorScheme),
+                          (verse) =>
+                              _buildSearchResult(verse, colorScheme, query),
                         ),
                       ],
                       if (wordResults.isNotEmpty) ...[
@@ -215,7 +247,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   itemBuilder: (context, index) => const SearchResultSkeleton(),
                 ),
                 error: (err, stack) => ErrorState(
-                  message: err.toString(),
+                  message: l10n.searchFailedBody,
                   onRetry: () => ref.invalidate(searchResultsProvider),
                 ),
               ),
@@ -299,22 +331,53 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     );
   }
 
-  Widget _buildSearchResult(Verse verse, ColorScheme colorScheme) {
-    // Get book name for display
-    final booksAsync = ref.watch(booksProvider);
+  /// Splits [text] so the matched run can be emphasised.
+  ///
+  /// A result list that does not show what matched makes the reader re-read
+  /// every line to find out why it is there.
+  List<TextSpan> _highlight(String text, String query, ColorScheme scheme) {
+    if (query.isEmpty) return [TextSpan(text: text)];
+
+    final haystack = text.toLowerCase();
+    final needle = query.toLowerCase();
+    final spans = <TextSpan>[];
+    var start = 0;
+
+    while (true) {
+      final index = haystack.indexOf(needle, start);
+      if (index < 0) break;
+      if (index > start) {
+        spans.add(TextSpan(text: text.substring(start, index)));
+      }
+      spans.add(
+        TextSpan(
+          text: text.substring(index, index + needle.length),
+          style: TextStyle(
+            fontWeight: FontWeight.w700,
+            backgroundColor: scheme.primaryContainer,
+            color: scheme.onPrimaryContainer,
+          ),
+        ),
+      );
+      start = index + needle.length;
+    }
+
+    if (start < text.length) spans.add(TextSpan(text: text.substring(start)));
+    return spans.isEmpty ? [TextSpan(text: text)] : spans;
+  }
+
+  Widget _buildSearchResult(
+    Verse verse,
+    ColorScheme colorScheme,
+    String query,
+  ) {
     final parts = verse.id.split('.');
     final bookAbbrev = parts.isNotEmpty ? parts[0] : '';
     final chapter = parts.length > 1 ? parts[1] : '';
     final verseNum = parts.length > 2 ? parts[2] : '';
 
-    final bookName =
-        booksAsync.whenOrNull(
-          data: (books) => books
-              .where((b) => b.abbreviation == bookAbbrev)
-              .firstOrNull
-              ?.name,
-        ) ??
-        bookAbbrev;
+    // The reader's language, not the database's English column.
+    final bookName = ref.watch(localizedBookNameProvider(bookAbbrev));
 
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
@@ -356,9 +419,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 ],
               ),
               const SizedBox(height: 8),
-              // Content
-              Text(
-                verse.textContent,
+              // Content, with the matched run marked
+              Text.rich(
+                TextSpan(
+                  children: _highlight(verse.textContent, query, colorScheme),
+                ),
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(

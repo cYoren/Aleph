@@ -1525,6 +1525,288 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Scriptures'**
   String get traditionSettingTitle;
+
+  /// No description provided for @backToPrevious.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to where you were'**
+  String get backToPrevious;
+
+  /// No description provided for @copyOriginal.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy original text'**
+  String get copyOriginal;
+
+  /// No description provided for @copyBoth.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy original and translation'**
+  String get copyBoth;
+
+  /// No description provided for @searchKeepTyping.
+  ///
+  /// In en, this message translates to:
+  /// **'Type at least {count} letters to search.'**
+  String searchKeepTyping(int count);
+
+  /// No description provided for @verseResultsShowing.
+  ///
+  /// In en, this message translates to:
+  /// **'Verses — showing {shown} of {total}'**
+  String verseResultsShowing(int shown, int total);
+
+  /// No description provided for @searchFailedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The search could not be completed. Try again.'**
+  String get searchFailedBody;
+
+  /// No description provided for @errorGenericBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong loading this. Try again.'**
+  String get errorGenericBody;
+
+  /// No description provided for @verseOfDayUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s verse could not be loaded.'**
+  String get verseOfDayUnavailable;
+
+  /// No description provided for @wordGestureHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap for the full entry, press and hold for the meaning'**
+  String get wordGestureHint;
+
+  /// No description provided for @masteryPercent.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% learned'**
+  String masteryPercent(int percent);
+
+  /// No description provided for @readingSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading'**
+  String get readingSectionTitle;
+
+  /// No description provided for @appearanceSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Appearance'**
+  String get appearanceSectionTitle;
+
+  /// No description provided for @audioSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio'**
+  String get audioSectionTitle;
+
+  /// No description provided for @aboutSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get aboutSectionTitle;
+
+  /// No description provided for @traditionSettingDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Sets how the books are named and ordered'**
+  String get traditionSettingDesc;
+
+  /// No description provided for @fontSizeSample.
+  ///
+  /// In en, this message translates to:
+  /// **'The size of the text you read'**
+  String get fontSizeSample;
+
+  /// No description provided for @recitationVoiceUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'This device has no voice download screen.'**
+  String get recitationVoiceUnavailable;
+
+  /// No description provided for @recitationPause.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause'**
+  String get recitationPause;
+
+  /// No description provided for @recitationResume.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume'**
+  String get recitationResume;
+
+  /// No description provided for @recitationPreviousVerse.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous verse'**
+  String get recitationPreviousVerse;
+
+  /// No description provided for @recitationNextVerse.
+  ///
+  /// In en, this message translates to:
+  /// **'Next verse'**
+  String get recitationNextVerse;
+
+  /// No description provided for @recitationPausedAtVerse.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused at verse {number}'**
+  String recitationPausedAtVerse(int number);
+
+  /// No description provided for @bookmarkRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmark removed'**
+  String get bookmarkRemoved;
+
+  /// No description provided for @undo.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get undo;
+
+  /// No description provided for @bookFilterHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Find a book'**
+  String get bookFilterHint;
+
+  /// No description provided for @clearFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get clearFilter;
+
+  /// No description provided for @databasePreparingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing the library'**
+  String get databasePreparingTitle;
+
+  /// No description provided for @databasePreparingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Copying the text, dictionaries and grammar to this device. This happens once, and everything works offline afterwards.'**
+  String get databasePreparingBody;
+
+  /// No description provided for @databasePrepareFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The library could not be prepared. Check that there is enough free space and try again.'**
+  String get databasePrepareFailed;
+
+  /// No description provided for @aboutSourcesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sources and credits'**
+  String get aboutSourcesTitle;
+
+  /// No description provided for @aboutSourcesDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Where the text, dictionaries and typefaces came from'**
+  String get aboutSourcesDesc;
+
+  /// No description provided for @aboutSourcesSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What is in this app'**
+  String get aboutSourcesSectionTitle;
+
+  /// No description provided for @aboutVersionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get aboutVersionLabel;
+
+  /// No description provided for @aboutLicensesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Open source licences'**
+  String get aboutLicensesTitle;
+
+  /// No description provided for @aboutLicensesDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'The software libraries this app is built on'**
+  String get aboutLicensesDesc;
+
+  /// No description provided for @sourceOriginalTextTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Hebrew and Greek text'**
+  String get sourceOriginalTextTitle;
+
+  /// No description provided for @sourceOriginalTextBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Westminster Leningrad Codex (Hebrew Bible) and the SBL Greek New Testament, both in the public domain or freely licensed.'**
+  String get sourceOriginalTextBody;
+
+  /// No description provided for @sourceTranslationsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Translations'**
+  String get sourceTranslationsTitle;
+
+  /// No description provided for @sourceTranslationsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Public-domain and freely licensed translations, including the King James Version. Each translation keeps its own provenance in the database.'**
+  String get sourceTranslationsBody;
+
+  /// No description provided for @sourceLexiconTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Dictionaries and morphology'**
+  String get sourceLexiconTitle;
+
+  /// No description provided for @sourceLexiconBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Strong\'s Hebrew and Greek dictionaries, with morphological parsing from the OpenScriptures and MorphGNT projects.'**
+  String get sourceLexiconBody;
+
+  /// No description provided for @sourceSyntaxTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sentence structure'**
+  String get sourceSyntaxTitle;
+
+  /// No description provided for @sourceSyntaxBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Syntax trees from the MACULA Hebrew and Greek datasets by Clear Bible, used under CC BY 4.0.'**
+  String get sourceSyntaxBody;
+
+  /// No description provided for @sourceFontsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Typefaces'**
+  String get sourceFontsTitle;
+
+  /// No description provided for @sourceFontsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Ezra SIL for Hebrew and Gentium for Greek and Latin, both from SIL International under the SIL Open Font License.'**
+  String get sourceFontsBody;
+
+  /// No description provided for @onboardingHebrewExampleGloss.
+  ///
+  /// In en, this message translates to:
+  /// **'\"In the beginning God created…\"'**
+  String get onboardingHebrewExampleGloss;
+
+  /// No description provided for @onboardingGreekExampleGloss.
+  ///
+  /// In en, this message translates to:
+  /// **'\"In the beginning was the Word…\"'**
+  String get onboardingGreekExampleGloss;
 }
 
 class _AppLocalizationsDelegate

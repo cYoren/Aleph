@@ -39,6 +39,7 @@ class RecitationBar extends ConsumerWidget {
     }
 
     final isPreparing = state.status == RecitationStatus.preparing;
+    final notifier = ref.read(recitationProvider.notifier);
 
     return Material(
       elevation: 3,
@@ -77,7 +78,13 @@ class RecitationBar extends ConsumerWidget {
                       isPreparing
                           ? l10n.recitationPreparing
                           : state.currentVerseNumber != null
-                          ? l10n.recitationVerse(state.currentVerseNumber!)
+                          ? (state.isPaused
+                                ? l10n.recitationPausedAtVerse(
+                                    state.currentVerseNumber!,
+                                  )
+                                : l10n.recitationVerse(
+                                    state.currentVerseNumber!,
+                                  ))
                           : '',
                       style: TextStyle(
                         fontSize: 11,
@@ -91,8 +98,38 @@ class RecitationBar extends ConsumerWidget {
               _RateSelector(rate: state.rate),
 
               IconButton(
+                icon: const Icon(Icons.skip_previous_rounded),
+                tooltip: l10n.recitationPreviousVerse,
+                visualDensity: VisualDensity.compact,
+                color: colorScheme.onSurfaceVariant,
+                onPressed: isPreparing ? null : () => notifier.skipVerse(-1),
+              ),
+              IconButton(
+                icon: Icon(
+                  state.isPaused
+                      ? Icons.play_arrow_rounded
+                      : Icons.pause_rounded,
+                ),
+                tooltip: state.isPaused
+                    ? l10n.recitationResume
+                    : l10n.recitationPause,
+                color: colorScheme.primary,
+                onPressed: isPreparing
+                    ? null
+                    : () =>
+                          state.isPaused ? notifier.resume() : notifier.pause(),
+              ),
+              IconButton(
+                icon: const Icon(Icons.skip_next_rounded),
+                tooltip: l10n.recitationNextVerse,
+                visualDensity: VisualDensity.compact,
+                color: colorScheme.onSurfaceVariant,
+                onPressed: isPreparing ? null : () => notifier.skipVerse(1),
+              ),
+              IconButton(
                 icon: const Icon(Icons.stop_rounded),
                 tooltip: l10n.recitationStop,
+                visualDensity: VisualDensity.compact,
                 color: colorScheme.onSurfaceVariant,
                 onPressed: onStop,
               ),

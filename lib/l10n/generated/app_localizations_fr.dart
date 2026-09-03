@@ -838,4 +838,166 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get traditionSettingTitle => 'Écritures';
+
+  @override
+  String get backToPrevious => 'Revenir où vous étiez';
+
+  @override
+  String get copyOriginal => 'Copier le texte original';
+
+  @override
+  String get copyBoth => 'Copier l\'original et la traduction';
+
+  @override
+  String searchKeepTyping(int count) {
+    return 'Saisissez au moins $count lettres pour rechercher.';
+  }
+
+  @override
+  String verseResultsShowing(int shown, int total) {
+    return 'Versets — $shown sur $total';
+  }
+
+  @override
+  String get searchFailedBody => 'La recherche n\'a pas abouti. Réessayez.';
+
+  @override
+  String get errorGenericBody => 'Le chargement a échoué. Réessayez.';
+
+  @override
+  String get verseOfDayUnavailable =>
+      'Le verset du jour n\'a pas pu être chargé.';
+
+  @override
+  String get wordGestureHint =>
+      'Touchez pour l\'entrée complète, appuyez longuement pour le sens';
+
+  @override
+  String masteryPercent(int percent) {
+    return '$percent% appris';
+  }
+
+  @override
+  String get readingSectionTitle => 'Lecture';
+
+  @override
+  String get appearanceSectionTitle => 'Apparence';
+
+  @override
+  String get audioSectionTitle => 'Audio';
+
+  @override
+  String get aboutSectionTitle => 'À propos';
+
+  @override
+  String get traditionSettingDesc => 'Définit le nom et l\'ordre des livres';
+
+  @override
+  String get fontSizeSample => 'La taille du texte que vous lisez';
+
+  @override
+  String get recitationVoiceUnavailable =>
+      'Cet appareil n\'a pas d\'écran de téléchargement de voix.';
+
+  @override
+  String get recitationPause => 'Pause';
+
+  @override
+  String get recitationResume => 'Reprendre';
+
+  @override
+  String get recitationPreviousVerse => 'Verset précédent';
+
+  @override
+  String get recitationNextVerse => 'Verset suivant';
+
+  @override
+  String recitationPausedAtVerse(int number) {
+    return 'En pause au verset $number';
+  }
+
+  @override
+  String get bookmarkRemoved => 'Signet supprimé';
+
+  @override
+  String get undo => 'Annuler';
+
+  @override
+  String get bookFilterHint => 'Trouver un livre';
+
+  @override
+  String get clearFilter => 'Effacer';
+
+  @override
+  String get databasePreparingTitle => 'Préparation de la bibliothèque';
+
+  @override
+  String get databasePreparingBody =>
+      'Copie du texte, des dictionnaires et de la grammaire sur cet appareil. Cela n\'arrive qu\'une fois ; ensuite tout fonctionne hors ligne.';
+
+  @override
+  String get databasePrepareFailed =>
+      'La bibliothèque n\'a pas pu être préparée. Vérifiez l\'espace libre et réessayez.';
+
+  @override
+  String get aboutSourcesTitle => 'Sources et crédits';
+
+  @override
+  String get aboutSourcesDesc =>
+      'D\'où viennent le texte, les dictionnaires et les polices';
+
+  @override
+  String get aboutSourcesSectionTitle => 'Ce que contient cette application';
+
+  @override
+  String get aboutVersionLabel => 'Version';
+
+  @override
+  String get aboutLicensesTitle => 'Licences open source';
+
+  @override
+  String get aboutLicensesDesc =>
+      'Les bibliothèques logicielles utilisées par cette application';
+
+  @override
+  String get sourceOriginalTextTitle => 'Texte hébreu et grec';
+
+  @override
+  String get sourceOriginalTextBody =>
+      'Codex de Leningrad de Westminster (Bible hébraïque) et le Nouveau Testament grec SBL, dans le domaine public ou sous licence libre.';
+
+  @override
+  String get sourceTranslationsTitle => 'Traductions';
+
+  @override
+  String get sourceTranslationsBody =>
+      'Traductions du domaine public ou sous licence libre, dont la King James Version. Chaque traduction conserve sa provenance dans la base.';
+
+  @override
+  String get sourceLexiconTitle => 'Dictionnaires et morphologie';
+
+  @override
+  String get sourceLexiconBody =>
+      'Dictionnaires hébreu et grec de Strong, avec l\'analyse morphologique des projets OpenScriptures et MorphGNT.';
+
+  @override
+  String get sourceSyntaxTitle => 'Structure des phrases';
+
+  @override
+  String get sourceSyntaxBody =>
+      'Arbres syntaxiques des jeux de données MACULA (hébreu et grec) de Clear Bible, sous licence CC BY 4.0.';
+
+  @override
+  String get sourceFontsTitle => 'Polices';
+
+  @override
+  String get sourceFontsBody =>
+      'Ezra SIL pour l\'hébreu et Gentium pour le grec et le latin, toutes deux de SIL International sous la SIL Open Font License.';
+
+  @override
+  String get onboardingHebrewExampleGloss => '« Au commencement, Dieu créa… »';
+
+  @override
+  String get onboardingGreekExampleGloss =>
+      '« Au commencement était la Parole… »';
 }

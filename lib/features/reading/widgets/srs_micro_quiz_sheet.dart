@@ -217,8 +217,8 @@ class _SrsMicroQuizSheetState extends ConsumerState<SrsMicroQuizSheet> {
                         await _recordSrs(false);
                       },
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: Colors.red,
-                        side: const BorderSide(color: Colors.red),
+                        foregroundColor: colorScheme.error,
+                        side: BorderSide(color: colorScheme.error),
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -234,8 +234,8 @@ class _SrsMicroQuizSheetState extends ConsumerState<SrsMicroQuizSheet> {
                         await _recordSrs(true);
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        foregroundColor: Colors.white,
+                        backgroundColor: colorScheme.tertiaryContainer,
+                        foregroundColor: colorScheme.onTertiaryContainer,
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),

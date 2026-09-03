@@ -6,13 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../providers/database_provider.dart';
 import '../../shared/utils/parsing_quiz.dart';
+import '../../shared/widgets/empty_state.dart';
 
 /// Fresh random quiz per visit (autoDispose), keyed by language.
-final parsingQuizProvider =
-    FutureProvider.autoDispose.family<List<ParsingQuestion>, String>((
-      ref,
-      language,
-    ) async {
+final parsingQuizProvider = FutureProvider.autoDispose
+    .family<List<ParsingQuestion>, String>((ref, language) async {
       final dao = ref.watch(bibleDaoProvider);
       final pool = await dao.getRandomMorphWords(language: language);
       return buildParsingQuiz(
@@ -49,7 +47,8 @@ class _ParsingQuizScreenState extends ConsumerState<ParsingQuizScreen> {
       appBar: AppBar(title: Text(l10n.parsingQuizTitle)),
       body: quizAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, stack) => Center(child: Text('${l10n.error}: $err')),
+        error: (err, stack) =>
+            Center(child: ErrorState(message: l10n.errorGenericBody)),
         data: (questions) {
           if (questions.isEmpty) {
             return Center(child: Text(l10n.noUsageDataAvailable));
@@ -57,8 +56,12 @@ class _ParsingQuizScreenState extends ConsumerState<ParsingQuizScreen> {
           if (_index >= questions.length) {
             return _buildSummary(questions.length, l10n, colorScheme);
           }
-          return _buildQuestion(questions[_index], questions.length, l10n,
-              colorScheme);
+          return _buildQuestion(
+            questions[_index],
+            questions.length,
+            l10n,
+            colorScheme,
+          );
         },
       ),
     );
@@ -90,10 +93,7 @@ class _ParsingQuizScreenState extends ConsumerState<ParsingQuizScreen> {
           Text(
             l10n.whatFormIsThis,
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 16,
-              color: colorScheme.onSurfaceVariant,
-            ),
+            style: TextStyle(fontSize: 16, color: colorScheme.onSurfaceVariant),
           ),
           const SizedBox(height: 16),
           Container(
@@ -136,8 +136,12 @@ class _ParsingQuizScreenState extends ConsumerState<ParsingQuizScreen> {
             Color? background;
             Color? foreground;
             if (answered && isCorrect) {
-              background = Colors.green.withValues(alpha: 0.15);
-              foreground = Colors.green.shade800;
+              // Colors.green.shade800 measured 2.67:1 on the night ground.
+              // The scheme's tertiary follows the theme into dark mode.
+              background = colorScheme.tertiaryContainer.withValues(
+                alpha: 0.55,
+              );
+              foreground = colorScheme.onTertiaryContainer;
             } else if (answered && isSelected && !isCorrect) {
               background = colorScheme.errorContainer.withValues(alpha: 0.5);
               foreground = colorScheme.error;
@@ -209,10 +213,7 @@ class _ParsingQuizScreenState extends ConsumerState<ParsingQuizScreen> {
             Text(
               l10n.quizScore(_score, total),
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 32),
             FilledButton(

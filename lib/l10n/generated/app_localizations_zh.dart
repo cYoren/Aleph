@@ -799,4 +799,158 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get traditionSettingTitle => '经典';
+
+  @override
+  String get backToPrevious => '返回原处';
+
+  @override
+  String get copyOriginal => '复制原文';
+
+  @override
+  String get copyBoth => '复制原文与译文';
+
+  @override
+  String searchKeepTyping(int count) {
+    return '请至少输入 $count 个字母进行搜索。';
+  }
+
+  @override
+  String verseResultsShowing(int shown, int total) {
+    return '经文 — 显示 $shown / $total';
+  }
+
+  @override
+  String get searchFailedBody => '搜索未能完成，请重试。';
+
+  @override
+  String get errorGenericBody => '加载时出错，请重试。';
+
+  @override
+  String get verseOfDayUnavailable => '无法加载今日经文。';
+
+  @override
+  String get wordGestureHint => '点按查看完整词条，长按查看词义';
+
+  @override
+  String masteryPercent(int percent) {
+    return '已掌握 $percent%';
+  }
+
+  @override
+  String get readingSectionTitle => '阅读';
+
+  @override
+  String get appearanceSectionTitle => '外观';
+
+  @override
+  String get audioSectionTitle => '音频';
+
+  @override
+  String get aboutSectionTitle => '关于';
+
+  @override
+  String get traditionSettingDesc => '决定书卷的名称与顺序';
+
+  @override
+  String get fontSizeSample => '您阅读的文字大小';
+
+  @override
+  String get recitationVoiceUnavailable => '此设备没有语音下载界面。';
+
+  @override
+  String get recitationPause => '暂停';
+
+  @override
+  String get recitationResume => '继续';
+
+  @override
+  String get recitationPreviousVerse => '上一节';
+
+  @override
+  String get recitationNextVerse => '下一节';
+
+  @override
+  String recitationPausedAtVerse(int number) {
+    return '已在第 $number 节暂停';
+  }
+
+  @override
+  String get bookmarkRemoved => '书签已移除';
+
+  @override
+  String get undo => '撤销';
+
+  @override
+  String get bookFilterHint => '查找书卷';
+
+  @override
+  String get clearFilter => '清除';
+
+  @override
+  String get databasePreparingTitle => '正在准备书库';
+
+  @override
+  String get databasePreparingBody => '正在将经文、词典与语法复制到本机。只需一次，之后即可完全离线使用。';
+
+  @override
+  String get databasePrepareFailed => '无法准备书库。请确认可用空间充足后重试。';
+
+  @override
+  String get aboutSourcesTitle => '资料来源与致谢';
+
+  @override
+  String get aboutSourcesDesc => '经文、词典与字体的来源';
+
+  @override
+  String get aboutSourcesSectionTitle => '本应用包含的内容';
+
+  @override
+  String get aboutVersionLabel => '版本';
+
+  @override
+  String get aboutLicensesTitle => '开源许可';
+
+  @override
+  String get aboutLicensesDesc => '本应用使用的软件库';
+
+  @override
+  String get sourceOriginalTextTitle => '希伯来文与希腊文原文';
+
+  @override
+  String get sourceOriginalTextBody =>
+      '威斯敏斯特列宁格勒抄本（希伯来文圣经）与 SBL 希腊文新约，均属公有领域或自由授权。';
+
+  @override
+  String get sourceTranslationsTitle => '译本';
+
+  @override
+  String get sourceTranslationsBody =>
+      '公有领域及自由授权的译本，包括钦定版圣经。每个译本在数据库中保留各自的来源信息。';
+
+  @override
+  String get sourceLexiconTitle => '词典与词法';
+
+  @override
+  String get sourceLexiconBody =>
+      '斯特朗希伯来文与希腊文词典，词法解析来自 OpenScriptures 与 MorphGNT 项目。';
+
+  @override
+  String get sourceSyntaxTitle => '句法结构';
+
+  @override
+  String get sourceSyntaxBody =>
+      '句法树来自 Clear Bible 的 MACULA 希伯来文与希腊文数据集，依 CC BY 4.0 授权使用。';
+
+  @override
+  String get sourceFontsTitle => '字体';
+
+  @override
+  String get sourceFontsBody =>
+      '希伯来文使用 Ezra SIL，希腊文与拉丁文使用 Gentium，均由 SIL International 依 SIL 开放字体许可发布。';
+
+  @override
+  String get onboardingHebrewExampleGloss => '「起初，神创造…」';
+
+  @override
+  String get onboardingGreekExampleGloss => '「太初有道…」';
 }

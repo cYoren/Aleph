@@ -343,5 +343,83 @@
   "tanakhNeviim": "Nevi'im — Profetas",
   "tanakhKetuvim": "Ketuvim — Escritos",
   "hebrewBibleLabel": "Bíblia Hebraica",
-  "traditionSettingTitle": "Escrituras"
+  "traditionSettingTitle": "Escrituras",
+  "backToPrevious": "Voltar para onde você estava",
+  "copyOriginal": "Copiar texto original",
+  "copyBoth": "Copiar original e tradução",
+  "searchKeepTyping": "Digite ao menos {count} letras para pesquisar.",
+  "@searchKeepTyping": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "verseResultsShowing": "Versículos — mostrando {shown} de {total}",
+  "@verseResultsShowing": {
+    "placeholders": {
+      "shown": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "searchFailedBody": "Não foi possível concluir a pesquisa. Tente novamente.",
+  "errorGenericBody": "Algo deu errado ao carregar. Tente novamente.",
+  "verseOfDayUnavailable": "Não foi possível carregar o versículo de hoje.",
+  "wordGestureHint": "Toque para o verbete completo, mantenha pressionado para o significado",
+  "masteryPercent": "{percent}% aprendido",
+  "@masteryPercent": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "readingSectionTitle": "Leitura",
+  "appearanceSectionTitle": "Aparência",
+  "audioSectionTitle": "Áudio",
+  "aboutSectionTitle": "Sobre",
+  "traditionSettingDesc": "Define como os livros são nomeados e ordenados",
+  "fontSizeSample": "O tamanho do texto que você lê",
+  "recitationVoiceUnavailable": "Este aparelho não tem tela de download de vozes.",
+  "recitationPause": "Pausar",
+  "recitationResume": "Retomar",
+  "recitationPreviousVerse": "Versículo anterior",
+  "recitationNextVerse": "Próximo versículo",
+  "recitationPausedAtVerse": "Pausado no versículo {number}",
+  "@recitationPausedAtVerse": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarkRemoved": "Marcador removido",
+  "undo": "Desfazer",
+  "bookFilterHint": "Encontrar um livro",
+  "clearFilter": "Limpar",
+  "databasePreparingTitle": "Preparando a biblioteca",
+  "databasePreparingBody": "Copiando o texto, os dicionários e a gramática para este aparelho. Isso acontece uma vez, e depois tudo funciona offline.",
+  "databasePrepareFailed": "Não foi possível preparar a biblioteca. Verifique se há espaço livre suficiente e tente novamente.",
+  "aboutSourcesTitle": "Fontes e créditos",
+  "aboutSourcesDesc": "De onde vêm o texto, os dicionários e as fontes",
+  "aboutSourcesSectionTitle": "O que há neste app",
+  "aboutVersionLabel": "Versão",
+  "aboutLicensesTitle": "Licenças de código aberto",
+  "aboutLicensesDesc": "As bibliotecas de software que sustentam este app",
+  "sourceOriginalTextTitle": "Texto hebraico e grego",
+  "sourceOriginalTextBody": "Códice de Leningrado de Westminster (Bíblia Hebraica) e o Novo Testamento Grego SBL, ambos em domínio público ou com licença livre.",
+  "sourceTranslationsTitle": "Traduções",
+  "sourceTranslationsBody": "Traduções em domínio público ou com licença livre, incluindo a King James Version. Cada tradução guarda sua própria procedência no banco de dados.",
+  "sourceLexiconTitle": "Dicionários e morfologia",
+  "sourceLexiconBody": "Dicionários de Strong (hebraico e grego), com análise morfológica dos projetos OpenScriptures e MorphGNT.",
+  "sourceSyntaxTitle": "Estrutura das frases",
+  "sourceSyntaxBody": "Árvores sintáticas dos conjuntos MACULA (hebraico e grego) da Clear Bible, sob licença CC BY 4.0.",
+  "sourceFontsTitle": "Tipografia",
+  "sourceFontsBody": "Ezra SIL para o hebraico e Gentium para o grego e o latim, ambas da SIL International sob a SIL Open Font License.",
+  "onboardingHebrewExampleGloss": "\"No princípio, Deus criou…\"",
+  "onboardingGreekExampleGloss": "\"No princípio era o Verbo…\""
 }

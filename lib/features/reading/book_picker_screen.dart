@@ -8,6 +8,7 @@ import '../../data/models/book.dart';
 import '../../shared/utils/reading_tradition.dart';
 import '../settings/settings_provider.dart';
 import 'reading_provider.dart';
+import '../../shared/widgets/empty_state.dart';
 
 class BookPickerScreen extends ConsumerStatefulWidget {
   const BookPickerScreen({super.key});
@@ -18,6 +19,29 @@ class BookPickerScreen extends ConsumerStatefulWidget {
 
 class _BookPickerScreenState extends ConsumerState<BookPickerScreen> {
   Book? _selectedBook;
+  final _filterController = TextEditingController();
+  String _filter = '';
+
+  @override
+  void dispose() {
+    _filterController.dispose();
+    super.dispose();
+  }
+
+  /// Books whose localized name or abbreviation contains what was typed.
+  List<Book> _applyFilter(List<Book> books) {
+    if (_filter.isEmpty) return books;
+    final names = ref.read(bookNamesProvider);
+    final needle = _filter.toLowerCase();
+    return books
+        .where(
+          (book) =>
+              names.of(book).toLowerCase().contains(needle) ||
+              book.abbreviation.toLowerCase().contains(needle) ||
+              book.name.toLowerCase().contains(needle),
+        )
+        .toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,46 +50,88 @@ class _BookPickerScreenState extends ConsumerState<BookPickerScreen> {
     final currentReading = ref.watch(readingProvider);
     final l10n = AppLocalizations.of(context)!;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          _selectedBook == null
-              ? l10n.books
-              : '${ref.read(bookNamesProvider).of(_selectedBook!)} - ${l10n.selectChapter}',
-        ),
-        leading: _selectedBook != null
-            ? IconButton(
-                icon: const Icon(Icons.arrow_back),
-                onPressed: () => setState(() => _selectedBook = null),
-              )
-            : IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () => context.pop(),
-              ),
-      ),
-      body: booksAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, stack) => Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.error, size: 48, color: Colors.red),
-              const SizedBox(height: 16),
-              Text('${l10n.error}: $err'),
-            ],
+    // The app bar's back arrow returns from the chapter grid to the book
+    // list. Without this the Android back button and the iOS edge swipe
+    // closed the picker outright — the same gesture doing two things.
+    return PopScope(
+      canPop: _selectedBook == null,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop && _selectedBook != null) {
+          setState(() => _selectedBook = null);
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            _selectedBook == null
+                ? l10n.books
+                : '${ref.read(bookNamesProvider).of(_selectedBook!)} - ${l10n.selectChapter}',
           ),
+          leading: _selectedBook != null
+              ? IconButton(
+                  icon: const Icon(Icons.arrow_back),
+                  onPressed: () => setState(() => _selectedBook = null),
+                )
+              : IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () => context.pop(),
+                ),
         ),
-        data: (books) {
-          if (_selectedBook != null) {
-            return _buildChapterGrid(
-              _selectedBook!,
-              colorScheme,
-              currentReading,
-              l10n,
+        body: booksAsync.when(
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (err, stack) => ErrorState(
+            message: l10n.errorGenericBody,
+            onRetry: () => ref.invalidate(booksProvider),
+          ),
+          data: (books) {
+            if (_selectedBook != null) {
+              return _buildChapterGrid(
+                _selectedBook!,
+                colorScheme,
+                currentReading,
+                l10n,
+              );
+            }
+            return Column(
+              children: [
+                // Sixty-six books as wrapped chips is a scroll to reach
+                // Zephaniah. Matching abbreviations too means "zep" works.
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+                  child: TextField(
+                    controller: _filterController,
+                    onChanged: (value) =>
+                        setState(() => _filter = value.trim()),
+                    textInputAction: TextInputAction.search,
+                    decoration: InputDecoration(
+                      isDense: true,
+                      hintText: l10n.bookFilterHint,
+                      prefixIcon: const Icon(Icons.search, size: 20),
+                      suffixIcon: _filter.isEmpty
+                          ? null
+                          : IconButton(
+                              icon: const Icon(Icons.clear, size: 20),
+                              tooltip: l10n.clearFilter,
+                              onPressed: () {
+                                _filterController.clear();
+                                setState(() => _filter = '');
+                              },
+                            ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: _buildBookGrid(
+                    books,
+                    colorScheme,
+                    currentReading,
+                    l10n,
+                  ),
+                ),
+              ],
             );
-          }
-          return _buildBookGrid(books, colorScheme, currentReading, l10n);
-        },
+          },
+        ),
       ),
     );
   }
@@ -76,8 +142,9 @@ class _BookPickerScreenState extends ConsumerState<BookPickerScreen> {
     ReadingState currentReading,
     AppLocalizations l10n,
   ) {
-    final otBooks = books.where((b) => b.testament == 'OT').toList();
-    final ntBooks = books.where((b) => b.testament == 'NT').toList();
+    final visible = _applyFilter(books);
+    final otBooks = visible.where((b) => b.testament == 'OT').toList();
+    final ntBooks = visible.where((b) => b.testament == 'NT').toList();
     final tradition = ref.watch(settingsProvider.select((s) => s.tradition));
 
     if (tradition == ReadingTradition.jewish) {
@@ -253,12 +320,24 @@ class _BookPickerScreenState extends ConsumerState<BookPickerScreen> {
               final isCurrentChapter =
                   isCurrentBook && currentReading.chapter == chapter;
 
+              // theme.dart's first rule: gold is an accent, never a fill —
+              // "a large gold surface reads as gaudy". Psalms filled the
+              // whole display with 150 gold tiles. The fill now marks the
+              // one chapter you are in, which is the thing the grid was
+              // failing to show anyway.
               return Material(
                 color: isCurrentChapter
-                    ? colorScheme.primary
-                    : colorScheme.primaryContainer,
-                borderRadius: BorderRadius.circular(12),
-                elevation: isCurrentChapter ? 4 : 0,
+                    ? colorScheme.primaryContainer
+                    : Colors.transparent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  side: BorderSide(
+                    color: isCurrentChapter
+                        ? colorScheme.primary
+                        : colorScheme.outlineVariant,
+                    width: isCurrentChapter ? 1.4 : 0.8,
+                  ),
+                ),
                 child: InkWell(
                   borderRadius: BorderRadius.circular(12),
                   onTap: () {
@@ -276,8 +355,8 @@ class _BookPickerScreenState extends ConsumerState<BookPickerScreen> {
                             ? FontWeight.bold
                             : FontWeight.w500,
                         color: isCurrentChapter
-                            ? colorScheme.onPrimary
-                            : colorScheme.onPrimaryContainer,
+                            ? colorScheme.onPrimaryContainer
+                            : colorScheme.onSurface,
                       ),
                     ),
                   ),

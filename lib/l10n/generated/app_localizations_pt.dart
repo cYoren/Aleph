@@ -838,4 +838,168 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get traditionSettingTitle => 'Escrituras';
+
+  @override
+  String get backToPrevious => 'Voltar para onde você estava';
+
+  @override
+  String get copyOriginal => 'Copiar texto original';
+
+  @override
+  String get copyBoth => 'Copiar original e tradução';
+
+  @override
+  String searchKeepTyping(int count) {
+    return 'Digite ao menos $count letras para pesquisar.';
+  }
+
+  @override
+  String verseResultsShowing(int shown, int total) {
+    return 'Versículos — mostrando $shown de $total';
+  }
+
+  @override
+  String get searchFailedBody =>
+      'Não foi possível concluir a pesquisa. Tente novamente.';
+
+  @override
+  String get errorGenericBody =>
+      'Algo deu errado ao carregar. Tente novamente.';
+
+  @override
+  String get verseOfDayUnavailable =>
+      'Não foi possível carregar o versículo de hoje.';
+
+  @override
+  String get wordGestureHint =>
+      'Toque para o verbete completo, mantenha pressionado para o significado';
+
+  @override
+  String masteryPercent(int percent) {
+    return '$percent% aprendido';
+  }
+
+  @override
+  String get readingSectionTitle => 'Leitura';
+
+  @override
+  String get appearanceSectionTitle => 'Aparência';
+
+  @override
+  String get audioSectionTitle => 'Áudio';
+
+  @override
+  String get aboutSectionTitle => 'Sobre';
+
+  @override
+  String get traditionSettingDesc =>
+      'Define como os livros são nomeados e ordenados';
+
+  @override
+  String get fontSizeSample => 'O tamanho do texto que você lê';
+
+  @override
+  String get recitationVoiceUnavailable =>
+      'Este aparelho não tem tela de download de vozes.';
+
+  @override
+  String get recitationPause => 'Pausar';
+
+  @override
+  String get recitationResume => 'Retomar';
+
+  @override
+  String get recitationPreviousVerse => 'Versículo anterior';
+
+  @override
+  String get recitationNextVerse => 'Próximo versículo';
+
+  @override
+  String recitationPausedAtVerse(int number) {
+    return 'Pausado no versículo $number';
+  }
+
+  @override
+  String get bookmarkRemoved => 'Marcador removido';
+
+  @override
+  String get undo => 'Desfazer';
+
+  @override
+  String get bookFilterHint => 'Encontrar um livro';
+
+  @override
+  String get clearFilter => 'Limpar';
+
+  @override
+  String get databasePreparingTitle => 'Preparando a biblioteca';
+
+  @override
+  String get databasePreparingBody =>
+      'Copiando o texto, os dicionários e a gramática para este aparelho. Isso acontece uma vez, e depois tudo funciona offline.';
+
+  @override
+  String get databasePrepareFailed =>
+      'Não foi possível preparar a biblioteca. Verifique se há espaço livre suficiente e tente novamente.';
+
+  @override
+  String get aboutSourcesTitle => 'Fontes e créditos';
+
+  @override
+  String get aboutSourcesDesc =>
+      'De onde vêm o texto, os dicionários e as fontes';
+
+  @override
+  String get aboutSourcesSectionTitle => 'O que há neste app';
+
+  @override
+  String get aboutVersionLabel => 'Versão';
+
+  @override
+  String get aboutLicensesTitle => 'Licenças de código aberto';
+
+  @override
+  String get aboutLicensesDesc =>
+      'As bibliotecas de software que sustentam este app';
+
+  @override
+  String get sourceOriginalTextTitle => 'Texto hebraico e grego';
+
+  @override
+  String get sourceOriginalTextBody =>
+      'Códice de Leningrado de Westminster (Bíblia Hebraica) e o Novo Testamento Grego SBL, ambos em domínio público ou com licença livre.';
+
+  @override
+  String get sourceTranslationsTitle => 'Traduções';
+
+  @override
+  String get sourceTranslationsBody =>
+      'Traduções em domínio público ou com licença livre, incluindo a King James Version. Cada tradução guarda sua própria procedência no banco de dados.';
+
+  @override
+  String get sourceLexiconTitle => 'Dicionários e morfologia';
+
+  @override
+  String get sourceLexiconBody =>
+      'Dicionários de Strong (hebraico e grego), com análise morfológica dos projetos OpenScriptures e MorphGNT.';
+
+  @override
+  String get sourceSyntaxTitle => 'Estrutura das frases';
+
+  @override
+  String get sourceSyntaxBody =>
+      'Árvores sintáticas dos conjuntos MACULA (hebraico e grego) da Clear Bible, sob licença CC BY 4.0.';
+
+  @override
+  String get sourceFontsTitle => 'Tipografia';
+
+  @override
+  String get sourceFontsBody =>
+      'Ezra SIL para o hebraico e Gentium para o grego e o latim, ambas da SIL International sob a SIL Open Font License.';
+
+  @override
+  String get onboardingHebrewExampleGloss => '\"No princípio, Deus criou…\"';
+
+  @override
+  String get onboardingGreekExampleGloss => '\"No princípio era o Verbo…\"';
 }

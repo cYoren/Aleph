@@ -470,5 +470,83 @@
   "traditionSettingTitle": "Scriptures",
   "@traditionSettingTitle": {
     "description": "Settings row that opens the scripture-tradition choice."
-  }
+  },
+  "backToPrevious": "Back to where you were",
+  "copyOriginal": "Copy original text",
+  "copyBoth": "Copy original and translation",
+  "searchKeepTyping": "Type at least {count} letters to search.",
+  "@searchKeepTyping": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "verseResultsShowing": "Verses — showing {shown} of {total}",
+  "@verseResultsShowing": {
+    "placeholders": {
+      "shown": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "searchFailedBody": "The search could not be completed. Try again.",
+  "errorGenericBody": "Something went wrong loading this. Try again.",
+  "verseOfDayUnavailable": "Today's verse could not be loaded.",
+  "wordGestureHint": "Tap for the full entry, press and hold for the meaning",
+  "masteryPercent": "{percent}% learned",
+  "@masteryPercent": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "readingSectionTitle": "Reading",
+  "appearanceSectionTitle": "Appearance",
+  "audioSectionTitle": "Audio",
+  "aboutSectionTitle": "About",
+  "traditionSettingDesc": "Sets how the books are named and ordered",
+  "fontSizeSample": "The size of the text you read",
+  "recitationVoiceUnavailable": "This device has no voice download screen.",
+  "recitationPause": "Pause",
+  "recitationResume": "Resume",
+  "recitationPreviousVerse": "Previous verse",
+  "recitationNextVerse": "Next verse",
+  "recitationPausedAtVerse": "Paused at verse {number}",
+  "@recitationPausedAtVerse": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarkRemoved": "Bookmark removed",
+  "undo": "Undo",
+  "bookFilterHint": "Find a book",
+  "clearFilter": "Clear",
+  "databasePreparingTitle": "Preparing the library",
+  "databasePreparingBody": "Copying the text, dictionaries and grammar to this device. This happens once, and everything works offline afterwards.",
+  "databasePrepareFailed": "The library could not be prepared. Check that there is enough free space and try again.",
+  "aboutSourcesTitle": "Sources and credits",
+  "aboutSourcesDesc": "Where the text, dictionaries and typefaces came from",
+  "aboutSourcesSectionTitle": "What is in this app",
+  "aboutVersionLabel": "Version",
+  "aboutLicensesTitle": "Open source licences",
+  "aboutLicensesDesc": "The software libraries this app is built on",
+  "sourceOriginalTextTitle": "Hebrew and Greek text",
+  "sourceOriginalTextBody": "Westminster Leningrad Codex (Hebrew Bible) and the SBL Greek New Testament, both in the public domain or freely licensed.",
+  "sourceTranslationsTitle": "Translations",
+  "sourceTranslationsBody": "Public-domain and freely licensed translations, including the King James Version. Each translation keeps its own provenance in the database.",
+  "sourceLexiconTitle": "Dictionaries and morphology",
+  "sourceLexiconBody": "Strong's Hebrew and Greek dictionaries, with morphological parsing from the OpenScriptures and MorphGNT projects.",
+  "sourceSyntaxTitle": "Sentence structure",
+  "sourceSyntaxBody": "Syntax trees from the MACULA Hebrew and Greek datasets by Clear Bible, used under CC BY 4.0.",
+  "sourceFontsTitle": "Typefaces",
+  "sourceFontsBody": "Ezra SIL for Hebrew and Gentium for Greek and Latin, both from SIL International under the SIL Open Font License.",
+  "onboardingHebrewExampleGloss": "\"In the beginning God created…\"",
+  "onboardingGreekExampleGloss": "\"In the beginning was the Word…\""
 }

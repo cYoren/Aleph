@@ -3,11 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../providers/word_provider.dart';
-import '../../providers/books_provider.dart';
 import '../utils/morphology_decoder.dart';
 import '../../features/audio/widgets/recitation_bar.dart';
 import '../../features/settings/settings_provider.dart';
 import '../utils/reading_tradition.dart';
+import '../../providers/book_names_provider.dart';
+import 'empty_state.dart';
 
 class DefinitionSheet extends ConsumerWidget {
   const DefinitionSheet({super.key});
@@ -127,7 +128,7 @@ class DefinitionSheet extends ConsumerWidget {
                   loading: () =>
                       const Center(child: CircularProgressIndicator()),
                   error: (err, stack) =>
-                      Center(child: Text('${l10n.error}: $err')),
+                      Center(child: ErrorState(message: l10n.errorGenericBody)),
                   data: (lexicon) {
                     if (lexicon == null) {
                       return Center(
@@ -633,8 +634,9 @@ class DefinitionSheet extends ConsumerWidget {
                     final proportion = maxCount > 0 ? count / maxCount : 0.0;
 
                     // Look up the full book name
-                    final book = ref.watch(bookByAbbreviationProvider(bookId));
-                    final bookName = book?.name ?? bookId;
+                    final bookName = ref.watch(
+                      localizedBookNameProvider(bookId),
+                    );
 
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),

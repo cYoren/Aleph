@@ -343,5 +343,83 @@
   "tanakhNeviim": "Невиим — Пророки",
   "tanakhKetuvim": "Ктувим — Писания",
   "hebrewBibleLabel": "Еврейская Библия",
-  "traditionSettingTitle": "Писания"
+  "traditionSettingTitle": "Писания",
+  "backToPrevious": "Назад, где вы были",
+  "copyOriginal": "Копировать оригинал",
+  "copyBoth": "Копировать оригинал и перевод",
+  "searchKeepTyping": "Введите не менее {count} букв для поиска.",
+  "@searchKeepTyping": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "verseResultsShowing": "Стихи — показано {shown} из {total}",
+  "@verseResultsShowing": {
+    "placeholders": {
+      "shown": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "searchFailedBody": "Не удалось выполнить поиск. Попробуйте снова.",
+  "errorGenericBody": "Не удалось загрузить. Попробуйте снова.",
+  "verseOfDayUnavailable": "Не удалось загрузить стих дня.",
+  "wordGestureHint": "Нажмите для полной статьи, удерживайте для значения",
+  "masteryPercent": "Выучено {percent}%",
+  "@masteryPercent": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "readingSectionTitle": "Чтение",
+  "appearanceSectionTitle": "Оформление",
+  "audioSectionTitle": "Звук",
+  "aboutSectionTitle": "О приложении",
+  "traditionSettingDesc": "Определяет названия и порядок книг",
+  "fontSizeSample": "Размер текста, который вы читаете",
+  "recitationVoiceUnavailable": "На этом устройстве нет экрана загрузки голосов.",
+  "recitationPause": "Пауза",
+  "recitationResume": "Продолжить",
+  "recitationPreviousVerse": "Предыдущий стих",
+  "recitationNextVerse": "Следующий стих",
+  "recitationPausedAtVerse": "Пауза на стихе {number}",
+  "@recitationPausedAtVerse": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarkRemoved": "Закладка удалена",
+  "undo": "Отменить",
+  "bookFilterHint": "Найти книгу",
+  "clearFilter": "Очистить",
+  "databasePreparingTitle": "Подготовка библиотеки",
+  "databasePreparingBody": "Текст, словари и грамматика копируются на устройство. Это происходит один раз, дальше всё работает офлайн.",
+  "databasePrepareFailed": "Не удалось подготовить библиотеку. Проверьте свободное место и попробуйте снова.",
+  "aboutSourcesTitle": "Источники и благодарности",
+  "aboutSourcesDesc": "Откуда взяты текст, словари и шрифты",
+  "aboutSourcesSectionTitle": "Что входит в приложение",
+  "aboutVersionLabel": "Версия",
+  "aboutLicensesTitle": "Лицензии открытого кода",
+  "aboutLicensesDesc": "Программные библиотеки, на которых работает приложение",
+  "sourceOriginalTextTitle": "Еврейский и греческий текст",
+  "sourceOriginalTextBody": "Ленинградский кодекс (Вестминстерская редакция) и греческий Новый Завет SBL — общественное достояние либо свободная лицензия.",
+  "sourceTranslationsTitle": "Переводы",
+  "sourceTranslationsBody": "Переводы в общественном достоянии или со свободной лицензией, включая King James Version. Происхождение каждого перевода хранится в базе.",
+  "sourceLexiconTitle": "Словари и морфология",
+  "sourceLexiconBody": "Еврейский и греческий словари Стронга с морфологическим разбором из проектов OpenScriptures и MorphGNT.",
+  "sourceSyntaxTitle": "Синтаксис предложений",
+  "sourceSyntaxBody": "Синтаксические деревья из наборов MACULA (иврит и греческий) от Clear Bible, лицензия CC BY 4.0.",
+  "sourceFontsTitle": "Шрифты",
+  "sourceFontsBody": "Ezra SIL для иврита и Gentium для греческого и латиницы — обе от SIL International по лицензии SIL Open Font License.",
+  "onboardingHebrewExampleGloss": "«В начале сотворил Бог…»",
+  "onboardingGreekExampleGloss": "«В начале было Слово…»"
 }

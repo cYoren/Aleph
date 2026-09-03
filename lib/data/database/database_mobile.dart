@@ -16,6 +16,20 @@ import 'package:original_bible/shared/utils/async_once.dart';
 /// Bump this on every regenerated release database.
 const int kBundledDatabaseVersion = 2;
 
+/// How far the first-run copy of the bundled database has got, 0.0 to 1.0, or
+/// null when no copy is running.
+///
+/// The copy moves 234 MB and takes real time. It used to happen behind a bare
+/// spinner with nothing said about it, which reads as a hang — and on an
+/// update that bumps [kBundledDatabaseVersion] it happens all over again.
+final ValueNotifier<double?> databaseCopyProgress = ValueNotifier<double?>(
+  null,
+);
+
+/// Size of each write. Small enough to keep the event loop responsive and to
+/// report progress that moves; large enough not to make 234 MB of syscalls.
+const int _copyChunkBytes = 4 * 1024 * 1024;
+
 class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._init();
   static final AsyncOnce<Database> _databaseLoader = AsyncOnce<Database>();
@@ -112,19 +126,31 @@ class DatabaseHelper {
         debugPrint('Copying database from assets...');
       }
 
+      databaseCopyProgress.value = 0;
+      IOSink? sink;
       try {
         // Ensure directory exists
         await Directory(path.dirname(dbFilePath)).create(recursive: true);
 
         // Load from assets
         final ByteData data = await rootBundle.load('assets/$fileName');
-        final List<int> bytes = data.buffer.asUint8List(
+        final Uint8List bytes = data.buffer.asUint8List(
           data.offsetInBytes,
           data.lengthInBytes,
         );
 
-        // Write to file system
-        await File(dbFilePath).writeAsBytes(bytes, flush: true);
+        // Written in chunks rather than one writeAsBytes call: it yields to
+        // the event loop between chunks, so the preparation screen can paint
+        // and report how far along the copy is instead of freezing.
+        sink = File(dbFilePath).openWrite();
+        for (var offset = 0; offset < bytes.length; offset += _copyChunkBytes) {
+          final end = (offset + _copyChunkBytes).clamp(0, bytes.length);
+          sink.add(Uint8List.sublistView(bytes, offset, end));
+          await sink.flush();
+          databaseCopyProgress.value = end / bytes.length;
+        }
+        await sink.close();
+        sink = null;
 
         // Written only after the copy succeeds, so an interrupted copy is
         // retried on the next launch rather than being trusted.
@@ -139,7 +165,15 @@ class DatabaseHelper {
         if (kDebugMode) {
           debugPrint('Error copying database: $e');
         }
+        // A partial file must not be mistaken for a good one; the stamp is
+        // only written on success, but the bytes would still be there.
+        try {
+          await sink?.close();
+          await File(dbFilePath).delete();
+        } catch (_) {}
         rethrow;
+      } finally {
+        databaseCopyProgress.value = null;
       }
     }
 

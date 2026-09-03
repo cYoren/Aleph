@@ -62,10 +62,11 @@ class _FakeBibleDao extends BibleDAO {
   }
 
   @override
-  Future<List<Verse>> search(
+  Future<SearchResults> search(
     String query, {
     required String translationId,
-  }) async => [];
+    int limit = 200,
+  }) async => SearchResults.empty;
 
   @override
   Future<List<Word>> getWordsForVerse(String verseId) async => [];

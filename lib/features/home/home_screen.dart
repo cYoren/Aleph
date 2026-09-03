@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../settings/settings_provider.dart';
-import '../../providers/books_provider.dart';
+import '../../providers/book_names_provider.dart';
 import '../../providers/database_provider.dart';
 import '../../data/models/verse.dart';
 import '../../shared/utils/transliterator.dart';
@@ -11,51 +11,6 @@ import '../../shared/utils/reading_tradition.dart';
 import '../../app/theme.dart';
 
 const _fallbackTranslationId = 'KJV';
-const _oldTestamentBooks = {
-  'GEN',
-  'EXO',
-  'LEV',
-  'NUM',
-  'DEU',
-  'JOS',
-  'JDG',
-  'RUT',
-  '1SA',
-  '2SA',
-  '1KI',
-  '2KI',
-  '1CH',
-  '2CH',
-  'EZR',
-  'NEH',
-  'EST',
-  'JOB',
-  'PSA',
-  'PRO',
-  'ECC',
-  'SNG',
-  'ISA',
-  'JER',
-  'LAM',
-  'EZK',
-  'DAN',
-  'HOS',
-  'JOL',
-  'AMO',
-  'OBA',
-  'JON',
-  'MIC',
-  'NAM',
-  'HAB',
-  'ZEP',
-  'HAG',
-  'ZEC',
-  'MAL',
-};
-
-bool _isOldTestamentBook(String bookId) {
-  return _oldTestamentBooks.contains(bookId);
-}
 
 class VerseOfDayData {
   final Verse verse;
@@ -96,7 +51,7 @@ final verseOfDayProvider = FutureProvider<VerseOfDayData?>((ref) async {
     final verse = verses.where((v) => v.verseNumber == verseNum).firstOrNull;
     if (verse == null) return null;
 
-    final isOT = _isOldTestamentBook(bookId);
+    final isOT = isOldTestamentBook(bookId);
     final pronunciation = Transliterator.transliterate(
       verse.textContent,
       isHebrew: isOT,
@@ -169,53 +124,51 @@ class HomeScreen extends ConsumerWidget {
     AppLocalizations l10n,
   ) {
     final settings = ref.watch(settingsProvider);
-    final booksAsync = ref.watch(booksProvider);
 
-    // Get book name
-    final bookName =
-        booksAsync.whenOrNull(
-          data: (books) => books
-              .where((b) => b.abbreviation == settings.lastReadBook)
-              .firstOrNull
-              ?.name,
-        ) ??
-        settings.lastReadBook;
+    // The reader's language, not the database's English column.
+    final bookName = ref.watch(
+      localizedBookNameProvider(settings.lastReadBook),
+    );
 
     // No card, no border: the first thing on the page is a place, set like a
     // title page rather than boxed like a control.
-    return InkWell(
-      onTap: () => context.go('/reading'),
-      borderRadius: BorderRadius.circular(12),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    l10n.continueReading.toUpperCase(),
-                    style: TextStyle(
-                      fontSize: 11,
-                      letterSpacing: 1.6,
-                      fontWeight: FontWeight.w600,
-                      color: colorScheme.onSurfaceVariant,
+    return Semantics(
+      button: true,
+      label: '${l10n.continueReading}: $bookName ${settings.lastReadChapter}',
+      child: InkWell(
+        onTap: () => context.go('/reading'),
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.continueReading.toUpperCase(),
+                      style: TextStyle(
+                        fontSize: 11,
+                        letterSpacing: 1.6,
+                        fontWeight: FontWeight.w600,
+                        color: colorScheme.onSurfaceVariant,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    '$bookName ${settings.lastReadChapter}',
-                    style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                      color: colorScheme.onSurface,
+                    const SizedBox(height: 6),
+                    Text(
+                      '$bookName ${settings.lastReadChapter}',
+                      style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                        color: colorScheme.onSurface,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            Icon(Icons.arrow_forward, color: colorScheme.primary, size: 22),
-          ],
+              Icon(Icons.arrow_forward, color: colorScheme.primary, size: 22),
+            ],
+          ),
         ),
       ),
     );
@@ -228,7 +181,6 @@ class HomeScreen extends ConsumerWidget {
     AppLocalizations l10n,
   ) {
     final verseAsync = ref.watch(verseOfDayProvider);
-    final booksAsync = ref.watch(booksProvider);
 
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 22),
@@ -257,7 +209,9 @@ class HomeScreen extends ConsumerWidget {
                 child: CircularProgressIndicator(strokeWidth: 2),
               ),
             ),
-            error: (err, stack) => Text('${l10n.error}: $err'),
+            error: (err, stack) => _VerseOfDayError(
+              onRetry: () => ref.invalidate(verseOfDayProvider),
+            ),
             data: (verseData) {
               if (verseData == null) {
                 return Text(l10n.noResults);
@@ -270,14 +224,7 @@ class HomeScreen extends ConsumerWidget {
               final chapterNum = parts.length > 1 ? parts[1] : '';
               final verseNum = parts.length > 2 ? parts[2] : '';
 
-              final bookName =
-                  booksAsync.whenOrNull(
-                    data: (books) => books
-                        .where((b) => b.abbreviation == bookAbbrev)
-                        .firstOrNull
-                        ?.name,
-                  ) ??
-                  bookAbbrev;
+              final bookName = ref.watch(localizedBookNameProvider(bookAbbrev));
 
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -414,35 +361,78 @@ class HomeScreen extends ConsumerWidget {
     String label,
     VoidCallback onTap,
   ) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(14),
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
-          decoration: BoxDecoration(
+    // One button to a screen reader, named by its label — not an icon and a
+    // string read as two unrelated nodes.
+    return Semantics(
+      button: true,
+      label: label,
+      child: ExcludeSemantics(
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
             borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: colorScheme.outlineVariant, width: 0.8),
-          ),
-          child: Column(
-            children: [
-              Icon(icon, color: colorScheme.primary, size: 22),
-              const SizedBox(height: 10),
-              Text(
-                label,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 12.5,
-                  height: 1.3,
-                  fontWeight: FontWeight.w500,
-                  color: colorScheme.onSurface,
+            onTap: onTap,
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(
+                  color: colorScheme.outlineVariant,
+                  width: 0.8,
                 ),
               ),
-            ],
+              child: Column(
+                children: [
+                  Icon(icon, color: colorScheme.primary, size: 22),
+                  const SizedBox(height: 10),
+                  Text(
+                    label,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 12.5,
+                      height: 1.3,
+                      fontWeight: FontWeight.w500,
+                      color: colorScheme.onSurface,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       ),
+    );
+  }
+}
+
+/// The verse of the day could not be loaded.
+///
+/// A retry and a sentence, rather than the Dart exception this used to print
+/// into the card.
+class _VerseOfDayError extends StatelessWidget {
+  const _VerseOfDayError({required this.onRetry});
+
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context)!;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          l10n.verseOfDayUnavailable,
+          style: TextStyle(color: scheme.onSurfaceVariant, height: 1.5),
+        ),
+        const SizedBox(height: 12),
+        OutlinedButton.icon(
+          onPressed: onRetry,
+          icon: const Icon(Icons.refresh, size: 18),
+          label: Text(l10n.tryAgain),
+        ),
+      ],
     );
   }
 }

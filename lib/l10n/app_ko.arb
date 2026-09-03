@@ -343,5 +343,83 @@
   "tanakhNeviim": "네비임 — 예언서",
   "tanakhKetuvim": "케투빔 — 성문서",
   "hebrewBibleLabel": "히브리 성경",
-  "traditionSettingTitle": "경전"
+  "traditionSettingTitle": "경전",
+  "backToPrevious": "읽던 곳으로 돌아가기",
+  "copyOriginal": "원문 복사",
+  "copyBoth": "원문과 번역 복사",
+  "searchKeepTyping": "검색하려면 {count}글자 이상 입력하세요.",
+  "@searchKeepTyping": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "verseResultsShowing": "구절 — {total}개 중 {shown}개 표시",
+  "@verseResultsShowing": {
+    "placeholders": {
+      "shown": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "searchFailedBody": "검색을 완료하지 못했습니다. 다시 시도하세요.",
+  "errorGenericBody": "불러오는 중 문제가 발생했습니다. 다시 시도하세요.",
+  "verseOfDayUnavailable": "오늘의 구절을 불러오지 못했습니다.",
+  "wordGestureHint": "누르면 전체 항목, 길게 누르면 뜻이 표시됩니다",
+  "masteryPercent": "{percent}% 학습됨",
+  "@masteryPercent": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "readingSectionTitle": "읽기",
+  "appearanceSectionTitle": "화면",
+  "audioSectionTitle": "오디오",
+  "aboutSectionTitle": "정보",
+  "traditionSettingDesc": "성경 각 권의 이름과 순서를 정합니다",
+  "fontSizeSample": "읽는 본문의 크기",
+  "recitationVoiceUnavailable": "이 기기에는 음성 다운로드 화면이 없습니다.",
+  "recitationPause": "일시정지",
+  "recitationResume": "이어서 재생",
+  "recitationPreviousVerse": "이전 절",
+  "recitationNextVerse": "다음 절",
+  "recitationPausedAtVerse": "{number}절에서 일시정지됨",
+  "@recitationPausedAtVerse": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarkRemoved": "북마크가 삭제되었습니다",
+  "undo": "실행 취소",
+  "bookFilterHint": "성경 찾기",
+  "clearFilter": "지우기",
+  "databasePreparingTitle": "자료를 준비하는 중",
+  "databasePreparingBody": "본문과 사전, 문법 자료를 기기에 복사하고 있습니다. 한 번만 진행되며 이후에는 오프라인으로 사용할 수 있습니다.",
+  "databasePrepareFailed": "자료를 준비하지 못했습니다. 저장 공간을 확인한 뒤 다시 시도하세요.",
+  "aboutSourcesTitle": "출처 및 저작자 표시",
+  "aboutSourcesDesc": "본문과 사전, 글꼴의 출처",
+  "aboutSourcesSectionTitle": "이 앱에 담긴 자료",
+  "aboutVersionLabel": "버전",
+  "aboutLicensesTitle": "오픈 소스 라이선스",
+  "aboutLicensesDesc": "이 앱이 사용하는 소프트웨어 라이브러리",
+  "sourceOriginalTextTitle": "히브리어·그리스어 본문",
+  "sourceOriginalTextBody": "웨스트민스터 레닌그라드 사본(히브리어 성경)과 SBL 그리스어 신약. 모두 퍼블릭 도메인이거나 자유 라이선스입니다.",
+  "sourceTranslationsTitle": "번역본",
+  "sourceTranslationsBody": "퍼블릭 도메인 및 자유 라이선스 번역본(킹제임스 성경 포함). 각 번역본의 출처는 데이터베이스에 함께 보관됩니다.",
+  "sourceLexiconTitle": "사전과 형태 분석",
+  "sourceLexiconBody": "스트롱 히브리어·그리스어 사전과 OpenScriptures·MorphGNT 프로젝트의 형태 분석 자료.",
+  "sourceSyntaxTitle": "문장 구조",
+  "sourceSyntaxBody": "Clear Bible의 MACULA 히브리어·그리스어 데이터셋에서 가져온 구문 트리. CC BY 4.0 라이선스로 사용합니다.",
+  "sourceFontsTitle": "글꼴",
+  "sourceFontsBody": "히브리어는 Ezra SIL, 그리스어와 라틴 문자는 Gentium을 사용합니다. 모두 SIL International의 SIL 오픈 폰트 라이선스를 따릅니다.",
+  "onboardingHebrewExampleGloss": "\"태초에 하나님이 창조하시니라…\"",
+  "onboardingGreekExampleGloss": "\"태초에 말씀이 계시니라…\""
 }

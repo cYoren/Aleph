@@ -21,6 +21,7 @@ import '../audio/recitation_provider.dart';
 import '../explain/explain_provider.dart';
 import '../explain/widgets/explain_sheet.dart';
 import '../audio/widgets/recitation_bar.dart';
+import '../../shared/utils/reading_tradition.dart';
 
 class ReadingScreen extends ConsumerStatefulWidget {
   const ReadingScreen({super.key});
@@ -143,12 +144,27 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
       bookByAbbreviationProvider(readingState.bookId),
     );
     final maxChapter = currentBook?.effectiveChapterCount ?? 999;
-    final isOT = _isOldTestament(readingState.bookId);
+    final isOT = isOldTestamentBook(readingState.bookId);
 
     // Book names come from the localized asset, not the English-only database.
     final bookTitle = ref
         .watch(bookNamesProvider)
         .nameFor(readingState.bookId, fallback: currentBook?.name);
+
+    // Arriving from a bookmark, a search hit, a cross-reference or the
+    // concordance: put the verse the reader asked for in front of them. The
+    // scroll machinery already existed for recitation; it was never wired to
+    // navigation, so every jump landed at verse 1.
+    ref.listen<ReadingState>(readingProvider, (previous, next) {
+      final target = next.targetVerse;
+      if (target == null || next.isLoading || next.verses.isEmpty) return;
+      if (previous?.targetVerse == target && previous?.isLoading == false) {
+        return;
+      }
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _scrollToVerse(target);
+      });
+    });
 
     // Follow the voice: scroll each verse into view as it starts sounding.
     ref.listen<RecitationState>(recitationProvider, (previous, next) {
@@ -179,6 +195,18 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        // Only present once the reader has followed a link here. Chapter
+        // paging does not fill the history, so this always means "back to
+        // where I jumped from".
+        leading: readingState.canGoBack
+            ? IconButton(
+                icon: const Icon(Icons.arrow_back),
+                tooltip: l10n.backToPrevious,
+                onPressed: () => notifier.goBack(),
+              )
+            : null,
+        automaticallyImplyLeading: false,
+        titleSpacing: readingState.canGoBack ? 0 : null,
         // Tappable title to open book picker
         title: InkWell(
           onTap: () => context.push('/book-picker'),
@@ -334,7 +362,7 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
     }
 
     // Determine if this is OT (Hebrew) or NT (Greek)
-    final isOT = _isOldTestament(readingState.bookId);
+    final isOT = isOldTestamentBook(readingState.bookId);
 
     // Use PageView for swipe navigation
     return GestureDetector(
@@ -383,6 +411,7 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
               isOT,
               colorScheme,
               isBeingRecited: isBeingRecited,
+              isTarget: readingState.targetVerse == verse.verseNumber,
             );
           },
         ),
@@ -397,6 +426,7 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
     bool isOT,
     ColorScheme colorScheme, {
     bool isBeingRecited = false,
+    bool isTarget = false,
   }) {
     final translationText = readingState.getTranslation(verse.id);
     final l10n = AppLocalizations.of(context)!;
@@ -427,14 +457,18 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
         // follow the voice.
         color: isBeingRecited
             ? colorScheme.primaryContainer.withValues(alpha: 0.35)
+            : isTarget
+            ? colorScheme.secondaryContainer.withValues(alpha: 0.35)
             : null,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
           side: BorderSide(
             color: isBeingRecited
                 ? colorScheme.primary.withValues(alpha: 0.7)
+                : isTarget
+                ? colorScheme.secondary.withValues(alpha: 0.7)
                 : colorScheme.outlineVariant.withValues(alpha: 0.5),
-            width: isBeingRecited ? 1.5 : 1.0,
+            width: isBeingRecited || isTarget ? 1.5 : 1.0,
           ),
         ),
         child: Padding(
@@ -594,6 +628,18 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
     );
   }
 
+  /// Puts [payload] on the clipboard, closes the sheet, and says so.
+  void _copy(BuildContext context, String payload, AppLocalizations l10n) {
+    Clipboard.setData(ClipboardData(text: payload));
+    Navigator.pop(context);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(l10n.verseCopied),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
   void _showVerseOptionsMenu(
     BuildContext context,
     Verse verse,
@@ -648,33 +694,50 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
                         bookId: readingState.bookId,
                         chapter: readingState.chapter,
                         verses: readingState.verses,
-                        isHebrew: _isOldTestament(readingState.bookId),
+                        isHebrew: isOldTestamentBook(readingState.bookId),
                         startVerse: verse.verseNumber,
                       );
                 },
               ),
-              // Copy option
+              // Copy the translation.
               ListTile(
                 leading: const Icon(Icons.copy),
                 title: Text(l10n.copyVerse),
-                onTap: () {
-                  Clipboard.setData(ClipboardData(text: verseText));
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(l10n.verseCopied),
-                      duration: const Duration(seconds: 2),
-                    ),
-                  );
-                },
+                onTap: () => _copy(context, verseText, l10n),
+              ),
+              // Copy the Hebrew or Greek. There was previously no way at all
+              // to get the original text out of the app — "Copy verse" gives
+              // the translation whenever one exists, which in a study app is
+              // the wrong half.
+              ListTile(
+                leading: const Icon(Icons.text_fields),
+                title: Text(l10n.copyOriginal),
+                onTap: () =>
+                    _copy(context, '${verse.textContent}\n— $reference', l10n),
+              ),
+              ListTile(
+                leading: const Icon(Icons.library_books_outlined),
+                title: Text(l10n.copyBoth),
+                onTap: () => _copy(
+                  context,
+                  '${verse.textContent}\n\n"$text"\n— $reference',
+                  l10n,
+                ),
               ),
               // Share option
               ListTile(
                 leading: const Icon(Icons.share),
                 title: Text(l10n.shareVerse),
                 onTap: () {
+                  // The anchor rect is what iPad uses to position the share
+                  // popover; without it the sheet appears detached from the
+                  // verse that was tapped.
+                  final box = context.findRenderObject() as RenderBox?;
+                  final origin = box == null
+                      ? null
+                      : box.localToGlobal(Offset.zero) & box.size;
                   Navigator.pop(context);
-                  Share.share(verseText);
+                  Share.share(verseText, sharePositionOrigin: origin);
                 },
               ),
               // Cinematic Export option
@@ -689,7 +752,7 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
                       'verse': verse,
                       'translationText': text,
                       'reference': reference,
-                      'isOT': _isOldTestament(verse.bookId),
+                      'isOT': isOldTestamentBook(verse.bookId),
                     },
                   );
                 },
@@ -699,51 +762,6 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
         ),
       ),
     );
-  }
-
-  bool _isOldTestament(String bookId) {
-    const otBooks = {
-      'GEN',
-      'EXO',
-      'LEV',
-      'NUM',
-      'DEU',
-      'JOS',
-      'JDG',
-      'RUT',
-      '1SA',
-      '2SA',
-      '1KI',
-      '2KI',
-      '1CH',
-      '2CH',
-      'EZR',
-      'NEH',
-      'EST',
-      'JOB',
-      'PSA',
-      'PRO',
-      'ECC',
-      'SNG',
-      'ISA',
-      'JER',
-      'LAM',
-      'EZK',
-      'DAN',
-      'HOS',
-      'JOL',
-      'AMO',
-      'OBA',
-      'JON',
-      'MIC',
-      'NAM',
-      'HAB',
-      'ZEP',
-      'HAG',
-      'ZEC',
-      'MAL',
-    };
-    return otBooks.contains(bookId);
   }
 }
 

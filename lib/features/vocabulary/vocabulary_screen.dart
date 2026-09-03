@@ -6,6 +6,7 @@ import '../../data/models/word.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../reading/widgets/srs_micro_quiz_sheet.dart';
 import 'vocabulary_provider.dart';
+import '../../shared/widgets/empty_state.dart';
 
 /// Frequency-ordered vocabulary decks plus the SRS review queue.
 /// The most common words unlock the largest share of the text — the deck
@@ -81,7 +82,7 @@ class _VocabularyScreenState extends ConsumerState<VocabularyScreen> {
             ),
             error: (err, stack) => Padding(
               padding: const EdgeInsets.all(16),
-              child: Text('${l10n.error}: $err'),
+              child: ErrorState(message: l10n.errorGenericBody),
             ),
             data: (deck) {
               if (deck.items.isEmpty) {
@@ -147,6 +148,7 @@ class _VocabularyScreenState extends ConsumerState<VocabularyScreen> {
   }
 
   Widget _buildItemTile(VocabularyDeckItem item, ColorScheme colorScheme) {
+    final l10n = AppLocalizations.of(context)!;
     final entry = item.entry;
     final mastery = item.progress?.masteryScore ?? 0.0;
     final lemma = entry?.lemma ?? item.lexiconKey;
@@ -154,27 +156,36 @@ class _VocabularyScreenState extends ConsumerState<VocabularyScreen> {
 
     return ListTile(
       onTap: () => _openQuiz(item),
-      leading: SizedBox(
-        width: 36,
-        height: 36,
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            CircularProgressIndicator(
-              value: mastery,
-              strokeWidth: 3,
-              backgroundColor: colorScheme.surfaceContainerHighest,
-              color: colorScheme.primary,
-            ),
-            Text(
-              '${(mastery * 100).round()}',
-              style: TextStyle(
-                fontSize: 10,
-                fontWeight: FontWeight.bold,
-                color: colorScheme.onSurfaceVariant,
+      // A 36pt box around a 10pt numeral clipped at larger text sizes, and
+      // 10pt was below the size worth rendering. The ring is now decoration
+      // and the percentage is read out instead.
+      leading: Semantics(
+        label: l10n.masteryPercent((mastery * 100).round()),
+        child: SizedBox(
+          width: 36,
+          height: 36,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              CircularProgressIndicator(
+                value: mastery,
+                strokeWidth: 3,
+                backgroundColor: colorScheme.surfaceContainerHighest,
+                color: colorScheme.primary,
               ),
-            ),
-          ],
+              ExcludeSemantics(
+                child: Text(
+                  '${(mastery * 100).round()}',
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                  textScaler: TextScaler.noScaling,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
       title: Row(

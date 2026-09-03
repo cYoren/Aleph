@@ -1,5 +1,13 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
+
+/// Matches the mobile export so shared UI can listen without a platform check.
+/// Nothing is ever copied on web, so this stays null.
+final ValueNotifier<double?> databaseCopyProgress = ValueNotifier<double?>(
+  null,
+);
+
 /// DatabaseHelper interface that matches the mobile version
 /// but throws an error on web since large embedded DBs are not supported
 class DatabaseHelper {

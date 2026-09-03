@@ -44,7 +44,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         description: l10n.onboardingHebrewDesc,
         color: scheme.primary,
         exampleText: 'בְּרֵאשִׁית בָּרָא אֱלֹהִים',
-        exampleTranslation: '"In the beginning God created..."',
+        exampleTranslation: l10n.onboardingHebrewExampleGloss,
         isRTL: true,
       ),
       _OnboardingPageData(
@@ -53,7 +53,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         description: l10n.onboardingGreekDesc,
         color: scheme.secondary,
         exampleText: 'Ἐν ἀρχῇ ἦν ὁ λόγος',
-        exampleTranslation: '"In the beginning was the Word..."',
+        exampleTranslation: l10n.onboardingGreekExampleGloss,
         isRTL: false,
       ),
       _OnboardingPageData(
@@ -157,11 +157,16 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             // Next/Get Started button
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+              // Full width, but the height comes from the label: a hard
+              // height: 56 around 18px text clips at larger Dynamic Type
+              // sizes. (Size.fromWidth would force an infinite height here.)
               child: SizedBox(
                 width: double.infinity,
-                height: 56,
                 child: FilledButton(
                   onPressed: _nextPage,
+                  style: FilledButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
                   child: Text(
                     _currentPage == pages.length - 1
                         ? l10n.getStarted

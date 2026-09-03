@@ -24,7 +24,7 @@ const List<double> kRecitationRates = [0.3, 0.4, 0.5, 0.6, 0.8, 1.0, 1.25];
 const double kDefaultRecitationRate = 0.5;
 
 /// What the player is doing.
-enum RecitationStatus { idle, preparing, playing, finished, failed }
+enum RecitationStatus { idle, preparing, playing, paused, finished, failed }
 
 class RecitationState {
   final RecitationStatus status;
@@ -57,7 +57,11 @@ class RecitationState {
 
   bool get isActive =>
       status == RecitationStatus.playing ||
-      status == RecitationStatus.preparing;
+      status == RecitationStatus.preparing ||
+      status == RecitationStatus.paused;
+
+  /// Whether the transport should offer resume rather than pause.
+  bool get isPaused => status == RecitationStatus.paused;
 
   /// True when [verseNumber] of [book]/[chapterNumber] is sounding right now.
   bool isSpeaking(String book, int chapterNumber, int verseNumber) =>
@@ -100,6 +104,14 @@ class RecitationNotifier extends StateNotifier<RecitationState> {
   /// advance a run that has already been cancelled.
   int _generation = 0;
 
+  /// The run in progress, kept so pause, resume and verse skipping can
+  /// restart it at a different point. Platform TTS cannot seek inside an
+  /// utterance, so all four are the same operation: begin again at verse N.
+  List<Verse> _verses = const [];
+  String? _runBookId;
+  int? _runChapter;
+  bool _runIsHebrew = true;
+
   /// Reads [verses] aloud in order, from [startVerse] onwards.
   Future<void> startChapter({
     required String bookId,
@@ -111,6 +123,11 @@ class RecitationNotifier extends StateNotifier<RecitationState> {
     await stop();
 
     if (verses.isEmpty) return;
+
+    _verses = verses;
+    _runBookId = bookId;
+    _runChapter = chapter;
+    _runIsHebrew = isHebrew;
 
     final generation = ++_generation;
     state = state.copyWith(
@@ -181,8 +198,59 @@ class RecitationNotifier extends StateNotifier<RecitationState> {
   Future<void> stop() async {
     _generation++;
     await _service.stop();
+    _verses = const [];
+    _runBookId = null;
+    _runChapter = null;
     if (!mounted) return;
     state = state.copyWith(status: RecitationStatus.idle, clearVerse: true);
+  }
+
+  /// Silences the voice but keeps the reader's place.
+  ///
+  /// The transport previously offered only stop, so taking a phone call
+  /// during Psalm 119 meant starting the chapter again.
+  Future<void> pause() async {
+    if (state.status != RecitationStatus.playing) return;
+    _generation++;
+    await _service.stop();
+    if (!mounted) return;
+    state = state.copyWith(status: RecitationStatus.paused);
+  }
+
+  /// Picks the chapter back up at the verse that was sounding.
+  Future<void> resume() async {
+    if (!state.isPaused) return;
+    await _restartAt(state.currentVerseNumber);
+  }
+
+  /// Moves [delta] verses through the chapter and carries on from there.
+  Future<void> skipVerse(int delta) async {
+    if (_verses.isEmpty) return;
+    final current = state.currentVerseNumber;
+    final index = current == null
+        ? 0
+        : _verses.indexWhere((v) => v.verseNumber == current);
+    if (index < 0) return;
+
+    final next = (index + delta).clamp(0, _verses.length - 1);
+    await _restartAt(_verses[next].verseNumber);
+  }
+
+  Future<void> _restartAt(int? verseNumber) async {
+    final bookId = _runBookId;
+    final chapter = _runChapter;
+    if (bookId == null || chapter == null || _verses.isEmpty) return;
+
+    // startChapter calls stop(), which clears the run; hold on to it.
+    final verses = _verses;
+    final isHebrew = _runIsHebrew;
+    await startChapter(
+      bookId: bookId,
+      chapter: chapter,
+      verses: verses,
+      isHebrew: isHebrew,
+      startVerse: verseNumber,
+    );
   }
 
   /// Changes the reading pace. Takes effect on the next verse.
