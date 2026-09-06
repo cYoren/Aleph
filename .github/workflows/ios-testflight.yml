@@ -9,7 +9,7 @@ permissions:
 jobs:
   build-upload:
     name: Build and upload
-    runs-on: self-hosted
+    runs-on: macos-15
     timeout-minutes: 90
     defaults:
       run:
@@ -22,6 +22,16 @@ jobs:
       APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
     steps:
       - uses: actions/checkout@v4
+
+      # O Xcode padrao do runner e antigo demais para device_info_plus 13.2.0,
+      # que usa NSProcessInfo.isiOSAppOnVision. Selecionar o mais novo instalado.
+      - name: Select newest Xcode
+        run: |
+          set -euo pipefail
+          latest="$(ls -d /Applications/Xcode*.app | sort -V | tail -1)"
+          echo "usando $latest"
+          sudo xcode-select -s "$latest"
+          xcodebuild -version
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.47.0'
