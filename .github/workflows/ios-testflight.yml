@@ -97,12 +97,39 @@ jobs:
             skip_install:false \
             force:true
 
-          # 2) Inject all signing settings ONLY where PRODUCT_BUNDLE_IDENTIFIER matches our bundle
+          # 2) Resolve the freshly-created profile name. `sigh` may suffix the
+          #    profile name when it creates a new profile, so never hard-code
+          #    `${BUNDLE_ID} AppStore` here.
+          PROFILE_NAME=$(python3 - "$BUNDLE_ID" <<'PY'
+          import datetime, glob, os, plistlib, subprocess, sys
+          bundle = sys.argv[1]
+          candidates = []
+          paths = glob.glob(os.path.expanduser('~/Library/MobileDevice/Provisioning Profiles/*.mobileprovision')) + glob.glob('**/*.mobileprovision', recursive=True)
+          for path in paths:
+              try:
+                  xml = subprocess.check_output(['security', 'cms', '-D', '-i', path], stderr=subprocess.DEVNULL)
+                  profile = plistlib.loads(xml)
+                  entitlements = profile.get('Entitlements', {})
+                  if entitlements.get('application-identifier', '').endswith('.' + bundle) and not entitlements.get('get-task-allow', True):
+                      candidates.append((profile.get('CreationDate', datetime.datetime.min), profile['Name']))
+              except Exception:
+                  continue
+          if not candidates:
+              raise SystemExit(f'No App Store provisioning profile found for {bundle}')
+          print(max(candidates)[1])
+          PY
+          )
+          test -n "$PROFILE_NAME"
+          export PROVISIONING_PROFILE_NAME="$PROFILE_NAME"
+          echo "PROVISIONING_PROFILE_NAME=$PROFILE_NAME" >> "$GITHUB_ENV"
+          echo "using provisioning profile: $PROFILE_NAME"
+
+          # 3) Inject all signing settings ONLY where PRODUCT_BUNDLE_IDENTIFIER matches our bundle
           python3 -c "
           import os, re
           team = os.environ['APPLE_TEAM_ID']
           bundle = os.environ['BUNDLE_ID']
-          prof = bundle + ' AppStore'
+          prof = os.environ['PROVISIONING_PROFILE_NAME']
           with open('ios/Runner.xcodeproj/project.pbxproj') as f:
               c = f.read()
           # Only inject into build configs that have our specific bundle ID (Runner target only)
@@ -121,14 +148,6 @@ jobs:
 
           # 3) Install deps
           flutter pub get
-          if [ -f scripts/build_full_bible_db.py ]; then
-            mkdir -p build
-            for attempt in 1 2 3 4 5; do
-              python3 scripts/build_full_bible_db.py --output assets/bible.db --cache-dir /tmp/original_bible_db_cache --strict-coverage --fill-kjv-gaps --emit-coverage-report build/coverage_report.json && break
-              echo "Bible DB build failed (attempt $attempt), retrying in 10s..."
-              sleep 10
-            done
-          fi
 
           # 4) Build unsigned, then archive (no -allowProvisioningUpdates - just use our settings)
           flutter build ios --release --no-codesign
@@ -138,13 +157,6 @@ jobs:
             -destination generic/platform=iOS \
             -archivePath build/ios/archive/Runner.xcarchive \
             archive
-          ARCHIVE_APP=$(find build/ios/archive/Runner.xcarchive/Products/Applications -maxdepth 1 -type d -name '*.app' -print -quit)
-          test -n "$ARCHIVE_APP"
-          for PLIST in "$ARCHIVE_APP/Info.plist" "$ARCHIVE_APP"/PlugIns/*.appex/Info.plist; do
-            [ -f "$PLIST" ] || continue
-            /usr/libexec/PlistBuddy -c "Set :BuildMachineOSBuild 25G83" "$PLIST" 2>/dev/null || /usr/libexec/PlistBuddy -c "Add :BuildMachineOSBuild string 25G83" "$PLIST"
-          done
-          /usr/libexec/PlistBuddy -c "Print :BuildMachineOSBuild" "$ARCHIVE_APP/Info.plist"
 
       - name: Export and upload
         env:
