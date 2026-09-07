@@ -175,7 +175,7 @@ jobs:
             <key>signingStyle</key><string>manual</string>
             <key>provisioningProfiles</key>
             <dict>
-              <key>${BUNDLE_ID}</key><string>${BUNDLE_ID} AppStore</string>
+              <key>${BUNDLE_ID}</key><string>${PROVISIONING_PROFILE_NAME}</string>
             </dict>
             <key>stripSwiftSymbols</key><true/>
             <key>manageAppVersionAndBuildNumber</key><false/>
