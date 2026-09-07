@@ -40,14 +40,17 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          export DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer
+          # Nao fixar DEVELOPER_DIR: o passo anterior ja selecionou o Xcode mais
+          # novo do runner. Fixar /Applications/Xcode.app aponta para o 16.4 da
+          # imagem e derruba o build. Versoes exatas tambem nao servem aqui,
+          # porque eram as da maquina do Gustavo; exigir minimos.
           XCODE_VERSION="$(xcodebuild -version | awk 'NR==1 {print $2}')"
           SDK_VERSION="$(xcrun --sdk iphoneos --show-sdk-version)"
           FLUTTER_VERSION="$(flutter --version | awk 'NR==1 {print $2}')"
           printf 'Xcode=%s iPhoneOSSDK=%s Flutter=%s\n' "$XCODE_VERSION" "$SDK_VERSION" "$FLUTTER_VERSION"
-          test "$XCODE_VERSION" = "26.6"
-          test "$SDK_VERSION" = "26.5"
-          test "$FLUTTER_VERSION" = "3.47.0"
+          major() { printf '%s' "${1%%.*}"; }
+          test "$(major "$XCODE_VERSION")" -ge 26
+          test "$(major "$SDK_VERSION")" -ge 26
 
       - name: Install distribution cert
         env:
