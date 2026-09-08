@@ -2,15 +2,15 @@
 ///
 /// The app used stock Material indigo, which reads as "utility app" — fine for
 /// a settings screen, wrong for a page someone opens to sit with for twenty
-/// quiet minutes. This replaces it with a half-tone palette: warm, low-contrast
+/// reader. This replaces it with a restrained monochrome palette: warm, low-contrast
 /// tonal steps rather than saturated fills, hairline borders rather than
 /// shadows, and a book serif for anything that carries scripture.
 ///
 /// Two rules hold the whole thing together, and breaking either is what makes
 /// a religious interface look cheap:
 ///
-/// 1. **Gold is an accent, never a fill.** It appears in rules, small icons,
-///    verse numbers, and focus states. A large gold surface reads as gaudy.
+/// 1. **Black and white are the primary accents.** They keep labels, icons,
+///    verse numbers, and focus states legible in poor light.
 /// 2. **Nothing is pure black or pure white.** Both are warmed slightly, so
 ///    the page looks like paper under lamplight instead of a backlit screen.
 library;
@@ -34,8 +34,8 @@ class AppTheme {
   static const _parchment = Color(0xFFF7F2E8);
   static const _parchmentRaised = Color(0xFFFDFAF3);
   static const _parchmentSunk = Color(0xFFEFE7D8);
-  static const _goldLight = Color(0xFF8A6D25);
-  static const _goldLightContainer = Color(0xFFEFE1BE);
+  static const _primaryLight = Color(0xFF111111);
+  static const _primaryLightContainer = Color(0xFFE7E7E7);
   static const _lapis = Color(0xFF3E5171);
   static const _lapisContainer = Color(0xFFDCE3EF);
   static const _hairlineLight = Color(0xFFDDD2BC);
@@ -46,8 +46,8 @@ class AppTheme {
   static const _nightSunk = Color(0xFF272319);
   static const _paleInk = Color(0xFFEDE5D4);
   static const _paleInkMuted = Color(0xFFB6AC97);
-  static const _goldDark = Color(0xFFD9BC72);
-  static const _goldDarkContainer = Color(0xFF473A1C);
+  static const _primaryDark = Color(0xFFF5F5F5);
+  static const _primaryDarkContainer = Color(0xFF353535);
   static const _lapisDark = Color(0xFFA9BEDF);
   static const _lapisDarkContainer = Color(0xFF2C3A50);
   static const _hairlineDark = Color(0xFF3B3529);
@@ -67,10 +67,10 @@ class AppTheme {
 
   static const ColorScheme _lightScheme = ColorScheme(
     brightness: Brightness.light,
-    primary: _goldLight,
+    primary: _primaryLight,
     onPrimary: Color(0xFFFFFBF2),
-    primaryContainer: _goldLightContainer,
-    onPrimaryContainer: Color(0xFF2E2408),
+    primaryContainer: _primaryLightContainer,
+    onPrimaryContainer: Color(0xFF111111),
     secondary: _lapis,
     onSecondary: Color(0xFFFFFBF2),
     secondaryContainer: _lapisContainer,
@@ -97,15 +97,15 @@ class AppTheme {
     scrim: Color(0xFF000000),
     inverseSurface: Color(0xFF2B2720),
     onInverseSurface: Color(0xFFF5EFE3),
-    inversePrimary: _goldDark,
+    inversePrimary: _primaryDark,
   );
 
   static const ColorScheme _darkScheme = ColorScheme(
     brightness: Brightness.dark,
-    primary: _goldDark,
-    onPrimary: Color(0xFF2A2008),
-    primaryContainer: _goldDarkContainer,
-    onPrimaryContainer: Color(0xFFF6E5BC),
+    primary: _primaryDark,
+    onPrimary: Color(0xFF111111),
+    primaryContainer: _primaryDarkContainer,
+    onPrimaryContainer: Color(0xFFF5F5F5),
     secondary: _lapisDark,
     onSecondary: Color(0xFF13202F),
     secondaryContainer: _lapisDarkContainer,
@@ -132,7 +132,7 @@ class AppTheme {
     scrim: Color(0xFF000000),
     inverseSurface: Color(0xFFEDE5D4),
     onInverseSurface: Color(0xFF211D17),
-    inversePrimary: _goldLight,
+    inversePrimary: _primaryLight,
   );
 
   static ThemeData _build(ColorScheme scheme, String? fontFamily) {
@@ -297,10 +297,10 @@ class AppTheme {
   }
 }
 
-/// A hairline rule with a small gold diamond at its centre.
+/// A hairline rule with a small monochrome diamond at its centre.
 ///
 /// Used to separate sections without the visual weight of a [Divider]; it is
-/// the one place the palette's gold is allowed to be decorative.
+/// the one place the palette's accent is allowed to be decorative.
 class DivineRule extends StatelessWidget {
   const DivineRule({
     super.key,
