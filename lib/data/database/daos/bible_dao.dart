@@ -79,33 +79,14 @@ class BibleDAO {
 
   Future<List<Verse>> getVersesForChapter(String bookId, int chapter) async {
     final db = await _dbHelper.database;
-    try {
-      // Newer schema: verses(book_id, chapter, verse_number, text)
-      final List<Map<String, dynamic>> maps = await db.query(
-        'verses',
-        columns: ['id', 'book_id', 'chapter', 'verse_number', 'text'],
-        where: 'book_id = ? AND chapter = ?',
-        whereArgs: [bookId, chapter],
-        orderBy: 'verse_number ASC',
-      );
-
-      if (kDebugMode) {
-        debugPrint(
-          'BibleDAO: Found ${maps.length} verses for $bookId $chapter',
-        );
-      }
-      return List.generate(maps.length, (i) => Verse.fromMap(maps[i]));
-    } catch (_) {
-      // Legacy schema: verses(id, book_id, chapter, verse, text_content)
-      final String idPattern = '$bookId.$chapter.%';
-      final List<Map<String, dynamic>> maps = await db.query(
-        'verses',
-        where: 'id LIKE ?',
-        whereArgs: [idPattern],
-        orderBy: 'verse ASC',
-      );
-      return List.generate(maps.length, (i) => Verse.fromMap(maps[i]));
-    }
+    final List<Map<String, dynamic>> maps = await db.query(
+      'verses',
+      columns: ['id', 'book_id', 'chapter', 'verse_number', 'text'],
+      where: 'book_id = ? AND chapter = ?',
+      whereArgs: [bookId, chapter],
+      orderBy: 'verse_number ASC',
+    );
+    return List.generate(maps.length, (i) => Verse.fromMap(maps[i]));
   }
 
   Future<List<Word>> getWordsForVerse(String verseId) async {
@@ -335,7 +316,7 @@ class BibleDAO {
     final modernWhereClause = List.generate(
       escapedPatterns.length,
       (_) =>
-          "COALESCE(tv_sel.text, tv_fallback.text, v.text) LIKE ? ESCAPE '\\\\'",
+          "COALESCE(tv_sel.text, tv_fallback.text, v.text) LIKE ? ESCAPE '\\'",
     ).join(' OR ');
     final modernArgs = <Object>[normalizedTranslationId, ...escapedPatterns];
 
@@ -349,54 +330,25 @@ class BibleDAO {
           v.verse_number,
           COALESCE(tv_sel.text, tv_fallback.text, v.text) AS text
         FROM verses v
+        JOIN books b ON b.abbreviation = v.book_id
         LEFT JOIN translation_verses tv_sel
           ON tv_sel.book_id = v.book_id
          AND tv_sel.chapter = v.chapter
          AND tv_sel.verse_number = v.verse_number
-         AND UPPER(tv_sel.translation_id) = UPPER(?)
+         AND tv_sel.translation_id = ?
         LEFT JOIN translation_verses tv_fallback
           ON tv_fallback.book_id = v.book_id
          AND tv_fallback.chapter = v.chapter
          AND tv_fallback.verse_number = v.verse_number
          AND tv_fallback.translation_id = 'KJV'
         WHERE ($modernWhereClause)
-        ORDER BY v.book_id, v.chapter, v.verse_number
+        ORDER BY b.book_order, v.chapter, v.verse_number
         LIMIT 50
       ''', modernArgs);
       return List.generate(maps.length, (i) => Verse.fromMap(maps[i]));
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('Modern search fallback failed: $e');
-      }
-    }
-
-    final legacyWhereClause = List.generate(
-      escapedPatterns.length,
-      (_) =>
-          "COALESCE(tv_sel.text_content, tv_fallback.text_content, v.text_content) LIKE ? ESCAPE '\\\\'",
-    ).join(' OR ');
-    final legacyArgs = <Object>[normalizedTranslationId, ...escapedPatterns];
-
-    try {
-      // Legacy non-FTS schema fallback.
-      final List<Map<String, dynamic>> maps = await db.rawQuery('''
-        SELECT DISTINCT v.id, v.book_id, v.chapter, v.verse, 
-               COALESCE(tv_sel.text_content, tv_fallback.text_content, v.text_content) AS text_content
-        FROM verses v
-        LEFT JOIN translation_verses tv_sel
-          ON v.id = tv_sel.verse_id
-         AND UPPER(tv_sel.translation_id) = UPPER(?)
-        LEFT JOIN translation_verses tv_fallback
-          ON v.id = tv_fallback.verse_id
-         AND tv_fallback.translation_id = 'KJV'
-        WHERE ($legacyWhereClause)
-        ORDER BY v.book_id, v.chapter, v.verse
-        LIMIT 50
-      ''', legacyArgs);
-      return List.generate(maps.length, (i) => Verse.fromMap(maps[i]));
-    } catch (e) {
-      if (kDebugMode) {
-        debugPrint('Legacy search fallback failed: $e');
+        debugPrint('BibleDAO search error: $e');
       }
       return [];
     }
@@ -879,7 +831,7 @@ class BibleDAO {
           ON tv_sel.book_id = v.book_id
          AND tv_sel.chapter = v.chapter
          AND tv_sel.verse_number = v.verse_number
-         AND UPPER(tv_sel.translation_id) = UPPER(?)
+         AND tv_sel.translation_id = ?
         LEFT JOIN translation_verses tv_kjv
           ON tv_kjv.book_id = v.book_id
          AND tv_kjv.chapter = v.chapter
@@ -888,7 +840,7 @@ class BibleDAO {
         WHERE v.book_id = ? AND v.chapter = ? AND v.verse_number = ?
         LIMIT 1
         ''',
-        [translationId, bookId, chapter, verse],
+        [translationId.toUpperCase(), bookId, chapter, verse],
       );
       if (rows.isNotEmpty) {
         return rows.first['text']?.toString();
@@ -988,55 +940,19 @@ class BibleDAO {
     String translationId,
   ) async {
     try {
-      // Newer schema: translation_verses(book_id, chapter, verse_number, text)
       final db = await _dbHelper.database;
+      // Ids are stored uppercase; an exact match keeps the index usable.
       final maps = await db.query(
         'translation_verses',
-        columns: ['book_id', 'chapter', 'verse_number', 'text'],
-        where:
-            'book_id = ? AND chapter = ? AND UPPER(translation_id) = UPPER(?)',
-        whereArgs: [bookId, chapter, translationId],
-        orderBy: 'verse_number ASC',
+        columns: ['verse_number', 'text'],
+        where: 'translation_id = ? AND book_id = ? AND chapter = ?',
+        whereArgs: [translationId.toUpperCase(), bookId, chapter],
       );
-      final Map<String, String> result = {};
-      for (final map in maps) {
-        final verseNum = map['verse_number'] is int
-            ? map['verse_number'] as int
-            : int.tryParse(map['verse_number']?.toString() ?? '0') ?? 0;
-        if (verseNum > 0) {
-          result['$bookId.$chapter.$verseNum'] = map['text']?.toString() ?? '';
-        }
-      }
-      if (result.isNotEmpty) {
-        if (kDebugMode) {
-          debugPrint(
-            'BibleDAO: Found ${result.length} translation verses for $translationId',
-          );
-        }
-        return result;
-      }
-    } catch (_) {
-      // Try legacy schema below.
-    }
-
-    try {
-      // Legacy schema: translation_verses(verse_id, translation_id, text_content)
-      final db = await _dbHelper.database;
-      final String idPattern = '$bookId.$chapter.%';
-      final maps = await db.query(
-        'translation_verses',
-        where: 'verse_id LIKE ? AND UPPER(translation_id) = UPPER(?)',
-        whereArgs: [idPattern, translationId],
-      );
-      final Map<String, String> result = {};
-      for (final map in maps) {
-        final verseId = map['verse_id']?.toString() ?? '';
-        if (verseId.isNotEmpty) {
-          result[verseId] = map['text_content']?.toString() ?? '';
-        }
-      }
-
-      return result;
+      return {
+        for (final map in maps)
+          '$bookId.$chapter.${map['verse_number']}':
+              map['text']?.toString() ?? '',
+      };
     } catch (e) {
       if (kDebugMode) {
         debugPrint('BibleDAO: translation_verses error: $e');

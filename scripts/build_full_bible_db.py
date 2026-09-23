@@ -637,9 +637,6 @@ def init_schema(conn: sqlite3.Connection) -> None:
         CREATE INDEX idx_books_order ON books(book_order);
         CREATE INDEX idx_cross_references_from
             ON cross_references(from_book, from_chapter, from_verse);
-        CREATE INDEX idx_verses_ref ON verses(book_id, chapter, verse_number);
-        CREATE INDEX idx_translation_verses_ref
-            ON translation_verses(translation_id, book_id, chapter, verse_number);
         CREATE INDEX idx_translation_ref_map_target
             ON translation_ref_map(translation_id, target_book_id, target_chapter, target_verse);
         CREATE INDEX idx_words_verse ON words(verse_id, position);
@@ -2439,6 +2436,8 @@ def finalize_sqlite_files(conn: sqlite3.Connection, output_path: Path) -> None:
         conn.isolation_level = None
         conn.execute("PRAGMA wal_checkpoint(TRUNCATE);")
         conn.execute("PRAGMA journal_mode=DELETE;")
+        # Drops free pages left by the rebuild; this file ships inside every install.
+        conn.execute("VACUUM;")
     except Exception as e:
         print(f"Note during sqlite finalize: {e}")
 
