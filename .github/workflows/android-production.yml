@@ -27,8 +27,6 @@ jobs:
           printf 'sdk.dir=%s\n' "$ANDROID_HOME" > android/local.properties
       - name: Install Flutter dependencies
         run: flutter pub get
-      - name: Generate providers
-        run: dart run build_runner build --delete-conflicting-outputs
       - name: Build release database
         run: |
           set -euo pipefail

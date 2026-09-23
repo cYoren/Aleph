@@ -63,7 +63,6 @@ Builds:
       - flutter@stable
     prebuild:
       - $$flutter$$ pub get
-      - $$flutter$$ run build_runner build --delete-conflicting-outputs
       - python3 scripts/build_full_bible_db.py --output assets/bible.db --cache-dir /tmp/cache --strict-coverage --fill-kjv-gaps
     build:
       - $$flutter$$ build apk --release
