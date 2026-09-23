@@ -1,5 +1,5 @@
 {
-  "_comment": "Sound descriptions for each letter and vowel, per interface locale. Only `en` is authored by hand; the other locales are filled by scripts/translate_reference_text.py and fall back to `en` until they are. Keys match the `id` fields in assets/alphabet.json. Keep each hint to one short line — it sits under the letter in a grid.",
+  "_comment": "Sound descriptions for each letter and vowel, per interface locale. Only `en` is authored by hand; the other locales are filled by scripts/translate_alphabet_hints.py and fall back to `en` until they are. Keys match the `id` fields in assets/alphabet.json. Keep each hint to one short line — it sits under the letter in a grid.",
   "en": {
     "alef": "Silent. A catch in the throat, like the pause in \"uh-oh\".",
     "bet": "b as in boy; without the dot inside, v as in vine.",

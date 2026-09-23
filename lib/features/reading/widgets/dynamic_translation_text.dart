@@ -252,7 +252,6 @@ class DynamicTranslationText extends ConsumerWidget {
           opacity: animation,
           child: SizeTransition(
             sizeFactor: animation,
-            axisAlignment: 0.0,
             child: child,
           ),
         );

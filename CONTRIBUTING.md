@@ -24,14 +24,7 @@ Before you start, make sure you have installed:
    flutter pub get
    ```
 
-### Step 2: Code Generation
-This project uses Riverpod annotations and requires code generation for state management providers:
-```bash
-dart run build_runner build --delete-conflicting-outputs
-```
-*(You can also use `watch` to automatically rebuild files during development: `dart run build_runner watch --delete-conflicting-outputs`)*
-
-### Step 3: Build the Local Bible Database
+### Step 2: Build the Local Bible Database
 The SQLite database file `assets/bible.db` is ignored in Git. You must build it locally to run the application:
 ```bash
 python3 scripts/build_full_bible_db.py \
@@ -42,7 +35,7 @@ python3 scripts/build_full_bible_db.py \
   --emit-coverage-report build/coverage_report.json
 ```
 
-### Step 4: Run the App
+### Step 3: Run the App
 With the database in place, run the project on your preferred target device:
 ```bash
 flutter run

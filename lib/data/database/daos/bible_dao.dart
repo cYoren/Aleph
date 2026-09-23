@@ -221,7 +221,7 @@ class BibleDAO {
         limit: 1,
       );
       if (maps.isNotEmpty) {
-        return localized(maps.first);
+        return await localized(maps.first);
       }
     } catch (_) {
       // strongs_id may not exist in the current schema.
@@ -235,7 +235,7 @@ class BibleDAO {
         limit: 1,
       );
       if (maps.isNotEmpty) {
-        return localized(maps.first);
+        return await localized(maps.first);
       }
     } catch (_) {
       // No compatible lexicon schema found.
