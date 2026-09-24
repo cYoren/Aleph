@@ -364,5 +364,8 @@
   "shareCardHebrew": "Я выучил(а) {percent}% слов книги {book} на иврите",
   "shareCardGreek": "Я выучил(а) {percent}% слов книги {book} на греческом",
   "shareCardFooter": "Учусь с Aleph",
-  "pathAllLearned": "Вы начали учить все слова этой книги. Продолжайте повторять!"
+  "pathAllLearned": "Вы начали учить все слова этой книги. Продолжайте повторять!",
+  "dailySessionStart": "Ваши 5 минут на сегодня",
+  "dailySessionDone": "На сегодня всё. До завтра!",
+  "streakDays": "{count, plural, =1{{count} день подряд} few{{count} дня подряд} many{{count} дней подряд} other{{count} дня подряд}}"
 }

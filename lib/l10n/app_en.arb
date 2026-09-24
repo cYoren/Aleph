@@ -543,5 +543,15 @@
         "type": "String"
       }
     }
+  },
+  "dailySessionStart": "Today's 5 minutes",
+  "dailySessionDone": "Done for today. See you tomorrow!",
+  "streakDays": "{count, plural, =1{1-day streak} other{{count}-day streak}}",
+  "@streakDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }

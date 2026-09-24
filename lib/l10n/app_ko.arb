@@ -364,5 +364,8 @@
   "shareCardHebrew": "히브리어 {book}의 단어 {percent}%를 배웠어요",
   "shareCardGreek": "헬라어 {book}의 단어 {percent}%를 배웠어요",
   "shareCardFooter": "Aleph로 배우는 중",
-  "pathAllLearned": "이 책의 모든 단어를 시작했어요. 계속 복습하세요!"
+  "pathAllLearned": "이 책의 모든 단어를 시작했어요. 계속 복습하세요!",
+  "dailySessionStart": "오늘의 5분",
+  "dailySessionDone": "오늘은 끝! 내일 만나요",
+  "streakDays": "{count, plural, other{{count}일 연속}}"
 }

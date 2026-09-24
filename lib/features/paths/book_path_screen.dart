@@ -14,6 +14,7 @@ import '../../providers/database_provider.dart';
 import '../reading/reading_provider.dart';
 import '../vocabulary/vocabulary_item_tile.dart';
 import 'book_path.dart';
+import 'daily_session.dart';
 
 /// How many new words one "learn next" session introduces.
 const _sessionSize = 5;
@@ -232,7 +233,7 @@ class PathHomeCard extends ConsumerWidget {
         ? null
         : ref.watch(bookPathProvider(active)).valueOrNull;
 
-    return Card(
+    final card = Card(
       elevation: 0,
       color: colorScheme.primaryContainer.withValues(alpha: 0.4),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
@@ -259,6 +260,41 @@ class PathHomeCard extends ConsumerWidget {
         trailing: const Icon(Icons.chevron_right),
         onTap: () => context.push('/path'),
       ),
+    );
+    if (path == null) return card;
+
+    final streak = ref.watch(streakProvider);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        card,
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            if (streak > 0)
+              Text(
+                l10n.streakDays(streak),
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: colorScheme.primary,
+                ),
+              ),
+            const Spacer(),
+            FilledButton.tonalIcon(
+              icon: const Icon(Icons.timer_outlined),
+              label: Text(l10n.dailySessionStart),
+              onPressed: () async {
+                final done = await runDailySession(context, ref);
+                if (done && context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(l10n.dailySessionDone)),
+                  );
+                }
+              },
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

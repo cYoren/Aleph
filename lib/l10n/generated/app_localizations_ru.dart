@@ -942,4 +942,23 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get pathAllLearned =>
       'Вы начали учить все слова этой книги. Продолжайте повторять!';
+
+  @override
+  String get dailySessionStart => 'Ваши 5 минут на сегодня';
+
+  @override
+  String get dailySessionDone => 'На сегодня всё. До завтра!';
+
+  @override
+  String streakDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count дня подряд',
+      many: '$count дней подряд',
+      few: '$count дня подряд',
+      one: '$count день подряд',
+    );
+    return '$_temp0';
+  }
 }
