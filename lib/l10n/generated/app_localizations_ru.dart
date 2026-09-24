@@ -847,4 +847,34 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get traditionSettingTitle => 'Писания';
+
+  @override
+  String get reviewReminderSetting => 'Ежедневное напоминание о повторении';
+
+  @override
+  String get reviewReminderSettingSubtitle =>
+      'Вечернее напоминание, когда пора повторить слова';
+
+  @override
+  String reminderDueTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count слова готовы к повторению',
+      many: '$count слов готовы к повторению',
+      few: '$count слова готовы к повторению',
+      one: '$count слово готово к повторению',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reminderDueBody => 'Пять минут сейчас, и слова не забудутся.';
+
+  @override
+  String get reminderReadTitle => 'Ваш стих на сегодня ждёт';
+
+  @override
+  String get reminderReadBody =>
+      'Прочитайте один стих на иврите или греческом до конца дня.';
 }

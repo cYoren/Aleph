@@ -838,4 +838,32 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get traditionSettingTitle => 'Schriften';
+
+  @override
+  String get reviewReminderSetting => 'Tägliche Wiederholungserinnerung';
+
+  @override
+  String get reviewReminderSettingSubtitle =>
+      'Ein Hinweis am Abend, wenn Wörter fällig sind';
+
+  @override
+  String reminderDueTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Wörter sind zur Wiederholung bereit',
+      one: '1 Wort ist zur Wiederholung bereit',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reminderDueBody => 'Fünf Minuten jetzt, und sie bleiben hängen.';
+
+  @override
+  String get reminderReadTitle => 'Dein Vers für heute wartet';
+
+  @override
+  String get reminderReadBody =>
+      'Lies vor Tagesende einen Vers auf Hebräisch oder Griechisch.';
 }

@@ -799,4 +799,29 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get traditionSettingTitle => '经典';
+
+  @override
+  String get reviewReminderSetting => '每日复习提醒';
+
+  @override
+  String get reviewReminderSettingSubtitle => '有单词需要复习时，晚上提醒你';
+
+  @override
+  String reminderDueTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '有 $count 个单词可以复习了',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reminderDueBody => '现在花五分钟，就不会忘记。';
+
+  @override
+  String get reminderReadTitle => '今天的经文在等你';
+
+  @override
+  String get reminderReadBody => '今天结束前，用希伯来文或希腊文读一节经文。';
 }

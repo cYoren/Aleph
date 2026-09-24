@@ -343,5 +343,11 @@
   "tanakhNeviim": "先知书",
   "tanakhKetuvim": "文集",
   "hebrewBibleLabel": "希伯来圣经",
-  "traditionSettingTitle": "经典"
+  "traditionSettingTitle": "经典",
+  "reviewReminderSetting": "每日复习提醒",
+  "reviewReminderSettingSubtitle": "有单词需要复习时，晚上提醒你",
+  "reminderDueTitle": "{count, plural, other{有 {count} 个单词可以复习了}}",
+  "reminderDueBody": "现在花五分钟，就不会忘记。",
+  "reminderReadTitle": "今天的经文在等你",
+  "reminderReadBody": "今天结束前，用希伯来文或希腊文读一节经文。"
 }

@@ -841,4 +841,32 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get traditionSettingTitle => 'Escrituras';
+
+  @override
+  String get reviewReminderSetting => 'Recordatorio diario de repaso';
+
+  @override
+  String get reviewReminderSettingSubtitle =>
+      'Un aviso por la tarde cuando haya palabras pendientes';
+
+  @override
+  String reminderDueTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count palabras listas para repasar',
+      one: '1 palabra lista para repasar',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reminderDueBody => 'Cinco minutos ahora y no se te olvidarán.';
+
+  @override
+  String get reminderReadTitle => 'Tu versículo de hoy te espera';
+
+  @override
+  String get reminderReadBody =>
+      'Lee un versículo en hebreo o griego antes de que termine el día.';
 }

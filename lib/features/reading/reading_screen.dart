@@ -428,7 +428,7 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
         colorScheme,
       ),
       child: Card(
-        margin: const EdgeInsets.only(bottom: 12),
+        margin: const EdgeInsets.only(bottom: 8),
         elevation: 0,
         // The verse currently being recited lifts off the page so the eye can
         // follow the voice.
@@ -445,7 +445,7 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.fromLTRB(14, 6, 6, 14),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -548,34 +548,25 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
-              // Original Text (Hebrew RTL or Greek LTR)
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: colorScheme.surface,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: (isOT ? colorScheme.primary : colorScheme.secondary)
-                        .withValues(alpha: 0.28),
-                  ),
-                ),
+              // Original Text (Hebrew RTL or Greek LTR). No inner boxes: the
+              // card already frames the verse, and nested frames cost a third
+              // of the screen.
+              Padding(
+                padding: const EdgeInsets.only(right: 8),
                 child: VerseWithWords(
                   verse: verse,
                   isOT: isOT,
                   fontSize: settings.fontSize + 2,
                 ),
               ),
-              const SizedBox(height: 8),
+              Divider(
+                height: 20,
+                endIndent: 8,
+                color: colorScheme.outlineVariant.withValues(alpha: 0.4),
+              ),
               // Translation text
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: colorScheme.surfaceContainerHighest.withValues(
-                    alpha: 0.5,
-                  ),
-                  borderRadius: BorderRadius.circular(8),
-                ),
+              Padding(
+                padding: const EdgeInsets.only(right: 8),
                 child: translationText != null && translationText.isNotEmpty
                     ? DynamicTranslationText(
                         verse: verse,

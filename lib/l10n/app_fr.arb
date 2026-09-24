@@ -343,5 +343,11 @@
   "tanakhNeviim": "Nevi'im — Prophètes",
   "tanakhKetuvim": "Ketouvim — Écrits",
   "hebrewBibleLabel": "Bible hébraïque",
-  "traditionSettingTitle": "Écritures"
+  "traditionSettingTitle": "Écritures",
+  "reviewReminderSetting": "Rappel quotidien de révision",
+  "reviewReminderSettingSubtitle": "Un rappel le soir quand des mots sont à revoir",
+  "reminderDueTitle": "{count, plural, =1{1 mot à réviser} other{{count} mots à réviser}}",
+  "reminderDueBody": "Cinq minutes maintenant, et ils ne vous échapperont pas.",
+  "reminderReadTitle": "Votre verset du jour vous attend",
+  "reminderReadBody": "Lisez un verset en hébreu ou en grec avant la fin de la journée."
 }
