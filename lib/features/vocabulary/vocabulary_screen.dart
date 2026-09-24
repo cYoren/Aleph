@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/review_reminder.dart';
 import '../../data/models/word.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../reading/widgets/srs_micro_quiz_sheet.dart';
@@ -53,6 +54,18 @@ class _VocabularyScreenState extends ConsumerState<VocabularyScreen> {
                       colorScheme,
                       count: due.length,
                     ),
+                    // Offered here, next to the words it is about; the same
+                    // switch lives in Settings once this row is gone.
+                    if (!ref.watch(reviewReminderProvider))
+                      SwitchListTile(
+                        secondary: const Icon(Icons.notifications_outlined),
+                        title: Text(l10n.reviewReminderSetting),
+                        subtitle: Text(l10n.reviewReminderSettingSubtitle),
+                        value: false,
+                        onChanged: (value) => ref
+                            .read(reviewReminderProvider.notifier)
+                            .set(value),
+                      ),
                     ...due.map((item) => _buildItemTile(item, colorScheme)),
                     const Divider(),
                   ],
