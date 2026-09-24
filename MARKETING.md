@@ -58,12 +58,18 @@ silently alter a legal identifier.
 
 ### Name and tagline as they ship
 
-| Field | Value | Length |
+Store copy for all eight languages lives in `fastlane/metadata/` (iOS) and
+`fastlane/metadata/android/` (Play); those files are the source of truth.
+
+| Field | Value (en) | Length |
 |---|---|---|
-| App Store name | `Aleph` | 5 / 30 |
-| App Store subtitle | `Learn the Original Bible` | 24 / 30 |
-| Play title | `Aleph` | 5 / 30 |
-| Play short description | `Learn the Original Bible: read Hebrew and Greek, word by word.` | 62 / 80 |
+| Name / Play title | `Aleph: Hebrew & Greek Bible` | 27 / 30 |
+| App Store subtitle | `Interlinear Tanakh & Lexicon` | 28 / 30 |
+| Play short description | `Read Genesis in Hebrew and John in Greek, word by word, starting from alef.` | 76 / 80 |
+
+The listing does not mention the AI tutor: CI release builds do not pass
+`OPENROUTER_API_KEY`, so shipped builds do not have it. Add it to the copy only
+once a release actually carries the key.
 
 "Aleph - Learn the Original Bible" reads well but is **32 characters**, and both
 stores cap the name at 30. Splitting it is better than trimming it anyway: the

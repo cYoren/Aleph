@@ -1,0 +1,1 @@
+A busca voltou e mostra os resultados na ordem da Bíblia. Os capítulos abrem muito mais rápido. Novo: um lembrete opcional à noite quando houver palavras para revisar. E um layout de leitura mais limpo, com mais texto na tela.

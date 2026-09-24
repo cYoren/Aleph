@@ -1,20 +1,33 @@
-Aleph brings the sacred texts of the Hebrew Old Testament and Greek New Testament directly to your hands — side by side with trusted English translations.
+Read the Bible in the words it was written in.
 
-Whether you are a seminary student, pastor, or devoted reader, Aleph helps you engage with Scripture at its deepest level.
+Aleph puts the Hebrew Scriptures and the Greek New Testament in your hands with everything you need to actually read them: every word pronounced, defined and parsed, one tap away. Start from the alphabet or open straight to your favorite passage.
 
-KEY FEATURES
+TAP ANY WORD
+• Full lexicon entry from Brown Driver Briggs (Hebrew) and Abbott Smith (Greek)
+• Complete parsing: stem, tense, person, number, gender, case
+• Transliteration above every word, so you can sound it out from day one
+• Every occurrence of the word across the Bible, one tap away
 
-• Read the Hebrew Bible (Tanakh/Old Testament) in its original language
-• Read the Greek New Testament (Koine Greek) in its original language
-• Compare original text with popular translations
-• Interlinear view: see each word aligned with its translation
-• Navigate by book, chapter, and verse
-• Clean, distraction-free reading experience
-• Offline access — no internet required
-• Fast search across the entire Bible
+HEAR IT
+• Every verse read aloud in Hebrew or Greek
+• Follow along as each verse lights up while it is read
+• Masoretic accents shown as sense units, so long verses break into phrases you can follow
 
-WHY ORIGINAL LANGUAGES MATTER
+LEARN IT FOR GOOD
+• Vocabulary decks ordered by frequency: the most common words unlock most of the text
+• Spaced repetition brings each word back right before you would forget it
+• A reading map shows how much of each book you can already read on your own
+• Parsing quizzes and Psalm memorization for when you want to go deeper
+• An alphabet guide for Hebrew and Greek letters, vowels and sounds
 
-Modern translations carry the weight of centuries of scholarship, but reading Scripture in Hebrew and Greek reveals nuance, wordplay, and meaning that no translation can fully capture. Aleph is designed to make that experience accessible to everyone.
+STUDY LIKE A SCHOLAR
+• 340,000+ cross references
+• Syntax trees for the Greek New Testament
+• Your own language beside the original: English (Berean Standard Bible), Portuguese (Almeida), Spanish (Reina Valera 1909), German (Luther 1912), French (Ostervald), Russian (Synodal), Chinese (Union Version) and Korean
+• Read in Tanakh order (Torah, Nevi'im, Ketuvim) or in Christian canon order
+• Bookmarks and beautiful verse images to share
 
-Perfect for daily devotion, academic study, sermon preparation, or simply deepening your understanding of the text that has shaped billions of lives.
+EVERYTHING WORKS OFFLINE
+The whole Bible, both lexicons and all translations live on your phone. No account, no signal needed, no ads.
+
+Made for seminary students, pastors, Bible teachers and anyone who has ever wondered what the text really says.

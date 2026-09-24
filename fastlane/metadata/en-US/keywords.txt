@@ -1,1 +1,1 @@
-septuagint,strongs,koine,morphology,exegesis,concordance,seminary,scripture,torah,verse,study
+koine,biblical,strongs,torah,learn,alphabet,vocabulary,flashcards,audio,psalms,exegesis,seminary

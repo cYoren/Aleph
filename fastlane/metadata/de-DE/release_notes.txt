@@ -1,0 +1,1 @@
+Die Suche funktioniert wieder und zeigt Treffer in biblischer Reihenfolge. Kapitel öffnen sich deutlich schneller. Neu: eine optionale Erinnerung am Abend, wenn Vokabeln fällig sind. Dazu ein aufgeräumteres Leselayout mit mehr Text auf dem Bildschirm.

@@ -1,1 +1,1 @@
-Initial release. Read the Bible in its original Hebrew and Greek languages.
+Search is back and returns results in Bible order. Chapters open much faster. The English text is now correctly labelled as the Berean Standard Bible. New: an optional evening reminder when vocabulary is due. Plus a cleaner reading layout that fits more text on screen.
