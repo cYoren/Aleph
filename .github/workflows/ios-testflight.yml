@@ -36,6 +36,21 @@ jobs:
         with:
           flutter-version: '3.47.0'
           cache: true
+      # The database is generated, not committed. Build 27 (1.0.5) skipped this
+      # and shipped with no Bible text; pubspec now lists the file, so a build
+      # without it fails instead.
+      - name: Build release database
+        run: |
+          set -euo pipefail
+          mkdir -p build
+          python3 scripts/build_full_bible_db.py \
+            --output assets/bible.db \
+            --cache-dir /tmp/original_bible_db_cache \
+            --strict-coverage \
+            --fill-kjv-gaps \
+            --emit-coverage-report build/coverage_report.json
+      - name: Validate release database
+        run: bash ./scripts/validate_release.sh
       - name: Verify Apple build toolchain
         shell: bash
         run: |

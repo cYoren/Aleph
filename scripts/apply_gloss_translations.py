@@ -5,10 +5,9 @@ Reads every `data/gloss_translations/<lang>.json` produced by
 `translate_glosses.py` and writes them into a `lexicon_gloss_i18n` table that
 the app reads through `BibleDAO.glossLanguage`.
 
-Run this after every `build_full_bible_db.py`, since that script rebuilds
-`assets/bible.db` from scratch and the table would otherwise be missing. The
-app treats a missing table as "no translations available" and shows English, so
-forgetting this step degrades rather than breaks.
+`build_full_bible_db.py` now calls `write_gloss_translations` itself: release
+builds skipped this separate step, so every store build shipped English-only
+glosses. Run this script directly only to refresh an existing database.
 
     python3 scripts/apply_gloss_translations.py
     python3 scripts/apply_gloss_translations.py --report
@@ -51,6 +50,36 @@ def load_cache(path: pathlib.Path) -> dict[str, str]:
     }
 
 
+def write_gloss_translations(db: sqlite3.Connection, cache_dir: pathlib.Path = CACHE_DIR) -> int:
+    """Writes every cached language into `lexicon_gloss_i18n`; returns the row count.
+
+    Called by build_full_bible_db.py so a release database can never ship
+    without it; this script stays for refreshing an existing database.
+    """
+    caches = sorted(cache_dir.glob("*.json")) if cache_dir.exists() else []
+    total_glosses = db.execute(
+        "SELECT COUNT(DISTINCT strongs_id) FROM lexicon "
+        "WHERE strongs_id IS NOT NULL AND strongs_id != '' "
+        "AND gloss IS NOT NULL AND gloss != ''"
+    ).fetchone()[0]
+    db.execute(SCHEMA)
+    db.execute(INDEX)
+    written = 0
+    for path in caches:
+        lang = path.stem
+        entries = load_cache(path)
+        db.execute("DELETE FROM lexicon_gloss_i18n WHERE lang = ?", (lang,))
+        db.executemany(
+            "INSERT INTO lexicon_gloss_i18n (strongs_id, lang, gloss) "
+            "VALUES (?, ?, ?)",
+            [(sid, lang, gloss) for sid, gloss in entries.items()],
+        )
+        pct = 100.0 * len(entries) / total_glosses if total_glosses else 0.0
+        print(f"{lang}: wrote {len(entries)} glosses ({pct:.1f}% coverage)")
+        written += len(entries)
+    return written
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--db", type=pathlib.Path, default=DEFAULT_DB)
@@ -90,23 +119,7 @@ def main() -> int:
                 print(f"{path.stem}: {len(entries)}/{total_glosses} ({pct:.1f}%)")
             return 0
 
-        db.execute(SCHEMA)
-        db.execute(INDEX)
-
-        written = 0
-        for path in caches:
-            lang = path.stem
-            entries = load_cache(path)
-            db.execute("DELETE FROM lexicon_gloss_i18n WHERE lang = ?", (lang,))
-            db.executemany(
-                "INSERT INTO lexicon_gloss_i18n (strongs_id, lang, gloss) "
-                "VALUES (?, ?, ?)",
-                [(sid, lang, gloss) for sid, gloss in entries.items()],
-            )
-            pct = 100.0 * len(entries) / total_glosses if total_glosses else 0.0
-            print(f"{lang}: wrote {len(entries)} glosses ({pct:.1f}% coverage)")
-            written += len(entries)
-
+        written = write_gloss_translations(db, args.cache_dir)
         db.commit()
         print(f"Total {written} translated glosses in {args.db}")
     finally:

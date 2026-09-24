@@ -29,6 +29,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Tuple
 
+from apply_gloss_translations import write_gloss_translations
+
 SOURCE_REPO_RAW = "https://raw.githubusercontent.com/themikejr/bible-mcp"
 DEFAULT_SOURCE_COMMIT = "65ed737a1ca800cfd8e49b60af3161fbf4149546"
 SOURCE_FILENAMES = (
@@ -2583,6 +2585,12 @@ def main() -> None:
                     encoding="utf-8",
                 )
                 print(f"Coverage report written: {report_path}")
+
+            # Translated glosses live in data/gloss_translations; folding them in
+            # here means no release path can forget the separate apply step.
+            if write_gloss_translations(conn) == 0:
+                raise RuntimeError("No translated glosses found in data/gloss_translations")
+            conn.commit()
 
             finalize_sqlite_files(conn, output_path)
         finally:
