@@ -14,6 +14,16 @@
 
 ## Resolved
 
+- [x] 2026-09-24: **iOS 1.0.5 (build 27) shipped without `bible.db`.** The
+      TestFlight workflow never generated it and Flutter's `assets/` folder
+      entry tolerated its absence, so the 25 MB IPA had no Bible text for any
+      fresh install. The workflow now builds and validates the database, and
+      `pubspec.yaml` names `assets/bible.db` so a build without it fails.
+- [x] 2026-09-24: Every release build shipped English-only glosses: the
+      translated glosses (13,281 per language) were applied by a separate
+      script no workflow ran. `build_full_bible_db.py` now writes them, and
+      `validate_release.sh` fails without them.
+
 - [x] 2026-09-24: Text search returned nothing in every shipped build: the LIKE
       clause used `ESCAPE '\\'`, a two-character escape SQLite rejects, and the
       error was swallowed. Fixed, results now in canonical order (they sorted by

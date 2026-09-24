@@ -70,6 +70,9 @@ flutter:
   assets:
     - assets/
     - assets/fonts/
+    # Listed by name so a build without the generated database fails loudly
+    # instead of shipping an app with no Bible text (iOS build 27 did).
+    - assets/bible.db
   
   fonts:
     - family: EzraSIL

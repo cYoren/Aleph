@@ -80,6 +80,12 @@ if (( lexicon_count < 13000 )); then
   exit 1
 fi
 
+gloss_languages="$(sqlite3 "$DB_PATH" "SELECT COUNT(DISTINCT lang) FROM lexicon_gloss_i18n;" 2>/dev/null || echo 0)"
+if (( gloss_languages < 7 )); then
+  echo "ERROR: Expected translated glosses for 7 languages in lexicon_gloss_i18n, found $gloss_languages"
+  exit 1
+fi
+
 if (( enabled_translations < 8 )); then
   echo "ERROR: Expected at least 8 enabled translations (KJV + DE/RU/PT/ES/FR + ZH + KO), found $enabled_translations"
   exit 1
