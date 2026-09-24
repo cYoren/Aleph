@@ -367,5 +367,11 @@
   "pathAllLearned": "Vous avez commencé tous les mots de ce livre. Continuez à réviser !",
   "dailySessionStart": "Vos 5 minutes du jour",
   "dailySessionDone": "C'est fait pour aujourd'hui. À demain !",
-  "streakDays": "{count, plural, =1{1 jour d'affilée} other{{count} jours d'affilée}}"
+  "streakDays": "{count, plural, =1{1 jour d'affilée} other{{count} jours d'affilée}}",
+  "nameTitle": "Que signifie votre prénom ?",
+  "nameHint": "Tapez votre prénom",
+  "nameMeans": "{name} signifie « {meaning} »",
+  "nameCount": "{count, plural, =1{Apparaît une fois dans la Bible} other{Apparaît {count} fois dans la Bible}}",
+  "nameNotFound": "Pas encore dans notre liste. Essayez une autre orthographe.",
+  "nameShare": "Partager"
 }

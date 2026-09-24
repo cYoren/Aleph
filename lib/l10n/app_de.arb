@@ -367,5 +367,11 @@
   "pathAllLearned": "Du hast jedes Wort dieses Buches angefangen. Bleib beim Wiederholen!",
   "dailySessionStart": "Deine 5 Minuten heute",
   "dailySessionDone": "Fertig für heute. Bis morgen!",
-  "streakDays": "{count, plural, =1{1 Tag in Folge} other{{count} Tage in Folge}}"
+  "streakDays": "{count, plural, =1{1 Tag in Folge} other{{count} Tage in Folge}}",
+  "nameTitle": "Was bedeutet dein Name?",
+  "nameHint": "Gib deinen Namen ein",
+  "nameMeans": "{name} bedeutet „{meaning}“",
+  "nameCount": "{count, plural, =1{Kommt einmal in der Bibel vor} other{Kommt {count}-mal in der Bibel vor}}",
+  "nameNotFound": "Noch nicht in unserer Liste. Versuch eine andere Schreibweise.",
+  "nameShare": "Teilen"
 }

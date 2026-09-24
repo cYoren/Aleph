@@ -367,5 +367,11 @@
   "pathAllLearned": "이 책의 모든 단어를 시작했어요. 계속 복습하세요!",
   "dailySessionStart": "오늘의 5분",
   "dailySessionDone": "오늘은 끝! 내일 만나요",
-  "streakDays": "{count, plural, other{{count}일 연속}}"
+  "streakDays": "{count, plural, other{{count}일 연속}}",
+  "nameTitle": "내 이름은 무슨 뜻일까?",
+  "nameHint": "이름을 입력하세요",
+  "nameMeans": "{name}의 뜻은 “{meaning}”",
+  "nameCount": "{count, plural, other{성경에 {count}번 나와요}}",
+  "nameNotFound": "아직 목록에 없는 이름이에요. 다른 표기로 찾아보세요.",
+  "nameShare": "공유"
 }

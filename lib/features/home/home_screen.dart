@@ -406,6 +406,19 @@ class HomeScreen extends ConsumerWidget {
             ],
           ),
         ),
+        const SizedBox(height: 10),
+        // The easiest thing in the app to share: your own name, in Hebrew.
+        OutlinedButton.icon(
+          icon: const Icon(Icons.person_search_outlined),
+          label: Text(l10n.nameTitle),
+          style: OutlinedButton.styleFrom(
+            minimumSize: const Size.fromHeight(48),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
+          ),
+          onPressed: () => context.push('/name'),
+        ),
       ],
     );
   }

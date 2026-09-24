@@ -25,6 +25,7 @@ import '../shared/widgets/app_scaffold.dart';
 import '../data/models/verse.dart';
 import '../data/models/word.dart';
 import '../l10n/generated/app_localizations.dart';
+import '../features/names/name_meaning_screen.dart';
 import '../features/paths/book_path_screen.dart';
 
 final router = GoRouter(
@@ -114,6 +115,11 @@ final router = GoRouter(
     ),
     // One book as a goal: its vocabulary, progress and share card
     GoRoute(path: '/path', builder: (context, state) => const BookPathScreen()),
+    // A typed name in its original script, for the share card
+    GoRoute(
+      path: '/name',
+      builder: (context, state) => const NameMeaningScreen(),
+    ),
     // Which books the reader can already read
     GoRoute(
       path: '/readability',

@@ -1669,6 +1669,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count, plural, =1{1-day streak} other{{count}-day streak}}'**
   String streakDays(int count);
+
+  /// No description provided for @nameTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What does your name mean?'**
+  String get nameTitle;
+
+  /// No description provided for @nameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Type your name'**
+  String get nameHint;
+
+  /// No description provided for @nameMeans.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} means “{meaning}”'**
+  String nameMeans(String name, String meaning);
+
+  /// No description provided for @nameCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Appears once in the Bible} other{Appears {count} times in the Bible}}'**
+  String nameCount(int count);
+
+  /// No description provided for @nameNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Not on our list yet. Try another spelling.'**
+  String get nameNotFound;
+
+  /// No description provided for @nameShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get nameShare;
 }
 
 class _AppLocalizationsDelegate

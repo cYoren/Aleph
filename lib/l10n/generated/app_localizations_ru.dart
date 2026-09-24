@@ -961,4 +961,35 @@ class AppLocalizationsRu extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get nameTitle => 'Что означает ваше имя?';
+
+  @override
+  String get nameHint => 'Введите своё имя';
+
+  @override
+  String nameMeans(String name, String meaning) {
+    return '$name означает «$meaning»';
+  }
+
+  @override
+  String nameCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Встречается в Библии $count раза',
+      many: 'Встречается в Библии $count раз',
+      few: 'Встречается в Библии $count раза',
+      one: 'Встречается в Библии $count раз',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get nameNotFound =>
+      'Этого имени пока нет в списке. Попробуйте другое написание.';
+
+  @override
+  String get nameShare => 'Поделиться';
 }

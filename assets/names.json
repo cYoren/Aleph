@@ -1,0 +1,1830 @@
+{
+ "_comment": "Curated Bible names for the 'what does my name mean' card. Meanings are the traditional, widely cited readings; contested ones say so. 'names' holds the spellings people type in each app language. Lemma, transliteration and occurrence counts come from bible.db by 'strongs'; showCount is false where that Strong's number also covers another word.",
+ "names": [
+  {
+   "strongs": "H0120",
+   "meaning": {
+    "en": "human, of the earth",
+    "pt": "humano, da terra",
+    "es": "humano, de la tierra",
+    "de": "Mensch, von der Erde",
+    "fr": "humain, tiré de la terre",
+    "ru": "человек, от земли",
+    "zh": "人，出于尘土",
+    "ko": "사람, 흙에서 난 자"
+   },
+   "names": [
+    "Adam",
+    "Adão",
+    "Adán",
+    "Адам",
+    "亚当",
+    "아담"
+   ]
+  },
+  {
+   "strongs": "H2332",
+   "meaning": {
+    "en": "living",
+    "pt": "vivente",
+    "es": "viviente",
+    "de": "lebendig",
+    "fr": "vivante",
+    "ru": "жизнь",
+    "zh": "生命",
+    "ko": "생명"
+   },
+   "names": [
+    "Eve",
+    "Eva",
+    "Ève",
+    "Ева",
+    "夏娃",
+    "하와",
+    "이브"
+   ],
+   "showCount": false
+  },
+  {
+   "strongs": "H5146",
+   "meaning": {
+    "en": "rest",
+    "pt": "descanso",
+    "es": "descanso",
+    "de": "Ruhe",
+    "fr": "repos",
+    "ru": "покой",
+    "zh": "安息",
+    "ko": "안식"
+   },
+   "names": [
+    "Noah",
+    "Noé",
+    "Noe",
+    "Ной",
+    "挪亚",
+    "노아"
+   ]
+  },
+  {
+   "strongs": "H0085",
+   "meaning": {
+    "en": "father of many",
+    "pt": "pai de muitos",
+    "es": "padre de muchos",
+    "de": "Vater vieler",
+    "fr": "père d'une multitude",
+    "ru": "отец множества",
+    "zh": "多国之父",
+    "ko": "많은 무리의 아버지"
+   },
+   "names": [
+    "Abraham",
+    "Abraão",
+    "Авраам",
+    "亚伯拉罕",
+    "아브라함"
+   ]
+  },
+  {
+   "strongs": "H8283",
+   "meaning": {
+    "en": "princess",
+    "pt": "princesa",
+    "es": "princesa",
+    "de": "Fürstin",
+    "fr": "princesse",
+    "ru": "княгиня",
+    "zh": "公主",
+    "ko": "공주"
+   },
+   "names": [
+    "Sarah",
+    "Sara",
+    "Sarai",
+    "Сарра",
+    "Сара",
+    "撒拉",
+    "사라"
+   ]
+  },
+  {
+   "strongs": "H3327",
+   "meaning": {
+    "en": "he laughs",
+    "pt": "ele ri",
+    "es": "él ríe",
+    "de": "er lacht",
+    "fr": "il rit",
+    "ru": "он смеётся",
+    "zh": "他笑",
+    "ko": "그가 웃는다"
+   },
+   "names": [
+    "Isaac",
+    "Isaque",
+    "Isaak",
+    "Исаак",
+    "以撒",
+    "이삭"
+   ]
+  },
+  {
+   "strongs": "H7259",
+   "meaning": {
+    "en": "captivating",
+    "pt": "cativante",
+    "es": "cautivadora",
+    "de": "fesselnd",
+    "fr": "captivante",
+    "ru": "пленяющая",
+    "zh": "迷人的",
+    "ko": "사로잡는"
+   },
+   "names": [
+    "Rebekah",
+    "Rebecca",
+    "Rebeca",
+    "Rebekka",
+    "Rébecca",
+    "Ревекка",
+    "利百加",
+    "리브가"
+   ]
+  },
+  {
+   "strongs": "H3290",
+   "meaning": {
+    "en": "he grasps the heel",
+    "pt": "ele segura o calcanhar",
+    "es": "él toma el talón",
+    "de": "er hält die Ferse",
+    "fr": "il saisit le talon",
+    "ru": "держащийся за пяту",
+    "zh": "抓住脚跟",
+    "ko": "발꿈치를 잡는 자"
+   },
+   "names": [
+    "Jacob",
+    "Jacó",
+    "Jakob",
+    "Jacobo",
+    "Иаков",
+    "Яков",
+    "雅各",
+    "야곱"
+   ]
+  },
+  {
+   "strongs": "H7354",
+   "meaning": {
+    "en": "ewe",
+    "pt": "ovelha",
+    "es": "oveja",
+    "de": "Mutterschaf",
+    "fr": "brebis",
+    "ru": "овечка",
+    "zh": "母羊",
+    "ko": "암양"
+   },
+   "names": [
+    "Rachel",
+    "Raquel",
+    "Rahel",
+    "Рахиль",
+    "拉结",
+    "라헬"
+   ]
+  },
+  {
+   "strongs": "H3812",
+   "meaning": {
+    "en": "weary",
+    "pt": "cansada",
+    "es": "cansada",
+    "de": "müde",
+    "fr": "fatiguée",
+    "ru": "утомлённая",
+    "zh": "疲倦",
+    "ko": "피곤한"
+   },
+   "names": [
+    "Leah",
+    "Lia",
+    "Lea",
+    "Léa",
+    "Лия",
+    "利亚",
+    "레아"
+   ]
+  },
+  {
+   "strongs": "H3130",
+   "meaning": {
+    "en": "he adds",
+    "pt": "ele acrescenta",
+    "es": "él añade",
+    "de": "er fügt hinzu",
+    "fr": "il ajoute",
+    "ru": "он прибавит",
+    "zh": "他增添",
+    "ko": "더하다"
+   },
+   "names": [
+    "Joseph",
+    "José",
+    "Josef",
+    "Иосиф",
+    "约瑟",
+    "요셉"
+   ]
+  },
+  {
+   "strongs": "H1144",
+   "meaning": {
+    "en": "son of the right hand",
+    "pt": "filho da mão direita",
+    "es": "hijo de la mano derecha",
+    "de": "Sohn der rechten Hand",
+    "fr": "fils de la main droite",
+    "ru": "сын правой руки",
+    "zh": "右手之子",
+    "ko": "오른손의 아들"
+   },
+   "names": [
+    "Benjamin",
+    "Benjamim",
+    "Benjamín",
+    "Вениамин",
+    "便雅悯",
+    "베냐민"
+   ]
+  },
+  {
+   "strongs": "H3063",
+   "meaning": {
+    "en": "praise",
+    "pt": "louvor",
+    "es": "alabanza",
+    "de": "Lobpreis",
+    "fr": "louange",
+    "ru": "хвала",
+    "zh": "赞美",
+    "ko": "찬송"
+   },
+   "names": [
+    "Judah",
+    "Judá",
+    "Juda",
+    "Иуда",
+    "犹大",
+    "유다"
+   ]
+  },
+  {
+   "strongs": "H3878",
+   "meaning": {
+    "en": "joined",
+    "pt": "unido",
+    "es": "unido",
+    "de": "verbunden",
+    "fr": "attaché",
+    "ru": "присоединённый",
+    "zh": "联合",
+    "ko": "연합"
+   },
+   "names": [
+    "Levi",
+    "Leví",
+    "Lévi",
+    "Левий",
+    "利未",
+    "레위"
+   ],
+   "showCount": false
+  },
+  {
+   "strongs": "H4872",
+   "meaning": {
+    "en": "drawn out",
+    "pt": "tirado das águas",
+    "es": "sacado de las aguas",
+    "de": "aus dem Wasser gezogen",
+    "fr": "tiré des eaux",
+    "ru": "извлечённый из воды",
+    "zh": "从水里拉出来",
+    "ko": "물에서 건져냄"
+   },
+   "names": [
+    "Moses",
+    "Moisés",
+    "Mose",
+    "Moïse",
+    "Моисей",
+    "摩西",
+    "모세"
+   ]
+  },
+  {
+   "strongs": "H3091",
+   "meaning": {
+    "en": "the LORD saves",
+    "pt": "o SENHOR salva",
+    "es": "el SEÑOR salva",
+    "de": "der HERR rettet",
+    "fr": "l'Éternel sauve",
+    "ru": "Господь спасает",
+    "zh": "耶和华拯救",
+    "ko": "여호와는 구원이시다"
+   },
+   "names": [
+    "Joshua",
+    "Josué",
+    "Josua",
+    "约书亚",
+    "여호수아"
+   ]
+  },
+  {
+   "strongs": "H1683",
+   "meaning": {
+    "en": "bee",
+    "pt": "abelha",
+    "es": "abeja",
+    "de": "Biene",
+    "fr": "abeille",
+    "ru": "пчела",
+    "zh": "蜜蜂",
+    "ko": "꿀벌"
+   },
+   "names": [
+    "Deborah",
+    "Débora",
+    "Debora",
+    "Девора",
+    "底波拉",
+    "드보라"
+   ]
+  },
+  {
+   "strongs": "H7327",
+   "meaning": {
+    "en": "friend",
+    "pt": "amiga",
+    "es": "amiga",
+    "de": "Freundin",
+    "fr": "amie",
+    "ru": "подруга",
+    "zh": "朋友",
+    "ko": "친구"
+   },
+   "names": [
+    "Ruth",
+    "Rute",
+    "Rut",
+    "Руфь",
+    "路得",
+    "룻"
+   ]
+  },
+  {
+   "strongs": "H5281",
+   "meaning": {
+    "en": "pleasant",
+    "pt": "agradável",
+    "es": "agradable",
+    "de": "lieblich",
+    "fr": "agréable",
+    "ru": "приятная",
+    "zh": "甜美",
+    "ko": "기쁨"
+   },
+   "names": [
+    "Naomi",
+    "Noemi",
+    "Noemí",
+    "Noomi",
+    "Noémi",
+    "Ноеминь",
+    "拿俄米",
+    "나오미"
+   ]
+  },
+  {
+   "strongs": "H2584",
+   "meaning": {
+    "en": "grace",
+    "pt": "graça",
+    "es": "gracia",
+    "de": "Gnade",
+    "fr": "grâce",
+    "ru": "благодать",
+    "zh": "恩典",
+    "ko": "은혜"
+   },
+   "names": [
+    "Hannah",
+    "Ana",
+    "Anna",
+    "Hanna",
+    "Anne",
+    "Анна",
+    "哈拿",
+    "한나"
+   ]
+  },
+  {
+   "strongs": "H8050",
+   "meaning": {
+    "en": "God has heard",
+    "pt": "Deus ouviu",
+    "es": "Dios ha oído",
+    "de": "Gott hat gehört",
+    "fr": "Dieu a entendu",
+    "ru": "услышанный Богом",
+    "zh": "神听见了",
+    "ko": "하나님이 들으셨다"
+   },
+   "names": [
+    "Samuel",
+    "Samuil",
+    "Самуил",
+    "撒母耳",
+    "사무엘"
+   ]
+  },
+  {
+   "strongs": "H1732",
+   "meaning": {
+    "en": "beloved",
+    "pt": "amado",
+    "es": "amado",
+    "de": "Geliebter",
+    "fr": "bien-aimé",
+    "ru": "возлюбленный",
+    "zh": "蒙爱的",
+    "ko": "사랑받는 자"
+   },
+   "names": [
+    "David",
+    "Davi",
+    "Давид",
+    "大卫",
+    "다윗"
+   ]
+  },
+  {
+   "strongs": "H8010",
+   "meaning": {
+    "en": "peace",
+    "pt": "paz",
+    "es": "paz",
+    "de": "Frieden",
+    "fr": "paix",
+    "ru": "мир",
+    "zh": "平安",
+    "ko": "평화"
+   },
+   "names": [
+    "Solomon",
+    "Salomão",
+    "Salomón",
+    "Salomo",
+    "Salomon",
+    "Соломон",
+    "所罗门",
+    "솔로몬"
+   ]
+  },
+  {
+   "strongs": "H5416",
+   "meaning": {
+    "en": "he gave",
+    "pt": "ele deu",
+    "es": "él dio",
+    "de": "er hat gegeben",
+    "fr": "il a donné",
+    "ru": "он дал",
+    "zh": "他赐予",
+    "ko": "그가 주셨다"
+   },
+   "names": [
+    "Nathan",
+    "Natã",
+    "Natán",
+    "Нафан",
+    "拿单",
+    "나단"
+   ]
+  },
+  {
+   "strongs": "H3083",
+   "meaning": {
+    "en": "the LORD has given",
+    "pt": "o SENHOR deu",
+    "es": "el SEÑOR ha dado",
+    "de": "der HERR hat gegeben",
+    "fr": "l'Éternel a donné",
+    "ru": "Господь дал",
+    "zh": "耶和华所赐",
+    "ko": "여호와께서 주셨다"
+   },
+   "names": [
+    "Jonathan",
+    "Jônatas",
+    "Jonatán",
+    "Ионафан",
+    "约拿单",
+    "요나단"
+   ]
+  },
+  {
+   "strongs": "H0452",
+   "meaning": {
+    "en": "my God is the LORD",
+    "pt": "meu Deus é o SENHOR",
+    "es": "mi Dios es el SEÑOR",
+    "de": "mein Gott ist der HERR",
+    "fr": "mon Dieu est l'Éternel",
+    "ru": "мой Бог Господь",
+    "zh": "我的神是耶和华",
+    "ko": "나의 하나님은 여호와"
+   },
+   "names": [
+    "Elijah",
+    "Elias",
+    "Elías",
+    "Elia",
+    "Élie",
+    "Илия",
+    "以利亚",
+    "엘리야"
+   ]
+  },
+  {
+   "strongs": "H0477",
+   "meaning": {
+    "en": "God is salvation",
+    "pt": "Deus é salvação",
+    "es": "Dios es salvación",
+    "de": "Gott ist Heil",
+    "fr": "Dieu est salut",
+    "ru": "Бог спасение",
+    "zh": "神是拯救",
+    "ko": "하나님은 구원"
+   },
+   "names": [
+    "Elisha",
+    "Eliseu",
+    "Eliseo",
+    "Elisa",
+    "Élisée",
+    "Елисей",
+    "以利沙",
+    "엘리사"
+   ]
+  },
+  {
+   "strongs": "H3470A",
+   "meaning": {
+    "en": "the LORD is salvation",
+    "pt": "o SENHOR é salvação",
+    "es": "el SEÑOR es salvación",
+    "de": "der HERR ist Heil",
+    "fr": "l'Éternel est salut",
+    "ru": "Господь спасение",
+    "zh": "耶和华是拯救",
+    "ko": "여호와는 구원"
+   },
+   "names": [
+    "Isaiah",
+    "Isaías",
+    "Jesaja",
+    "Ésaïe",
+    "Isaïe",
+    "Исаия",
+    "以赛亚",
+    "이사야"
+   ]
+  },
+  {
+   "strongs": "H3414A",
+   "meaning": {
+    "en": "the LORD exalts",
+    "pt": "o SENHOR exalta",
+    "es": "el SEÑOR exalta",
+    "de": "der HERR erhöht",
+    "fr": "l'Éternel élève",
+    "ru": "Господь возвышает",
+    "zh": "耶和华高举",
+    "ko": "여호와께서 높이신다"
+   },
+   "names": [
+    "Jeremiah",
+    "Jeremias",
+    "Jeremías",
+    "Jeremia",
+    "Jérémie",
+    "Иеремия",
+    "耶利米",
+    "예레미야"
+   ]
+  },
+  {
+   "strongs": "H3168",
+   "meaning": {
+    "en": "God strengthens",
+    "pt": "Deus fortalece",
+    "es": "Dios fortalece",
+    "de": "Gott stärkt",
+    "fr": "Dieu fortifie",
+    "ru": "Бог укрепит",
+    "zh": "神使坚强",
+    "ko": "하나님이 강하게 하신다"
+   },
+   "names": [
+    "Ezekiel",
+    "Ezequiel",
+    "Hesekiel",
+    "Ézéchiel",
+    "Иезекииль",
+    "以西结",
+    "에스겔"
+   ]
+  },
+  {
+   "strongs": "H1840",
+   "meaning": {
+    "en": "God is my judge",
+    "pt": "Deus é meu juiz",
+    "es": "Dios es mi juez",
+    "de": "Gott ist mein Richter",
+    "fr": "Dieu est mon juge",
+    "ru": "Бог мой судья",
+    "zh": "神是我的审判者",
+    "ko": "하나님은 나의 재판장"
+   },
+   "names": [
+    "Daniel",
+    "Daniela",
+    "Danielle",
+    "Даниил",
+    "但以理",
+    "다니엘"
+   ]
+  },
+  {
+   "strongs": "H0635",
+   "meaning": {
+    "en": "star (Persian)",
+    "pt": "estrela (persa)",
+    "es": "estrella (persa)",
+    "de": "Stern (persisch)",
+    "fr": "étoile (perse)",
+    "ru": "звезда (перс.)",
+    "zh": "星星（波斯语）",
+    "ko": "별 (페르시아어)"
+   },
+   "names": [
+    "Esther",
+    "Ester",
+    "Есфирь",
+    "Эстер",
+    "以斯帖",
+    "에스더"
+   ]
+  },
+  {
+   "strongs": "H3123",
+   "meaning": {
+    "en": "dove",
+    "pt": "pomba",
+    "es": "paloma",
+    "de": "Taube",
+    "fr": "colombe",
+    "ru": "голубь",
+    "zh": "鸽子",
+    "ko": "비둘기"
+   },
+   "names": [
+    "Jonah",
+    "Jonas",
+    "Jonás",
+    "Jona",
+    "Иона",
+    "约拿",
+    "요나"
+   ],
+   "showCount": false
+  },
+  {
+   "strongs": "H4318",
+   "meaning": {
+    "en": "who is like the LORD?",
+    "pt": "quem é como o SENHOR?",
+    "es": "¿quién es como el SEÑOR?",
+    "de": "wer ist wie der HERR?",
+    "fr": "qui est comme l'Éternel ?",
+    "ru": "кто как Господь?",
+    "zh": "谁像耶和华？",
+    "ko": "누가 여호와와 같으랴?"
+   },
+   "names": [
+    "Micah",
+    "Miquéias",
+    "Miqueas",
+    "Micha",
+    "Michée",
+    "Михей",
+    "弥迦",
+    "미가"
+   ]
+  },
+  {
+   "strongs": "H3100",
+   "meaning": {
+    "en": "the LORD is God",
+    "pt": "o SENHOR é Deus",
+    "es": "el SEÑOR es Dios",
+    "de": "der HERR ist Gott",
+    "fr": "l'Éternel est Dieu",
+    "ru": "Господь есть Бог",
+    "zh": "耶和华是神",
+    "ko": "여호와는 하나님"
+   },
+   "names": [
+    "Joel",
+    "Joël",
+    "Иоиль",
+    "约珥",
+    "요엘"
+   ]
+  },
+  {
+   "strongs": "H2148",
+   "meaning": {
+    "en": "the LORD remembers",
+    "pt": "o SENHOR se lembra",
+    "es": "el SEÑOR recuerda",
+    "de": "der HERR gedenkt",
+    "fr": "l'Éternel se souvient",
+    "ru": "Господь вспомнил",
+    "zh": "耶和华记念",
+    "ko": "여호와께서 기억하신다"
+   },
+   "names": [
+    "Zechariah",
+    "Zacharias",
+    "Zacarias",
+    "Zacarías",
+    "Sacharja",
+    "Zacharie",
+    "Захария",
+    "撒迦利亚",
+    "스가랴",
+    "사가랴"
+   ]
+  },
+  {
+   "strongs": "H4317",
+   "meaning": {
+    "en": "who is like God?",
+    "pt": "quem é como Deus?",
+    "es": "¿quién como Dios?",
+    "de": "wer ist wie Gott?",
+    "fr": "qui est comme Dieu ?",
+    "ru": "кто как Бог?",
+    "zh": "谁像神？",
+    "ko": "누가 하나님과 같으랴?"
+   },
+   "names": [
+    "Michael",
+    "Miguel",
+    "Michel",
+    "Michele",
+    "Michelle",
+    "Михаил",
+    "米迦勒",
+    "미가엘",
+    "마이클"
+   ]
+  },
+  {
+   "strongs": "H1403",
+   "meaning": {
+    "en": "God is my strength",
+    "pt": "Deus é minha força",
+    "es": "Dios es mi fuerza",
+    "de": "Gott ist meine Stärke",
+    "fr": "Dieu est ma force",
+    "ru": "Бог моя сила",
+    "zh": "神是我的力量",
+    "ko": "하나님은 나의 힘"
+   },
+   "names": [
+    "Gabriel",
+    "Gabriela",
+    "Gabrielle",
+    "Гавриил",
+    "加百列",
+    "가브리엘"
+   ]
+  },
+  {
+   "strongs": "H7501",
+   "meaning": {
+    "en": "God heals",
+    "pt": "Deus cura",
+    "es": "Dios sana",
+    "de": "Gott heilt",
+    "fr": "Dieu guérit",
+    "ru": "Бог исцеляет",
+    "zh": "神医治",
+    "ko": "하나님이 고치신다"
+   },
+   "names": [
+    "Raphael",
+    "Rafael",
+    "Raphaël",
+    "Рафаил",
+    "拉斐尔",
+    "라파엘"
+   ]
+  },
+  {
+   "strongs": "H5830",
+   "meaning": {
+    "en": "help",
+    "pt": "ajuda",
+    "es": "ayuda",
+    "de": "Hilfe",
+    "fr": "aide",
+    "ru": "помощь",
+    "zh": "帮助",
+    "ko": "도움"
+   },
+   "names": [
+    "Ezra",
+    "Esdras",
+    "Esra",
+    "Ездра",
+    "以斯拉",
+    "에스라"
+   ]
+  },
+  {
+   "strongs": "H5166",
+   "meaning": {
+    "en": "the LORD comforts",
+    "pt": "o SENHOR consola",
+    "es": "el SEÑOR consuela",
+    "de": "der HERR tröstet",
+    "fr": "l'Éternel console",
+    "ru": "Господь утешит",
+    "zh": "耶和华安慰",
+    "ko": "여호와께서 위로하신다"
+   },
+   "names": [
+    "Nehemiah",
+    "Neemias",
+    "Nehemías",
+    "Nehemia",
+    "Néhémie",
+    "Неемия",
+    "尼希米",
+    "느헤미야"
+   ]
+  },
+  {
+   "strongs": "H0026",
+   "meaning": {
+    "en": "my father's joy",
+    "pt": "alegria do pai",
+    "es": "gozo del padre",
+    "de": "Freude des Vaters",
+    "fr": "joie du père",
+    "ru": "радость отца",
+    "zh": "父亲的喜乐",
+    "ko": "아버지의 기쁨"
+   },
+   "names": [
+    "Abigail",
+    "Abigaïl",
+    "Авигея",
+    "亚比该",
+    "아비가일"
+   ]
+  },
+  {
+   "strongs": "H8559",
+   "meaning": {
+    "en": "date palm",
+    "pt": "palmeira",
+    "es": "palmera",
+    "de": "Dattelpalme",
+    "fr": "palmier",
+    "ru": "финиковая пальма",
+    "zh": "棕树",
+    "ko": "종려나무"
+   },
+   "names": [
+    "Tamar",
+    "Фамарь",
+    "他玛",
+    "다말"
+   ]
+  },
+  {
+   "strongs": "H1893",
+   "meaning": {
+    "en": "breath",
+    "pt": "sopro",
+    "es": "soplo",
+    "de": "Hauch",
+    "fr": "souffle",
+    "ru": "дыхание",
+    "zh": "气息",
+    "ko": "숨"
+   },
+   "names": [
+    "Abel",
+    "Авель",
+    "亚伯",
+    "아벨"
+   ],
+   "showCount": false
+  },
+  {
+   "strongs": "H8352",
+   "meaning": {
+    "en": "appointed",
+    "pt": "designado",
+    "es": "designado",
+    "de": "gesetzt",
+    "fr": "établi",
+    "ru": "назначенный",
+    "zh": "指定",
+    "ko": "정해진"
+   },
+   "names": [
+    "Seth",
+    "Sete",
+    "Set",
+    "Сиф",
+    "塞特",
+    "셋"
+   ]
+  },
+  {
+   "strongs": "H1439",
+   "meaning": {
+    "en": "one who cuts down",
+    "pt": "aquele que derruba",
+    "es": "el que derriba",
+    "de": "der Fäller",
+    "fr": "celui qui abat",
+    "ru": "срубающий",
+    "zh": "砍伐者",
+    "ko": "베어 넘기는 자"
+   },
+   "names": [
+    "Gideon",
+    "Gideão",
+    "Gedeón",
+    "Gédéon",
+    "Гедеон",
+    "基甸",
+    "기드온"
+   ]
+  },
+  {
+   "strongs": "H8123",
+   "meaning": {
+    "en": "like the sun",
+    "pt": "como o sol",
+    "es": "como el sol",
+    "de": "wie die Sonne",
+    "fr": "comme le soleil",
+    "ru": "солнечный",
+    "zh": "如太阳",
+    "ko": "태양 같은"
+   },
+   "names": [
+    "Samson",
+    "Sansão",
+    "Sansón",
+    "Simson",
+    "Самсон",
+    "参孙",
+    "삼손"
+   ]
+  },
+  {
+   "strongs": "H5941",
+   "meaning": {
+    "en": "ascended",
+    "pt": "elevado",
+    "es": "elevado",
+    "de": "erhöht",
+    "fr": "élevé",
+    "ru": "вознесённый",
+    "zh": "升高",
+    "ko": "높임"
+   },
+   "names": [
+    "Eli",
+    "Elí",
+    "Éli",
+    "Илий",
+    "以利",
+    "엘리"
+   ]
+  },
+  {
+   "strongs": "H3067",
+   "meaning": {
+    "en": "woman of Judah",
+    "pt": "mulher de Judá",
+    "es": "mujer de Judá",
+    "de": "Frau aus Juda",
+    "fr": "femme de Juda",
+    "ru": "иудеянка",
+    "zh": "犹太妇人",
+    "ko": "유다 여인"
+   },
+   "names": [
+    "Judith",
+    "Judite",
+    "Judit",
+    "Юдифь",
+    "Иудифь",
+    "犹滴",
+    "유딧"
+   ],
+   "showCount": false
+  },
+  {
+   "strongs": "H4813",
+   "meaning": {
+    "en": "beloved (a traditional reading)",
+    "pt": "amada (leitura tradicional)",
+    "es": "amada (lectura tradicional)",
+    "de": "Geliebte (traditionelle Deutung)",
+    "fr": "bien-aimée (lecture traditionnelle)",
+    "ru": "возлюбленная (традиционное толкование)",
+    "zh": "蒙爱的（传统解释）",
+    "ko": "사랑받는 자 (전통적 해석)"
+   },
+   "names": [
+    "Miriam",
+    "Míriam",
+    "Мириам",
+    "米利暗",
+    "미리암"
+   ]
+  },
+  {
+   "strongs": "G3137",
+   "meaning": {
+    "en": "beloved (a traditional reading)",
+    "pt": "amada (leitura tradicional)",
+    "es": "amada (lectura tradicional)",
+    "de": "Geliebte (traditionelle Deutung)",
+    "fr": "bien-aimée (lecture traditionnelle)",
+    "ru": "возлюбленная (традиционное толкование)",
+    "zh": "蒙爱的（传统解释）",
+    "ko": "사랑받는 자 (전통적 해석)"
+   },
+   "names": [
+    "Mary",
+    "Maria",
+    "María",
+    "Marie",
+    "Mariam",
+    "Мария",
+    "马利亚",
+    "玛丽亚",
+    "마리아",
+    "메리"
+   ]
+  },
+  {
+   "strongs": "G2424",
+   "meaning": {
+    "en": "the LORD saves",
+    "pt": "o SENHOR salva",
+    "es": "el SEÑOR salva",
+    "de": "der HERR rettet",
+    "fr": "l'Éternel sauve",
+    "ru": "Господь спасает",
+    "zh": "耶和华拯救",
+    "ko": "여호와는 구원이시다"
+   },
+   "names": [
+    "Jesus",
+    "Jesús",
+    "Jésus",
+    "Yeshua",
+    "Иисус",
+    "耶稣",
+    "예수"
+   ]
+  },
+  {
+   "strongs": "G1694",
+   "meaning": {
+    "en": "God with us",
+    "pt": "Deus conosco",
+    "es": "Dios con nosotros",
+    "de": "Gott mit uns",
+    "fr": "Dieu avec nous",
+    "ru": "с нами Бог",
+    "zh": "神与我们同在",
+    "ko": "하나님이 우리와 함께"
+   },
+   "names": [
+    "Emmanuel",
+    "Emanuel",
+    "Immanuel",
+    "Manuel",
+    "Эммануил",
+    "以马内利",
+    "임마누엘"
+   ]
+  },
+  {
+   "strongs": "G2491",
+   "meaning": {
+    "en": "the LORD is gracious",
+    "pt": "o SENHOR é gracioso",
+    "es": "el SEÑOR es misericordioso",
+    "de": "der HERR ist gnädig",
+    "fr": "l'Éternel fait grâce",
+    "ru": "Господь милостив",
+    "zh": "耶和华是恩慈的",
+    "ko": "여호와는 은혜로우시다"
+   },
+   "names": [
+    "John",
+    "João",
+    "Juan",
+    "Johannes",
+    "Jean",
+    "Johan",
+    "Jan",
+    "Ivan",
+    "Иоанн",
+    "Иван",
+    "约翰",
+    "요한",
+    "존"
+   ]
+  },
+  {
+   "strongs": "G2489",
+   "meaning": {
+    "en": "the LORD is gracious",
+    "pt": "o SENHOR é gracioso",
+    "es": "el SEÑOR es misericordioso",
+    "de": "der HERR ist gnädig",
+    "fr": "l'Éternel fait grâce",
+    "ru": "Господь милостив",
+    "zh": "耶和华是恩慈的",
+    "ko": "여호와는 은혜로우시다"
+   },
+   "names": [
+    "Joanna",
+    "Joana",
+    "Juana",
+    "Johanna",
+    "Jeanne",
+    "Иоанна",
+    "约亚拿",
+    "요안나"
+   ]
+  },
+  {
+   "strongs": "G4074",
+   "meaning": {
+    "en": "rock",
+    "pt": "pedra",
+    "es": "piedra",
+    "de": "Fels",
+    "fr": "pierre",
+    "ru": "камень",
+    "zh": "磐石",
+    "ko": "반석"
+   },
+   "names": [
+    "Peter",
+    "Pedro",
+    "Petrus",
+    "Pierre",
+    "Piotr",
+    "Пётр",
+    "Петр",
+    "彼得",
+    "베드로",
+    "피터"
+   ]
+  },
+  {
+   "strongs": "G3972",
+   "meaning": {
+    "en": "small",
+    "pt": "pequeno",
+    "es": "pequeño",
+    "de": "klein",
+    "fr": "petit",
+    "ru": "малый",
+    "zh": "小的",
+    "ko": "작은 자"
+   },
+   "names": [
+    "Paul",
+    "Paulo",
+    "Pablo",
+    "Paulus",
+    "Paola",
+    "Paula",
+    "Павел",
+    "保罗",
+    "바울",
+    "폴"
+   ]
+  },
+  {
+   "strongs": "G406",
+   "meaning": {
+    "en": "manly",
+    "pt": "viril",
+    "es": "varonil",
+    "de": "mannhaft",
+    "fr": "viril",
+    "ru": "мужественный",
+    "zh": "有男子气概",
+    "ko": "남자다운"
+   },
+   "names": [
+    "Andrew",
+    "André",
+    "Andrés",
+    "Andreas",
+    "Андрей",
+    "安得烈",
+    "안드레",
+    "앤드류"
+   ]
+  },
+  {
+   "strongs": "G5376",
+   "meaning": {
+    "en": "lover of horses",
+    "pt": "amigo dos cavalos",
+    "es": "amante de los caballos",
+    "de": "Pferdefreund",
+    "fr": "ami des chevaux",
+    "ru": "любитель коней",
+    "zh": "爱马者",
+    "ko": "말을 사랑하는 자"
+   },
+   "names": [
+    "Philip",
+    "Filipe",
+    "Felipe",
+    "Philipp",
+    "Philippe",
+    "Филипп",
+    "腓力",
+    "빌립",
+    "필립"
+   ]
+  },
+  {
+   "strongs": "G4736",
+   "meaning": {
+    "en": "crown",
+    "pt": "coroa",
+    "es": "corona",
+    "de": "Krone",
+    "fr": "couronne",
+    "ru": "венец",
+    "zh": "冠冕",
+    "ko": "면류관"
+   },
+   "names": [
+    "Stephen",
+    "Estêvão",
+    "Esteban",
+    "Stephan",
+    "Stefan",
+    "Étienne",
+    "Stéphane",
+    "Стефан",
+    "Степан",
+    "司提反",
+    "스데반",
+    "스티븐"
+   ]
+  },
+  {
+   "strongs": "G5095",
+   "meaning": {
+    "en": "honoring God",
+    "pt": "que honra a Deus",
+    "es": "que honra a Dios",
+    "de": "Gott ehrend",
+    "fr": "qui honore Dieu",
+    "ru": "чтящий Бога",
+    "zh": "敬畏神",
+    "ko": "하나님을 공경하는 자"
+   },
+   "names": [
+    "Timothy",
+    "Timóteo",
+    "Timoteo",
+    "Timotheus",
+    "Timothée",
+    "Тимофей",
+    "提摩太",
+    "디모데"
+   ]
+  },
+  {
+   "strongs": "G2381",
+   "meaning": {
+    "en": "twin",
+    "pt": "gêmeo",
+    "es": "gemelo",
+    "de": "Zwilling",
+    "fr": "jumeau",
+    "ru": "близнец",
+    "zh": "双生子",
+    "ko": "쌍둥이"
+   },
+   "names": [
+    "Thomas",
+    "Tomé",
+    "Tomás",
+    "Tomas",
+    "Фома",
+    "多马",
+    "도마",
+    "토마스"
+   ]
+  },
+  {
+   "strongs": "G3156",
+   "meaning": {
+    "en": "gift of the LORD",
+    "pt": "presente do SENHOR",
+    "es": "regalo del SEÑOR",
+    "de": "Geschenk des HERRN",
+    "fr": "don de l'Éternel",
+    "ru": "дар Господа",
+    "zh": "耶和华的恩赐",
+    "ko": "여호와의 선물"
+   },
+   "names": [
+    "Matthew",
+    "Mateus",
+    "Mateo",
+    "Matthäus",
+    "Matthieu",
+    "Matteo",
+    "Матфей",
+    "马太",
+    "마태",
+    "매튜"
+   ]
+  },
+  {
+   "strongs": "G3138",
+   "meaning": {
+    "en": "of Mars (Latin)",
+    "pt": "de Marte (latim)",
+    "es": "de Marte (latín)",
+    "de": "dem Mars geweiht (lateinisch)",
+    "fr": "de Mars (latin)",
+    "ru": "посвящённый Марсу (лат.)",
+    "zh": "属战神（拉丁语）",
+    "ko": "마르스의 (라틴어)"
+   },
+   "names": [
+    "Mark",
+    "Marcos",
+    "Markus",
+    "Marc",
+    "Marco",
+    "Марк",
+    "马可",
+    "마가",
+    "마크"
+   ]
+  },
+  {
+   "strongs": "G3065",
+   "meaning": {
+    "en": "from Lucania (Latin)",
+    "pt": "da Lucânia (latim)",
+    "es": "de Lucania (latín)",
+    "de": "aus Lukanien (lateinisch)",
+    "fr": "de Lucanie (latin)",
+    "ru": "из Лукании (лат.)",
+    "zh": "来自卢卡尼亚（拉丁语）",
+    "ko": "루카니아 출신 (라틴어)"
+   },
+   "names": [
+    "Luke",
+    "Lucas",
+    "Lukas",
+    "Luc",
+    "Luca",
+    "Лука",
+    "路加",
+    "누가",
+    "루크"
+   ]
+  },
+  {
+   "strongs": "G2385",
+   "meaning": {
+    "en": "he grasps the heel",
+    "pt": "ele segura o calcanhar",
+    "es": "él toma el talón",
+    "de": "er hält die Ferse",
+    "fr": "il saisit le talon",
+    "ru": "держащийся за пяту",
+    "zh": "抓住脚跟",
+    "ko": "발꿈치를 잡는 자"
+   },
+   "names": [
+    "James",
+    "Tiago",
+    "Santiago",
+    "Jacques",
+    "Jakobus",
+    "Иаков",
+    "雅各",
+    "야고보",
+    "제임스"
+   ]
+  },
+  {
+   "strongs": "G4613",
+   "meaning": {
+    "en": "he has heard",
+    "pt": "ele ouviu",
+    "es": "él ha oído",
+    "de": "er hat gehört",
+    "fr": "il a entendu",
+    "ru": "услышавший",
+    "zh": "他听见了",
+    "ko": "들으심"
+   },
+   "names": [
+    "Simon",
+    "Simão",
+    "Simón",
+    "Симон",
+    "西门",
+    "시몬"
+   ]
+  },
+  {
+   "strongs": "G921",
+   "meaning": {
+    "en": "son of encouragement",
+    "pt": "filho da consolação",
+    "es": "hijo de consolación",
+    "de": "Sohn des Trostes",
+    "fr": "fils d'exhortation",
+    "ru": "сын утешения",
+    "zh": "劝慰之子",
+    "ko": "위로의 아들"
+   },
+   "names": [
+    "Barnabas",
+    "Barnabé",
+    "Bernabé",
+    "Варнава",
+    "巴拿巴",
+    "바나바"
+   ]
+  },
+  {
+   "strongs": "G3136",
+   "meaning": {
+    "en": "lady",
+    "pt": "senhora",
+    "es": "señora",
+    "de": "Herrin",
+    "fr": "maîtresse",
+    "ru": "госпожа",
+    "zh": "女主人",
+    "ko": "여주인"
+   },
+   "names": [
+    "Martha",
+    "Marta",
+    "Marthe",
+    "Марфа",
+    "马大",
+    "마르다"
+   ]
+  },
+  {
+   "strongs": "G5000",
+   "meaning": {
+    "en": "gazelle",
+    "pt": "gazela",
+    "es": "gacela",
+    "de": "Gazelle",
+    "fr": "gazelle",
+    "ru": "серна",
+    "zh": "羚羊",
+    "ko": "영양"
+   },
+   "names": [
+    "Tabitha",
+    "Tabita",
+    "Тавифа",
+    "大比大",
+    "다비다"
+   ]
+  },
+  {
+   "strongs": "G4677",
+   "meaning": {
+    "en": "lily",
+    "pt": "lírio",
+    "es": "lirio",
+    "de": "Lilie",
+    "fr": "lys",
+    "ru": "лилия",
+    "zh": "百合",
+    "ko": "백합"
+   },
+   "names": [
+    "Susanna",
+    "Susana",
+    "Suzanne",
+    "Susanne",
+    "Сусанна",
+    "苏撒拿",
+    "수산나"
+   ]
+  },
+  {
+   "strongs": "G2195",
+   "meaning": {
+    "en": "pure",
+    "pt": "puro",
+    "es": "puro",
+    "de": "rein",
+    "fr": "pur",
+    "ru": "чистый",
+    "zh": "纯洁",
+    "ko": "순결"
+   },
+   "names": [
+    "Zacchaeus",
+    "Zaqueu",
+    "Zaqueo",
+    "Zachäus",
+    "Zachée",
+    "Закхей",
+    "撒该",
+    "삭개오"
+   ]
+  },
+  {
+   "strongs": "G1665",
+   "meaning": {
+    "en": "my God is an oath",
+    "pt": "meu Deus é juramento",
+    "es": "mi Dios es juramento",
+    "de": "mein Gott ist Eid",
+    "fr": "mon Dieu est serment",
+    "ru": "мой Бог клятва",
+    "zh": "我的神是誓约",
+    "ko": "나의 하나님은 맹세"
+   },
+   "names": [
+    "Elizabeth",
+    "Elisabeth",
+    "Isabel",
+    "Isabela",
+    "Isabella",
+    "Élisabeth",
+    "Елисавета",
+    "Елизавета",
+    "以利沙伯",
+    "엘리사벳",
+    "엘리자베스"
+   ]
+  },
+  {
+   "strongs": "G3482",
+   "meaning": {
+    "en": "God has given",
+    "pt": "Deus deu",
+    "es": "Dios ha dado",
+    "de": "Gott hat gegeben",
+    "fr": "Dieu a donné",
+    "ru": "дар Божий",
+    "zh": "神所赐",
+    "ko": "하나님이 주셨다"
+   },
+   "names": [
+    "Nathanael",
+    "Nathaniel",
+    "Natanael",
+    "Nathanaël",
+    "Нафанаил",
+    "拿但业",
+    "나다나엘"
+   ]
+  },
+  {
+   "strongs": "G5546",
+   "meaning": {
+    "en": "one who belongs to Christ",
+    "pt": "seguidor de Cristo",
+    "es": "seguidor de Cristo",
+    "de": "Christ gehörend",
+    "fr": "disciple du Christ",
+    "ru": "принадлежащий Христу",
+    "zh": "属基督的人",
+    "ko": "그리스도의 사람"
+   },
+   "names": [
+    "Christian",
+    "Christina",
+    "Cristiano",
+    "Cristiana",
+    "Cristian",
+    "Cristina",
+    "Christine",
+    "Кристина",
+    "克里斯蒂安",
+    "크리스천"
+   ]
+  },
+  {
+   "strongs": "G32",
+   "meaning": {
+    "en": "messenger",
+    "pt": "mensageiro",
+    "es": "mensajero",
+    "de": "Bote",
+    "fr": "messager",
+    "ru": "вестник",
+    "zh": "使者",
+    "ko": "사자"
+   },
+   "names": [
+    "Angel",
+    "Angela",
+    "Ângela",
+    "Anjo",
+    "Ángel",
+    "Ángela",
+    "Angèle",
+    "Ange",
+    "Анжела",
+    "天使",
+    "안젤라"
+   ]
+  },
+  {
+   "strongs": "G4678",
+   "meaning": {
+    "en": "wisdom",
+    "pt": "sabedoria",
+    "es": "sabiduría",
+    "de": "Weisheit",
+    "fr": "sagesse",
+    "ru": "мудрость",
+    "zh": "智慧",
+    "ko": "지혜"
+   },
+   "names": [
+    "Sophia",
+    "Sofia",
+    "Sofía",
+    "Sophie",
+    "Софья",
+    "София",
+    "索菲亚",
+    "소피아"
+   ]
+  },
+  {
+   "strongs": "G1515",
+   "meaning": {
+    "en": "peace",
+    "pt": "paz",
+    "es": "paz",
+    "de": "Frieden",
+    "fr": "paix",
+    "ru": "мир",
+    "zh": "平安",
+    "ko": "평화"
+   },
+   "names": [
+    "Irene",
+    "Irène",
+    "Ирина",
+    "艾琳",
+    "이레네",
+    "아이린"
+   ]
+  },
+  {
+   "strongs": "G5485",
+   "meaning": {
+    "en": "grace",
+    "pt": "graça",
+    "es": "gracia",
+    "de": "Gnade",
+    "fr": "grâce",
+    "ru": "благодать",
+    "zh": "恩典",
+    "ko": "은혜"
+   },
+   "names": [
+    "Grace",
+    "Graça",
+    "Gracia",
+    "Grâce",
+    "格蕾丝",
+    "그레이스"
+   ]
+  },
+  {
+   "strongs": "G2222",
+   "meaning": {
+    "en": "life",
+    "pt": "vida",
+    "es": "vida",
+    "de": "Leben",
+    "fr": "vie",
+    "ru": "жизнь",
+    "zh": "生命",
+    "ko": "생명"
+   },
+   "names": [
+    "Zoe",
+    "Zoé",
+    "Zoë",
+    "Зоя",
+    "佐伊",
+    "조이"
+   ]
+  },
+  {
+   "strongs": "G451",
+   "meaning": {
+    "en": "grace",
+    "pt": "graça",
+    "es": "gracia",
+    "de": "Gnade",
+    "fr": "grâce",
+    "ru": "благодать",
+    "zh": "恩典",
+    "ko": "은혜"
+   },
+   "names": [
+    "Anna",
+    "Ana",
+    "Ane",
+    "Анна",
+    "亚拿",
+    "안나"
+   ]
+  },
+  {
+   "strongs": "G3070",
+   "meaning": {
+    "en": "woman of Lydia",
+    "pt": "mulher da Lídia",
+    "es": "mujer de Lidia",
+    "de": "Frau aus Lydien",
+    "fr": "femme de Lydie",
+    "ru": "лидийка",
+    "zh": "吕底亚女子",
+    "ko": "루디아 여인"
+   },
+   "names": [
+    "Lydia",
+    "Lídia",
+    "Lidia",
+    "Lydie",
+    "Лидия",
+    "吕底亚",
+    "루디아"
+   ]
+  }
+ ]
+}

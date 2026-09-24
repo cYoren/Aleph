@@ -1,16 +1,11 @@
-import 'dart:io';
-import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
 
 import '../../l10n/generated/app_localizations.dart';
 import '../../providers/book_names_provider.dart';
 import '../../providers/database_provider.dart';
+import '../../shared/widgets/share_card_dialog.dart';
 import '../reading/reading_provider.dart';
 import '../vocabulary/vocabulary_item_tile.dart';
 import 'book_path.dart';
@@ -43,7 +38,7 @@ class BookPathScreen extends ConsumerWidget {
             IconButton(
               tooltip: l10n.pathShare,
               icon: const Icon(Icons.ios_share),
-              onPressed: () => _ShareCardDialog.show(
+              onPressed: () => _sharePath(
                 context,
                 pathAsync.valueOrNull!,
                 ref.read(bookNamesProvider).of(pathAsync.valueOrNull!.book),
@@ -299,125 +294,19 @@ class PathHomeCard extends ConsumerWidget {
   }
 }
 
-/// A shareable card: "I can read 43% of Ruth in Hebrew".
-class _ShareCardDialog extends StatefulWidget {
-  const _ShareCardDialog({required this.path, required this.bookName});
-
-  final BookPath path;
-  final String bookName;
-
-  static Future<void> show(BuildContext context, BookPath path, String name) {
-    return showDialog(
-      context: context,
-      builder: (_) => _ShareCardDialog(path: path, bookName: name),
-    );
-  }
-
-  @override
-  State<_ShareCardDialog> createState() => _ShareCardDialogState();
-}
-
-class _ShareCardDialogState extends State<_ShareCardDialog> {
-  final _key = GlobalKey();
-  bool _sharing = false;
-
-  Future<void> _share(String text) async {
-    setState(() => _sharing = true);
-    try {
-      final boundary =
-          _key.currentContext!.findRenderObject() as RenderRepaintBoundary;
-      final image = await boundary.toImage(pixelRatio: 3);
-      final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
-      final file = File('${(await getTemporaryDirectory()).path}/aleph.png');
-      await file.writeAsBytes(bytes!.buffer.asUint8List());
-      await Share.shareXFiles([XFile(file.path)], text: text);
-    } finally {
-      if (mounted) setState(() => _sharing = false);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    // Words learned, not mastered: mastery takes weeks, and a card worth
-    // sharing should exist after the first session.
-    final percent = (widget.path.stats.learningCoverage * 100).round();
-    final line = widget.path.isHebrew
-        ? l10n.shareCardHebrew(percent, widget.bookName)
-        : l10n.shareCardGreek(percent, widget.bookName);
-    // The first letter of the book's script, as the card's art.
-    final glyph = widget.path.isHebrew ? 'א' : 'Α';
-
-    return Dialog(
-      clipBehavior: Clip.antiAlias,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          RepaintBoundary(
-            key: _key,
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.fromLTRB(28, 32, 28, 24),
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [Color(0xFF3B1F0E), Color(0xFF9C4A12)],
-                ),
-              ),
-              child: Column(
-                children: [
-                  Text(
-                    glyph,
-                    style: TextStyle(
-                      fontSize: 72,
-                      height: 1,
-                      color: const Color(0xFFF3D9A4),
-                      fontFamily: widget.path.isHebrew ? 'EzraSIL' : 'Gentium',
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    '$percent%',
-                    style: const TextStyle(
-                      fontSize: 56,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    line,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      height: 1.35,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Text(
-                    l10n.shareCardFooter,
-                    style: const TextStyle(
-                      fontSize: 13,
-                      letterSpacing: 1.2,
-                      color: Color(0xFFF3D9A4),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: FilledButton.icon(
-              icon: const Icon(Icons.ios_share),
-              label: Text(l10n.pathShare),
-              onPressed: _sharing ? null : () => _share(line),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+/// "I've learned 43% of the words in Ruth, in Hebrew" as a share card.
+Future<void> _sharePath(BuildContext context, BookPath path, String bookName) {
+  final l10n = AppLocalizations.of(context)!;
+  // Words learned, not mastered: mastery takes weeks, and a card worth
+  // sharing should exist after the first session.
+  final percent = (path.stats.learningCoverage * 100).round();
+  return ShareCardDialog.show(
+    context,
+    glyph: path.isHebrew ? 'א' : 'Α',
+    isHebrew: path.isHebrew,
+    headline: '$percent%',
+    line: path.isHebrew
+        ? l10n.shareCardHebrew(percent, bookName)
+        : l10n.shareCardGreek(percent, bookName),
+  );
 }
