@@ -14,6 +14,19 @@
 
 ## Resolved
 
+- [x] 2026-09-24: Text search returned nothing in every shipped build: the LIKE
+      clause used `ESCAPE '\\'`, a two-character escape SQLite rejects, and the
+      error was swallowed. Fixed, results now in canonical order (they sorted by
+      book code, so "love" began at 1 Corinthians), guarded by
+      `test/bible_dao_search_test.dart`.
+- [x] 2026-09-24: The English text shown as "KJV" was the Berean Standard
+      Bible. Relabelled BSB (id kept as `KJV` so saved settings resolve);
+      `kBundledDatabaseVersion` bumped to 3.
+- [x] 2026-09-24: Chapter loads scanned all translation rows because the query
+      wrapped `translation_id` in `UPPER()`. Exact match now uses the index.
+- [x] 2026-09-24: Nothing brought a learner back when words were due. Added an
+      opt-in evening reminder (Settings > Learning, and on the vocabulary due list).
+
 - [x] 2026-08-15: The app assumed every reader was Christian. Genesis was filed
       under "Old Testament", Malachi was followed by Matthew, and the verse of
       the day served John 3:16 to everyone. Onboarding now asks once which
