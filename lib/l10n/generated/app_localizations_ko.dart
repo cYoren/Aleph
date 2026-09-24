@@ -897,4 +897,20 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get pathAllLearned => '이 책의 모든 단어를 시작했어요. 계속 복습하세요!';
+
+  @override
+  String get dailySessionStart => '오늘의 5분';
+
+  @override
+  String get dailySessionDone => '오늘은 끝! 내일 만나요';
+
+  @override
+  String streakDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count일 연속',
+    );
+    return '$_temp0';
+  }
 }

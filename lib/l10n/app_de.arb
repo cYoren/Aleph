@@ -364,5 +364,8 @@
   "shareCardHebrew": "Ich habe {percent}% der Wörter in {book} auf Hebräisch gelernt",
   "shareCardGreek": "Ich habe {percent}% der Wörter in {book} auf Griechisch gelernt",
   "shareCardFooter": "Ich lerne mit Aleph",
-  "pathAllLearned": "Du hast jedes Wort dieses Buches angefangen. Bleib beim Wiederholen!"
+  "pathAllLearned": "Du hast jedes Wort dieses Buches angefangen. Bleib beim Wiederholen!",
+  "dailySessionStart": "Deine 5 Minuten heute",
+  "dailySessionDone": "Fertig für heute. Bis morgen!",
+  "streakDays": "{count, plural, =1{1 Tag in Folge} other{{count} Tage in Folge}}"
 }

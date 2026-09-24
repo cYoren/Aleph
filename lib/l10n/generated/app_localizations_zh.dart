@@ -884,4 +884,20 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get pathAllLearned => '这卷书的每个词你都已开始学习。继续复习！';
+
+  @override
+  String get dailySessionStart => '今天的 5 分钟';
+
+  @override
+  String get dailySessionDone => '今天完成了，明天见！';
+
+  @override
+  String streakDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '连续 $count 天',
+    );
+    return '$_temp0';
+  }
 }

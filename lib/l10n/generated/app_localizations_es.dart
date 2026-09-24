@@ -933,4 +933,21 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get pathAllLearned =>
       'Ya empezaste todas las palabras de este libro. ¡Sigue repasando!';
+
+  @override
+  String get dailySessionStart => 'Tus 5 minutos de hoy';
+
+  @override
+  String get dailySessionDone => 'Listo por hoy. ¡Hasta mañana!';
+
+  @override
+  String streakDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count días seguidos',
+      one: '1 día seguido',
+    );
+    return '$_temp0';
+  }
 }

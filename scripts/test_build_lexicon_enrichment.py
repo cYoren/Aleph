@@ -335,5 +335,17 @@ class SelectCanonicalStrongsTest(unittest.TestCase):
         )
 
 
+class AssembleOriginalVerseTextTest(unittest.TestCase):
+    def test_greek_punctuation_gets_a_following_space(self):
+        tokens = [("λόγος", ","), ("καὶ", " "), ("θεός", ".")]
+        self.assertEqual(
+            build_db.assemble_original_verse_text(tokens), "λόγος, καὶ θεός."
+        )
+
+    def test_hebrew_maqaf_is_untouched(self):
+        tokens = [("אֶת", "־"), ("הָאָרֶץ", "׃")]
+        self.assertEqual(build_db.assemble_original_verse_text(tokens), "אֶת־הָאָרֶץ׃")
+
+
 if __name__ == "__main__":
     sys.exit(unittest.main(verbosity=2))

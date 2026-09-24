@@ -364,5 +364,8 @@
   "shareCardHebrew": "J'ai appris {percent}% des mots de {book} en hébreu",
   "shareCardGreek": "J'ai appris {percent}% des mots de {book} en grec",
   "shareCardFooter": "J'apprends avec Aleph",
-  "pathAllLearned": "Vous avez commencé tous les mots de ce livre. Continuez à réviser !"
+  "pathAllLearned": "Vous avez commencé tous les mots de ce livre. Continuez à réviser !",
+  "dailySessionStart": "Vos 5 minutes du jour",
+  "dailySessionDone": "C'est fait pour aujourd'hui. À demain !",
+  "streakDays": "{count, plural, =1{1 jour d'affilée} other{{count} jours d'affilée}}"
 }

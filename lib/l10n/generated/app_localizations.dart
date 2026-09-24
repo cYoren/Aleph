@@ -1651,6 +1651,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You have started every word in this book. Keep reviewing!'**
   String get pathAllLearned;
+
+  /// No description provided for @dailySessionStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s 5 minutes'**
+  String get dailySessionStart;
+
+  /// No description provided for @dailySessionDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done for today. See you tomorrow!'**
+  String get dailySessionDone;
+
+  /// No description provided for @streakDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1-day streak} other{{count}-day streak}}'**
+  String streakDays(int count);
 }
 
 class _AppLocalizationsDelegate

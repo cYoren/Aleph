@@ -663,7 +663,10 @@ def iter_tsv_rows(path: Path) -> Iterable[Dict[str, str]]:
 
 
 def assemble_original_verse_text(tokens: List[Tuple[str, str]]) -> str:
-    return "".join(f"{text}{after or ''}" for text, after in tokens).strip()
+    text = "".join(f"{text}{after or ''}" for text, after in tokens).strip()
+    # Greek tokens carry trailing punctuation with no space, which glued
+    # 'λόγος,καὶ' together in most NT verses. Hebrew has none of these marks.
+    return re.sub(r"([,.;·])(?=\S)", r"\1 ", text)
 
 
 def assemble_translation_text(tokens: List[Tuple[str, bool]]) -> str:

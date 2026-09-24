@@ -37,42 +37,138 @@ class Transliterator {
     return _cleanupTransliteration(buffer.toString());
   }
 
-  /// Transliterate Greek text to Latin alphabet
-  /// Uses simplified scholarly transliteration
+  /// Transliterate Greek text to Latin alphabet, SBL style: rough breathing
+  /// as h (ὑπόστασις hypostasis, ῥῆμα rhēma), υ as y except in the diphthongs
+  /// au, eu, ēu, ou, ui, and nasal γ as n (ἄγγελος angelos). Accents dropped.
   static String greekToLatin(String text) {
     if (text.isEmpty) return '';
 
-    final buffer = StringBuffer();
+    final out = StringBuffer();
+    final word = <(String, bool)>[];
 
-    for (int i = 0; i < text.length; i++) {
-      final char = text[i];
-      final codeUnit = char.codeUnitAt(0);
-
-      // Final sigma (must check before range check since ς is U+03C2)
-      if (char == 'ς' || char == 'Ϲ' || char == 'ϲ') {
-        buffer.write('s');
-      }
-      // Greek letters (U+0370 - U+03FF)
-      else if (codeUnit >= 0x0391 && codeUnit <= 0x03C9) {
-        // Basic Greek alphabet
-        buffer.write(_greekLetters[char.toLowerCase()] ?? char);
-      }
-      // Extended Greek with diacritics (U+1F00 - U+1FFF)
-      else if (codeUnit >= 0x1F00 && codeUnit <= 0x1FFF) {
-        buffer.write(_getExtendedGreekBase(codeUnit));
-      }
-      // Pass through spaces and punctuation
-      else if (char == ' ' ||
-          char == ',' ||
-          char == '.' ||
-          char == '·' ||
-          char == ';' ||
-          char == '᾽') {
-        buffer.write(char == '·' ? ' ' : (char == '᾽' ? '' : char));
-      }
+    void flushWord() {
+      out.write(_romanizeGreekWord(word));
+      word.clear();
     }
 
-    return _cleanupTransliteration(buffer.toString());
+    for (final rune in text.runes) {
+      if (rune == 0x0314 && word.isNotEmpty) {
+        // Combining rough breathing (decomposed text) marks the letter before.
+        word[word.length - 1] = (word.last.$1, true);
+        continue;
+      }
+      if (rune >= 0x0300 && rune <= 0x036F) continue; // other combining marks
+      final letter = _greekBase(rune);
+      if (letter != null) {
+        word.add(letter);
+        continue;
+      }
+      // Elision marks (δι’ αὐτοῦ) are dropped.
+      if (rune == 0x2019 || rune == 0x1FBD || rune == 0x02BC) continue;
+      flushWord();
+      final char = String.fromCharCode(rune);
+      if (char == ' ' || char == '·') {
+        out.write(' ');
+      } else if (',.;'.contains(char)) {
+        out.write(char);
+      }
+    }
+    flushWord();
+
+    return _cleanupTransliteration(out.toString());
+  }
+
+  static const _greekVowels = 'αεηιουω';
+
+  static String _romanizeGreekWord(List<(String, bool)> letters) {
+    final buffer = StringBuffer();
+    // Rough breathing sits on the second vowel of a diphthong (οὗτος) but
+    // the h belongs before the whole vowel cluster: houtos.
+    final hBefore = <int>{};
+    for (var i = 0; i < letters.length; i++) {
+      final (base, rough) = letters[i];
+      if (!rough || !_greekVowels.contains(base)) continue;
+      var start = i;
+      while (start > 0 && _greekVowels.contains(letters[start - 1].$1)) {
+        start--;
+      }
+      hBefore.add(start);
+    }
+
+    for (var i = 0; i < letters.length; i++) {
+      final (base, rough) = letters[i];
+      final prev = i > 0 ? letters[i - 1].$1 : '';
+      final next = i + 1 < letters.length ? letters[i + 1].$1 : '';
+      if (hBefore.contains(i)) buffer.write('h');
+      if (base == 'ρ' && rough) {
+        buffer.write('rh');
+      } else if (base == 'γ' && 'γκξχ'.contains(next) && next.isNotEmpty) {
+        buffer.write('n');
+      } else if (base == 'υ') {
+        final diphthong =
+            (prev.isNotEmpty && 'αεηο'.contains(prev)) || next == 'ι';
+        buffer.write(diphthong ? 'u' : 'y');
+      } else {
+        buffer.write(_greekLetters[base] ?? '');
+      }
+    }
+    return buffer.toString();
+  }
+
+  static const _tonos = <int, String>{
+    0x0386: 'α',
+    0x0388: 'ε',
+    0x0389: 'η',
+    0x038A: 'ι',
+    0x038C: 'ο',
+    0x038E: 'υ',
+    0x038F: 'ω',
+    0x0390: 'ι',
+    0x03AA: 'ι',
+    0x03AB: 'υ',
+    0x03AC: 'α',
+    0x03AD: 'ε',
+    0x03AE: 'η',
+    0x03AF: 'ι',
+    0x03B0: 'υ',
+    0x03CA: 'ι',
+    0x03CB: 'υ',
+    0x03CC: 'ο',
+    0x03CD: 'υ',
+    0x03CE: 'ω',
+  };
+
+  /// Base lowercase letter and rough-breathing flag for one Greek code point,
+  /// or null when it is not a Greek letter.
+  static (String, bool)? _greekBase(int cu) {
+    if (_tonos.containsKey(cu)) return (_tonos[cu]!, false);
+    if (cu == 0x03C2) return ('σ', false); // final sigma
+    if (cu >= 0x0391 && cu <= 0x03A9 && cu != 0x03A2) {
+      return (String.fromCharCode(cu + 0x20), false);
+    }
+    if (cu >= 0x03B1 && cu <= 0x03C9) return (String.fromCharCode(cu), false);
+    if (cu == 0x03F2 || cu == 0x03F9) return ('σ', false); // lunate sigma
+
+    final rough = cu.isOdd;
+    if (cu >= 0x1F00 && cu <= 0x1F6F) {
+      return ('αεηιουω'[(cu - 0x1F00) >> 4], rough);
+    }
+    if (cu >= 0x1F70 && cu <= 0x1F7D) {
+      return ('ααεεηηιιοουυωω'[cu - 0x1F70], false);
+    }
+    if (cu >= 0x1F80 && cu <= 0x1FAF) {
+      return ('αηω'[(cu - 0x1F80) >> 4], rough);
+    }
+    if (cu >= 0x1FB0 && cu <= 0x1FBC) return ('α', false);
+    if (cu == 0x1FC8 || cu == 0x1FC9) return ('ε', false);
+    if (cu >= 0x1FC2 && cu <= 0x1FCC) return ('η', false);
+    if (cu >= 0x1FD0 && cu <= 0x1FDB) return ('ι', false);
+    if (cu == 0x1FE4) return ('ρ', false);
+    if (cu == 0x1FE5 || cu == 0x1FEC) return ('ρ', true);
+    if (cu >= 0x1FE0 && cu <= 0x1FEB) return ('υ', false);
+    if (cu == 0x1FF8 || cu == 0x1FF9) return ('ο', false);
+    if (cu >= 0x1FF2 && cu <= 0x1FFC) return ('ω', false);
+    return null;
   }
 
   /// Get transliteration for a word based on language
@@ -90,46 +186,6 @@ class Transliterator {
           '',
         ) // Remove leading/trailing apostrophes
         .trim();
-  }
-
-  /// Get base letter for extended Greek characters
-  static String _getExtendedGreekBase(int codeUnit) {
-    // Extended Greek A block (U+1F00-1F0F = alpha variants)
-    if (codeUnit >= 0x1F00 && codeUnit <= 0x1F0F) return 'a';
-    if (codeUnit >= 0x1F10 && codeUnit <= 0x1F1D) return 'e';
-    if (codeUnit >= 0x1F20 && codeUnit <= 0x1F2F) return 'ē';
-    if (codeUnit >= 0x1F30 && codeUnit <= 0x1F3F) return 'i';
-    if (codeUnit >= 0x1F40 && codeUnit <= 0x1F4D) return 'o';
-    if (codeUnit >= 0x1F50 && codeUnit <= 0x1F5F) return 'u';
-    if (codeUnit >= 0x1F60 && codeUnit <= 0x1F6F) return 'ō';
-    if (codeUnit >= 0x1F70 && codeUnit <= 0x1F7D) {
-      // Vowels with accents
-      final offset = codeUnit - 0x1F70;
-      const vowels = [
-        'a',
-        'a',
-        'e',
-        'e',
-        'ē',
-        'ē',
-        'i',
-        'i',
-        'o',
-        'o',
-        'u',
-        'u',
-        'ō',
-        'ō',
-      ];
-      return offset < vowels.length ? vowels[offset] : '';
-    }
-    if (codeUnit >= 0x1F80 && codeUnit <= 0x1FAF) return 'a';
-    if (codeUnit >= 0x1FB0 && codeUnit <= 0x1FBF) return 'a';
-    if (codeUnit >= 0x1FC0 && codeUnit <= 0x1FCF) return 'ē';
-    if (codeUnit >= 0x1FD0 && codeUnit <= 0x1FDF) return 'i';
-    if (codeUnit >= 0x1FE0 && codeUnit <= 0x1FEF) return 'u';
-    if (codeUnit >= 0x1FF0 && codeUnit <= 0x1FFF) return 'ō';
-    return '';
   }
 
   // Hebrew consonants (aleph to tav)
@@ -208,7 +264,7 @@ class Transliterator {
     'σ': 's', // sigma
     'ς': 's', // final sigma (redundant but safe)
     'τ': 't', // tau
-    'υ': 'u', // upsilon
+    'υ': 'y', // upsilon (u in diphthongs, see _romanizeGreekWord)
     'φ': 'ph', // phi
     'χ': 'ch', // chi
     'ψ': 'ps', // psi

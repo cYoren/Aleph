@@ -364,5 +364,8 @@
   "shareCardHebrew": "我已学会《{book}》希伯来文原文 {percent}% 的词",
   "shareCardGreek": "我已学会《{book}》希腊文原文 {percent}% 的词",
   "shareCardFooter": "正在用 Aleph 学习",
-  "pathAllLearned": "这卷书的每个词你都已开始学习。继续复习！"
+  "pathAllLearned": "这卷书的每个词你都已开始学习。继续复习！",
+  "dailySessionStart": "今天的 5 分钟",
+  "dailySessionDone": "今天完成了，明天见！",
+  "streakDays": "{count, plural, other{连续 {count} 天}}"
 }
