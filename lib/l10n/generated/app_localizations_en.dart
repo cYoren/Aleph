@@ -941,4 +941,32 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get nameTitle => 'What does your name mean?';
+
+  @override
+  String get nameHint => 'Type your name';
+
+  @override
+  String nameMeans(String name, String meaning) {
+    return '$name means “$meaning”';
+  }
+
+  @override
+  String nameCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Appears $count times in the Bible',
+      one: 'Appears once in the Bible',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get nameNotFound => 'Not on our list yet. Try another spelling.';
+
+  @override
+  String get nameShare => 'Share';
 }

@@ -900,4 +900,31 @@ class AppLocalizationsZh extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get nameTitle => '你的名字是什么意思？';
+
+  @override
+  String get nameHint => '输入你的名字';
+
+  @override
+  String nameMeans(String name, String meaning) {
+    return '$name的意思是“$meaning”';
+  }
+
+  @override
+  String nameCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '在圣经中出现 $count 次',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get nameNotFound => '名单中暂时没有这个名字。试试别的写法。';
+
+  @override
+  String get nameShare => '分享';
 }

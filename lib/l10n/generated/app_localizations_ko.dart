@@ -913,4 +913,31 @@ class AppLocalizationsKo extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get nameTitle => '내 이름은 무슨 뜻일까?';
+
+  @override
+  String get nameHint => '이름을 입력하세요';
+
+  @override
+  String nameMeans(String name, String meaning) {
+    return '$name의 뜻은 “$meaning”';
+  }
+
+  @override
+  String nameCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '성경에 $count번 나와요',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get nameNotFound => '아직 목록에 없는 이름이에요. 다른 표기로 찾아보세요.';
+
+  @override
+  String get nameShare => '공유';
 }

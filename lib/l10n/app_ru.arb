@@ -367,5 +367,11 @@
   "pathAllLearned": "Вы начали учить все слова этой книги. Продолжайте повторять!",
   "dailySessionStart": "Ваши 5 минут на сегодня",
   "dailySessionDone": "На сегодня всё. До завтра!",
-  "streakDays": "{count, plural, =1{{count} день подряд} few{{count} дня подряд} many{{count} дней подряд} other{{count} дня подряд}}"
+  "streakDays": "{count, plural, =1{{count} день подряд} few{{count} дня подряд} many{{count} дней подряд} other{{count} дня подряд}}",
+  "nameTitle": "Что означает ваше имя?",
+  "nameHint": "Введите своё имя",
+  "nameMeans": "{name} означает «{meaning}»",
+  "nameCount": "{count, plural, =1{Встречается в Библии {count} раз} few{Встречается в Библии {count} раза} many{Встречается в Библии {count} раз} other{Встречается в Библии {count} раза}}",
+  "nameNotFound": "Этого имени пока нет в списке. Попробуйте другое написание.",
+  "nameShare": "Поделиться"
 }

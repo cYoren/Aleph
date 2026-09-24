@@ -553,5 +553,28 @@
         "type": "int"
       }
     }
+  },
+  "nameTitle": "What does your name mean?",
+  "nameHint": "Type your name",
+  "nameMeans": "{name} means “{meaning}”",
+  "nameCount": "{count, plural, =1{Appears once in the Bible} other{Appears {count} times in the Bible}}",
+  "nameNotFound": "Not on our list yet. Try another spelling.",
+  "nameShare": "Share",
+  "@nameMeans": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "meaning": {
+        "type": "String"
+      }
+    }
+  },
+  "@nameCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }
