@@ -349,5 +349,20 @@
   "reminderDueTitle": "{count, plural, other{有 {count} 个单词可以复习了}}",
   "reminderDueBody": "现在花五分钟，就不会忘记。",
   "reminderReadTitle": "今天的经文在等你",
-  "reminderReadBody": "今天结束前，用希伯来文或希腊文读一节经文。"
+  "reminderReadBody": "今天结束前，用希伯来文或希腊文读一节经文。",
+  "pathTitle": "按书卷学习",
+  "pathHomeStart": "选一卷书，只学它需要的词",
+  "pathChooseBook": "选择一卷书，用原文来读",
+  "pathWordsToGoal": "{count, plural, other{再学 {count} 个词即可读懂 80%}}",
+  "pathCoverage": "你已能读懂《{book}》的 {percent}%",
+  "pathLearning": "算上正在学的词为 {percent}%",
+  "pathGoalReached": "这卷书的大部分你已经能读懂了。打开读吧！",
+  "pathLearnNext": "学习接下来的词",
+  "pathWordsInBook": "本卷词汇，按出现频率排序",
+  "pathChangeBook": "更换书卷",
+  "pathShare": "分享进度",
+  "shareCardHebrew": "我已学会《{book}》希伯来文原文 {percent}% 的词",
+  "shareCardGreek": "我已学会《{book}》希腊文原文 {percent}% 的词",
+  "shareCardFooter": "正在用 Aleph 学习",
+  "pathAllLearned": "这卷书的每个词你都已开始学习。继续复习！"
 }

@@ -1561,6 +1561,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Read one verse in Hebrew or Greek before the day ends.'**
   String get reminderReadBody;
+
+  /// No description provided for @pathTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Book paths'**
+  String get pathTitle;
+
+  /// No description provided for @pathHomeStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a book and learn exactly the words it needs'**
+  String get pathHomeStart;
+
+  /// No description provided for @pathChooseBook.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a book to read in the original'**
+  String get pathChooseBook;
+
+  /// No description provided for @pathWordsToGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 word to read 80% of it} other{{count} words to read 80% of it}}'**
+  String pathWordsToGoal(int count);
+
+  /// No description provided for @pathCoverage.
+  ///
+  /// In en, this message translates to:
+  /// **'You can read {percent}% of {book}'**
+  String pathCoverage(int percent, String book);
+
+  /// No description provided for @pathLearning.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% counting the words you are learning'**
+  String pathLearning(int percent);
+
+  /// No description provided for @pathGoalReached.
+  ///
+  /// In en, this message translates to:
+  /// **'You can read most of this book. Open it and enjoy!'**
+  String get pathGoalReached;
+
+  /// No description provided for @pathLearnNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Learn the next words'**
+  String get pathLearnNext;
+
+  /// No description provided for @pathWordsInBook.
+  ///
+  /// In en, this message translates to:
+  /// **'Words in this book, most common first'**
+  String get pathWordsInBook;
+
+  /// No description provided for @pathChangeBook.
+  ///
+  /// In en, this message translates to:
+  /// **'Change book'**
+  String get pathChangeBook;
+
+  /// No description provided for @pathShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share progress'**
+  String get pathShare;
+
+  /// No description provided for @shareCardHebrew.
+  ///
+  /// In en, this message translates to:
+  /// **'I\'ve learned {percent}% of the words in {book}, in Hebrew'**
+  String shareCardHebrew(int percent, String book);
+
+  /// No description provided for @shareCardGreek.
+  ///
+  /// In en, this message translates to:
+  /// **'I\'ve learned {percent}% of the words in {book}, in Greek'**
+  String shareCardGreek(int percent, String book);
+
+  /// No description provided for @shareCardFooter.
+  ///
+  /// In en, this message translates to:
+  /// **'Learning with Aleph'**
+  String get shareCardFooter;
+
+  /// No description provided for @pathAllLearned.
+  ///
+  /// In en, this message translates to:
+  /// **'You have started every word in this book. Keep reviewing!'**
+  String get pathAllLearned;
 }
 
 class _AppLocalizationsDelegate

@@ -349,5 +349,20 @@
   "reminderDueTitle": "{count, plural, =1{1 mot à réviser} other{{count} mots à réviser}}",
   "reminderDueBody": "Cinq minutes maintenant, et ils ne vous échapperont pas.",
   "reminderReadTitle": "Votre verset du jour vous attend",
-  "reminderReadBody": "Lisez un verset en hébreu ou en grec avant la fin de la journée."
+  "reminderReadBody": "Lisez un verset en hébreu ou en grec avant la fin de la journée.",
+  "pathTitle": "Parcours de livres",
+  "pathHomeStart": "Choisissez un livre et apprenez exactement ses mots",
+  "pathChooseBook": "Choisissez un livre à lire dans l'original",
+  "pathWordsToGoal": "{count, plural, =1{1 mot pour lire 80 % du livre} other{{count} mots pour lire 80 % du livre}}",
+  "pathCoverage": "Vous lisez déjà {percent}% de {book}",
+  "pathLearning": "{percent}% en comptant les mots en cours d'apprentissage",
+  "pathGoalReached": "Vous lisez l'essentiel de ce livre. Ouvrez-le et profitez !",
+  "pathLearnNext": "Apprendre les mots suivants",
+  "pathWordsInBook": "Mots de ce livre, des plus fréquents",
+  "pathChangeBook": "Changer de livre",
+  "pathShare": "Partager ma progression",
+  "shareCardHebrew": "J'ai appris {percent}% des mots de {book} en hébreu",
+  "shareCardGreek": "J'ai appris {percent}% des mots de {book} en grec",
+  "shareCardFooter": "J'apprends avec Aleph",
+  "pathAllLearned": "Vous avez commencé tous les mots de ce livre. Continuez à réviser !"
 }

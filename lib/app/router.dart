@@ -25,6 +25,7 @@ import '../shared/widgets/app_scaffold.dart';
 import '../data/models/verse.dart';
 import '../data/models/word.dart';
 import '../l10n/generated/app_localizations.dart';
+import '../features/paths/book_path_screen.dart';
 
 final router = GoRouter(
   initialLocation: '/startup',
@@ -111,6 +112,8 @@ final router = GoRouter(
       path: '/vocabulary',
       builder: (context, state) => const VocabularyScreen(),
     ),
+    // One book as a goal: its vocabulary, progress and share card
+    GoRoute(path: '/path', builder: (context, state) => const BookPathScreen()),
     // Which books the reader can already read
     GoRoute(
       path: '/readability',
