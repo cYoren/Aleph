@@ -1,0 +1,1 @@
+La recherche fonctionne à nouveau et affiche les résultats dans l'ordre biblique. Les chapitres s'ouvrent bien plus vite. Nouveau : un rappel facultatif le soir quand des mots sont à réviser. Et une mise en page de lecture plus épurée, avec plus de texte à l'écran.
