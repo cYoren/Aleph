@@ -9,6 +9,7 @@ import '../../shared/utils/reading_tradition.dart';
 import 'package:go_router/go_router.dart';
 
 import '../explain/explain_provider.dart';
+import '../../core/review_reminder.dart';
 
 const _interfaceLanguages = <String, String>{
   'en': 'English',
@@ -214,6 +215,15 @@ class SettingsScreen extends ConsumerWidget {
             value: settings.readerModeEnabled,
             onChanged: (bool value) {
               notifier.setReaderMode(value);
+            },
+          ),
+          SwitchListTile(
+            secondary: const Icon(Icons.notifications_outlined),
+            title: Text(l10n.reviewReminderSetting),
+            subtitle: Text(l10n.reviewReminderSettingSubtitle),
+            value: ref.watch(reviewReminderProvider),
+            onChanged: (bool value) {
+              ref.read(reviewReminderProvider.notifier).set(value);
             },
           ),
           // Only shown when a key was compiled into this build; otherwise the

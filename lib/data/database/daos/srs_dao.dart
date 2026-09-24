@@ -118,6 +118,16 @@ class SrsDao {
         .toList();
   }
 
+  /// How many words will be due for review by [when].
+  Future<int> countDueBy(DateTime when) async {
+    final db = await _dbHelper.database;
+    final rows = await db.rawQuery(
+      'SELECT COUNT(*) AS n FROM srs_progress WHERE next_review_at <= ?',
+      [when.millisecondsSinceEpoch],
+    );
+    return (rows.first['n'] as int?) ?? 0;
+  }
+
   Future<List<SrsProgress>> getWordsDueForReview() async {
     final db = await _dbHelper.database;
     final nowMs = DateTime.now().millisecondsSinceEpoch;

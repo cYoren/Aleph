@@ -1525,6 +1525,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Scriptures'**
   String get traditionSettingTitle;
+
+  /// No description provided for @reviewReminderSetting.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily review reminder'**
+  String get reviewReminderSetting;
+
+  /// No description provided for @reviewReminderSettingSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'An evening nudge when words are due'**
+  String get reviewReminderSettingSubtitle;
+
+  /// Notification title when vocabulary is due
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 word is ready for review} other{{count} words are ready for review}}'**
+  String reminderDueTitle(int count);
+
+  /// No description provided for @reminderDueBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Five minutes now keeps them from slipping away.'**
+  String get reminderDueBody;
+
+  /// No description provided for @reminderReadTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your verse for today is waiting'**
+  String get reminderReadTitle;
+
+  /// No description provided for @reminderReadBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Read one verse in Hebrew or Greek before the day ends.'**
+  String get reminderReadBody;
 }
 
 class _AppLocalizationsDelegate

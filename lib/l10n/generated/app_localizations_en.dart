@@ -831,4 +831,33 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get traditionSettingTitle => 'Scriptures';
+
+  @override
+  String get reviewReminderSetting => 'Daily review reminder';
+
+  @override
+  String get reviewReminderSettingSubtitle =>
+      'An evening nudge when words are due';
+
+  @override
+  String reminderDueTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count words are ready for review',
+      one: '1 word is ready for review',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reminderDueBody =>
+      'Five minutes now keeps them from slipping away.';
+
+  @override
+  String get reminderReadTitle => 'Your verse for today is waiting';
+
+  @override
+  String get reminderReadBody =>
+      'Read one verse in Hebrew or Greek before the day ends.';
 }

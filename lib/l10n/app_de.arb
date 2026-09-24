@@ -343,5 +343,11 @@
   "tanakhNeviim": "Newi'im — Propheten",
   "tanakhKetuvim": "Ketuwim — Schriften",
   "hebrewBibleLabel": "Hebräische Bibel",
-  "traditionSettingTitle": "Schriften"
+  "traditionSettingTitle": "Schriften",
+  "reviewReminderSetting": "Tägliche Wiederholungserinnerung",
+  "reviewReminderSettingSubtitle": "Ein Hinweis am Abend, wenn Wörter fällig sind",
+  "reminderDueTitle": "{count, plural, =1{1 Wort ist zur Wiederholung bereit} other{{count} Wörter sind zur Wiederholung bereit}}",
+  "reminderDueBody": "Fünf Minuten jetzt, und sie bleiben hängen.",
+  "reminderReadTitle": "Dein Vers für heute wartet",
+  "reminderReadBody": "Lies vor Tagesende einen Vers auf Hebräisch oder Griechisch."
 }

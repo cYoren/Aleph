@@ -812,4 +812,29 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get traditionSettingTitle => '경전';
+
+  @override
+  String get reviewReminderSetting => '매일 복습 알림';
+
+  @override
+  String get reviewReminderSettingSubtitle => '복습할 단어가 있을 때 저녁에 알려 드려요';
+
+  @override
+  String reminderDueTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '복습할 단어 $count개가 준비되었어요',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reminderDueBody => '지금 5분이면 잊지 않아요.';
+
+  @override
+  String get reminderReadTitle => '오늘의 말씀이 기다리고 있어요';
+
+  @override
+  String get reminderReadBody => '오늘이 가기 전에 히브리어나 헬라어로 한 구절을 읽어 보세요.';
 }

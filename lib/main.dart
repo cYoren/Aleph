@@ -4,11 +4,17 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:original_bible/shared/constants/app_identity.dart';
 import 'l10n/generated/app_localizations.dart';
 import '../app/router.dart';
+import 'core/review_reminder.dart';
 import '../app/theme.dart';
 import '../features/settings/settings_provider.dart';
 import '../providers/translations_provider.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  ReviewReminder.init(router.push).then((_) => ReviewReminder.reschedule());
+  // Recount due words whenever the learner leaves, so tonight's reminder
+  // reflects the reviews they just did.
+  AppLifecycleListener(onPause: ReviewReminder.reschedule);
   runApp(const ProviderScope(child: OriginalBibleApp()));
 }
 

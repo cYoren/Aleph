@@ -470,5 +470,19 @@
   "traditionSettingTitle": "Scriptures",
   "@traditionSettingTitle": {
     "description": "Settings row that opens the scripture-tradition choice."
+  },
+  "reviewReminderSetting": "Daily review reminder",
+  "reviewReminderSettingSubtitle": "An evening nudge when words are due",
+  "reminderDueTitle": "{count, plural, =1{1 word is ready for review} other{{count} words are ready for review}}",
+  "reminderDueBody": "Five minutes now keeps them from slipping away.",
+  "reminderReadTitle": "Your verse for today is waiting",
+  "reminderReadBody": "Read one verse in Hebrew or Greek before the day ends.",
+  "@reminderDueTitle": {
+    "description": "Notification title when vocabulary is due",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }

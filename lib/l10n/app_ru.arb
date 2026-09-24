@@ -343,5 +343,11 @@
   "tanakhNeviim": "Невиим — Пророки",
   "tanakhKetuvim": "Ктувим — Писания",
   "hebrewBibleLabel": "Еврейская Библия",
-  "traditionSettingTitle": "Писания"
+  "traditionSettingTitle": "Писания",
+  "reviewReminderSetting": "Ежедневное напоминание о повторении",
+  "reviewReminderSettingSubtitle": "Вечернее напоминание, когда пора повторить слова",
+  "reminderDueTitle": "{count, plural, =1{{count} слово готово к повторению} few{{count} слова готовы к повторению} many{{count} слов готовы к повторению} other{{count} слова готовы к повторению}}",
+  "reminderDueBody": "Пять минут сейчас, и слова не забудутся.",
+  "reminderReadTitle": "Ваш стих на сегодня ждёт",
+  "reminderReadBody": "Прочитайте один стих на иврите или греческом до конца дня."
 }
