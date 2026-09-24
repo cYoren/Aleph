@@ -837,4 +837,64 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get reminderReadBody => '오늘이 가기 전에 히브리어나 헬라어로 한 구절을 읽어 보세요.';
+
+  @override
+  String get pathTitle => '책별 학습';
+
+  @override
+  String get pathHomeStart => '책을 고르고 그 책에 필요한 단어만 배우세요';
+
+  @override
+  String get pathChooseBook => '원어로 읽을 책을 고르세요';
+
+  @override
+  String pathWordsToGoal(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count개 단어만 더 배우면 80% 읽기',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String pathCoverage(int percent, String book) {
+    return '$book의 $percent%를 읽을 수 있어요';
+  }
+
+  @override
+  String pathLearning(int percent) {
+    return '배우는 중인 단어까지 $percent%';
+  }
+
+  @override
+  String get pathGoalReached => '이 책의 대부분을 읽을 수 있어요. 펼쳐서 읽어 보세요!';
+
+  @override
+  String get pathLearnNext => '다음 단어 배우기';
+
+  @override
+  String get pathWordsInBook => '이 책의 단어, 자주 나오는 순';
+
+  @override
+  String get pathChangeBook => '책 바꾸기';
+
+  @override
+  String get pathShare => '진도 공유하기';
+
+  @override
+  String shareCardHebrew(int percent, String book) {
+    return '히브리어 $book의 단어 $percent%를 배웠어요';
+  }
+
+  @override
+  String shareCardGreek(int percent, String book) {
+    return '헬라어 $book의 단어 $percent%를 배웠어요';
+  }
+
+  @override
+  String get shareCardFooter => 'Aleph로 배우는 중';
+
+  @override
+  String get pathAllLearned => '이 책의 모든 단어를 시작했어요. 계속 복습하세요!';
 }

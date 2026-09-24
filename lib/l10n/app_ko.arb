@@ -349,5 +349,20 @@
   "reminderDueTitle": "{count, plural, other{복습할 단어 {count}개가 준비되었어요}}",
   "reminderDueBody": "지금 5분이면 잊지 않아요.",
   "reminderReadTitle": "오늘의 말씀이 기다리고 있어요",
-  "reminderReadBody": "오늘이 가기 전에 히브리어나 헬라어로 한 구절을 읽어 보세요."
+  "reminderReadBody": "오늘이 가기 전에 히브리어나 헬라어로 한 구절을 읽어 보세요.",
+  "pathTitle": "책별 학습",
+  "pathHomeStart": "책을 고르고 그 책에 필요한 단어만 배우세요",
+  "pathChooseBook": "원어로 읽을 책을 고르세요",
+  "pathWordsToGoal": "{count, plural, other{{count}개 단어만 더 배우면 80% 읽기}}",
+  "pathCoverage": "{book}의 {percent}%를 읽을 수 있어요",
+  "pathLearning": "배우는 중인 단어까지 {percent}%",
+  "pathGoalReached": "이 책의 대부분을 읽을 수 있어요. 펼쳐서 읽어 보세요!",
+  "pathLearnNext": "다음 단어 배우기",
+  "pathWordsInBook": "이 책의 단어, 자주 나오는 순",
+  "pathChangeBook": "책 바꾸기",
+  "pathShare": "진도 공유하기",
+  "shareCardHebrew": "히브리어 {book}의 단어 {percent}%를 배웠어요",
+  "shareCardGreek": "헬라어 {book}의 단어 {percent}%를 배웠어요",
+  "shareCardFooter": "Aleph로 배우는 중",
+  "pathAllLearned": "이 책의 모든 단어를 시작했어요. 계속 복습하세요!"
 }

@@ -5,6 +5,7 @@ import '../../models/word.dart';
 import '../../models/cross_reference.dart';
 import '../../models/lexicon_entry.dart';
 import '../../models/translation.dart';
+import '../../../shared/utils/vocabulary_filter.dart';
 import '../database_helper.dart';
 
 @visibleForTesting
@@ -615,6 +616,63 @@ class BibleDAO {
         debugPrint('BibleDAO top frequency error: $e');
       }
       return [];
+    }
+  }
+
+  /// Hebrew lexicon keys that are grammar rather than vocabulary: the split-off
+  /// prefixes (ו, ה, ב, ל, מ) and entry-less particles.
+  ///
+  /// They are almost a quarter of all Hebrew tokens, are learned with the
+  /// alphabet rather than from flashcards, and never appear in a deck, so
+  /// coverage counts them as known. Without that, no Hebrew book could reach
+  /// the readability thresholds however many words the reader mastered.
+  Future<List<String>> getGrammarLexiconKeys() async {
+    try {
+      final db = await _dbHelper.database;
+      final rows = await db.rawQuery('''
+        SELECT DISTINCT strongs, lemma FROM words
+        WHERE language = 'heb' AND strongs IS NOT NULL AND strongs != ''
+      ''');
+      return {
+        for (final row in rows)
+          if (isProcliticPrefix(
+            row['lemma']?.toString() ?? '',
+            isHebrew: true,
+          ))
+            row['strongs'].toString(),
+      }.toList();
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('BibleDAO grammar keys error: $e');
+      }
+      return [];
+    }
+  }
+
+  /// Token count of every lexicon key in one book, most frequent first.
+  Future<Map<String, int>> getLexiconKeyCountsInBook(String bookId) async {
+    try {
+      final db = await _dbHelper.database;
+      final rows = await db.rawQuery(
+        '''
+        SELECT w.strongs AS key, COUNT(*) AS c
+        FROM words w
+        JOIN verses v ON v.id = w.verse_id
+        WHERE v.book_id = ? AND w.strongs IS NOT NULL AND w.strongs != ''
+        GROUP BY w.strongs
+        ORDER BY c DESC
+        ''',
+        [bookId],
+      );
+      return {
+        for (final row in rows)
+          row['key'].toString(): (row['c'] as num?)?.toInt() ?? 0,
+      };
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('BibleDAO book key counts error: $e');
+      }
+      return {};
     }
   }
 

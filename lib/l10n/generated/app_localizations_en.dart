@@ -860,4 +860,68 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get reminderReadBody =>
       'Read one verse in Hebrew or Greek before the day ends.';
+
+  @override
+  String get pathTitle => 'Book paths';
+
+  @override
+  String get pathHomeStart =>
+      'Pick a book and learn exactly the words it needs';
+
+  @override
+  String get pathChooseBook => 'Choose a book to read in the original';
+
+  @override
+  String pathWordsToGoal(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count words to read 80% of it',
+      one: '1 word to read 80% of it',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String pathCoverage(int percent, String book) {
+    return 'You can read $percent% of $book';
+  }
+
+  @override
+  String pathLearning(int percent) {
+    return '$percent% counting the words you are learning';
+  }
+
+  @override
+  String get pathGoalReached =>
+      'You can read most of this book. Open it and enjoy!';
+
+  @override
+  String get pathLearnNext => 'Learn the next words';
+
+  @override
+  String get pathWordsInBook => 'Words in this book, most common first';
+
+  @override
+  String get pathChangeBook => 'Change book';
+
+  @override
+  String get pathShare => 'Share progress';
+
+  @override
+  String shareCardHebrew(int percent, String book) {
+    return 'I\'ve learned $percent% of the words in $book, in Hebrew';
+  }
+
+  @override
+  String shareCardGreek(int percent, String book) {
+    return 'I\'ve learned $percent% of the words in $book, in Greek';
+  }
+
+  @override
+  String get shareCardFooter => 'Learning with Aleph';
+
+  @override
+  String get pathAllLearned =>
+      'You have started every word in this book. Keep reviewing!';
 }

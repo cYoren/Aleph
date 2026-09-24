@@ -349,5 +349,20 @@
   "reminderDueTitle": "{count, plural, =1{{count} слово готово к повторению} few{{count} слова готовы к повторению} many{{count} слов готовы к повторению} other{{count} слова готовы к повторению}}",
   "reminderDueBody": "Пять минут сейчас, и слова не забудутся.",
   "reminderReadTitle": "Ваш стих на сегодня ждёт",
-  "reminderReadBody": "Прочитайте один стих на иврите или греческом до конца дня."
+  "reminderReadBody": "Прочитайте один стих на иврите или греческом до конца дня.",
+  "pathTitle": "Путь по книге",
+  "pathHomeStart": "Выберите книгу и выучите именно её слова",
+  "pathChooseBook": "Выберите книгу, чтобы читать её в оригинале",
+  "pathWordsToGoal": "{count, plural, =1{{count} слово до 80% книги} few{{count} слова до 80% книги} many{{count} слов до 80% книги} other{{count} слова до 80% книги}}",
+  "pathCoverage": "Вы уже можете прочитать {percent}% книги {book}",
+  "pathLearning": "{percent}% вместе со словами, которые вы учите",
+  "pathGoalReached": "Вы можете прочитать большую часть этой книги. Откройте её!",
+  "pathLearnNext": "Учить следующие слова",
+  "pathWordsInBook": "Слова этой книги, от частых к редким",
+  "pathChangeBook": "Сменить книгу",
+  "pathShare": "Поделиться прогрессом",
+  "shareCardHebrew": "Я выучил(а) {percent}% слов книги {book} на иврите",
+  "shareCardGreek": "Я выучил(а) {percent}% слов книги {book} на греческом",
+  "shareCardFooter": "Учусь с Aleph",
+  "pathAllLearned": "Вы начали учить все слова этой книги. Продолжайте повторять!"
 }

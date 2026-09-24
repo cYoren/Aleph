@@ -3,9 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/review_reminder.dart';
-import '../../data/models/word.dart';
 import '../../l10n/generated/app_localizations.dart';
-import '../reading/widgets/srs_micro_quiz_sheet.dart';
+import 'vocabulary_item_tile.dart';
 import 'vocabulary_provider.dart';
 
 /// Frequency-ordered vocabulary decks plus the SRS review queue.
@@ -66,7 +65,10 @@ class _VocabularyScreenState extends ConsumerState<VocabularyScreen> {
                             .read(reviewReminderProvider.notifier)
                             .set(value),
                       ),
-                    ...due.map((item) => _buildItemTile(item, colorScheme)),
+                    ...due.map(
+                      (item) =>
+                          VocabularyItemTile(item: item, onReviewed: _refresh),
+                    ),
                     const Divider(),
                   ],
           ),
@@ -119,7 +121,8 @@ class _VocabularyScreenState extends ConsumerState<VocabularyScreen> {
                     ),
                   ),
                   ...deck.items.map(
-                    (item) => _buildItemTile(item, colorScheme),
+                    (item) =>
+                        VocabularyItemTile(item: item, onReviewed: _refresh),
                   ),
                 ],
               );
@@ -144,6 +147,11 @@ class _VocabularyScreenState extends ConsumerState<VocabularyScreen> {
     );
   }
 
+  void _refresh() {
+    ref.invalidate(dueVocabularyProvider);
+    ref.invalidate(vocabularyDeckProvider(_language));
+  }
+
   Widget _sectionHeader(String title, ColorScheme colorScheme, {int? count}) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
@@ -157,105 +165,5 @@ class _VocabularyScreenState extends ConsumerState<VocabularyScreen> {
         ),
       ),
     );
-  }
-
-  Widget _buildItemTile(VocabularyDeckItem item, ColorScheme colorScheme) {
-    final entry = item.entry;
-    final mastery = item.progress?.masteryScore ?? 0.0;
-    final lemma = entry?.lemma ?? item.lexiconKey;
-    final transliteration = entry?.transliteration;
-
-    return ListTile(
-      onTap: () => _openQuiz(item),
-      leading: SizedBox(
-        width: 36,
-        height: 36,
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            CircularProgressIndicator(
-              value: mastery,
-              strokeWidth: 3,
-              backgroundColor: colorScheme.surfaceContainerHighest,
-              color: colorScheme.primary,
-            ),
-            Text(
-              '${(mastery * 100).round()}',
-              style: TextStyle(
-                fontSize: 10,
-                fontWeight: FontWeight.bold,
-                color: colorScheme.onSurfaceVariant,
-              ),
-            ),
-          ],
-        ),
-      ),
-      title: Row(
-        children: [
-          Text(
-            lemma,
-            style: TextStyle(
-              fontSize: 20,
-              fontFamily: item.isHebrew ? 'EzraSIL' : 'Gentium',
-              color: colorScheme.onSurface,
-            ),
-          ),
-          if (transliteration != null && transliteration.isNotEmpty) ...[
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                transliteration,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 13,
-                  fontStyle: FontStyle.italic,
-                  color: colorScheme.onSurfaceVariant,
-                ),
-              ),
-            ),
-          ],
-        ],
-      ),
-      subtitle: entry?.gloss != null
-          ? Text(entry!.gloss!, maxLines: 1, overflow: TextOverflow.ellipsis)
-          : null,
-      trailing: item.frequency > 0
-          ? Text(
-              '×${item.frequency}',
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: colorScheme.onSurfaceVariant,
-              ),
-            )
-          : null,
-    );
-  }
-
-  Future<void> _openQuiz(VocabularyDeckItem item) async {
-    final entry = item.entry;
-    final pseudoWord = Word(
-      id: -1,
-      verseId: '',
-      position: 0,
-      displayText: entry?.lemma ?? item.lexiconKey,
-      lemma: entry?.lemma,
-      strongs:
-          item.lexiconKey.startsWith('H') || item.lexiconKey.startsWith('G')
-          ? item.lexiconKey
-          : null,
-      language: item.isHebrew ? 'heb' : 'grc',
-    );
-
-    await SrsMicroQuizSheet.show(
-      context,
-      originalWord: pseudoWord,
-      translatedWord: entry?.gloss ?? '',
-      isOT: item.isHebrew,
-    );
-
-    // Refresh mastery/due state after the review
-    ref.invalidate(dueVocabularyProvider);
-    ref.invalidate(vocabularyDeckProvider(_language));
   }
 }

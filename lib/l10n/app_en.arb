@@ -484,5 +484,64 @@
         "type": "int"
       }
     }
+  },
+  "pathTitle": "Book paths",
+  "pathHomeStart": "Pick a book and learn exactly the words it needs",
+  "pathChooseBook": "Choose a book to read in the original",
+  "pathWordsToGoal": "{count, plural, =1{1 word to read 80% of it} other{{count} words to read 80% of it}}",
+  "pathCoverage": "You can read {percent}% of {book}",
+  "pathLearning": "{percent}% counting the words you are learning",
+  "pathGoalReached": "You can read most of this book. Open it and enjoy!",
+  "pathLearnNext": "Learn the next words",
+  "pathWordsInBook": "Words in this book, most common first",
+  "pathChangeBook": "Change book",
+  "pathShare": "Share progress",
+  "shareCardHebrew": "I've learned {percent}% of the words in {book}, in Hebrew",
+  "shareCardGreek": "I've learned {percent}% of the words in {book}, in Greek",
+  "shareCardFooter": "Learning with Aleph",
+  "pathAllLearned": "You have started every word in this book. Keep reviewing!",
+  "@pathWordsToGoal": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@pathCoverage": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      },
+      "book": {
+        "type": "String"
+      }
+    }
+  },
+  "@pathLearning": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "@shareCardHebrew": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      },
+      "book": {
+        "type": "String"
+      }
+    }
+  },
+  "@shareCardGreek": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      },
+      "book": {
+        "type": "String"
+      }
+    }
   }
 }

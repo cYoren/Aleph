@@ -349,5 +349,20 @@
   "reminderDueTitle": "{count, plural, =1{1 palavra pronta para revisão} other{{count} palavras prontas para revisão}}",
   "reminderDueBody": "Cinco minutos agora e elas não escapam.",
   "reminderReadTitle": "Seu versículo de hoje está esperando",
-  "reminderReadBody": "Leia um versículo em hebraico ou grego antes de o dia acabar."
+  "reminderReadBody": "Leia um versículo em hebraico ou grego antes de o dia acabar.",
+  "pathTitle": "Trilhas de livros",
+  "pathHomeStart": "Escolha um livro e aprenda exatamente as palavras dele",
+  "pathChooseBook": "Escolha um livro para ler no original",
+  "pathWordsToGoal": "{count, plural, =1{1 palavra para ler 80% dele} other{{count} palavras para ler 80% dele}}",
+  "pathCoverage": "Você já lê {percent}% de {book}",
+  "pathLearning": "{percent}% contando as palavras que você está aprendendo",
+  "pathGoalReached": "Você já lê a maior parte deste livro. Abra e aproveite!",
+  "pathLearnNext": "Aprender as próximas palavras",
+  "pathWordsInBook": "Palavras deste livro, das mais comuns",
+  "pathChangeBook": "Trocar de livro",
+  "pathShare": "Compartilhar progresso",
+  "shareCardHebrew": "Já aprendi {percent}% das palavras de {book} em hebraico",
+  "shareCardGreek": "Já aprendi {percent}% das palavras de {book} em grego",
+  "shareCardFooter": "Aprendendo com o Aleph",
+  "pathAllLearned": "Você já começou todas as palavras deste livro. Continue revisando!"
 }

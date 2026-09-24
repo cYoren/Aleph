@@ -349,5 +349,20 @@
   "reminderDueTitle": "{count, plural, =1{1 Wort ist zur Wiederholung bereit} other{{count} Wörter sind zur Wiederholung bereit}}",
   "reminderDueBody": "Fünf Minuten jetzt, und sie bleiben hängen.",
   "reminderReadTitle": "Dein Vers für heute wartet",
-  "reminderReadBody": "Lies vor Tagesende einen Vers auf Hebräisch oder Griechisch."
+  "reminderReadBody": "Lies vor Tagesende einen Vers auf Hebräisch oder Griechisch.",
+  "pathTitle": "Buchpfade",
+  "pathHomeStart": "Wähle ein Buch und lerne genau die Wörter, die es braucht",
+  "pathChooseBook": "Wähle ein Buch, das du im Urtext lesen willst",
+  "pathWordsToGoal": "{count, plural, =1{1 Wort bis 80 % des Buches} other{{count} Wörter bis 80 % des Buches}}",
+  "pathCoverage": "Du kannst {percent}% von {book} lesen",
+  "pathLearning": "{percent}% mit den Wörtern, die du gerade lernst",
+  "pathGoalReached": "Du kannst den Großteil dieses Buches lesen. Schlag es auf!",
+  "pathLearnNext": "Die nächsten Wörter lernen",
+  "pathWordsInBook": "Wörter in diesem Buch, die häufigsten zuerst",
+  "pathChangeBook": "Buch wechseln",
+  "pathShare": "Fortschritt teilen",
+  "shareCardHebrew": "Ich habe {percent}% der Wörter in {book} auf Hebräisch gelernt",
+  "shareCardGreek": "Ich habe {percent}% der Wörter in {book} auf Griechisch gelernt",
+  "shareCardFooter": "Ich lerne mit Aleph",
+  "pathAllLearned": "Du hast jedes Wort dieses Buches angefangen. Bleib beim Wiederholen!"
 }

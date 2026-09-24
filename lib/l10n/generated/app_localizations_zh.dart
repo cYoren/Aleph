@@ -824,4 +824,64 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get reminderReadBody => '今天结束前，用希伯来文或希腊文读一节经文。';
+
+  @override
+  String get pathTitle => '按书卷学习';
+
+  @override
+  String get pathHomeStart => '选一卷书，只学它需要的词';
+
+  @override
+  String get pathChooseBook => '选择一卷书，用原文来读';
+
+  @override
+  String pathWordsToGoal(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '再学 $count 个词即可读懂 80%',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String pathCoverage(int percent, String book) {
+    return '你已能读懂《$book》的 $percent%';
+  }
+
+  @override
+  String pathLearning(int percent) {
+    return '算上正在学的词为 $percent%';
+  }
+
+  @override
+  String get pathGoalReached => '这卷书的大部分你已经能读懂了。打开读吧！';
+
+  @override
+  String get pathLearnNext => '学习接下来的词';
+
+  @override
+  String get pathWordsInBook => '本卷词汇，按出现频率排序';
+
+  @override
+  String get pathChangeBook => '更换书卷';
+
+  @override
+  String get pathShare => '分享进度';
+
+  @override
+  String shareCardHebrew(int percent, String book) {
+    return '我已学会《$book》希伯来文原文 $percent% 的词';
+  }
+
+  @override
+  String shareCardGreek(int percent, String book) {
+    return '我已学会《$book》希腊文原文 $percent% 的词';
+  }
+
+  @override
+  String get shareCardFooter => '正在用 Aleph 学习';
+
+  @override
+  String get pathAllLearned => '这卷书的每个词你都已开始学习。继续复习！';
 }

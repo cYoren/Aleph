@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../paths/book_path_screen.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../settings/settings_provider.dart';
 import '../../providers/books_provider.dart';
@@ -362,6 +363,8 @@ class HomeScreen extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: 14),
+        const PathHomeCard(),
+        const SizedBox(height: 10),
         // The order is the learning path: the letters, then the words, then
         // what those words let you read. Memorization used to sit here too and
         // no longer does — it asks you to recall a passage in a script you may

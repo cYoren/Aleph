@@ -13,6 +13,7 @@ import '../../data/models/book.dart';
 import '../../providers/books_provider.dart';
 import '../../providers/database_provider.dart';
 import '../../shared/utils/reader_mode.dart';
+import '../paths/book_path.dart';
 
 /// Coverage at or above this reads comfortably: roughly one unknown word in
 /// twenty, which is the level at which a text carries you rather than stopping
@@ -90,9 +91,14 @@ final readabilityReportProvider = FutureProvider<ReadabilityReport>((
   );
 
   final totals = await dao.getTokenCountsByBook();
+  // Prefixes and particles are learned as grammar and never sit in a deck;
+  // without counting them no Hebrew book could reach the thresholds above.
+  final grammar = await ref.watch(grammarLexiconKeysProvider.future);
   final known = mastered.isEmpty
       ? const <String, int>{}
-      : await dao.getTokenCountsByBookForKeys(mastered);
+      : await dao.getTokenCountsByBookForKeys(
+          {...mastered, ...grammar}.toList(),
+        );
 
   final entries = <BookReadability>[];
   for (final book in books) {
