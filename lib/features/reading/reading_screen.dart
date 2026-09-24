@@ -8,6 +8,7 @@ import '../../l10n/generated/app_localizations.dart';
 import '../../providers/books_provider.dart';
 import '../../providers/book_names_provider.dart';
 import '../../providers/bookmarks_provider.dart';
+import '../../providers/translations_provider.dart';
 import '../settings/settings_provider.dart';
 import 'reading_provider.dart';
 import '../../data/models/verse.dart';
@@ -232,7 +233,13 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
             padding: const EdgeInsets.only(right: 4),
             child: Chip(
               label: Text(
-                settings.translation.toUpperCase(),
+                ref
+                        .watch(translationsProvider)
+                        .valueOrNull
+                        ?.where((t) => t.id == settings.translation)
+                        .firstOrNull
+                        ?.abbreviation ??
+                    settings.translation.toUpperCase(),
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.bold,

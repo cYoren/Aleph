@@ -1330,13 +1330,15 @@ def parse_enabled_translation_ids(raw_csv: str) -> List[str]:
 def write_translations(conn: sqlite3.Connection, catalog: Dict[str, TranslationSpec]) -> None:
     rows = [
         (
+            # Id stays "KJV" so saved reader settings keep working; the text
+            # is the Berean Standard Bible and must be labelled as such.
             "KJV",
-            "King James Version (BSB source text)",
+            "Berean Standard Bible",
             "en",
             "ltr",
-            "KJV",
+            "BSB",
             "ot_BSB.tsv,nt_BSB.tsv",
-            "Derived from themikejr/bible-mcp token data",
+            "Public domain (BSB, dedicated 2023); via themikejr/bible-mcp token data",
             1,
             0.0,
         )

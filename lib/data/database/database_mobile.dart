@@ -14,7 +14,7 @@ import 'package:original_bible/shared/utils/async_once.dart';
 /// indefinitely — which is exactly how cross-references came to look "not
 /// implemented" for existing users while the asset had 343k of them.
 /// Bump this on every regenerated release database.
-const int kBundledDatabaseVersion = 2;
+const int kBundledDatabaseVersion = 3;
 
 class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._init();

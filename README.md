@@ -7,7 +7,7 @@ Original-language Bible reader for **iOS**, **Android**, and **macOS**, with:
 - Offline SQLite data
 
 Enabled translations in current release DB:
-- `KJV` (en)
+- `KJV` (en; Berean Standard Bible text, shown as BSB)
 - `LUTHER1912` (de)
 - `SYNODAL` (ru)
 - `ALMEIDA` (pt)
