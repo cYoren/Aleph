@@ -45,7 +45,9 @@ jobs:
           cp "$HOME/Documents/Coding/Original bible/android/key.properties" android/key.properties
           cp "$HOME/Documents/Coding/Original bible/android/app/release-keystore.jks" android/app/release-keystore.jks
       - name: Build signed Android App Bundle
-        run: flutter build appbundle --release
+        env:
+          ALEPH_AI_PROXY: ${{ vars.ALEPH_AI_PROXY }}
+        run: flutter build appbundle --release --dart-define=ALEPH_AI_PROXY="${ALEPH_AI_PROXY:-}"
       - name: Upload production bundle
         run: |
           set -euo pipefail

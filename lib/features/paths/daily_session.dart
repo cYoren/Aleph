@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../core/usage_events.dart';
 import '../../providers/database_provider.dart';
 import '../vocabulary/vocabulary_item_tile.dart';
 import '../vocabulary/vocabulary_provider.dart';
@@ -88,6 +89,7 @@ Future<bool> runDailySession(BuildContext context, WidgetRef ref) async {
   }
 
   await ref.read(streakProvider.notifier).completeToday();
+  UsageEvents.record(UsageEvent.dailySessionDone);
   ref.invalidate(dueVocabularyProvider);
   if (active != null) ref.invalidate(bookPathProvider(active));
   return true;

@@ -969,4 +969,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get nameShare => 'Share';
+
+  @override
+  String get usageSharingTitle => 'Share anonymous usage counts';
+
+  @override
+  String get usageSharingSubtitle =>
+      'Which features get used. Never what you read, and nothing that identifies you.';
 }

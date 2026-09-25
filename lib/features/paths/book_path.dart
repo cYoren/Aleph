@@ -12,6 +12,7 @@ library;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../core/usage_events.dart';
 import '../../data/models/book.dart';
 import '../../data/models/srs_progress.dart';
 import '../../providers/books_provider.dart';
@@ -195,6 +196,7 @@ class ActivePathNotifier extends StateNotifier<String?> {
 
   Future<void> choose(String? bookId) async {
     state = bookId;
+    if (bookId != null) UsageEvents.record(UsageEvent.pathStarted);
     final prefs = await SharedPreferences.getInstance();
     if (bookId == null) {
       await prefs.remove(_activePathKey);

@@ -979,4 +979,11 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get nameShare => 'Compartir';
+
+  @override
+  String get usageSharingTitle => 'Compartir recuentos de uso anónimos';
+
+  @override
+  String get usageSharingSubtitle =>
+      'Qué funciones se usan. Nunca lo que lees ni nada que te identifique.';
 }

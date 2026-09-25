@@ -927,4 +927,10 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get nameShare => '分享';
+
+  @override
+  String get usageSharingTitle => '分享匿名使用统计';
+
+  @override
+  String get usageSharingSubtitle => '只统计哪些功能被使用。绝不包括你读的内容，也没有任何能识别你的信息。';
 }

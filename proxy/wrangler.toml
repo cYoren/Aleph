@@ -1,0 +1,20 @@
+name = "aleph-ai-proxy"
+main = "worker.js"
+compatibility_date = "2026-09-01"
+
+[vars]
+# Comma-separated. Keep in sync with lib/features/explain/explain_model.dart.
+ALLOWED_MODELS = "nvidia/nemotron-3.5-lightning:free"
+
+# Per-IP burst limit. The app also enforces its own daily allowance.
+[[ratelimits]]
+name = "LIMITER"
+namespace_id = "1001"
+simple = { limit = 10, period = 60 }
+
+# Opt-in anonymous usage counts (POST /event). Query with the Analytics Engine
+# SQL API, e.g. retention: SELECT double1 AS day, count() FROM aleph_events
+# WHERE blob1 = 'app_open' GROUP BY day.
+[[analytics_engine_datasets]]
+binding = "EVENTS"
+dataset = "aleph_events"

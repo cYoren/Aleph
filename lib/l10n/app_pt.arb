@@ -373,5 +373,7 @@
   "nameMeans": "{name} significa “{meaning}”",
   "nameCount": "{count, plural, =1{Aparece uma vez na Bíblia} other{Aparece {count} vezes na Bíblia}}",
   "nameNotFound": "Ainda não está na nossa lista. Tente outra grafia.",
-  "nameShare": "Compartilhar"
+  "nameShare": "Compartilhar",
+  "usageSharingTitle": "Compartilhar contagens anônimas de uso",
+  "usageSharingSubtitle": "Quais recursos são usados. Nunca o que você lê, nem nada que identifique você."
 }

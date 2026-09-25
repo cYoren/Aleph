@@ -940,4 +940,11 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get nameShare => '공유';
+
+  @override
+  String get usageSharingTitle => '익명 사용 통계 보내기';
+
+  @override
+  String get usageSharingSubtitle =>
+      '어떤 기능이 쓰이는지만 보냅니다. 읽는 내용이나 신원을 알 수 있는 정보는 절대 보내지 않아요.';
 }

@@ -992,4 +992,11 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get nameShare => 'Поделиться';
+
+  @override
+  String get usageSharingTitle => 'Отправлять анонимную статистику';
+
+  @override
+  String get usageSharingSubtitle =>
+      'Какие функции используются. Никогда не то, что вы читаете, и ничего, что вас идентифицирует.';
 }

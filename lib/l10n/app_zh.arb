@@ -373,5 +373,7 @@
   "nameMeans": "{name}的意思是“{meaning}”",
   "nameCount": "{count, plural, other{在圣经中出现 {count} 次}}",
   "nameNotFound": "名单中暂时没有这个名字。试试别的写法。",
-  "nameShare": "分享"
+  "nameShare": "分享",
+  "usageSharingTitle": "分享匿名使用统计",
+  "usageSharingSubtitle": "只统计哪些功能被使用。绝不包括你读的内容，也没有任何能识别你的信息。"
 }
