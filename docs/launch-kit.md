@@ -33,6 +33,16 @@ second.
 - Scroll the alphabet guide from alef to tav with each hint on screen.
 - Caption: `Where every Hebrew reader starts. Alef. #hebrewalphabet #aleph`
 
+**E. "What does your name mean in Hebrew?"** (the strongest hook in 1.0.6)
+- Type a name live on screen: Daniel. The card shows דָּנִאֵל and "God is my judge".
+- Three more fast: Gabriel, Sarah, John (Ἰωάννης, "the LORD is gracious").
+- On screen: *Type yours. It's free.* Caption: `Comment your name and I'll show you what it means in Hebrew. #biblenames #namemeaning #hebrew`
+- Reply to comments with videos of their names: every reply is a new post.
+
+**F. "Day 1 vs day 30: reading Ruth in Hebrew"**
+- Book path at 0%, then the share card at 40%+. Real account, real number.
+- Caption: `30 days, 5 minutes a day. #learnhebrew #biblicalhebrew`
+
 Post cadence: one a day for the launch week (A, B, C, D, then repeat A and B
 in Portuguese and Spanish with the app set to those languages).
 
