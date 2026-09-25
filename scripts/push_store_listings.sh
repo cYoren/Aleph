@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Push the store listings in fastlane/metadata to App Store Connect and Google
-# Play. Dry run by default (plans the ASC change, validates the Play edit and
+# Push the store listings in fastlane/metadata, and the screenshots in
+# screenshots/store (scripts/compose_store_screenshots.py), to App Store Connect
+# and Google Play. Dry run by default (plans the ASC change, validates the Play edit and
 # throws it away); pass --apply to write.
 #
 #   ./scripts/push_store_listings.sh            # dry run
@@ -50,6 +51,22 @@ PY
     echo "ASC: applied to the $VERSION draft"
   fi
 )
+SHOTS=screenshots/store
+for pair in "iphone:IPHONE_67" "ipad:IPAD_PRO_3GEN_129"; do
+  dir="${pair%%:*}"; type="${pair##*:}"
+  if $APPLY; then
+    asc screenshots upload --app "$APP_ID" --version "$VERSION" --path "$SHOTS/$dir" \
+      --device-type "$type" --replace --confirm > /dev/null
+    echo "ASC: $dir screenshots replaced"
+  else
+    # New locales only exist on ASC after the metadata apply, so a dry run
+    # checks the files locally instead.
+    for locale_dir in "$SHOTS/$dir"/*/; do
+      asc screenshots validate --path "$locale_dir" --device-type "$type" \
+        | python3 -c 'import json,sys;d=json.load(sys.stdin);assert d["errorCount"]==0,d;print("  %s: %d ok" % (d["path"], d["readyFiles"]))'
+    done
+  fi
+done
 
 echo "== Google Play"
 EDIT="$(gplay edits create --package "$PACKAGE" --output json | python3 -c 'import json,sys;print(json.load(sys.stdin)["id"])')"
@@ -60,6 +77,18 @@ for dir in "$META"/android/*/; do
     --short-description "$(cat "$dir/short_description.txt")" \
     --full-description "$(cat "$dir/full_description.txt")" > /dev/null
   echo "  $locale"
+done
+# Screenshots exist for en-US and pt-BR; the other locales fall back to en-US.
+for locale_dir in "$SHOTS"/iphone/*/; do
+  locale="$(basename "$locale_dir")"
+  for pair in "iphone:phoneScreenshots" "ipad:tenInchScreenshots"; do
+    dir="${pair%%:*}"; type="${pair##*:}"
+    gplay images delete-all --package "$PACKAGE" --edit "$EDIT" --locale "$locale" --type "$type" --confirm > /dev/null
+    for shot in "$SHOTS/$dir/$locale"/*.png; do
+      gplay images upload --package "$PACKAGE" --edit "$EDIT" --locale "$locale" --type "$type" --file "$shot" > /dev/null
+    done
+  done
+  echo "  screenshots $locale"
 done
 gplay edits validate --package "$PACKAGE" --edit "$EDIT" > /dev/null
 if $APPLY; then

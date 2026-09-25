@@ -62,3 +62,7 @@ android/*.keystore
 
 # fastlane run artifacts
 fastlane/report.xml
+
+# store screenshot raws (regenerate with tool/capture)
+tool/capture/raw/
+tool/capture/failures/

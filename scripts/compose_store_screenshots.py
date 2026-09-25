@@ -1,192 +1,168 @@
 #!/usr/bin/env python3
+"""Compose Aleph store screenshots in the portfolio house style.
+
+Raws come from tool/capture/store_capture_test.dart, which renders the real app
+with the real database at exact store sizes, on Linux:
+
+    flutter test tool/capture/store_capture_test.dart --update-goldens
+    uv run --no-project --with pillow python3 scripts/compose_store_screenshots.py
+
+iPhone raws go into the house device frame on the brand gradient; iPad raws get
+a rounded screen on the same background. Output, per locale:
+
+    screenshots/store/iphone/<en-US|pt-BR>/NN.png  1290x2796  App Store 6.7", Play phone
+    screenshots/store/ipad/<en-US|pt-BR>/NN.png    2064x2752  App Store 13", Play tablet
 """
-Compose Aleph store screenshots in the shared portfolio house style.
-
-Produces the same look as the Cirdoku, Tessera and medhub listings, so the
-portfolio reads as one family:
-
-    raw capture -> resize to 1290x2796 -> paste into the house device frame
-    -> compose.py (gradient background, starfield, device glow, headline + sub)
-
-The raws come from scripts/capture_store_screenshots.sh, which routes straight
-to a screen via the START dart-define and pins the simulator to en-US. That
-locale step matters: device locale drives the app's own language, and Aleph
-ships five interface languages.
-
-Usage:
-    python3 scripts/compose_store_screenshots.py
-"""
-import argparse
-import subprocess
-import sys
+import random
 from pathlib import Path
 
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 PROJECT = Path(__file__).resolve().parent.parent
+RAW = PROJECT / "tool/capture/raw"
+OUT = PROJECT / "screenshots/store"
 FRAME = PROJECT / "tool/assets/house-device-frame-iphone-6.9.png"
-COMPOSE = Path.home() / ".claude/skills/appstore-screenshots/scripts/compose.py"
+FONT_DIR = Path.home() / ".local/share/fonts/inter/extras/ttf"
+BOLD = FONT_DIR / "Inter-Bold.ttf"
+REGULAR = FONT_DIR / "Inter-Medium.ttf"
 
-SCREEN_W, SCREEN_H = 1290, 2796
-SCREEN_X, SCREEN_Y = 67, 55
+# The app is warm parchment, so the canvas carries its burnt orange.
+TOP, BOTTOM = (26, 10, 2), (184, 74, 12)
+GLOW = (245, 196, 107)
+HEADLINE, SUB = (255, 255, 255), (243, 220, 192)
+SCREEN_X, SCREEN_Y = 67, 55  # screen offset inside the frame
 
-# Aleph palette: the app is warm parchment, so the canvas carries the burnt
-# orange the listing already leans on rather than fighting it with a cool tone.
-BG_COLOR = "#1A0A02"
-BG_GRADIENT = "#B84A0C"
-DEVICE_GLOW = "#F5C46B"
-HEADLINE_COLOR = "#FFFFFF"
-SUB_COLOR = "#F3DCC0"
+# Store locale codes; the other six languages fall back to en-US on both stores.
+STORE_LOCALE = {"en": "en-US", "pt": "pt-BR"}
 
-SHOTS = [
-    ("01_reading", "Read It in the Language It Was Written",
-     "Hebrew and Greek line by line, with transliteration and English underneath"),
-    ("02_search", "Find Any Verse, Then Go Deeper",
-     "Search the text and open the dictionary entry behind every word"),
-    ("03_language", "Five Interface Languages, One Original Text",
-     "English, Portuguese, German, French and Spanish, each with its own Bible"),
-]
+COPY = {
+    "en": {
+        "01_reading": ("Read It in the Language It Was Written",
+                       "Hebrew and Greek word by word, with transliteration and your translation"),
+        "02_word": ("Tap Any Word",
+                    "Its meaning, the full dictionary entry and the grammar, in one tap"),
+        "03_path": ("Read Ruth in Hebrew",
+                    "Learn exactly the words each book needs, most common first"),
+        "04_name": ("What Does Your Name Mean?",
+                    "See it in Hebrew or Greek, then share it"),
+        "05_home": ("Five Minutes a Day",
+                    "Reviews, new words and a streak that keeps you going"),
+    },
+    "pt": {
+        "01_reading": ("Leia na Língua em Que Foi Escrita",
+                       "Hebraico e grego palavra por palavra, com transliteração e a sua tradução"),
+        "02_word": ("Toque em Qualquer Palavra",
+                    "O significado, o verbete completo e a gramática, em um toque"),
+        "03_path": ("Leia Rute em Hebraico",
+                    "Aprenda exatamente as palavras de cada livro, das mais comuns"),
+        "04_name": ("O Que Significa o Seu Nome?",
+                    "Veja em hebraico ou grego e compartilhe"),
+        "05_home": ("Cinco Minutos por Dia",
+                    "Revisões, palavras novas e uma sequência que motiva"),
+    },
+}
 
 
-def frame_one(raw_path: Path, framed_path: Path) -> None:
+def background(size):
+    w, h = size
+    img = Image.new("RGB", size)
+    draw = ImageDraw.Draw(img)
+    for y in range(h):
+        t = y / (h - 1)
+        draw.line([(0, y), (w, y)], fill=tuple(round(a + (b - a) * t) for a, b in zip(TOP, BOTTOM)))
+    rng = random.Random(7)  # same stars every run
+    for _ in range(int(w * h / 9000)):
+        x, y, r = rng.randrange(w), rng.randrange(int(h * 0.7)), rng.choice((1, 1, 2, 3))
+        a = rng.randrange(60, 200)
+        draw.ellipse([x - r, y - r, x + r, y + r], fill=(255, 240, 220, a))
+    return img
+
+
+def glow(canvas, box, spread):
+    layer = Image.new("RGBA", canvas.size, (0, 0, 0, 0))
+    ImageDraw.Draw(layer).rounded_rectangle(box, radius=spread, fill=GLOW + (110,))
+    canvas.alpha_composite(layer.filter(ImageFilter.GaussianBlur(spread)))
+
+
+def wrap(draw, text, font, max_width):
+    lines, line = [], ""
+    for word in text.split():
+        trial = f"{line} {word}".strip()
+        if draw.textlength(trial, font=font) <= max_width:
+            line = trial
+        else:
+            lines.append(line)
+            line = word
+    return lines + [line]
+
+
+def text_block(canvas, headline, sub, top, head_size, sub_size):
+    draw = ImageDraw.Draw(canvas)
+    w = canvas.size[0]
+    y = top
+    for font_path, size, colour, text, gap in (
+        (BOLD, head_size, HEADLINE, headline, 0.18),
+        (REGULAR, sub_size, SUB, sub, 0.35),
+    ):
+        font = ImageFont.truetype(str(font_path), size)
+        for line in wrap(draw, text, font, w * 0.86):
+            draw.text((w / 2, y), line, font=font, fill=colour, anchor="mt")
+            y += int(size * 1.18)
+        y += int(size * gap)
+    return y
+
+
+def compose_iphone(raw, headline, sub):
+    canvas = background((1290, 2796)).convert("RGBA")
+    y = text_block(canvas, headline, sub, top=150, head_size=92, sub_size=46)
+
     frame = Image.open(FRAME).convert("RGBA")
-    shot = Image.open(raw_path).convert("RGB").resize((SCREEN_W, SCREEN_H), Image.LANCZOS)
-    canvas = Image.new("RGBA", frame.size, (0, 0, 0, 0))
-    canvas.paste(shot, (SCREEN_X, SCREEN_Y))
-    Image.alpha_composite(canvas, frame).save(framed_path)
+    device = Image.new("RGBA", frame.size, (0, 0, 0, 0))
+    device.paste(Image.open(raw).convert("RGB").resize((1290, 2796), Image.LANCZOS), (SCREEN_X, SCREEN_Y))
+    device.alpha_composite(frame)
+    scale = min(1120 / device.width, (2796 - y - 40) / device.height)
+    device = device.resize((round(device.width * scale), round(device.height * scale)), Image.LANCZOS)
+    x = (1290 - device.width) // 2
+    top = y + 40
+    glow(canvas, (x + 40, top + 40, x + device.width - 40, top + device.height - 40), 90)
+    canvas.alpha_composite(device, (x, top))
+    return canvas.convert("RGB")
 
 
-def compose_one(framed_path: Path, out_path: Path, headline: str, sub: str) -> None:
-    subprocess.run([
-        sys.executable, str(COMPOSE),
-        "--screenshot", str(framed_path),
-        "--output", str(out_path),
-        "--size", f"{SCREEN_W}x{SCREEN_H}",
-        "--bg-color", BG_COLOR,
-        "--bg-gradient", BG_GRADIENT,
-        "--headline", headline,
-        "--subheadline", sub,
-        "--headline-color", HEADLINE_COLOR,
-        "--subheadline-color", SUB_COLOR,
-        "--device-glow", DEVICE_GLOW,
-        "--particles", "60",
-        "--device-scale", "0.78",
-    ], check=True)
+def compose_ipad(raw, headline, sub):
+    canvas = background((2064, 2752)).convert("RGBA")
+    y = text_block(canvas, headline, sub, top=140, head_size=104, sub_size=52)
+
+    screen = Image.open(raw).convert("RGB")
+    scale = min(1560 / screen.width, (2752 - y - 60) / screen.height)
+    screen = screen.resize((round(screen.width * scale), round(screen.height * scale)), Image.LANCZOS)
+    bezel = 22
+    body = Image.new("RGBA", (screen.width + 2 * bezel, screen.height + 2 * bezel), (0, 0, 0, 0))
+    ImageDraw.Draw(body).rounded_rectangle([0, 0, *body.size], radius=70, fill=(18, 12, 8, 255))
+    mask = Image.new("L", screen.size, 0)
+    ImageDraw.Draw(mask).rounded_rectangle([0, 0, *screen.size], radius=50, fill=255)
+    body.paste(screen, (bezel, bezel), mask)
+    x = (2064 - body.width) // 2
+    top = y + 60
+    glow(canvas, (x + 40, top + 40, x + body.width - 40, top + body.height - 40), 110)
+    canvas.alpha_composite(body, (x, top))
+    return canvas.convert("RGB")
 
 
-# The iPadOS pointer arc bakes into the framebuffer when the mouse hovers the
-# simulator window. Patch ONLY the arc; a larger corner patch destroys UI.
-ARC_X0, ARC_Y0 = 2000, 2688
-
-# iPad ships the same three screens, captured natively on an iPad Pro 13" (M5),
-# which renders at 2064x2752 — exactly the size the App Store wants.
-#
-# The reader shot keeps the app's own "Three ways in" coach mark. It cannot be
-# dismissed without tapping (hasSeenReadingHint is written on "Got it", and
-# seeding it into the simulator's plist does not work), and it is legible English
-# describing a real feature, so it ships rather than being painted out.
-IPAD_SHOTS = [
-    ("01_ipad", "Read It in the Language It Was Written",
-     "Hebrew and Greek line by line, with transliteration and English underneath"),
-    ("02_ipad", "Find Any Verse, Then Go Deeper",
-     "Search the text and open the dictionary entry behind every word"),
-    ("03_ipad", "Nine Interface Languages, One Original Text",
-     "Each language reads its own Bible, from the same Hebrew and Greek source"),
-]
-
-
-def compose_ipad(raw_path: Path, out_path: Path, headline: str, sub: str) -> None:
-    """iPad has no device frame in the house style — round the corners instead."""
-    subprocess.run([
-        sys.executable, str(COMPOSE),
-        "--screenshot", str(raw_path),
-        "--output", str(out_path),
-        "--size", "2064x2752",
-        "--bg-color", BG_COLOR,
-        "--bg-gradient", BG_GRADIENT,
-        "--headline", headline,
-        "--subheadline", sub,
-        "--headline-color", HEADLINE_COLOR,
-        "--subheadline-color", SUB_COLOR,
-        "--device-glow", DEVICE_GLOW,
-        "--particles", "60",
-        "--device-scale", "0.80",
-        "--corner-radius", "48",
-        "--headline-px", "104",
-        "--sub-px", "52",
-    ], check=True)
-
-
-def main() -> int:
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--raw-dir", default="screenshots/aso-refresh/raw")
-    ap.add_argument("--out-dir", default="screenshots/aso-refresh")
-    args = ap.parse_args()
-
-    raw_dir = (PROJECT / args.raw_dir).resolve()
-    out_root = (PROJECT / args.out_dir).resolve()
-    framed_dir = out_root / "framed"
-    ios_dir = out_root / "final/ios/iphone"
-    play_dir = out_root / "final/android/phone"
-    for d in (framed_dir, ios_dir, play_dir):
-        d.mkdir(parents=True, exist_ok=True)
-
-    if not FRAME.exists():
-        print(f"missing frame: {FRAME}", file=sys.stderr)
-        return 1
-
-    # Clear stale output. Without this a shot dropped from SHOTS survives in
-    # final/ and gets re-uploaded — that bug shipped once on Tessera already.
-    for d in (framed_dir, ios_dir, play_dir):
-        for f in d.glob("*.png"):
-            f.unlink()
-
-    present = [(s, h, sub) for s, h, sub in SHOTS if (raw_dir / f"{s}.png").exists()]
-    if not present:
-        print(f"no raws in {raw_dir} — run scripts/capture_store_screenshots.sh", file=sys.stderr)
-        return 1
-    for stem, _, _ in SHOTS:
-        if not (raw_dir / f"{stem}.png").exists():
-            print(f"  (skipping {stem}: no raw)")
-
-    for idx, (stem, headline, sub) in enumerate(present, start=1):
-        raw = raw_dir / f"{stem}.png"
-        framed = framed_dir / f"{stem}_framed.png"
-        name = f"{idx:02d}_{stem.split('_', 1)[1]}.png"
-        frame_one(raw, framed)
-        compose_one(framed, ios_dir / name, headline, sub)
-        Image.open(ios_dir / name).save(play_dir / name)
-        print(f"  [{idx}/{len(present)}] {name}")
-
-    # --- iPad: frameless, corner-rounded, pointer arc patched out ---
-    ipad_raw = out_root / "ipad/raw"
-    ipad_dir = out_root / "ipad/final"
-    ipad_dir.mkdir(parents=True, exist_ok=True)
-    for f in ipad_dir.glob("*.png"):
-        f.unlink()
-    for stem, headline, sub in IPAD_SHOTS:
-        src = ipad_raw / f"{stem}.png"
-        if not src.exists():
-            print(f"  (skipping iPad {stem}: no raw)")
-            continue
-        im = Image.open(src).convert("RGB")
-        w, h = im.size
-        px = im.load()
-        bg = px[w - 300, h - 300]
-        for y in range(ARC_Y0, h):
-            for x in range(ARC_X0, w):
-                px[x, y] = bg
-        tmp = ipad_dir / f".{stem}.png"
-        im.save(tmp)
-        compose_ipad(tmp, ipad_dir / f"{stem}.png", headline, sub)
-        tmp.unlink()
-        print(f"  iPad {stem}.png")
-
-    print(f"\niOS  : {ios_dir}")
-    print(f"iPad : {ipad_dir}")
-    print(f"Play : {play_dir}")
-    return 0
+def main():
+    made = 0
+    for device, compose in (("iphone", compose_iphone), ("ipad", compose_ipad)):
+        for locale, shots in COPY.items():
+            out_dir = OUT / device / STORE_LOCALE[locale]
+            out_dir.mkdir(parents=True, exist_ok=True)
+            for name, (headline, sub) in shots.items():
+                raw = RAW / device / locale / f"{name}.png"
+                if not raw.exists():
+                    raise SystemExit(f"missing raw {raw}; run tool/capture first")
+                compose(raw, headline, sub).save(out_dir / f"{name}.png", optimize=True)
+                made += 1
+    print(f"{made} screenshots in {OUT}")
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    main()

@@ -1,53 +1,36 @@
 # Store screenshots
 
-`screenshots/aso-refresh/final/` holds the **finished, upload-ready** assets.
+`screenshots/store/` holds the finished, upload-ready sets:
 
 ```
-aso-refresh/
-  raw/                  native iPhone captures, 1320x2868
-  framed/               raw pasted into the shared house device frame
-  final/ios/iphone/     1290x2796  -> App Store APP_IPHONE_67
-  final/android/phone/  1290x2796  -> Play phoneScreenshots (same renders)
-  ipad/raw/             native iPad captures, 2064x2752
-  ipad/final/           2064x2752  -> App Store APP_IPAD_PRO_3GEN_129 + Play tablet slots
+store/
+  iphone/<en-US|pt-BR>/NN.png   1290x2796  App Store IPHONE_67, Play phoneScreenshots
+  ipad/<en-US|pt-BR>/NN.png     2064x2752  App Store IPAD_PRO_3GEN_129, Play tenInchScreenshots
 ```
 
-The iPad Pro 13-inch (M5) simulator renders at **2064x2752**, exactly the size the App Store
-wants. Terminate the other portfolio apps before launching or iOS bakes a "< AppName" back
-indicator into the status bar — the first iPad run picked up "< Advanced Dual N-Back".
+The other six languages fall back to the en-US set on both stores.
 
-The iPad language picker shows **nine** languages where the phone shows five, which is why its
-headline differs from the iPhone set.
-
-## Regenerating
+## Regenerating (Linux, no simulator)
 
 ```bash
-scripts/capture_store_screenshots.sh      # one build per screen
-python3 scripts/compose_store_screenshots.py
+flutter test tool/capture/store_capture_test.dart --update-goldens   # raws, real app + real bible.db
+uv run --no-project --with pillow python3 scripts/compose_store_screenshots.py
+./scripts/push_store_listings.sh            # dry run: validates everything
+./scripts/push_store_listings.sh --apply    # ASC draft + Play listing
 ```
 
-`lib/features/startup/startup_gate_screen.dart` reads a `START` dart-define and routes straight
-to a screen in debug builds — `/reading`, `/search`, `/bookmarks`, `/language` — the same escape
-hatch Cirdoku, Tessera, Binar.io and Dual N-Back use. The capture script also pins the simulator
-to en-US before launching, because device locale drives the app's own interface language and
-Aleph ships five of them.
+The capture renders the actual widgets with the bundled fonts and database at
+the store's exact pixel sizes, seeds a learner (30 Ruth words mastered, 15 in
+progress) so the path and home screens show real progress, and resets the
+local user database first. Headlines live in `COPY` in the compose script; add
+a locale there and in `_locales` in the capture test.
 
-## What ships
+## Shots
 
-Three shots: the interlinear reader (the product), search, and the language picker. `/bookmarks`
-is captured by the script but **held back** — on a fresh install it is an empty state that sells
-nothing.
+1. Interlinear reader: the product.
+2. A tapped word: meaning, full entry, grammar.
+3. Book path (Ruth): the learning loop.
+4. Name meaning (Daniel): the share hook.
+5. Home: streak and today's five minutes.
 
-The **iPhone** reader shot is the committed native capture under `store-screenshots/native/`, not
-a fresh one, because a fresh install shows the "Three ways in" hint banner across the top third.
-`hasSeenReadingHint` is only written when the user taps "Got it" — seeding it into the simulator's
-preference plist does not clear it, and neither does relaunching. The **iPad** reader shot ships
-*with* the banner: it is legible English describing a real feature, and painting it out of a store
-screenshot is worse than showing it. A dart-define to suppress coach marks would fix both.
-
-## Superseded
-
-The App Store previously led with two unframed simulator captures of the language picker, and
-before that with a flat orange set whose device screen still read **"Original Bible"** while the
-listing was named "Aleph: Hebrew & Greek Bible" — the Guideline 2.3.8 mismatch pattern. The app
-itself now says **Aleph** on its first screen, so that risk is gone.
+`store-screenshots/` keeps the earlier native simulator captures as provenance.
