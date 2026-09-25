@@ -61,6 +61,7 @@ class ReadingNotifier extends StateNotifier<ReadingState> {
   Future<void> _loadLastRead() async {
     while (!_ref.read(settingsProvider).isLoaded) {
       await Future<void>.delayed(const Duration(milliseconds: 50));
+      if (!mounted) return;
     }
     final settings = _ref.read(settingsProvider);
     await loadChapter(settings.lastReadBook, settings.lastReadChapter);
@@ -102,7 +103,9 @@ class ReadingNotifier extends StateNotifier<ReadingState> {
         );
       }
 
-      if (requestId != _loadRequestId) {
+      // The provider is rebuilt when the gloss language changes (it watches
+      // bibleDaoProvider), so a load can outlive the notifier that began it.
+      if (!mounted || requestId != _loadRequestId) {
         return;
       }
 
@@ -116,7 +119,7 @@ class ReadingNotifier extends StateNotifier<ReadingState> {
       // Save reading progress
       _ref.read(settingsProvider.notifier).setLastRead(bookId, chapter);
     } catch (e) {
-      if (requestId != _loadRequestId) {
+      if (!mounted || requestId != _loadRequestId) {
         return;
       }
       if (kDebugMode) {

@@ -6,6 +6,7 @@ import '../../l10n/generated/app_localizations.dart';
 import '../../providers/database_provider.dart';
 import '../../shared/widgets/share_card_dialog.dart';
 import 'bible_names.dart';
+import '../../shared/utils/readable_width.dart';
 
 class NameMeaningScreen extends ConsumerStatefulWidget {
   const NameMeaningScreen({super.key});
@@ -20,13 +21,18 @@ class _NameMeaningScreenState extends ConsumerState<NameMeaningScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final all = ref.watch(bibleNamesProvider).valueOrNull ?? const [];
+    final namesAsync = ref.watch(bibleNamesProvider);
+    final loaded = namesAsync.hasValue;
+    final all = namesAsync.valueOrNull ?? const [];
     final matches = matchNames(all, _query);
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.nameTitle)),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.symmetric(
+          horizontal: readableGutter(context),
+          vertical: 16,
+        ),
         children: [
           TextField(
             autofocus: true,
@@ -39,7 +45,9 @@ class _NameMeaningScreenState extends ConsumerState<NameMeaningScreen> {
             onChanged: (value) => setState(() => _query = value),
           ),
           const SizedBox(height: 16),
-          if (_query.trim().length >= 2 && matches.isEmpty)
+          // Only once the list has loaded: while it loads, a fast typist would
+          // otherwise be told their name is missing.
+          if (loaded && _query.trim().length >= 2 && matches.isEmpty)
             Text(l10n.nameNotFound),
           for (final entry in matches)
             _NameCard(entry: entry, typed: _displayName(_query, entry)),

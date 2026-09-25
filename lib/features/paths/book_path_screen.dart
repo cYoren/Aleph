@@ -10,6 +10,7 @@ import '../reading/reading_provider.dart';
 import '../vocabulary/vocabulary_item_tile.dart';
 import 'book_path.dart';
 import 'daily_session.dart';
+import '../../shared/utils/readable_width.dart';
 
 /// How many new words one "learn next" session introduces.
 const _sessionSize = 5;
@@ -70,7 +71,10 @@ class _BookChooser extends ConsumerWidget {
     final names = ref.watch(bookNamesProvider);
 
     return ListView(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: EdgeInsets.symmetric(
+        horizontal: readableGutter(context, minimum: 0),
+        vertical: 8,
+      ),
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
@@ -128,7 +132,10 @@ class _PathBody extends ConsumerWidget {
     void refresh() => ref.invalidate(bookPathProvider(path.book.abbreviation));
 
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.symmetric(
+        horizontal: readableGutter(context),
+        vertical: 16,
+      ),
       children: [
         Text(
           l10n.pathCoverage(known, bookName),
