@@ -22,6 +22,7 @@ import '../audio/recitation_provider.dart';
 import '../explain/explain_provider.dart';
 import '../explain/widgets/explain_sheet.dart';
 import '../audio/widgets/recitation_bar.dart';
+import '../../shared/utils/readable_width.dart';
 
 class ReadingScreen extends ConsumerStatefulWidget {
   const ReadingScreen({super.key});
@@ -371,7 +372,10 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
         child: ListView.builder(
           key: _verseListKey,
           itemCount: readingState.verses.length,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: EdgeInsets.symmetric(
+            horizontal: readableGutter(context),
+            vertical: 8,
+          ),
           itemBuilder: (context, index) {
             final verse = readingState.verses[index];
             final isBeingRecited = ref.watch(

@@ -8,6 +8,7 @@ import '../../providers/books_provider.dart';
 import '../reading/reading_provider.dart';
 import '../../shared/widgets/empty_state.dart';
 import '../../shared/widgets/loading_skeleton.dart';
+import '../../providers/book_names_provider.dart';
 
 class BookmarksScreen extends ConsumerWidget {
   const BookmarksScreen({super.key});
@@ -144,14 +145,17 @@ class _BookmarkCard extends ConsumerWidget {
     final booksAsync = ref.watch(booksProvider);
 
     // Get book name
-    final bookName =
-        booksAsync.whenOrNull(
-          data: (books) => books
-              .where((b) => b.abbreviation == bookmark.bookId)
-              .firstOrNull
-              ?.name,
-        ) ??
-        bookmark.bookId;
+    final bookName = ref
+        .watch(bookNamesProvider)
+        .nameFor(
+          bookmark.bookId,
+          fallback: booksAsync.whenOrNull(
+            data: (books) => books
+                .where((b) => b.abbreviation == bookmark.bookId)
+                .firstOrNull
+                ?.name,
+          ),
+        );
 
     // Format time ago
     final l10n = AppLocalizations.of(context)!;

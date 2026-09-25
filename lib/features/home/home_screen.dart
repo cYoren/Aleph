@@ -10,6 +10,7 @@ import '../../data/models/verse.dart';
 import '../../shared/utils/transliterator.dart';
 import '../../shared/utils/reading_tradition.dart';
 import '../../app/theme.dart';
+import '../../providers/book_names_provider.dart';
 
 const _fallbackTranslationId = 'KJV';
 const _oldTestamentBooks = {
@@ -173,14 +174,17 @@ class HomeScreen extends ConsumerWidget {
     final booksAsync = ref.watch(booksProvider);
 
     // Get book name
-    final bookName =
-        booksAsync.whenOrNull(
-          data: (books) => books
-              .where((b) => b.abbreviation == settings.lastReadBook)
-              .firstOrNull
-              ?.name,
-        ) ??
-        settings.lastReadBook;
+    final bookName = ref
+        .watch(bookNamesProvider)
+        .nameFor(
+          settings.lastReadBook,
+          fallback: booksAsync.whenOrNull(
+            data: (books) => books
+                .where((b) => b.abbreviation == settings.lastReadBook)
+                .firstOrNull
+                ?.name,
+          ),
+        );
 
     // No card, no border: the first thing on the page is a place, set like a
     // title page rather than boxed like a control.
@@ -271,14 +275,17 @@ class HomeScreen extends ConsumerWidget {
               final chapterNum = parts.length > 1 ? parts[1] : '';
               final verseNum = parts.length > 2 ? parts[2] : '';
 
-              final bookName =
-                  booksAsync.whenOrNull(
-                    data: (books) => books
-                        .where((b) => b.abbreviation == bookAbbrev)
-                        .firstOrNull
-                        ?.name,
-                  ) ??
-                  bookAbbrev;
+              final bookName = ref
+                  .watch(bookNamesProvider)
+                  .nameFor(
+                    bookAbbrev,
+                    fallback: booksAsync.whenOrNull(
+                      data: (books) => books
+                          .where((b) => b.abbreviation == bookAbbrev)
+                          .firstOrNull
+                          ?.name,
+                    ),
+                  );
 
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,

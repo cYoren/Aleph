@@ -11,6 +11,7 @@ import '../settings/settings_provider.dart';
 import '../../shared/widgets/empty_state.dart';
 import '../../shared/widgets/loading_skeleton.dart';
 import 'word_search_provider.dart';
+import '../../providers/book_names_provider.dart';
 
 final searchQueryProvider = StateProvider<String>((ref) => '');
 
@@ -307,14 +308,17 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final chapter = parts.length > 1 ? parts[1] : '';
     final verseNum = parts.length > 2 ? parts[2] : '';
 
-    final bookName =
-        booksAsync.whenOrNull(
-          data: (books) => books
-              .where((b) => b.abbreviation == bookAbbrev)
-              .firstOrNull
-              ?.name,
-        ) ??
-        bookAbbrev;
+    final bookName = ref
+        .watch(bookNamesProvider)
+        .nameFor(
+          bookAbbrev,
+          fallback: booksAsync.whenOrNull(
+            data: (books) => books
+                .where((b) => b.abbreviation == bookAbbrev)
+                .firstOrNull
+                ?.name,
+          ),
+        );
 
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
