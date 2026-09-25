@@ -16,6 +16,7 @@ import 'package:timezone/timezone.dart' as tz;
 
 import '../data/database/daos/srs_dao.dart';
 import '../l10n/generated/app_localizations.dart';
+import 'usage_events.dart';
 
 const _prefsKey = 'reviewReminderEnabled';
 const _notificationId = 1;
@@ -75,6 +76,7 @@ class ReviewReminder {
   /// Asks for permission when turning on. Returns the resulting state.
   static Future<bool> setEnabled(bool enabled) async {
     if (enabled && !await _requestPermission()) enabled = false;
+    if (enabled) UsageEvents.record(UsageEvent.reminderEnabled);
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_prefsKey, enabled);
     await reschedule();

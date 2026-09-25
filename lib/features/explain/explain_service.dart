@@ -31,7 +31,14 @@ const String kExplainModel = 'nvidia/nemotron-3.5-lightning:free';
 const String _endpoint = 'https://openrouter.ai/api/v1/chat/completions';
 
 /// Compile-time key. Empty unless supplied with `--dart-define`.
+///
+/// Prefer [kAiProxyUrl] for release builds: a compiled-in key can be pulled
+/// out of the binary.
 const String kCompiledApiKey = String.fromEnvironment('OPENROUTER_API_KEY');
+
+/// The Aleph proxy (proxy/worker.js), which holds the key server-side. When
+/// set, requests go there with no Authorization header.
+const String kAiProxyUrl = String.fromEnvironment('ALEPH_AI_PROXY');
 
 /// Why an explanation could not be produced.
 enum ExplainFailure {
@@ -66,18 +73,21 @@ class ExplainService {
   ExplainService({
     http.Client? client,
     String? apiKeyOverride,
+    String? proxyUrlOverride,
     ExplainHealthStore? health,
   })  : _client = client ?? http.Client(),
         _apiKey = apiKeyOverride ?? kCompiledApiKey,
+        _proxyUrl = proxyUrlOverride ?? kAiProxyUrl,
         _health = health ?? ExplainHealthStore();
 
   final http.Client _client;
   final String _apiKey;
+  final String _proxyUrl;
   final ExplainHealthStore _health;
 
-  /// False when no key was compiled in; the UI hides the feature entirely
-  /// rather than offering a button that cannot work.
-  bool get isConfigured => _apiKey.isNotEmpty;
+  /// False when neither a proxy nor a key was compiled in; the UI hides the
+  /// feature entirely rather than offering a button that cannot work.
+  bool get isConfigured => _proxyUrl.isNotEmpty || _apiKey.isNotEmpty;
 
   /// Explains [reference] to a learner.
   ///
@@ -130,9 +140,9 @@ class ExplainService {
     try {
       response = await _client
           .post(
-            Uri.parse(_endpoint),
+            Uri.parse(_proxyUrl.isNotEmpty ? _proxyUrl : _endpoint),
             headers: {
-              'Authorization': 'Bearer $_apiKey',
+              if (_proxyUrl.isEmpty) 'Authorization': 'Bearer $_apiKey',
               'Content-Type': 'application/json',
               // OpenRouter uses these for attribution on its dashboards.
               'HTTP-Referer': 'https://github.com/cYoren/Aleph',

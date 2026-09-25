@@ -6,6 +6,7 @@ import 'package:flutter/rendering.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../core/usage_events.dart';
 import '../../l10n/generated/app_localizations.dart';
 
 /// A share card rendered to an image: a word or letter in the original script,
@@ -60,6 +61,7 @@ class _ShareCardDialogState extends State<ShareCardDialog> {
       final file = File('${(await getTemporaryDirectory()).path}/aleph.png');
       await file.writeAsBytes(bytes!.buffer.asUint8List());
       await Share.shareXFiles([XFile(file.path)], text: widget.line);
+      UsageEvents.record(UsageEvent.cardShared);
     } finally {
       if (mounted) setState(() => _sharing = false);
     }

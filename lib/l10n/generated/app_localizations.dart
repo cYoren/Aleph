@@ -1705,6 +1705,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Share'**
   String get nameShare;
+
+  /// No description provided for @usageSharingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Share anonymous usage counts'**
+  String get usageSharingTitle;
+
+  /// No description provided for @usageSharingSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Which features get used. Never what you read, and nothing that identifies you.'**
+  String get usageSharingSubtitle;
 }
 
 class _AppLocalizationsDelegate

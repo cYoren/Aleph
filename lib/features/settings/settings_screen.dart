@@ -10,6 +10,8 @@ import 'package:go_router/go_router.dart';
 
 import '../explain/explain_provider.dart';
 import '../../core/review_reminder.dart';
+import '../../core/usage_events.dart';
+import '../explain/explain_service.dart';
 
 const _interfaceLanguages = <String, String>{
   'en': 'English',
@@ -226,6 +228,17 @@ class SettingsScreen extends ConsumerWidget {
               ref.read(reviewReminderProvider.notifier).set(value);
             },
           ),
+          // Only when this build has somewhere to send the counts.
+          if (kAiProxyUrl.isNotEmpty)
+            SwitchListTile(
+              secondary: const Icon(Icons.bar_chart_outlined),
+              title: Text(l10n.usageSharingTitle),
+              subtitle: Text(l10n.usageSharingSubtitle),
+              value: ref.watch(usageSharingProvider),
+              onChanged: (bool value) {
+                ref.read(usageSharingProvider.notifier).set(value);
+              },
+            ),
           // Only shown when a key was compiled into this build; otherwise the
           // feature does not exist and the setting would be a dead switch.
           if (ref.watch(explainConfiguredProvider)) ...[

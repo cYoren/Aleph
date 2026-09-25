@@ -576,5 +576,7 @@
         "type": "int"
       }
     }
-  }
+  },
+  "usageSharingTitle": "Share anonymous usage counts",
+  "usageSharingSubtitle": "Which features get used. Never what you read, and nothing that identifies you."
 }

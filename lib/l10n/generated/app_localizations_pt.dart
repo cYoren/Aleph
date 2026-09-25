@@ -976,4 +976,11 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get nameShare => 'Compartilhar';
+
+  @override
+  String get usageSharingTitle => 'Compartilhar contagens anônimas de uso';
+
+  @override
+  String get usageSharingSubtitle =>
+      'Quais recursos são usados. Nunca o que você lê, nem nada que identifique você.';
 }

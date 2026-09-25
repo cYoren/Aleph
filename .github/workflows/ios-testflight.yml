@@ -100,6 +100,7 @@ jobs:
 
       - name: Create dist profile + set up signing + build
         env:
+          ALEPH_AI_PROXY: ${{ vars.ALEPH_AI_PROXY }}
           FASTLANE_SKIP_UPDATE_CHECK: "1"
           FASTLANE_HIDE_CHANGELOG: "1"
         run: |
@@ -165,7 +166,8 @@ jobs:
           flutter pub get
 
           # 4) Build unsigned, then archive (no -allowProvisioningUpdates - just use our settings)
-          flutter build ios --release --no-codesign
+          # Empty unless the repo variable is set; the AI tutor stays hidden then.
+          flutter build ios --release --no-codesign --dart-define=ALEPH_AI_PROXY="${ALEPH_AI_PROXY:-}"
           xcodebuild -workspace ios/Runner.xcworkspace \
             -scheme Runner \
             -configuration Release \

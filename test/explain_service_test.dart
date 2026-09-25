@@ -137,6 +137,25 @@ void main() {
     });
   });
 
+  group('proxy', () {
+    test('goes to the proxy without sending any key', () async {
+      late http.Request sent;
+      final service = ExplainService(
+        client: MockClient((request) async {
+          sent = request;
+          return _completion('ok');
+        }),
+        apiKeyOverride: '',
+        proxyUrlOverride: 'https://proxy.example/explain',
+      );
+
+      expect(service.isConfigured, isTrue);
+      await _explain(service);
+      expect(sent.url.toString(), 'https://proxy.example/explain');
+      expect(sent.headers.containsKey('Authorization'), isFalse);
+    });
+  });
+
   group('responses', () {
     test('returns the explanation text', () async {
       final service = _service((_) async => _completion('  An explanation.  '));
