@@ -5,6 +5,7 @@ import '../../l10n/generated/app_localizations.dart';
 import '../../providers/word_provider.dart';
 import '../../providers/books_provider.dart';
 import '../utils/morphology_decoder.dart';
+import '../utils/morphology_labels.dart';
 import '../../features/audio/widgets/recitation_bar.dart';
 import '../../features/settings/settings_provider.dart';
 import '../utils/reading_tradition.dart';
@@ -98,6 +99,7 @@ class DefinitionSheet extends ConsumerWidget {
                                   word.morphCode!,
                                   isHebrew,
                                   colorScheme,
+                                  l10n,
                                 ),
                               ],
                             ],
@@ -168,12 +170,18 @@ class DefinitionSheet extends ConsumerWidget {
                             colorScheme,
                           ),
 
-                        if (lexicon.definition != null)
+                        if (lexicon.definition != null) ...[
                           _buildSection(
                             l10n.fullDefinition,
                             lexicon.definition!,
                             colorScheme,
                           ),
+                          if (_isEnglishFallback(
+                            context,
+                            lexicon.definitionLanguage,
+                          ))
+                            _sourceNote(l10n.contentSourceNote, colorScheme),
+                        ],
 
                         // Lemma with proper font
                         _buildLemmaSection(
@@ -195,7 +203,7 @@ class DefinitionSheet extends ConsumerWidget {
 
                         // Scholarly lexicon entry (BDB / Abbott-Smith)
                         if (lexicon.extendedDefinition != null &&
-                            lexicon.extendedDefinition!.isNotEmpty)
+                            lexicon.extendedDefinition!.isNotEmpty) ...[
                           _ExpandableSection(
                             title: lexicon.extendedSource == 'BDB'
                                 ? 'BDB (Brown–Driver–Briggs)'
@@ -204,6 +212,12 @@ class DefinitionSheet extends ConsumerWidget {
                             showMoreLabel: l10n.showMore,
                             showLessLabel: l10n.showLess,
                           ),
+                          if (_isEnglishFallback(
+                            context,
+                            lexicon.extendedDefinitionLanguage,
+                          ))
+                            _sourceNote(l10n.contentSourceNote, colorScheme),
+                        ],
 
                         // Decoded morphology
                         if (word.morphCode != null)
@@ -293,8 +307,14 @@ class DefinitionSheet extends ConsumerWidget {
     String morphCode,
     bool isHebrew,
     ColorScheme colorScheme,
+    AppLocalizations l10n,
   ) {
-    final decoded = MorphologyDecoder.decode(morphCode, isHebrew: isHebrew);
+    final labels = MorphologyLabels.of(l10n);
+    final decoded = MorphologyDecoder.decodeLocalized(
+      morphCode,
+      isHebrew: isHebrew,
+      translate: labels.label,
+    );
     final parts = decoded.split(', ');
     final pos = parts.isNotEmpty ? parts.first : '';
 
@@ -379,7 +399,11 @@ class DefinitionSheet extends ConsumerWidget {
     ColorScheme colorScheme,
     AppLocalizations l10n,
   ) {
-    final decoded = MorphologyDecoder.decode(morphCode, isHebrew: isHebrew);
+    final decoded = MorphologyDecoder.decodeLocalized(
+      morphCode,
+      isHebrew: isHebrew,
+      translate: MorphologyLabels.of(l10n).label,
+    );
     final parts = decoded.split(', ').where((p) => p.isNotEmpty).toList();
 
     return Padding(
@@ -435,8 +459,46 @@ class DefinitionSheet extends ConsumerWidget {
     );
   }
 
-  Widget _buildSection(String title, String content, ColorScheme colorScheme) {
+  /// True when [contentLanguage] means the shown text is still the English
+  /// original while the reader is on another language.
+  bool _isEnglishFallback(BuildContext context, String? contentLanguage) {
+    final appLanguage = Localizations.localeOf(context).languageCode;
+    if (appLanguage == 'en') return false;
+    return contentLanguage == null ||
+        contentLanguage.isEmpty ||
+        contentLanguage == 'en';
+  }
+
+  /// A quiet line telling the reader a section is still in English, so an
+  /// untranslated row is never passed off as a translation.
+  Widget _sourceNote(String text, ColorScheme colorScheme) {
     return Padding(
+      padding: const EdgeInsets.only(bottom: 16, top: -8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            Icons.translate,
+            size: 14,
+            color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+          ),
+          const SizedBox(width: 6),
+          Expanded(
+            child: Text(
+              text,
+              style: TextStyle(
+                fontSize: 11,
+                fontStyle: FontStyle.italic,
+                color: colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSection(String title, String content, ColorScheme colorScheme) {    return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

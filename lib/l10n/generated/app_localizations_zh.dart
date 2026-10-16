@@ -933,4 +933,238 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get usageSharingSubtitle => '只统计哪些功能被使用。绝不包括你读的内容，也没有任何能识别你的信息。';
+
+  @override
+  String get morphHebrew => '希伯来语';
+
+  @override
+  String get morphAramaic => '亚兰语';
+
+  @override
+  String get morphAdjective => '形容词';
+
+  @override
+  String get morphConjunction => '连词';
+
+  @override
+  String get morphAdverb => '副词';
+
+  @override
+  String get morphNoun => '名词';
+
+  @override
+  String get morphPronoun => '代词';
+
+  @override
+  String get morphPreposition => '介词';
+
+  @override
+  String get morphSuffix => '后缀';
+
+  @override
+  String get morphParticle => '小品词';
+
+  @override
+  String get morphVerb => '动词';
+
+  @override
+  String get morphArticle => '冠词';
+
+  @override
+  String get morphInterjection => '感叹词';
+
+  @override
+  String get morphCommon => '普通';
+
+  @override
+  String get morphProper => '专有';
+
+  @override
+  String get morphGentilic => '民族形容词';
+
+  @override
+  String get morphMasculine => '阳性';
+
+  @override
+  String get morphFeminine => '阴性';
+
+  @override
+  String get morphBothGenders => '两性';
+
+  @override
+  String get morphNeuter => '中性';
+
+  @override
+  String get morphSingular => '单数';
+
+  @override
+  String get morphPlural => '复数';
+
+  @override
+  String get morphDual => '双数';
+
+  @override
+  String get morphAbsolute => '绝对';
+
+  @override
+  String get morphConstruct => '构造';
+
+  @override
+  String get morphDetermined => '确定';
+
+  @override
+  String get morphFirstPerson => '第一人称';
+
+  @override
+  String get morphSecondPerson => '第二人称';
+
+  @override
+  String get morphThirdPerson => '第三人称';
+
+  @override
+  String get morphPerfect => '完成式';
+
+  @override
+  String get morphSequentialPerfect => '连续完成式';
+
+  @override
+  String get morphImperfect => '未完成式';
+
+  @override
+  String get morphSequentialImperfect => '连续未完成式';
+
+  @override
+  String get morphCohortative => '劝勉式';
+
+  @override
+  String get morphJussive => '祈使式';
+
+  @override
+  String get morphImperative => '命令式';
+
+  @override
+  String get morphParticipleActive => '主动分词';
+
+  @override
+  String get morphParticiplePassive => '被动分词';
+
+  @override
+  String get morphInfinitiveAbsolute => '绝对不定式';
+
+  @override
+  String get morphInfinitiveConstruct => '构造不定式';
+
+  @override
+  String get morphCardinalNumber => '基数词';
+
+  @override
+  String get morphOrdinalNumber => '序数词';
+
+  @override
+  String get morphDemonstrative => '指示';
+
+  @override
+  String get morphIndefinite => '不定';
+
+  @override
+  String get morphInterrogative => '疑问';
+
+  @override
+  String get morphPersonal => '人称';
+
+  @override
+  String get morphRelative => '关系';
+
+  @override
+  String get morphReciprocal => '相互';
+
+  @override
+  String get morphReflexive => '反身';
+
+  @override
+  String get morphPossessive => '物主';
+
+  @override
+  String get morphCorrelative => '关联';
+
+  @override
+  String get morphDirectional => '方向';
+
+  @override
+  String get morphParagogicHe => '附加 he';
+
+  @override
+  String get morphParagogicNun => '附加 nun';
+
+  @override
+  String get morphPronominal => '代词性';
+
+  @override
+  String get morphPresent => '现在时';
+
+  @override
+  String get morphFuture => '将来时';
+
+  @override
+  String get morphAorist => '不定过去时';
+
+  @override
+  String get morphPluperfect => '过去完成时';
+
+  @override
+  String get morphNoTense => '无时态';
+
+  @override
+  String get morphActive => '主动';
+
+  @override
+  String get morphMiddle => '中动';
+
+  @override
+  String get morphPassive => '被动';
+
+  @override
+  String get morphMiddlePassive => '中动/被动';
+
+  @override
+  String get morphMiddleDeponent => '中动异相动词';
+
+  @override
+  String get morphPassiveDeponent => '被动异相动词';
+
+  @override
+  String get morphMiddlePassiveDeponent => '中动/被动异相动词';
+
+  @override
+  String get morphIndicative => '直陈式';
+
+  @override
+  String get morphSubjunctive => '虚拟式';
+
+  @override
+  String get morphOptative => '祈愿式';
+
+  @override
+  String get morphInfinitive => '不定式';
+
+  @override
+  String get morphParticiple => '分词';
+
+  @override
+  String get morphNominative => '主格';
+
+  @override
+  String get morphGenitive => '属格';
+
+  @override
+  String get morphDative => '与格';
+
+  @override
+  String get morphAccusative => '宾格';
+
+  @override
+  String get morphVocative => '呼格';
+
+  @override
+  String get contentSourceNote => '以英文显示；暂无译文。';
 }

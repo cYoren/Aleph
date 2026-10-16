@@ -86,6 +86,17 @@ if (( gloss_languages < 7 )); then
   exit 1
 fi
 
+# Counting languages alone would pass a language with a handful of rows, so
+# check each one against the number of distinct Strong's ids that carry a gloss.
+glossable_strongs="$(sqlite3 "$DB_PATH" "SELECT COUNT(DISTINCT strongs_id) FROM lexicon WHERE strongs_id IS NOT NULL AND strongs_id != '' AND gloss IS NOT NULL AND gloss != '';")"
+for lang in pt es de fr ru zh ko; do
+  lang_glosses="$(sqlite3 "$DB_PATH" "SELECT COUNT(*) FROM lexicon_gloss_i18n WHERE lang='${lang}';")"
+  if (( glossable_strongs > 0 && lang_glosses * 100 < glossable_strongs * 95 )); then
+    echo "ERROR: translated gloss coverage for '${lang}' is ${lang_glosses}/${glossable_strongs} (below 95%)"
+    exit 1
+  fi
+done
+
 if (( enabled_translations < 8 )); then
   echo "ERROR: Expected at least 8 enabled translations (KJV + DE/RU/PT/ES/FR + ZH + KO), found $enabled_translations"
   exit 1
@@ -191,6 +202,17 @@ fi
 
 echo "Running lexicon enrichment unit tests..."
 python3 "$ROOT_DIR/scripts/test_build_lexicon_enrichment.py" > /dev/null
+
+echo "Running lexicon i18n pipeline tests..."
+python3 "$ROOT_DIR/scripts/test_lexicon_i18n.py" > /dev/null
+
+# Long-form translated content (definition + extended_definition). This reports
+# per-language, per-field coverage and fails on genuine integrity problems
+# (empty or stale rows). Missing translations are reported as a gap rather than
+# a failure, because the content is delivered in batches; add --require-full on
+# the validator once the batch is complete to make a gap fatal.
+echo "Checking translated long-form lexicon coverage..."
+python3 "$ROOT_DIR/scripts/validate_lexicon_i18n.py" --db "$DB_PATH"
 
 echo "OK: database asset and full-release integrity checks passed."
 echo "  books=$books_count distinct_verse_books=$distinct_verse_books verses=$verses_count"

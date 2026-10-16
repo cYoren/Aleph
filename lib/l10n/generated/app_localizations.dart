@@ -1717,6 +1717,474 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Which features get used. Never what you read, and nothing that identifies you.'**
   String get usageSharingSubtitle;
+
+  /// No description provided for @morphHebrew.
+  ///
+  /// In en, this message translates to:
+  /// **'Hebrew'**
+  String get morphHebrew;
+
+  /// No description provided for @morphAramaic.
+  ///
+  /// In en, this message translates to:
+  /// **'Aramaic'**
+  String get morphAramaic;
+
+  /// No description provided for @morphAdjective.
+  ///
+  /// In en, this message translates to:
+  /// **'Adjective'**
+  String get morphAdjective;
+
+  /// No description provided for @morphConjunction.
+  ///
+  /// In en, this message translates to:
+  /// **'Conjunction'**
+  String get morphConjunction;
+
+  /// No description provided for @morphAdverb.
+  ///
+  /// In en, this message translates to:
+  /// **'Adverb'**
+  String get morphAdverb;
+
+  /// No description provided for @morphNoun.
+  ///
+  /// In en, this message translates to:
+  /// **'Noun'**
+  String get morphNoun;
+
+  /// No description provided for @morphPronoun.
+  ///
+  /// In en, this message translates to:
+  /// **'Pronoun'**
+  String get morphPronoun;
+
+  /// No description provided for @morphPreposition.
+  ///
+  /// In en, this message translates to:
+  /// **'Preposition'**
+  String get morphPreposition;
+
+  /// No description provided for @morphSuffix.
+  ///
+  /// In en, this message translates to:
+  /// **'Suffix'**
+  String get morphSuffix;
+
+  /// No description provided for @morphParticle.
+  ///
+  /// In en, this message translates to:
+  /// **'Particle'**
+  String get morphParticle;
+
+  /// No description provided for @morphVerb.
+  ///
+  /// In en, this message translates to:
+  /// **'Verb'**
+  String get morphVerb;
+
+  /// No description provided for @morphArticle.
+  ///
+  /// In en, this message translates to:
+  /// **'Article'**
+  String get morphArticle;
+
+  /// No description provided for @morphInterjection.
+  ///
+  /// In en, this message translates to:
+  /// **'Interjection'**
+  String get morphInterjection;
+
+  /// No description provided for @morphCommon.
+  ///
+  /// In en, this message translates to:
+  /// **'common'**
+  String get morphCommon;
+
+  /// No description provided for @morphProper.
+  ///
+  /// In en, this message translates to:
+  /// **'proper'**
+  String get morphProper;
+
+  /// No description provided for @morphGentilic.
+  ///
+  /// In en, this message translates to:
+  /// **'gentilic'**
+  String get morphGentilic;
+
+  /// No description provided for @morphMasculine.
+  ///
+  /// In en, this message translates to:
+  /// **'masculine'**
+  String get morphMasculine;
+
+  /// No description provided for @morphFeminine.
+  ///
+  /// In en, this message translates to:
+  /// **'feminine'**
+  String get morphFeminine;
+
+  /// No description provided for @morphBothGenders.
+  ///
+  /// In en, this message translates to:
+  /// **'both genders'**
+  String get morphBothGenders;
+
+  /// No description provided for @morphNeuter.
+  ///
+  /// In en, this message translates to:
+  /// **'neuter'**
+  String get morphNeuter;
+
+  /// No description provided for @morphSingular.
+  ///
+  /// In en, this message translates to:
+  /// **'singular'**
+  String get morphSingular;
+
+  /// No description provided for @morphPlural.
+  ///
+  /// In en, this message translates to:
+  /// **'plural'**
+  String get morphPlural;
+
+  /// No description provided for @morphDual.
+  ///
+  /// In en, this message translates to:
+  /// **'dual'**
+  String get morphDual;
+
+  /// No description provided for @morphAbsolute.
+  ///
+  /// In en, this message translates to:
+  /// **'absolute'**
+  String get morphAbsolute;
+
+  /// No description provided for @morphConstruct.
+  ///
+  /// In en, this message translates to:
+  /// **'construct'**
+  String get morphConstruct;
+
+  /// No description provided for @morphDetermined.
+  ///
+  /// In en, this message translates to:
+  /// **'determined'**
+  String get morphDetermined;
+
+  /// No description provided for @morphFirstPerson.
+  ///
+  /// In en, this message translates to:
+  /// **'1st person'**
+  String get morphFirstPerson;
+
+  /// No description provided for @morphSecondPerson.
+  ///
+  /// In en, this message translates to:
+  /// **'2nd person'**
+  String get morphSecondPerson;
+
+  /// No description provided for @morphThirdPerson.
+  ///
+  /// In en, this message translates to:
+  /// **'3rd person'**
+  String get morphThirdPerson;
+
+  /// No description provided for @morphPerfect.
+  ///
+  /// In en, this message translates to:
+  /// **'Perfect'**
+  String get morphPerfect;
+
+  /// No description provided for @morphSequentialPerfect.
+  ///
+  /// In en, this message translates to:
+  /// **'Sequential Perfect'**
+  String get morphSequentialPerfect;
+
+  /// No description provided for @morphImperfect.
+  ///
+  /// In en, this message translates to:
+  /// **'Imperfect'**
+  String get morphImperfect;
+
+  /// No description provided for @morphSequentialImperfect.
+  ///
+  /// In en, this message translates to:
+  /// **'Sequential Imperfect'**
+  String get morphSequentialImperfect;
+
+  /// No description provided for @morphCohortative.
+  ///
+  /// In en, this message translates to:
+  /// **'Cohortative'**
+  String get morphCohortative;
+
+  /// No description provided for @morphJussive.
+  ///
+  /// In en, this message translates to:
+  /// **'Jussive'**
+  String get morphJussive;
+
+  /// No description provided for @morphImperative.
+  ///
+  /// In en, this message translates to:
+  /// **'Imperative'**
+  String get morphImperative;
+
+  /// No description provided for @morphParticipleActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Participle Active'**
+  String get morphParticipleActive;
+
+  /// No description provided for @morphParticiplePassive.
+  ///
+  /// In en, this message translates to:
+  /// **'Participle Passive'**
+  String get morphParticiplePassive;
+
+  /// No description provided for @morphInfinitiveAbsolute.
+  ///
+  /// In en, this message translates to:
+  /// **'Infinitive Absolute'**
+  String get morphInfinitiveAbsolute;
+
+  /// No description provided for @morphInfinitiveConstruct.
+  ///
+  /// In en, this message translates to:
+  /// **'Infinitive Construct'**
+  String get morphInfinitiveConstruct;
+
+  /// No description provided for @morphCardinalNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'cardinal number'**
+  String get morphCardinalNumber;
+
+  /// No description provided for @morphOrdinalNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'ordinal number'**
+  String get morphOrdinalNumber;
+
+  /// No description provided for @morphDemonstrative.
+  ///
+  /// In en, this message translates to:
+  /// **'demonstrative'**
+  String get morphDemonstrative;
+
+  /// No description provided for @morphIndefinite.
+  ///
+  /// In en, this message translates to:
+  /// **'indefinite'**
+  String get morphIndefinite;
+
+  /// No description provided for @morphInterrogative.
+  ///
+  /// In en, this message translates to:
+  /// **'interrogative'**
+  String get morphInterrogative;
+
+  /// No description provided for @morphPersonal.
+  ///
+  /// In en, this message translates to:
+  /// **'personal'**
+  String get morphPersonal;
+
+  /// No description provided for @morphRelative.
+  ///
+  /// In en, this message translates to:
+  /// **'relative'**
+  String get morphRelative;
+
+  /// No description provided for @morphReciprocal.
+  ///
+  /// In en, this message translates to:
+  /// **'reciprocal'**
+  String get morphReciprocal;
+
+  /// No description provided for @morphReflexive.
+  ///
+  /// In en, this message translates to:
+  /// **'reflexive'**
+  String get morphReflexive;
+
+  /// No description provided for @morphPossessive.
+  ///
+  /// In en, this message translates to:
+  /// **'possessive'**
+  String get morphPossessive;
+
+  /// No description provided for @morphCorrelative.
+  ///
+  /// In en, this message translates to:
+  /// **'correlative'**
+  String get morphCorrelative;
+
+  /// No description provided for @morphDirectional.
+  ///
+  /// In en, this message translates to:
+  /// **'directional'**
+  String get morphDirectional;
+
+  /// No description provided for @morphParagogicHe.
+  ///
+  /// In en, this message translates to:
+  /// **'paragogic he'**
+  String get morphParagogicHe;
+
+  /// No description provided for @morphParagogicNun.
+  ///
+  /// In en, this message translates to:
+  /// **'paragogic nun'**
+  String get morphParagogicNun;
+
+  /// No description provided for @morphPronominal.
+  ///
+  /// In en, this message translates to:
+  /// **'pronominal'**
+  String get morphPronominal;
+
+  /// No description provided for @morphPresent.
+  ///
+  /// In en, this message translates to:
+  /// **'Present'**
+  String get morphPresent;
+
+  /// No description provided for @morphFuture.
+  ///
+  /// In en, this message translates to:
+  /// **'Future'**
+  String get morphFuture;
+
+  /// No description provided for @morphAorist.
+  ///
+  /// In en, this message translates to:
+  /// **'Aorist'**
+  String get morphAorist;
+
+  /// No description provided for @morphPluperfect.
+  ///
+  /// In en, this message translates to:
+  /// **'Pluperfect'**
+  String get morphPluperfect;
+
+  /// No description provided for @morphNoTense.
+  ///
+  /// In en, this message translates to:
+  /// **'No tense'**
+  String get morphNoTense;
+
+  /// No description provided for @morphActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get morphActive;
+
+  /// No description provided for @morphMiddle.
+  ///
+  /// In en, this message translates to:
+  /// **'Middle'**
+  String get morphMiddle;
+
+  /// No description provided for @morphPassive.
+  ///
+  /// In en, this message translates to:
+  /// **'Passive'**
+  String get morphPassive;
+
+  /// No description provided for @morphMiddlePassive.
+  ///
+  /// In en, this message translates to:
+  /// **'Middle/Passive'**
+  String get morphMiddlePassive;
+
+  /// No description provided for @morphMiddleDeponent.
+  ///
+  /// In en, this message translates to:
+  /// **'Middle Deponent'**
+  String get morphMiddleDeponent;
+
+  /// No description provided for @morphPassiveDeponent.
+  ///
+  /// In en, this message translates to:
+  /// **'Passive Deponent'**
+  String get morphPassiveDeponent;
+
+  /// No description provided for @morphMiddlePassiveDeponent.
+  ///
+  /// In en, this message translates to:
+  /// **'Middle/Passive Deponent'**
+  String get morphMiddlePassiveDeponent;
+
+  /// No description provided for @morphIndicative.
+  ///
+  /// In en, this message translates to:
+  /// **'Indicative'**
+  String get morphIndicative;
+
+  /// No description provided for @morphSubjunctive.
+  ///
+  /// In en, this message translates to:
+  /// **'Subjunctive'**
+  String get morphSubjunctive;
+
+  /// No description provided for @morphOptative.
+  ///
+  /// In en, this message translates to:
+  /// **'Optative'**
+  String get morphOptative;
+
+  /// No description provided for @morphInfinitive.
+  ///
+  /// In en, this message translates to:
+  /// **'Infinitive'**
+  String get morphInfinitive;
+
+  /// No description provided for @morphParticiple.
+  ///
+  /// In en, this message translates to:
+  /// **'Participle'**
+  String get morphParticiple;
+
+  /// No description provided for @morphNominative.
+  ///
+  /// In en, this message translates to:
+  /// **'Nominative'**
+  String get morphNominative;
+
+  /// No description provided for @morphGenitive.
+  ///
+  /// In en, this message translates to:
+  /// **'Genitive'**
+  String get morphGenitive;
+
+  /// No description provided for @morphDative.
+  ///
+  /// In en, this message translates to:
+  /// **'Dative'**
+  String get morphDative;
+
+  /// No description provided for @morphAccusative.
+  ///
+  /// In en, this message translates to:
+  /// **'Accusative'**
+  String get morphAccusative;
+
+  /// No description provided for @morphVocative.
+  ///
+  /// In en, this message translates to:
+  /// **'Vocative'**
+  String get morphVocative;
+
+  /// No description provided for @contentSourceNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Shown in English; no translation is available yet.'**
+  String get contentSourceNote;
 }
 
 class _AppLocalizationsDelegate
