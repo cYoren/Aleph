@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../shared/utils/hebrew_display.dart';
 import '../../shared/utils/reading_tradition.dart';
 
-// Language to default translation mapping (applied during onboarding only).
+// Language to default translation mapping, unless the reader chose an edition.
 const Map<String, String> languageToTranslation = {
   'en': 'KJV',
   'pt': 'ALMEIDA',
@@ -39,19 +39,32 @@ const Set<String> _supportedAppLanguages = {
 };
 
 String normalizeAppLanguage(String? languageCode) {
-  final normalized = (languageCode ?? '').trim().toLowerCase();
+  final normalized = (languageCode ?? '')
+      .trim()
+      .toLowerCase()
+      .split(RegExp('[-_]'))
+      .first;
   if (_supportedAppLanguages.contains(normalized)) {
     return normalized;
   }
   return 'en';
 }
 
-String normalizeTranslationCode(String? code) {
+String normalizeTranslationCode(String? code, {String languageCode = 'en'}) {
   final normalized = (code ?? '').trim().toUpperCase();
   if (_supportedTranslationIds.contains(normalized)) {
     return normalized;
   }
-  return 'KJV';
+  return languageToTranslation[normalizeAppLanguage(languageCode)] ?? 'KJV';
+}
+
+/// Uses the first supported device language on a new installation.
+String appLanguageForDevice(Iterable<Locale> locales) {
+  for (final locale in locales) {
+    final language = locale.languageCode.toLowerCase();
+    if (_supportedAppLanguages.contains(language)) return language;
+  }
+  return 'en';
 }
 
 String defaultTranslationForLanguage(String languageCode) {
@@ -212,7 +225,11 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
       final lastReadChapter = prefs.getInt('lastReadChapter') ?? 1;
       final showPronunciation = prefs.getBool('showPronunciation') ?? true;
       final storedAppLanguage = prefs.getString('appLanguage');
-      final appLanguage = normalizeAppLanguage(storedAppLanguage);
+      final appLanguage = storedAppLanguage == null
+          ? appLanguageForDevice(
+              WidgetsBinding.instance.platformDispatcher.locales,
+            )
+          : normalizeAppLanguage(storedAppLanguage);
       final hasCompletedOnboarding =
           prefs.getBool('hasCompletedOnboarding') ?? false;
       final learningModeEnabled = prefs.getBool('learningModeEnabled') ?? false;
@@ -240,7 +257,10 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
       // installs that predate it — or that changed language in Settings — were
       // left reading the KJV in a Portuguese interface.
       final translation = hasManuallySelectedTranslation
-          ? normalizeTranslationCode(storedTranslation)
+          ? normalizeTranslationCode(
+              storedTranslation,
+              languageCode: appLanguage,
+            )
           : defaultTranslationForLanguage(appLanguage);
 
       if (storedTranslation != translation) {

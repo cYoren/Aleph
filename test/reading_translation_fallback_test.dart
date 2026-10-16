@@ -20,52 +20,65 @@ class _FakeBibleDAO extends BibleDAO {
 }
 
 void main() {
-  test('falls back to KJV and persists normalized translation', () async {
+  test('a missing chapter never silently substitutes English', () async {
     final dao = _FakeBibleDAO({
-      'ACF': const {},
+      'ALMEIDA': const {},
       'KJV': const {
         'GEN.1.1': 'In the beginning God created the heavens and the earth.',
       },
     });
 
-    final persisted = <String>[];
-
-    final translations = await loadTranslationsWithFallback(
+    final translations = await loadChapterTranslations(
       dao: dao,
       bookId: 'GEN',
       chapter: 1,
-      preferredTranslation: 'ACF',
-      persistNormalizedTranslation: (code) async {
-        persisted.add(code);
-      },
+      translationId: 'ALMEIDA',
     );
 
-    expect(dao.requestedTranslations, equals(['ACF', 'KJV']));
-    expect(translations.isNotEmpty, isTrue);
-    expect(persisted, equals(['KJV']));
+    expect(dao.requestedTranslations, equals(['ALMEIDA']));
+    expect(translations, isEmpty);
   });
 
-  test('does not fallback when preferred translation has data', () async {
+  test('keeps an explicitly selected English translation', () async {
     final dao = _FakeBibleDAO({
       'KJV': const {
         'GEN.1.1': 'In the beginning God created the heavens and the earth.',
       },
     });
 
-    final persisted = <String>[];
-
-    final translations = await loadTranslationsWithFallback(
+    final translations = await loadChapterTranslations(
       dao: dao,
       bookId: 'GEN',
       chapter: 1,
-      preferredTranslation: 'KJV',
-      persistNormalizedTranslation: (code) async {
-        persisted.add(code);
-      },
+      translationId: 'kjv',
     );
 
     expect(dao.requestedTranslations, equals(['KJV']));
     expect(translations.isNotEmpty, isTrue);
-    expect(persisted, isEmpty);
   });
+
+  for (final edition in [
+    'ALMEIDA',
+    'LUTHER1912',
+    'OSTERVALD',
+    'VALERA1909',
+    'SYNODAL',
+    'CUVS',
+    'KOREAN',
+  ]) {
+    test('loads $edition without mixing in English verses', () async {
+      final dao = _FakeBibleDAO({
+        edition: {'GEN.1.1': 'localized-$edition'},
+        'KJV': {'GEN.1.2': 'English fallback'},
+      });
+      final translations = await loadChapterTranslations(
+        dao: dao,
+        bookId: 'GEN',
+        chapter: 1,
+        translationId: ' ${edition.toLowerCase()} ',
+      );
+      expect(translations, {'GEN.1.1': 'localized-$edition'});
+      expect(dao.requestedTranslations, [edition]);
+    });
+  }
 }

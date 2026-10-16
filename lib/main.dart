@@ -1,5 +1,9 @@
+import 'dart:io' show Platform;
+
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:original_bible/shared/constants/app_identity.dart';
 import 'l10n/generated/app_localizations.dart';
@@ -12,6 +16,11 @@ import '../providers/translations_provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  // Desktop (local testing) has no native sqflite; use the FFI factory.
+  if (!kIsWeb && (Platform.isLinux || Platform.isWindows)) {
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
+  }
   ReviewReminder.init(router.push).then((_) => ReviewReminder.reschedule());
   // Recount due words whenever the learner leaves, so tonight's reminder
   // reflects the reviews they just did.
