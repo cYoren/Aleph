@@ -947,4 +947,238 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String get usageSharingSubtitle =>
       '어떤 기능이 쓰이는지만 보냅니다. 읽는 내용이나 신원을 알 수 있는 정보는 절대 보내지 않아요.';
+
+  @override
+  String get morphHebrew => '히브리어';
+
+  @override
+  String get morphAramaic => '아람어';
+
+  @override
+  String get morphAdjective => '형용사';
+
+  @override
+  String get morphConjunction => '접속사';
+
+  @override
+  String get morphAdverb => '부사';
+
+  @override
+  String get morphNoun => '명사';
+
+  @override
+  String get morphPronoun => '대명사';
+
+  @override
+  String get morphPreposition => '전치사';
+
+  @override
+  String get morphSuffix => '접미사';
+
+  @override
+  String get morphParticle => '소사';
+
+  @override
+  String get morphVerb => '동사';
+
+  @override
+  String get morphArticle => '관사';
+
+  @override
+  String get morphInterjection => '감탄사';
+
+  @override
+  String get morphCommon => '보통';
+
+  @override
+  String get morphProper => '고유';
+
+  @override
+  String get morphGentilic => '민족 형용사';
+
+  @override
+  String get morphMasculine => '남성';
+
+  @override
+  String get morphFeminine => '여성';
+
+  @override
+  String get morphBothGenders => '양성';
+
+  @override
+  String get morphNeuter => '중성';
+
+  @override
+  String get morphSingular => '단수';
+
+  @override
+  String get morphPlural => '복수';
+
+  @override
+  String get morphDual => '쌍수';
+
+  @override
+  String get morphAbsolute => '절대';
+
+  @override
+  String get morphConstruct => '구성';
+
+  @override
+  String get morphDetermined => '한정';
+
+  @override
+  String get morphFirstPerson => '1인칭';
+
+  @override
+  String get morphSecondPerson => '2인칭';
+
+  @override
+  String get morphThirdPerson => '3인칭';
+
+  @override
+  String get morphPerfect => '완료';
+
+  @override
+  String get morphSequentialPerfect => '연속 완료';
+
+  @override
+  String get morphImperfect => '미완료';
+
+  @override
+  String get morphSequentialImperfect => '연속 미완료';
+
+  @override
+  String get morphCohortative => '권유형';
+
+  @override
+  String get morphJussive => '의지형';
+
+  @override
+  String get morphImperative => '명령형';
+
+  @override
+  String get morphParticipleActive => '능동 분사';
+
+  @override
+  String get morphParticiplePassive => '수동 분사';
+
+  @override
+  String get morphInfinitiveAbsolute => '절대 부정사';
+
+  @override
+  String get morphInfinitiveConstruct => '구성 부정사';
+
+  @override
+  String get morphCardinalNumber => '기수';
+
+  @override
+  String get morphOrdinalNumber => '서수';
+
+  @override
+  String get morphDemonstrative => '지시';
+
+  @override
+  String get morphIndefinite => '부정';
+
+  @override
+  String get morphInterrogative => '의문';
+
+  @override
+  String get morphPersonal => '인칭';
+
+  @override
+  String get morphRelative => '관계';
+
+  @override
+  String get morphReciprocal => '상호';
+
+  @override
+  String get morphReflexive => '재귀';
+
+  @override
+  String get morphPossessive => '소유';
+
+  @override
+  String get morphCorrelative => '상관';
+
+  @override
+  String get morphDirectional => '방향';
+
+  @override
+  String get morphParagogicHe => '첨가 헤';
+
+  @override
+  String get morphParagogicNun => '첨가 눈';
+
+  @override
+  String get morphPronominal => '대명사적';
+
+  @override
+  String get morphPresent => '현재';
+
+  @override
+  String get morphFuture => '미래';
+
+  @override
+  String get morphAorist => '부정과거';
+
+  @override
+  String get morphPluperfect => '과거완료';
+
+  @override
+  String get morphNoTense => '시제 없음';
+
+  @override
+  String get morphActive => '능동';
+
+  @override
+  String get morphMiddle => '중동';
+
+  @override
+  String get morphPassive => '수동';
+
+  @override
+  String get morphMiddlePassive => '중동/수동';
+
+  @override
+  String get morphMiddleDeponent => '중동 이태동사';
+
+  @override
+  String get morphPassiveDeponent => '수동 이태동사';
+
+  @override
+  String get morphMiddlePassiveDeponent => '중동/수동 이태동사';
+
+  @override
+  String get morphIndicative => '직설법';
+
+  @override
+  String get morphSubjunctive => '가정법';
+
+  @override
+  String get morphOptative => '기원법';
+
+  @override
+  String get morphInfinitive => '부정사';
+
+  @override
+  String get morphParticiple => '분사';
+
+  @override
+  String get morphNominative => '주격';
+
+  @override
+  String get morphGenitive => '속격';
+
+  @override
+  String get morphDative => '여격';
+
+  @override
+  String get morphAccusative => '대격';
+
+  @override
+  String get morphVocative => '호격';
+
+  @override
+  String get contentSourceNote => '영어로 표시됨; 아직 번역이 없습니다.';
 }

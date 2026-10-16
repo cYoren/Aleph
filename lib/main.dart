@@ -3,6 +3,11 @@ import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+// Desktop-only local testing path: the SQLite FFI factory that stands in for
+// the native sqflite plugin on Linux/Windows. It stays a dev dependency because
+// no shipped mobile/macOS build ever imports it, so the analyzer's
+// `depend_on_referenced_packages` hint is intentionally silenced here.
+// ignore: depend_on_referenced_packages
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:original_bible/shared/constants/app_identity.dart';

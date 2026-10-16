@@ -984,4 +984,239 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get usageSharingSubtitle =>
       'Quelles fonctions sont utilisées. Jamais ce que vous lisez, ni rien qui vous identifie.';
+
+  @override
+  String get morphHebrew => 'Hébreu';
+
+  @override
+  String get morphAramaic => 'Araméen';
+
+  @override
+  String get morphAdjective => 'Adjectif';
+
+  @override
+  String get morphConjunction => 'Conjonction';
+
+  @override
+  String get morphAdverb => 'Adverbe';
+
+  @override
+  String get morphNoun => 'Nom';
+
+  @override
+  String get morphPronoun => 'Pronom';
+
+  @override
+  String get morphPreposition => 'Préposition';
+
+  @override
+  String get morphSuffix => 'Suffixe';
+
+  @override
+  String get morphParticle => 'Particule';
+
+  @override
+  String get morphVerb => 'Verbe';
+
+  @override
+  String get morphArticle => 'Article';
+
+  @override
+  String get morphInterjection => 'Interjection';
+
+  @override
+  String get morphCommon => 'commun';
+
+  @override
+  String get morphProper => 'propre';
+
+  @override
+  String get morphGentilic => 'gentilice';
+
+  @override
+  String get morphMasculine => 'masculin';
+
+  @override
+  String get morphFeminine => 'féminin';
+
+  @override
+  String get morphBothGenders => 'les deux genres';
+
+  @override
+  String get morphNeuter => 'neutre';
+
+  @override
+  String get morphSingular => 'singulier';
+
+  @override
+  String get morphPlural => 'pluriel';
+
+  @override
+  String get morphDual => 'duel';
+
+  @override
+  String get morphAbsolute => 'absolu';
+
+  @override
+  String get morphConstruct => 'construit';
+
+  @override
+  String get morphDetermined => 'déterminé';
+
+  @override
+  String get morphFirstPerson => '1re personne';
+
+  @override
+  String get morphSecondPerson => '2e personne';
+
+  @override
+  String get morphThirdPerson => '3e personne';
+
+  @override
+  String get morphPerfect => 'Parfait';
+
+  @override
+  String get morphSequentialPerfect => 'Parfait consécutif';
+
+  @override
+  String get morphImperfect => 'Imparfait';
+
+  @override
+  String get morphSequentialImperfect => 'Imparfait consécutif';
+
+  @override
+  String get morphCohortative => 'Cohortatif';
+
+  @override
+  String get morphJussive => 'Jussif';
+
+  @override
+  String get morphImperative => 'Impératif';
+
+  @override
+  String get morphParticipleActive => 'Participe actif';
+
+  @override
+  String get morphParticiplePassive => 'Participe passif';
+
+  @override
+  String get morphInfinitiveAbsolute => 'Infinitif absolu';
+
+  @override
+  String get morphInfinitiveConstruct => 'Infinitif construit';
+
+  @override
+  String get morphCardinalNumber => 'nombre cardinal';
+
+  @override
+  String get morphOrdinalNumber => 'nombre ordinal';
+
+  @override
+  String get morphDemonstrative => 'démonstratif';
+
+  @override
+  String get morphIndefinite => 'indéfini';
+
+  @override
+  String get morphInterrogative => 'interrogatif';
+
+  @override
+  String get morphPersonal => 'personnel';
+
+  @override
+  String get morphRelative => 'relatif';
+
+  @override
+  String get morphReciprocal => 'réciproque';
+
+  @override
+  String get morphReflexive => 'réfléchi';
+
+  @override
+  String get morphPossessive => 'possessif';
+
+  @override
+  String get morphCorrelative => 'corrélatif';
+
+  @override
+  String get morphDirectional => 'directionnel';
+
+  @override
+  String get morphParagogicHe => 'hé paragogique';
+
+  @override
+  String get morphParagogicNun => 'noun paragogique';
+
+  @override
+  String get morphPronominal => 'pronominal';
+
+  @override
+  String get morphPresent => 'Présent';
+
+  @override
+  String get morphFuture => 'Futur';
+
+  @override
+  String get morphAorist => 'Aoriste';
+
+  @override
+  String get morphPluperfect => 'Plus-que-parfait';
+
+  @override
+  String get morphNoTense => 'Sans temps';
+
+  @override
+  String get morphActive => 'Actif';
+
+  @override
+  String get morphMiddle => 'Moyen';
+
+  @override
+  String get morphPassive => 'Passif';
+
+  @override
+  String get morphMiddlePassive => 'Moyen/Passif';
+
+  @override
+  String get morphMiddleDeponent => 'Déponent moyen';
+
+  @override
+  String get morphPassiveDeponent => 'Déponent passif';
+
+  @override
+  String get morphMiddlePassiveDeponent => 'Déponent moyen/passif';
+
+  @override
+  String get morphIndicative => 'Indicatif';
+
+  @override
+  String get morphSubjunctive => 'Subjonctif';
+
+  @override
+  String get morphOptative => 'Optatif';
+
+  @override
+  String get morphInfinitive => 'Infinitif';
+
+  @override
+  String get morphParticiple => 'Participe';
+
+  @override
+  String get morphNominative => 'Nominatif';
+
+  @override
+  String get morphGenitive => 'Génitif';
+
+  @override
+  String get morphDative => 'Datif';
+
+  @override
+  String get morphAccusative => 'Accusatif';
+
+  @override
+  String get morphVocative => 'Vocatif';
+
+  @override
+  String get contentSourceNote =>
+      'Affiché en anglais ; aucune traduction disponible pour l\'instant.';
 }

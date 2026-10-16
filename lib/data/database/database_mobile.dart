@@ -19,6 +19,13 @@ const int kBundledDatabaseVersion = 3;
 class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._init();
   static final AsyncOnce<Database> _databaseLoader = AsyncOnce<Database>();
+
+  /// Test seam: when set, [database] returns this connection instead of the
+  /// bundled asset. Tests build a minimal in-memory schema to exercise the DAO
+  /// against controlled rows.
+  @visibleForTesting
+  static Database? debugOverrideDatabase;
+
   static const Set<String> _requiredTables = {
     'books',
     'verses',
@@ -34,11 +41,14 @@ class DatabaseHelper {
   DatabaseHelper._init();
 
   Future<Database> get database async {
+    final override = debugOverrideDatabase;
+    if (override != null) return override;
     return _databaseLoader.getOrCreate(() => _initDB('bible.db'));
   }
 
   @visibleForTesting
   Future<void> resetForTesting() async {
+    debugOverrideDatabase = null;
     final database = _databaseLoader.valueOrNull;
     if (database != null && database.isOpen) {
       await database.close();
