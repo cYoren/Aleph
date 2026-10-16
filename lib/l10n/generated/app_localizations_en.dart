@@ -614,7 +614,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get recitationVoiceDesc =>
-      'Read aloud by your device\'s speech voices: Modern Israeli for Hebrew, Modern Greek for Greek. These are living reading traditions, not reconstructed ancient pronunciation.';
+      'Chapters are read by voices built into the app — no download and no internet needed: Modern Greek for the New Testament. Hebrew is read by your device\'s own voice, because no Hebrew voice we are allowed to bundle exists yet. These are living reading traditions, not reconstructed ancient pronunciation.';
 
   @override
   String get voiceMissing =>
@@ -663,7 +663,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingRecitationDesc =>
-      'Press play to hear any chapter read aloud in Hebrew or Greek, by living voices rather than a reconstructed ancient pronunciation. Slow it right down from the speed control until your ear catches up.';
+      'Press play to hear any chapter read aloud. The New Testament is read by a Modern Greek voice built into the app, so it works offline on a fresh install. Hebrew uses your device\'s voice. Slow it right down from the speed control until your ear catches up.';
 
   @override
   String get readingHintTitle => 'Three ways in';
@@ -1211,4 +1211,8 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get contentSourceNote =>
       'Shown in English; no translation is available yet.';
+
+  @override
+  String get recitationVoiceHebrewGap =>
+      'Hebrew uses your device\'s speech voice for now. No Hebrew voice with a license that permits redistribution is available yet.';
 }

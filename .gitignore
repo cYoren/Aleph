@@ -66,3 +66,9 @@ fastlane/report.xml
 # store screenshot raws (regenerate with tool/capture)
 tool/capture/raw/
 tool/capture/failures/
+
+# Bundled TTS voices: large, redistributable, and NOT committed. Prepare them
+# with `python3 scripts/fetch_embedded_voices.py` (pinned URLs + SHA-256), which
+# also writes manifest.json. `assets/voices/` is listed in pubspec.yaml so a
+# build without them fails loudly instead of shipping a silent app.
+assets/voices/

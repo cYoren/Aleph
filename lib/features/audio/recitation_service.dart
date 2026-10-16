@@ -1,9 +1,17 @@
-/// Thin wrapper over the platform speech engine.
+/// Thin wrapper over a speech engine.
 ///
-/// Kept deliberately small and free of app state so the playback logic in
-/// `recitation_provider.dart` can be reasoned about — and so the whole audio
-/// feature degrades to a clear message rather than a crash when a device has
-/// no Hebrew or Greek voice installed.
+/// Two engines sit behind one interface so the playback logic in
+/// `recitation_provider.dart` never has to know which is in use:
+///
+///  * the **bundled** offline voice (sherpa-onnx + a Piper model shipped in the
+///    app), preferred where a voice for the language exists — no install, no
+///    network, works on the first run; and
+///  * the **device** voice via `flutter_tts`, still the path for Hebrew (no
+///    redistributable model exists) and for any platform the bundled engine is
+///    not enabled on.
+///
+/// Kept deliberately small and free of app state, and it degrades to a clear
+/// message rather than a crash when neither engine can read a language.
 library;
 
 import 'dart:async';
@@ -11,6 +19,10 @@ import 'dart:io' show Platform;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+
+import 'embedded_player.dart';
+import 'embedded_tts_engine.dart';
+import 'embedded_voices.dart';
 
 /// Why recitation is or is not available for a language.
 enum VoiceAvailability {
@@ -38,23 +50,53 @@ enum VoiceAvailability {
 /// Halving for both, as this once did, leaves every Android reading at half the
 /// pace the reader chose: the default setting drawls along at a quarter speed,
 /// and the slowest one is barely speech at all.
+///
+/// The bundled engine has no such split — it takes the multiplier directly —
+/// so this is only applied on the device-voice path.
 @visibleForTesting
 double platformSpeechRate(double rate, {required bool isAndroid}) =>
     isAndroid ? rate.clamp(0.1, 4.0) : (rate * 0.5).clamp(0.0, 1.0);
 
 /// Speaks prepared original-language text.
 class RecitationService {
-  RecitationService({FlutterTts? tts}) : _tts = tts ?? FlutterTts() {
+  RecitationService({
+    FlutterTts? tts,
+    EmbeddedTtsEngine? embeddedEngine,
+    EmbeddedPlayer? player,
+  })  : _tts = tts ?? FlutterTts(),
+        _embedded = embeddedEngine,
+        _player = player {
     _installUtteranceHandlers();
   }
 
   final FlutterTts _tts;
+
+  /// Created lazily the first time a bundled voice is used.
+  EmbeddedTtsEngine? _embedded;
+  EmbeddedPlayer? _player;
+
+  /// Set to true by tests that cannot load native libraries, so every language
+  /// uses the device path and behavior stays deterministic.
+  @visibleForTesting
+  static bool debugForceSystemVoices = false;
+
+  /// The bundled engine is enabled on the mobile platforms where the device
+  /// voice is the weak link. macOS ships high-quality voices with the system,
+  /// and desktop Linux is a development target only.
+  bool get _bundledAllowed =>
+      !debugForceSystemVoices &&
+      !kIsWeb &&
+      (Platform.isAndroid || Platform.isIOS);
+
+  /// The bundled voice currently selected, or null when using the device voice.
+  EmbeddedVoice? _activeBundledVoice;
+  double _bundledRate = 1.0;
+
   bool _configured = false;
   String? _currentLanguage;
 
-  /// Resolved when the engine reports the current utterance finished, was
-  /// cancelled, or failed. See [speak] for why the `speak` call itself is not
-  /// what we wait on.
+  /// Resolved when the current utterance finished, was cancelled, or failed.
+  /// See [speak] for why the `speak` call itself is not what we wait on.
   Completer<bool>? _utterance;
 
   /// The tag each requested language is actually spoken with.
@@ -67,6 +109,18 @@ class RecitationService {
   /// Whether the engine has a voice for [languageCode] (a BCP-47 tag).
   Future<VoiceAvailability> availabilityFor(String languageCode) async {
     if (_resolved.containsKey(languageCode)) return VoiceAvailability.ready;
+
+    final bundled = _bundledAllowed ? kEmbeddedVoices[languageCode] : null;
+    if (bundled != null) {
+      final engine = _embedded ??= EmbeddedTtsEngine();
+      if (await engine.prepare(bundled)) {
+        _activeBundledVoice = bundled;
+        _player ??= EmbeddedPlayer();
+        return VoiceAvailability.ready;
+      }
+      // The bundled voice failed to load; fall through to the device voice
+      // rather than declaring speech unsupported.
+    }
 
     try {
       final voice = await _findVoice(languageCode);
@@ -119,11 +173,19 @@ class RecitationService {
   /// Points the engine at a language and speaking rate.
   ///
   /// [rate] is a natural multiplier where 1.0 is an ordinary reading pace; it
-  /// is mapped onto the platform's own scale.
+  /// is mapped onto the platform's own scale on the device path.
   Future<void> configure({
     required String languageCode,
     required double rate,
   }) async {
+    final bundled = _activeBundledVoice;
+    if (bundled != null && bundled.languageCode == languageCode) {
+      // The bundled engine takes the multiplier as-is; nothing to set up.
+      _bundledRate = rate;
+      return;
+    }
+    _activeBundledVoice = null;
+
     if (!_configured) {
       // Makes `speak` complete only when the utterance has finished, which is
       // what lets us read a chapter verse by verse without racing.
@@ -213,6 +275,16 @@ class RecitationService {
   Future<bool> speak(String text) async {
     if (text.trim().isEmpty) return true;
 
+    final bundled = _activeBundledVoice;
+    if (bundled != null) {
+      final engine = _embedded;
+      final player = _player;
+      if (engine == null || player == null) return false;
+      final synthesis = await engine.synthesize(text, speed: _bundledRate);
+      if (synthesis == null) return false;
+      return player.play(synthesis.toWav());
+    }
+
     // Nothing should still be waiting, but an abandoned utterance must not
     // capture the callback that belongs to this one.
     _settleUtterance(false);
@@ -244,6 +316,7 @@ class RecitationService {
 
   /// Stops the current utterance immediately.
   Future<void> stop() async {
+    await _player?.stop();
     try {
       await _tts.stop();
     } catch (e) {
@@ -259,5 +332,10 @@ class RecitationService {
 
   void dispose() {
     unawaited(stop());
+    _embedded?.dispose();
+    unawaited(_player?.dispose());
+    _embedded = null;
+    _player = null;
+    _activeBundledVoice = null;
   }
 }

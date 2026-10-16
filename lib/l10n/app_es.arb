@@ -237,7 +237,7 @@
   "phraseSpacingTitle": "Espaciado por frases",
   "phraseSpacingDesc": "Espacia el texto hebreo en los acentos masoréticos, para leer el versículo en unidades de sentido y no palabra por palabra.",
   "recitationVoiceTitle": "Voz de lectura",
-  "recitationVoiceDesc": "Lectura con las voces de tu dispositivo: hebreo israelí moderno y griego moderno. Son tradiciones vivas de lectura, no la pronunciación antigua reconstruida.",
+  "recitationVoiceDesc": "Los capítulos se leen con voces integradas en la aplicación: sin descargas y sin internet. Griego moderno para el Nuevo Testamento. El hebreo lo lee la propia voz de tu dispositivo, porque aún no existe ninguna voz hebrea que tengamos permiso de incluir. Son tradiciones de lectura vivas, no una pronunciación antigua reconstruida.",
   "voiceMissing": "Tu dispositivo necesita una voz en hebreo o griego para leer en voz alta. Instalar una lleva un momento y solo hay que hacerlo una vez.",
   "voiceUnsupported": "Este dispositivo no tiene ningún motor de voz disponible.",
   "voiceInstall": "Instalar voz",
@@ -287,7 +287,7 @@
     }
   },
   "onboardingRecitationTitle": "Escucha la recitación",
-  "onboardingRecitationDesc": "Pulsa reproducir para escuchar cualquier capítulo leído en voz alta en hebreo o griego, con voces vivas en lugar de una pronunciación antigua reconstruida. Reduce la velocidad hasta que tu oído se acostumbre.",
+  "onboardingRecitationDesc": "Pulsa reproducir para oír cualquier capítulo en voz alta. El Nuevo Testamento lo lee una voz de griego moderno integrada en la aplicación, así que funciona sin conexión en una instalación nueva. El hebreo usa la voz de tu dispositivo. Baja mucho la velocidad con el control hasta que tu oído la siga.",
   "readingHintTitle": "Tres formas de empezar",
   "readingHintBody": "Toca una palabra para ver su significado completo. Mantén pulsado para una vista rápida sin perder tu lugar. Pulsa ▶ arriba para escuchar el capítulo recitado.",
   "readingHintDismiss": "Entendido",
@@ -453,5 +453,6 @@
   "morphDative": "Dativo",
   "morphAccusative": "Acusativo",
   "morphVocative": "Vocativo",
-  "contentSourceNote": "Se muestra en inglés; aún no hay traducción disponible."
+  "contentSourceNote": "Se muestra en inglés; aún no hay traducción disponible.",
+  "recitationVoiceHebrewGap": "Por ahora, el hebreo usa la voz de lectura de tu dispositivo. Todavía no hay disponible ninguna voz hebrea con una licencia que permita su redistribución."
 }

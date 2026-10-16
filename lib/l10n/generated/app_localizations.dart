@@ -1157,7 +1157,7 @@ abstract class AppLocalizations {
   /// No description provided for @recitationVoiceDesc.
   ///
   /// In en, this message translates to:
-  /// **'Read aloud by your device\'s speech voices: Modern Israeli for Hebrew, Modern Greek for Greek. These are living reading traditions, not reconstructed ancient pronunciation.'**
+  /// **'Chapters are read by voices built into the app — no download and no internet needed: Modern Greek for the New Testament. Hebrew is read by your device\'s own voice, because no Hebrew voice we are allowed to bundle exists yet. These are living reading traditions, not reconstructed ancient pronunciation.'**
   String get recitationVoiceDesc;
 
   /// No description provided for @voiceMissing.
@@ -1229,7 +1229,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingRecitationDesc.
   ///
   /// In en, this message translates to:
-  /// **'Press play to hear any chapter read aloud in Hebrew or Greek, by living voices rather than a reconstructed ancient pronunciation. Slow it right down from the speed control until your ear catches up.'**
+  /// **'Press play to hear any chapter read aloud. The New Testament is read by a Modern Greek voice built into the app, so it works offline on a fresh install. Hebrew uses your device\'s voice. Slow it right down from the speed control until your ear catches up.'**
   String get onboardingRecitationDesc;
 
   /// No description provided for @readingHintTitle.
@@ -2185,6 +2185,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Shown in English; no translation is available yet.'**
   String get contentSourceNote;
+
+  /// No description provided for @recitationVoiceHebrewGap.
+  ///
+  /// In en, this message translates to:
+  /// **'Hebrew uses your device\'s speech voice for now. No Hebrew voice with a license that permits redistribution is available yet.'**
+  String get recitationVoiceHebrewGap;
 }
 
 class _AppLocalizationsDelegate

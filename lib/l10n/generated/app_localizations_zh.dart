@@ -596,7 +596,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get recitationVoiceDesc =>
-      '使用设备的语音朗读：希伯来文为现代以色列发音，希腊文为现代希腊发音。这是沿用至今的诵读传统，并非重建的古代发音。';
+      '各章由内置于应用中的语音朗读——无需下载，也无需联网：新约使用现代希腊语。希伯来语由您设备自带的语音朗读，因为我们尚无权捆绑任何希伯来语语音。这些都是活生生的诵读传统，而非重构的古代发音。';
 
   @override
   String get voiceMissing => '朗读需要设备安装希伯来语或希腊语语音。安装只需片刻，且只需一次。';
@@ -643,7 +643,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get onboardingRecitationDesc =>
-      '点按播放键，即可听到任意一章用希伯来语或希腊语朗读——使用的是现代通行的发音，而非重建的古代发音。可将语速调慢，直到耳朵跟得上为止。';
+      '点按播放即可聆听任何章节的朗读。新约由内置于应用中的现代希腊语语音朗读，因此全新安装后也能离线使用。希伯来语使用您设备的语音。用速度控制大幅调慢，直到您的耳朵跟上。';
 
   @override
   String get readingHintTitle => '三种入门方式';
@@ -1167,4 +1167,8 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get contentSourceNote => '以英文显示；暂无译文。';
+
+  @override
+  String get recitationVoiceHebrewGap =>
+      '目前希伯来语使用您设备的语音朗读功能。尚无允许再分发的希伯来语语音许可可用。';
 }

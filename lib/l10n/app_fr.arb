@@ -237,7 +237,7 @@
   "phraseSpacingTitle": "Espacement par groupes de sens",
   "phraseSpacingDesc": "Espace le texte hébreu aux accents massorétiques, afin de lire le verset par unités de sens plutôt que mot à mot.",
   "recitationVoiceTitle": "Voix de lecture",
-  "recitationVoiceDesc": "Lecture par les voix de synthèse de votre appareil : hébreu israélien moderne et grec moderne. Ce sont des traditions de lecture vivantes, et non la prononciation antique reconstituée.",
+  "recitationVoiceDesc": "Les chapitres sont lus par des voix intégrées à l'application — sans téléchargement ni internet : le grec moderne pour le Nouveau Testament. L'hébreu est lu par la voix de votre appareil, car aucune voix hébraïque que nous sommes autorisés à intégrer n'existe encore. Ce sont des traditions de lecture vivantes, et non une prononciation ancienne reconstituée.",
   "voiceMissing": "Votre appareil a besoin d'une voix hébraïque ou grecque pour lire à voix haute. L'installation prend un instant et ne se fait qu'une fois.",
   "voiceUnsupported": "Aucun moteur de synthèse vocale n'est disponible sur cet appareil.",
   "voiceInstall": "Installer une voix",
@@ -287,7 +287,7 @@
     }
   },
   "onboardingRecitationTitle": "Écoutez la récitation",
-  "onboardingRecitationDesc": "Appuyez sur lecture pour entendre n'importe quel chapitre lu à voix haute en hébreu ou en grec, avec des voix vivantes plutôt qu'une prononciation antique reconstituée. Ralentissez le rythme jusqu'à ce que votre oreille suive.",
+  "onboardingRecitationDesc": "Appuyez sur lecture pour entendre n'importe quel chapitre lu à voix haute. Le Nouveau Testament est lu par une voix de grec moderne intégrée à l'application, donc cela fonctionne hors ligne dès l'installation. L'hébreu utilise la voix de votre appareil. Ralentissez fortement avec le contrôle de vitesse jusqu'à ce que votre oreille suive.",
   "readingHintTitle": "Trois façons de commencer",
   "readingHintBody": "Touchez un mot pour voir son sens complet. Restez appuyé pour un aperçu rapide sans perdre votre place. Appuyez sur ▶ ci-dessus pour entendre le chapitre récité.",
   "readingHintDismiss": "Compris",
@@ -453,5 +453,6 @@
   "morphDative": "Datif",
   "morphAccusative": "Accusatif",
   "morphVocative": "Vocatif",
-  "contentSourceNote": "Affiché en anglais ; aucune traduction disponible pour l'instant."
+  "contentSourceNote": "Affiché en anglais ; aucune traduction disponible pour l'instant.",
+  "recitationVoiceHebrewGap": "Pour l'instant, l'hébreu utilise la voix de synthèse de votre appareil. Aucune voix hébraïque sous une licence autorisant la redistribution n'est encore disponible."
 }
