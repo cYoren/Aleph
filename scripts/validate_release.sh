@@ -205,6 +205,7 @@ python3 "$ROOT_DIR/scripts/test_build_lexicon_enrichment.py" > /dev/null
 
 echo "Running lexicon i18n pipeline tests..."
 python3 "$ROOT_DIR/scripts/test_lexicon_i18n.py" > /dev/null
+python3 "$ROOT_DIR/scripts/test_translation_delivery.py" > /dev/null
 
 # Long-form translated content (definition + extended_definition). This reports
 # per-language, per-field coverage and fails on genuine integrity problems
@@ -213,6 +214,13 @@ python3 "$ROOT_DIR/scripts/test_lexicon_i18n.py" > /dev/null
 # the validator once the batch is complete to make a gap fatal.
 echo "Checking translated long-form lexicon coverage..."
 python3 "$ROOT_DIR/scripts/validate_lexicon_i18n.py" --db "$DB_PATH"
+
+# Once translated caches are supplied, require a complete validated delivery
+# and its incorporation into the actual release database, not just cache files.
+if compgen -G "$ROOT_DIR/data/lexicon_translations/[a-z][a-z].json" > /dev/null; then
+  python3 "$ROOT_DIR/scripts/validate_translation_delivery.py" --db "$DB_PATH"
+  python3 "$ROOT_DIR/scripts/validate_lexicon_i18n.py" --db "$DB_PATH" --require-full
+fi
 
 echo "OK: database asset and full-release integrity checks passed."
 echo "  books=$books_count distinct_verse_books=$distinct_verse_books verses=$verses_count"
