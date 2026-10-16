@@ -61,19 +61,25 @@ double platformSpeechRate(double rate, {required bool isAndroid}) =>
 class RecitationService {
   RecitationService({
     FlutterTts? tts,
-    EmbeddedTtsEngine? embeddedEngine,
-    EmbeddedPlayer? player,
-  })  : _tts = tts ?? FlutterTts(),
-        _embedded = embeddedEngine,
-        _player = player {
+    EmbeddedSpeechEngine? embeddedEngine,
+    EmbeddedAudioPlayer? player,
+    bool? enableEmbeddedVoices,
+  }) : _tts = tts ?? FlutterTts(),
+       _embedded = embeddedEngine,
+       _player = player,
+       _enableEmbeddedVoices = enableEmbeddedVoices {
     _installUtteranceHandlers();
   }
 
   final FlutterTts _tts;
 
   /// Created lazily the first time a bundled voice is used.
-  EmbeddedTtsEngine? _embedded;
-  EmbeddedPlayer? _player;
+  EmbeddedSpeechEngine? _embedded;
+  EmbeddedAudioPlayer? _player;
+  final bool? _enableEmbeddedVoices;
+  int _speechGeneration = 0;
+  bool _disposed = false;
+  EmbeddedVoice? _preparedBundledVoice;
 
   /// Set to true by tests that cannot load native libraries, so every language
   /// uses the device path and behavior stays deterministic.
@@ -86,7 +92,7 @@ class RecitationService {
   bool get _bundledAllowed =>
       !debugForceSystemVoices &&
       !kIsWeb &&
-      (Platform.isAndroid || Platform.isIOS);
+      (_enableEmbeddedVoices ?? (Platform.isAndroid || Platform.isIOS));
 
   /// The bundled voice currently selected, or null when using the device voice.
   EmbeddedVoice? _activeBundledVoice;
@@ -108,13 +114,14 @@ class RecitationService {
 
   /// Whether the engine has a voice for [languageCode] (a BCP-47 tag).
   Future<VoiceAvailability> availabilityFor(String languageCode) async {
-    if (_resolved.containsKey(languageCode)) return VoiceAvailability.ready;
+    if (_disposed) return VoiceAvailability.unsupported;
 
     final bundled = _bundledAllowed ? kEmbeddedVoices[languageCode] : null;
     if (bundled != null) {
       final engine = _embedded ??= EmbeddedTtsEngine();
       if (await engine.prepare(bundled)) {
-        _activeBundledVoice = bundled;
+        if (_disposed) return VoiceAvailability.unsupported;
+        _preparedBundledVoice = bundled;
         _player ??= EmbeddedPlayer();
         return VoiceAvailability.ready;
       }
@@ -122,6 +129,7 @@ class RecitationService {
       // rather than declaring speech unsupported.
     }
 
+    if (_resolved.containsKey(languageCode)) return VoiceAvailability.ready;
     try {
       final voice = await _findVoice(languageCode);
       if (voice == null) return VoiceAvailability.voiceMissing;
@@ -178,10 +186,12 @@ class RecitationService {
     required String languageCode,
     required double rate,
   }) async {
-    final bundled = _activeBundledVoice;
+    if (_disposed) return;
+    final bundled = _preparedBundledVoice;
     if (bundled != null && bundled.languageCode == languageCode) {
       // The bundled engine takes the multiplier as-is; nothing to set up.
       _bundledRate = rate;
+      _activeBundledVoice = bundled;
       return;
     }
     _activeBundledVoice = null;
@@ -273,7 +283,9 @@ class RecitationService {
   ///
   /// Returns false when the engine refused or failed the utterance.
   Future<bool> speak(String text) async {
+    if (_disposed) return false;
     if (text.trim().isEmpty) return true;
+    final generation = _speechGeneration;
 
     final bundled = _activeBundledVoice;
     if (bundled != null) {
@@ -281,7 +293,9 @@ class RecitationService {
       final player = _player;
       if (engine == null || player == null) return false;
       final synthesis = await engine.synthesize(text, speed: _bundledRate);
-      if (synthesis == null) return false;
+      if (synthesis == null || generation != _speechGeneration || _disposed) {
+        return false;
+      }
       return player.play(synthesis.toWav());
     }
 
@@ -316,6 +330,7 @@ class RecitationService {
 
   /// Stops the current utterance immediately.
   Future<void> stop() async {
+    _speechGeneration++;
     await _player?.stop();
     try {
       await _tts.stop();
@@ -331,6 +346,8 @@ class RecitationService {
   }
 
   void dispose() {
+    if (_disposed) return;
+    _disposed = true;
     unawaited(stop());
     _embedded?.dispose();
     unawaited(_player?.dispose());

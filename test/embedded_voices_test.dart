@@ -1,7 +1,32 @@
+import 'dart:io';
+
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:original_bible/features/audio/embedded_voices.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
+  test('the Flutter bundle contains every voice and phonemizer file', () async {
+    final manifest = await AssetManifest.loadFromAssetBundle(rootBundle);
+    final bundled = manifest.listAssets().toSet();
+    for (final voice in kEmbeddedVoices.values) {
+      final files = Directory(
+        'assets/voices/${voice.id}',
+      ).listSync(recursive: true).whereType<File>();
+      expect(files, isNotEmpty);
+      for (final file in files) {
+        expect(
+          bundled,
+          contains(file.path),
+          reason: 'Missing from app: ${file.path}',
+        );
+      }
+      expect(bundled, contains('${voice.dataDirAsset}/phondata'));
+      expect(bundled, contains('${voice.dataDirAsset}/lang/grk/el'));
+    }
+  });
+
   group('embedded voice registry', () {
     test('ships a Greek voice and no Hebrew voice', () {
       expect(kEmbeddedVoices.containsKey('el-GR'), isTrue);

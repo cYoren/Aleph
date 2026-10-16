@@ -21,14 +21,19 @@ database where the originals and the translations are deliberately different:
 from __future__ import annotations
 
 import pathlib
+import contextlib
+import io
 import sqlite3
 import sys
 import tempfile
 import unittest
+from unittest import mock
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 
 import lexicon_definitions_i18n as i18n  # noqa: E402
+import validate_lexicon_i18n as validator  # noqa: E402
+import translate_lexicon_definitions as translator  # noqa: E402
 
 
 def make_db() -> sqlite3.Connection:
@@ -180,6 +185,65 @@ class EmptyTest(unittest.TestCase):
                 "SELECT COUNT(*) FROM lexicon_definition_i18n"
             ).fetchone()[0]
             self.assertEqual(count, 0)
+
+
+class ValidationTest(unittest.TestCase):
+    def _validate(self, db, *flags):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = pathlib.Path(tmp) / 'fixture.db'
+            db.commit()
+            copy = sqlite3.connect(path)
+            db.backup(copy)
+            copy.close()
+            with mock.patch.object(sys, 'argv', ['validate', '--db', str(path), *flags]), \
+                    contextlib.redirect_stdout(io.StringIO()), \
+                    contextlib.redirect_stderr(io.StringIO()):
+                return validator.main()
+
+    def test_full_coverage_requires_all_seven_languages(self):
+        db = make_db()
+        db.execute(i18n.SCHEMA)
+        for row in i18n.source_rows_with_hashes(db):
+            db.execute(
+                'INSERT INTO lexicon_definition_i18n '
+                '(lemma, lang, definition, extended_definition, '
+                'source_definition_sha256, source_extended_sha256) VALUES (?, ?, ?, ?, ?, ?)',
+                (row['lemma'], 'pt', 'Tradução.', 'Nota.' if row['extended_definition'] else None,
+                 row['definition_sha256'], row['extended_definition_sha256']),
+            )
+        self.assertEqual(self._validate(db, '--require-full'), 1)
+
+    def test_empty_table_does_not_satisfy_full_coverage(self):
+        db = make_db()
+        db.execute(i18n.SCHEMA)
+        self.assertEqual(self._validate(db, '--require-full'), 1)
+
+    def test_missing_source_hash_is_an_integrity_failure(self):
+        db = make_db()
+        db.execute(i18n.SCHEMA)
+        db.execute("INSERT INTO lexicon_definition_i18n (lemma, lang, definition) "
+                   "VALUES ('א', 'pt', 'Tradução sem origem verificada.')")
+        self.assertEqual(self._validate(db), 1)
+
+    def test_partial_field_translation_is_a_gap_not_corruption(self):
+        db = make_db()
+        db.execute(i18n.SCHEMA)
+        db.execute('INSERT INTO lexicon_definition_i18n '
+                   '(lemma, lang, definition, source_definition_sha256) VALUES (?, ?, ?, ?)',
+                   ('א', 'pt', 'Primeira definição.', i18n.sha256_text('First definition.')))
+        self.assertEqual(self._validate(db), 0)
+        self.assertEqual(self._validate(db, '--require-full'), 1)
+
+
+class TranslationResponseTest(unittest.TestCase):
+    def test_partial_model_response_is_not_accepted_as_a_complete_batch(self):
+        response = mock.MagicMock()
+        response.read.return_value = b'{"choices":[{"message":{"content":"{\\"first\\":\\"Traduzido\\"}"}}]}'
+        with mock.patch.object(translator.urllib.request, 'urlopen') as request:
+            request.return_value.__enter__.return_value = response
+            with self.assertRaises(ValueError):
+                translator.request_batch('fake-test-key', 'test-model', 'pt',
+                                         {'first': 'First text', 'second': 'Second text'}, 1, 100)
 
 
 if __name__ == "__main__":

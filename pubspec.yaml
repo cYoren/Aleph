@@ -81,6 +81,44 @@ flutter:
     # `python3 scripts/fetch_embedded_voices.py`; the archive cache and the
     # manifest are intentionally not bundled.
     - assets/voices/el_GR-rapunzelina-low/
+    # Flutter does not recursively include subdirectories. The phonemizer
+    # needs these alongside the model, including the Greek language rules.
+    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/
+    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/
+    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/aav/
+    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/art/
+    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/azc/
+    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/bat/
+    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/bnt/
+    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/ccs/
+    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/cel/
+    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/cus/
+    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/dra/
+    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/esx/
+    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/gmq/
+    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/gmw/
+    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/grk/
+    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/inc/
+    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/ine/
+    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/ira/
+    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/iro/
+    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/itc/
+    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/jpx/
+    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/map/
+    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/miz/
+    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/myn/
+    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/poz/
+    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/roa/
+    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/sai/
+    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/sem/
+    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/sit/
+    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/tai/
+    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/trk/
+    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/urj/
+    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/zle/
+    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/zls/
+    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/zlw/
+    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/voices/!v/
   
   fonts:
     - family: EzraSIL

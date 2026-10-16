@@ -20,11 +20,14 @@ library;
 
 import 'dart:io';
 
+import 'package:original_bible/features/audio/recitation_text.dart';
 import 'package:original_bible/features/audio/wav_encoder.dart';
 import 'package:sherpa_onnx/sherpa_onnx.dart' as sherpa;
 
 void main(List<String> args) {
-  final voiceDir = args.isNotEmpty ? args[0] : 'assets/voices/el_GR-rapunzelina-low';
+  final voiceDir = args.isNotEmpty
+      ? args[0]
+      : 'assets/voices/el_GR-rapunzelina-low';
   final outDir = args.length > 1 ? args[1] : '/tmp/aleph-samples';
 
   sherpa.initBindings();
@@ -48,8 +51,14 @@ void main(List<String> args) {
   print('numSpeakers=${tts.numSpeakers} sampleRate=${tts.sampleRate}');
 
   const phrases = {
-    'el-john1-1-normal': (1.0, 'Εν αρχή ήταν ο λόγος, και ο λόγος ήταν προς τον Θεό, και Θεός ήταν ο λόγος.'),
-    'el-john1-1-slow': (0.5, 'Εν αρχή ήταν ο λόγος, και ο λόγος ήταν προς τον Θεό, και Θεός ήταν ο λόγος.'),
+    'el-john1-1-normal': (
+      1.0,
+      'Ἐν ἀρχῇ ἦν ὁ λόγος, καὶ ὁ λόγος ἦν πρὸς τὸν θεόν, καὶ θεὸς ἦν ὁ λόγος.',
+    ),
+    'el-john1-1-slow': (
+      0.5,
+      'Ἐν ἀρχῇ ἦν ὁ λόγος, καὶ ὁ λόγος ἦν πρὸς τὸν θεόν, καὶ θεὸς ἦν ὁ λόγος.',
+    ),
     'el-word-logos': (0.7, 'λόγος'),
     'el-word-agape': (0.7, 'αγάπη'),
   };
@@ -57,11 +66,19 @@ void main(List<String> args) {
   Directory(outDir).createSync(recursive: true);
   for (final entry in phrases.entries) {
     final (speed, text) = entry.value;
-    final audio = tts.generate(text: text, sid: 0, speed: speed);
+    final audio = tts.generate(
+      text: prepareForSpeech(text, isHebrew: false),
+      sid: 0,
+      speed: speed,
+    );
     final path = '$outDir/${entry.key}.wav';
     File(path).writeAsBytesSync(encodeWav16(audio.samples, audio.sampleRate));
-    final seconds = audio.sampleRate == 0 ? 0 : audio.samples.length / audio.sampleRate;
-    print('${entry.key}: ${seconds.toStringAsFixed(2)}s @ ${audio.sampleRate}Hz -> $path');
+    final seconds = audio.sampleRate == 0
+        ? 0
+        : audio.samples.length / audio.sampleRate;
+    print(
+      '${entry.key}: ${seconds.toStringAsFixed(2)}s @ ${audio.sampleRate}Hz -> $path',
+    );
   }
 
   tts.free();

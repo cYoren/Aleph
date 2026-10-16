@@ -153,11 +153,14 @@ def request_batch(
     parsed = json.loads(content)
     if not isinstance(parsed, dict):
         raise ValueError("model did not return a JSON object")
-    return {
+    result = {
         key: value.strip()
         for key, value in parsed.items()
         if key in batch and isinstance(value, str) and value.strip()
     }
+    if set(result) != set(batch):
+        raise ValueError('model response omitted entries or returned empty translations')
+    return result
 
 
 def translate_language(
@@ -165,14 +168,14 @@ def translate_language(
     db_path: pathlib.Path,
     api_key: str,
     args: argparse.Namespace,
-) -> None:
+) -> bool:
     pending = read_pending(lang, db_path, args)
     total = sum(len(batch) for batch in pending.values())
     if total == 0:
         cache = load_cache(lang)
         cached = sum(len(cache.get(f, {})) for f in FIELDS)
         print(f"[{lang}] nothing to do ({cached} unique texts cached)")
-        return
+        return True
 
     cache = load_cache(lang)
     print(
@@ -181,6 +184,7 @@ def translate_language(
         f"({total} unique texts)"
     )
 
+    succeeded = True
     for field in FIELDS:
         items = list(pending[field].items())
         if not items:
@@ -208,7 +212,7 @@ def translate_language(
                             "fixing OPENROUTER_API_KEY.",
                             file=sys.stderr,
                         )
-                        return
+                        return False
                     wait = args.backoff * attempt
                     print(
                         f"[{lang}/{field}] batch at {start} failed "
@@ -225,11 +229,13 @@ def translate_language(
                     )
                     time.sleep(args.backoff)
             else:
+                succeeded = False
                 print(f"[{lang}/{field}] giving up on batch at {start}", file=sys.stderr)
             time.sleep(args.delay)
 
     cached = sum(len(cache.get(f, {})) for f in FIELDS)
     print(f"[{lang}] done: {cached} unique texts cached")
+    return succeeded
 
 
 def main() -> int:
@@ -266,8 +272,11 @@ def main() -> int:
 
     languages = [lang.strip() for lang in args.languages.split(",") if lang.strip()]
     unknown = [lang for lang in languages if lang not in LANGUAGES]
-    if unknown:
+    if not languages or unknown:
         print(f"Unknown language(s): {', '.join(unknown)}", file=sys.stderr)
+        return 2
+    if args.batch_size < 1 or args.retries < 1 or args.limit < 0:
+        print('Batch size and retries must be positive; limit cannot be negative.', file=sys.stderr)
         return 2
 
     db = sqlite3.connect(args.db)
@@ -311,7 +320,8 @@ def main() -> int:
             }
         )
         save_cache(lang, {**empty_cache(lang), **cache})
-        translate_language(lang, args.db, api_key, args)
+        if not translate_language(lang, args.db, api_key, args):
+            return 1
 
     return 0
 

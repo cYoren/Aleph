@@ -31,7 +31,7 @@ import 'embedded_voices.dart';
 import 'wav_encoder.dart';
 
 /// Bump when the bundled voice files change so installed copies re-provision.
-const int kBundledVoiceVersion = 1;
+const int kBundledVoiceVersion = 2;
 
 /// Synthesized audio: mono PCM plus its sample rate.
 class EmbeddedSynthesis {
@@ -48,32 +48,57 @@ class EmbeddedSynthesis {
 }
 
 /// Loads a bundled voice and synthesizes with it off the UI thread.
-class EmbeddedTtsEngine {
+abstract interface class EmbeddedSpeechEngine {
+  Future<bool> prepare(EmbeddedVoice voice);
+  Future<EmbeddedSynthesis?> synthesize(String text, {double speed = 1.0});
+  void dispose();
+}
+
+class EmbeddedTtsEngine implements EmbeddedSpeechEngine {
+  EmbeddedTtsEngine({Future<VoicePaths> Function(EmbeddedVoice)? provision})
+    : _provision = provision ?? provisionVoiceAssets;
+
+  final Future<VoicePaths> Function(EmbeddedVoice) _provision;
   Isolate? _isolate;
   ReceivePort? _receive;
   SendPort? _toWorker;
   final Map<int, Completer<Object?>> _jobs = {};
-  Completer<SendPort>? _handshake;
+  Completer<SendPort?>? _handshake;
   int _nextJob = 1;
   bool _loaded = false;
   String? _loadedVoiceId;
+  int _generation = 0;
+  Future<bool>? _preparing;
+  String? _preparingVoiceId;
 
   bool get isReady => _loaded && _isolate != null;
 
   /// Loads [voice], provisioning its assets first. Returns true on success.
-  Future<bool> prepare(EmbeddedVoice voice) async {
-    if (_loaded && _loadedVoiceId == voice.id) return true;
+  @override
+  Future<bool> prepare(EmbeddedVoice voice) {
+    if (_loaded && _loadedVoiceId == voice.id) return Future.value(true);
+    if (_preparingVoiceId == voice.id && _preparing != null) {
+      return _preparing!;
+    }
     dispose();
+    final generation = _generation;
+    _preparingVoiceId = voice.id;
+    return _preparing = _prepare(voice, generation);
+  }
 
+  Future<bool> _prepare(EmbeddedVoice voice, int generation) async {
     try {
-      final paths = await provisionVoiceAssets(voice);
+      final paths = await _provision(voice);
+      if (generation != _generation) return false;
       final receive = ReceivePort();
       _receive = receive;
-      _handshake = Completer<SendPort>();
+      final handshake = Completer<SendPort?>();
+      _handshake = handshake;
 
       receive.listen((message) {
+        if (generation != _generation) return;
         if (message is SendPort) {
-          if (!(_handshake?.isCompleted ?? true)) _handshake!.complete(message);
+          if (!handshake.isCompleted) handshake.complete(message);
           _toWorker = message;
           return;
         }
@@ -90,13 +115,19 @@ class EmbeddedTtsEngine {
         }
       });
 
-      _isolate = await Isolate.spawn(
+      final isolate = await Isolate.spawn(
         _voiceIsolateMain,
         receive.sendPort,
         debugName: 'embedded-tts',
       );
+      if (generation != _generation) {
+        isolate.kill(priority: Isolate.immediate);
+        return false;
+      }
+      _isolate = isolate;
 
-      final port = await _handshake!.future.timeout(const Duration(seconds: 10));
+      final port = await handshake.future.timeout(const Duration(seconds: 10));
+      if (port == null || generation != _generation) return false;
       final id = _nextJob++;
       final completer = Completer<Object?>();
       _jobs[id] = completer;
@@ -109,24 +140,38 @@ class EmbeddedTtsEngine {
         'threads': 2,
       });
 
-      final result = await completer.future.timeout(const Duration(seconds: 60));
+      final result = await completer.future.timeout(
+        const Duration(seconds: 60),
+      );
+      if (generation != _generation) return false;
       if (result is Map && result['error'] == null) {
         _loaded = true;
         _loadedVoiceId = voice.id;
         return true;
       }
-      debugPrint('EmbeddedTtsEngine load failed: ${result is Map ? result['error'] : result}');
-      dispose();
+      debugPrint(
+        'EmbeddedTtsEngine load failed: ${result is Map ? result['error'] : result}',
+      );
+      if (generation == _generation) dispose();
       return false;
     } catch (e) {
       if (kDebugMode) debugPrint('EmbeddedTtsEngine prepare failed: $e');
-      dispose();
+      if (generation == _generation) dispose();
       return false;
+    } finally {
+      if (generation == _generation) {
+        _preparing = null;
+        _preparingVoiceId = null;
+      }
     }
   }
 
   /// Synthesizes [text] at [speed] (1.0 = the model's normal pace).
-  Future<EmbeddedSynthesis?> synthesize(String text, {double speed = 1.0}) async {
+  @override
+  Future<EmbeddedSynthesis?> synthesize(
+    String text, {
+    double speed = 1.0,
+  }) async {
     final port = _toWorker;
     if (!_loaded || port == null) return null;
     final id = _nextJob++;
@@ -135,7 +180,9 @@ class EmbeddedTtsEngine {
     port.send({'cmd': 'synth', 'id': id, 'text': text, 'speed': speed});
 
     try {
-      final result = await completer.future.timeout(const Duration(seconds: 30));
+      final result = await completer.future.timeout(
+        const Duration(seconds: 30),
+      );
       if (result is! Map) return null;
       final samples = result['samples'];
       final rate = result['rate'];
@@ -144,16 +191,41 @@ class EmbeddedTtsEngine {
     } catch (e) {
       if (kDebugMode) debugPrint('EmbeddedTtsEngine synthesize failed: $e');
       return null;
+    } finally {
+      _jobs.remove(id);
     }
   }
 
+  @override
   void dispose() {
+    _generation++;
+    final handshake = _handshake;
+    if (handshake != null && !handshake.isCompleted) handshake.complete(null);
     for (final job in _jobs.values) {
       if (!job.isCompleted) job.complete(null);
     }
     _jobs.clear();
-    _toWorker?.send({'cmd': 'dispose'});
-    _isolate?.kill(priority: Isolate.immediate);
+    final isolate = _isolate;
+    final port = _toWorker;
+    if (isolate != null) {
+      if (port == null) {
+        isolate.kill(priority: Isolate.immediate);
+      } else {
+        // Let the worker free its native model. Killing the isolate first
+        // would bypass tts.free() and leak native allocations on every reload.
+        final exited = ReceivePort();
+        isolate.addOnExitListener(exited.sendPort);
+        final deadline = Timer(const Duration(seconds: 35), () {
+          isolate.kill(priority: Isolate.immediate);
+          exited.close();
+        });
+        exited.listen((_) {
+          deadline.cancel();
+          exited.close();
+        });
+        port.send({'cmd': 'dispose'});
+      }
+    }
     _isolate = null;
     _toWorker = null;
     _receive?.close();
@@ -161,6 +233,8 @@ class EmbeddedTtsEngine {
     _handshake = null;
     _loaded = false;
     _loadedVoiceId = null;
+    _preparing = null;
+    _preparingVoiceId = null;
   }
 }
 
@@ -247,19 +321,40 @@ Future<VoicePaths> provisionVoiceAssets(EmbeddedVoice voice) async {
 
   var current = false;
   try {
-    current = stamp.existsSync() &&
+    current =
+        stamp.existsSync() &&
         int.tryParse(stamp.readAsStringSync().trim()) == kBundledVoiceVersion;
   } catch (_) {
     current = false;
   }
 
+  final prefix = 'assets/voices/${voice.id}/';
+  final requiredAssets = [
+    voice.modelAsset,
+    voice.tokensAsset,
+    '${voice.dataDirAsset}/phontab',
+    '${voice.dataDirAsset}/phonindex',
+    '${voice.dataDirAsset}/phondata',
+  ];
+  String localPath(String asset) =>
+      p.join(base.path, asset.substring(prefix.length));
+  if (current) {
+    for (final asset in requiredAssets) {
+      if (!await File(localPath(asset)).exists()) current = false;
+    }
+  }
+
   if (!current) {
     final manifest = await AssetManifest.loadFromAssetBundle(rootBundle);
-    final prefix = 'assets/voices/${voice.id}/';
     final assets = manifest
         .listAssets()
         .where((a) => a.startsWith(prefix))
         .toList();
+    if (!requiredAssets.every(assets.contains)) {
+      throw StateError(
+        'Bundled voice ${voice.id} is missing model or phonemizer assets',
+      );
+    }
     for (final asset in assets) {
       final relative = asset.substring(prefix.length);
       final target = File(p.join(base.path, relative));
@@ -277,9 +372,14 @@ Future<VoicePaths> provisionVoiceAssets(EmbeddedVoice voice) async {
   }
 
   String at(String relative) => p.join(base.path, relative);
-  final modelFile = voice.modelAsset.substring('assets/voices/${voice.id}/'.length);
-  final tokensFile =
-      voice.tokensAsset.substring('assets/voices/${voice.id}/'.length);
-  final dataDir = voice.dataDirAsset.substring('assets/voices/${voice.id}/'.length);
+  final modelFile = voice.modelAsset.substring(
+    'assets/voices/${voice.id}/'.length,
+  );
+  final tokensFile = voice.tokensAsset.substring(
+    'assets/voices/${voice.id}/'.length,
+  );
+  final dataDir = voice.dataDirAsset.substring(
+    'assets/voices/${voice.id}/'.length,
+  );
   return VoicePaths(at(modelFile), at(tokensFile), at(dataDir));
 }

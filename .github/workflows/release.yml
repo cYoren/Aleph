@@ -45,6 +45,9 @@ jobs:
             --fill-kjv-gaps \
             --emit-coverage-report build/coverage_report.json
 
+      - name: Prepare bundled offline voices
+        run: python3 scripts/fetch_embedded_voices.py
+
       - name: Configure Android Keystore (Optional)
         run: |
           echo "$ANDROID_KEY_PROPERTIES" > android/key.properties

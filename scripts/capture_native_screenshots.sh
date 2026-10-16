@@ -13,6 +13,7 @@ if [ -f scripts/build_full_bible_db.py ] && [ ! -f assets/bible.db ]; then
   mkdir -p build
   python3 scripts/build_full_bible_db.py --output assets/bible.db --cache-dir /tmp/original_bible_db_cache --strict-coverage --fill-kjv-gaps --emit-coverage-report build/coverage_report.json
 fi
+python3 scripts/fetch_embedded_voices.py
 flutter pub get
 flutter build ios --simulator --debug --no-codesign
 
