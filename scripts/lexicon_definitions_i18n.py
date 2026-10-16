@@ -26,6 +26,7 @@ from __future__ import annotations
 import hashlib
 import json
 import pathlib
+import re
 import sqlite3
 from typing import Iterable, Iterator
 
@@ -74,6 +75,17 @@ INDEX = (
 def sha256_text(text: str) -> str:
     """Stable content hash of one field's English text."""
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def source_needs_translation(text: str) -> bool:
+    """English prose needs translation; Greek-only cross-entries do not.
+
+    Some scholarly entries consist solely of original-language words and
+    single-letter Latin abbreviations (for example ``Βοσόρ v. Βεώρ.``).
+    Requiring a different string there would corrupt the source notation.
+    This narrow exception does not permit unchanged English words or prose.
+    """
+    return re.search(r"[A-Za-z]{2,}", text) is not None
 
 
 def read_source_rows(db: sqlite3.Connection) -> Iterator[tuple]:

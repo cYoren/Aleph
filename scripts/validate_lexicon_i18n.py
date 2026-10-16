@@ -31,6 +31,7 @@ from lexicon_definitions_i18n import (
     DEFAULT_DB,
     LANGUAGES,
     sha256_text,
+    source_needs_translation,
 )
 
 
@@ -122,7 +123,7 @@ def main() -> int:
                     if stored_hash != sha256_text(english):
                         stale += 1
                         invalid = True
-                    if translated.strip() == english.strip():
+                    if translated.strip() == english.strip() and source_needs_translation(english):
                         identical += 1
                         invalid = True
                     if not invalid:

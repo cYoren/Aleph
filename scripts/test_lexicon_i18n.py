@@ -218,6 +218,22 @@ class ValidationTest(unittest.TestCase):
         db.execute(i18n.SCHEMA)
         self.assertEqual(self._validate(db, '--require-full'), 1)
 
+    def test_full_coverage_accepts_preserved_original_language_cross_entries(self):
+        db = make_db()
+        db.execute("UPDATE lexicon SET definition='Plain definition.', "
+                   "extended_definition='Βοσόρ v. Βεώρ.'")
+        db.execute(i18n.SCHEMA)
+        for lang in i18n.LANGUAGES:
+            for row in i18n.source_rows_with_hashes(db):
+                db.execute('INSERT INTO lexicon_definition_i18n '
+                           '(lemma, lang, definition, extended_definition, '
+                           'source_definition_sha256, source_extended_sha256) '
+                           'VALUES (?, ?, ?, ?, ?, ?)',
+                           (row['lemma'], lang, 'Definição traduzida.',
+                            row['extended_definition'], row['definition_sha256'],
+                            row['extended_definition_sha256']))
+        self.assertEqual(self._validate(db, '--require-full'), 0)
+
     def test_missing_source_hash_is_an_integrity_failure(self):
         db = make_db()
         db.execute(i18n.SCHEMA)
