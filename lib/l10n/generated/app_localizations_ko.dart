@@ -602,7 +602,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get recitationVoiceDesc =>
-      '기기의 음성으로 읽어 줍니다. 히브리어는 현대 이스라엘 발음, 그리스어는 현대 그리스 발음입니다. 재구성한 고대 발음이 아니라 지금도 사용되는 낭독 전통입니다.';
+      '각 장은 앱에 내장된 음성으로 낭독됩니다. 다운로드도 인터넷도 필요하지 않습니다. 신약은 현대 그리스어 음성입니다. 히브리어는 기기 자체의 음성으로 낭독됩니다. 저희가 포함할 수 있는 히브리어 음성이 아직 없기 때문입니다. 이는 재구성된 고대 발음이 아니라 살아 있는 낭독 전통입니다.';
 
   @override
   String get voiceMissing =>
@@ -650,7 +650,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get onboardingRecitationDesc =>
-      '재생 버튼을 누르면 어느 장이든 히브리어나 그리스어로 낭독되는 것을 들을 수 있습니다. 복원된 고대 발음이 아니라 지금도 쓰이는 살아 있는 발음입니다. 속도 조절로 천천히 낮춰 귀에 익을 때까지 들어 보세요.';
+      '재생을 누르면 어떤 장이든 소리 내어 들을 수 있습니다. 신약은 앱에 내장된 현대 그리스어 음성으로 낭독되므로 새로 설치해도 오프라인에서 작동합니다. 히브리어는 기기의 음성을 사용합니다. 속도 조절로 아주 느리게 낮춰 귀가 따라올 때까지 들어 보세요.';
 
   @override
   String get readingHintTitle => '시작하는 세 가지 방법';
@@ -1181,4 +1181,8 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get contentSourceNote => '영어로 표시됨; 아직 번역이 없습니다.';
+
+  @override
+  String get recitationVoiceHebrewGap =>
+      '현재 히브리어는 기기의 음성 낭독 기능을 사용합니다. 재배포가 허용된 라이선스를 가진 히브리어 음성은 아직 없습니다.';
 }

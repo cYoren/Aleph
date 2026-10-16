@@ -618,7 +618,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get recitationVoiceDesc =>
-      'Vorgelesen von den Sprachstimmen Ihres Geräts: modernes Israelisch für Hebräisch, modernes Griechisch für Griechisch. Das sind lebendige Lesetraditionen, nicht die rekonstruierte antike Aussprache.';
+      'Die Kapitel werden von Stimmen vorgelesen, die in die App integriert sind – ohne Download und ohne Internet: modernes Griechisch für das Neue Testament. Hebräisch wird von der Stimme deines Geräts gelesen, denn es gibt noch keine hebräische Stimme, die wir mitliefern dürfen. Das sind lebendige Lesetraditionen, keine rekonstruierte antike Aussprache.';
 
   @override
   String get voiceMissing =>
@@ -668,7 +668,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get onboardingRecitationDesc =>
-      'Drücken Sie auf Wiedergabe, um jedes Kapitel auf Hebräisch oder Griechisch vorlesen zu lassen – mit lebendigen Stimmen statt einer rekonstruierten antiken Aussprache. Verlangsamen Sie das Tempo, bis Ihr Ohr mithalten kann.';
+      'Tippe auf Wiedergabe, um dir jedes Kapitel vorlesen zu lassen. Das Neue Testament wird von einer in die App integrierten Stimme für modernes Griechisch gelesen, funktioniert also offline bei einer frischen Installation. Hebräisch nutzt die Stimme deines Geräts. Stelle die Geschwindigkeit stark herunter, bis dein Ohr mitkommt.';
 
   @override
   String get readingHintTitle => 'Drei Wege zum Einstieg';
@@ -1218,4 +1218,8 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get contentSourceNote =>
       'Auf Englisch angezeigt; noch keine Übersetzung verfügbar.';
+
+  @override
+  String get recitationVoiceHebrewGap =>
+      'Hebräisch nutzt vorerst die Sprachstimme deines Geräts. Noch gibt es keine hebräische Stimme mit einer Lizenz, die eine Weitergabe erlaubt.';
 }

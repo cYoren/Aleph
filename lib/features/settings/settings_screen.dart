@@ -195,7 +195,36 @@ class SettingsScreen extends ConsumerWidget {
           ListTile(
             leading: const Icon(Icons.graphic_eq),
             title: Text(l10n.recitationVoiceTitle),
-            subtitle: Text(l10n.recitationVoiceDesc),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(l10n.recitationVoiceDesc),
+                const SizedBox(height: 6),
+                // The honest reason Hebrew still uses the device voice: stated
+                // in the app, not hidden behind a silent fallback.
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(
+                      Icons.info_outline,
+                      size: 14,
+                      color: colorScheme.onSurfaceVariant,
+                    ),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        l10n.recitationVoiceHebrewGap,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            isThreeLine: true,
           ),
           const Divider(),
 

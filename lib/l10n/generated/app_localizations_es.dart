@@ -622,7 +622,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get recitationVoiceDesc =>
-      'Lectura con las voces de tu dispositivo: hebreo israelí moderno y griego moderno. Son tradiciones vivas de lectura, no la pronunciación antigua reconstruida.';
+      'Los capítulos se leen con voces integradas en la aplicación: sin descargas y sin internet. Griego moderno para el Nuevo Testamento. El hebreo lo lee la propia voz de tu dispositivo, porque aún no existe ninguna voz hebrea que tengamos permiso de incluir. Son tradiciones de lectura vivas, no una pronunciación antigua reconstruida.';
 
   @override
   String get voiceMissing =>
@@ -672,7 +672,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get onboardingRecitationDesc =>
-      'Pulsa reproducir para escuchar cualquier capítulo leído en voz alta en hebreo o griego, con voces vivas en lugar de una pronunciación antigua reconstruida. Reduce la velocidad hasta que tu oído se acostumbre.';
+      'Pulsa reproducir para oír cualquier capítulo en voz alta. El Nuevo Testamento lo lee una voz de griego moderno integrada en la aplicación, así que funciona sin conexión en una instalación nueva. El hebreo usa la voz de tu dispositivo. Baja mucho la velocidad con el control hasta que tu oído la siga.';
 
   @override
   String get readingHintTitle => 'Tres formas de empezar';
@@ -1221,4 +1221,8 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get contentSourceNote =>
       'Se muestra en inglés; aún no hay traducción disponible.';
+
+  @override
+  String get recitationVoiceHebrewGap =>
+      'Por ahora, el hebreo usa la voz de lectura de tu dispositivo. Todavía no hay disponible ninguna voz hebrea con una licencia que permita su redistribución.';
 }

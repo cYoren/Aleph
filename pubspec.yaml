@@ -30,8 +30,12 @@ dependencies:
   
   share_plus: ^10.0.0
 
-  # Audio (original-language recitation via platform TTS)
+  # Audio (original-language recitation). Platform TTS is the fallback; the
+  # bundled offline engine (sherpa-onnx + a redistributable Piper voice) is the
+  # primary path where a voice is available. See lib/features/audio/.
   flutter_tts: ^4.2.0
+  sherpa_onnx: ^1.13.8
+  audioplayers: ^6.1.0
 
   # Networking (opt-in AI passage explanation only; everything else is offline)
   http: ^1.2.2
@@ -73,6 +77,10 @@ flutter:
     # Listed by name so a build without the generated database fails loudly
     # instead of shipping an app with no Bible text (iOS build 27 did).
     - assets/bible.db
+    # Bundled Greek recitation voice. Prepare it with
+    # `python3 scripts/fetch_embedded_voices.py`; the archive cache and the
+    # manifest are intentionally not bundled.
+    - assets/voices/el_GR-rapunzelina-low/
   
   fonts:
     - family: EzraSIL

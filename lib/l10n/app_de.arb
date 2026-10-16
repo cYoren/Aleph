@@ -237,7 +237,7 @@
   "phraseSpacingTitle": "Satzgliederung",
   "phraseSpacingDesc": "Gliedert den hebräischen Text an den masoretischen Akzenten, sodass ein Vers in Sinneinheiten statt Wort für Wort gelesen wird.",
   "recitationVoiceTitle": "Stimme für das Vorlesen",
-  "recitationVoiceDesc": "Vorgelesen von den Sprachstimmen Ihres Geräts: modernes Israelisch für Hebräisch, modernes Griechisch für Griechisch. Das sind lebendige Lesetraditionen, nicht die rekonstruierte antike Aussprache.",
+  "recitationVoiceDesc": "Die Kapitel werden von Stimmen vorgelesen, die in die App integriert sind – ohne Download und ohne Internet: modernes Griechisch für das Neue Testament. Hebräisch wird von der Stimme deines Geräts gelesen, denn es gibt noch keine hebräische Stimme, die wir mitliefern dürfen. Das sind lebendige Lesetraditionen, keine rekonstruierte antike Aussprache.",
   "voiceMissing": "Ihr Gerät benötigt eine hebräische oder griechische Sprachausgabe, um den Text vorzulesen. Die Installation dauert nur einen Moment und ist einmalig.",
   "voiceUnsupported": "Auf diesem Gerät ist keine Sprachausgabe verfügbar.",
   "voiceInstall": "Stimme installieren",
@@ -287,7 +287,7 @@
     }
   },
   "onboardingRecitationTitle": "Lassen Sie es sich vorlesen",
-  "onboardingRecitationDesc": "Drücken Sie auf Wiedergabe, um jedes Kapitel auf Hebräisch oder Griechisch vorlesen zu lassen – mit lebendigen Stimmen statt einer rekonstruierten antiken Aussprache. Verlangsamen Sie das Tempo, bis Ihr Ohr mithalten kann.",
+  "onboardingRecitationDesc": "Tippe auf Wiedergabe, um dir jedes Kapitel vorlesen zu lassen. Das Neue Testament wird von einer in die App integrierten Stimme für modernes Griechisch gelesen, funktioniert also offline bei einer frischen Installation. Hebräisch nutzt die Stimme deines Geräts. Stelle die Geschwindigkeit stark herunter, bis dein Ohr mitkommt.",
   "readingHintTitle": "Drei Wege zum Einstieg",
   "readingHintBody": "Tippen Sie auf ein Wort für die vollständige Bedeutung. Halten Sie es gedrückt für eine kurze Vorschau, ohne die Stelle zu verlieren. Tippen Sie oben auf ▶, um das Kapitel vorlesen zu lassen.",
   "readingHintDismiss": "Verstanden",
@@ -453,5 +453,6 @@
   "morphDative": "Dativ",
   "morphAccusative": "Akkusativ",
   "morphVocative": "Vokativ",
-  "contentSourceNote": "Auf Englisch angezeigt; noch keine Übersetzung verfügbar."
+  "contentSourceNote": "Auf Englisch angezeigt; noch keine Übersetzung verfügbar.",
+  "recitationVoiceHebrewGap": "Hebräisch nutzt vorerst die Sprachstimme deines Geräts. Noch gibt es keine hebräische Stimme mit einer Lizenz, die eine Weitergabe erlaubt."
 }

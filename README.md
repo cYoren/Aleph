@@ -69,7 +69,15 @@ python3 scripts/apply_gloss_translations.py
    Skipping this is not fatal — the app falls back to English glosses — but
    readers on the other seven languages lose their word meanings.
 
-4. Run the app:
+4. Fetch the bundled recitation voice(s). These are large and are **not**
+   committed; the app lists them as assets, so a build without them fails loudly
+   rather than shipping silent:
+```bash
+python3 scripts/fetch_embedded_voices.py        # pinned URL + SHA-256 verified
+python3 scripts/fetch_embedded_voices.py --list # what exists, and why Hebrew is absent
+```
+
+5. Run the app:
 ```bash
 flutter run
 ```
@@ -91,6 +99,14 @@ python3 scripts/apply_gloss_translations.py
    `lib/data/database/database_mobile.dart`. Installed copies of the database
    are reused forever unless that number changes, so a release that ships new
    data without bumping it reaches nobody who already has the app.
+
+   Also fold in any translated long-form lexicon content and prepare the
+   bundled voice (both are picked up automatically / needed for the build):
+```bash
+python3 scripts/apply_lexicon_translations.py       # if long-form caches exist
+python3 scripts/fetch_embedded_voices.py            # pinned URL + SHA-256
+python3 scripts/fetch_embedded_voices.py --verify   # re-check the hashes
+```
 
 2. Run quality gates:
 ```bash
@@ -130,6 +146,8 @@ trees, the personalized reader mode, passage memorization in Hebrew).
 - Cross-references: [OpenBible.info](https://www.openbible.info/labs/cross-references/) (CC Attribution)
 - Syntax trees: [MACULA Hebrew](https://github.com/Clear-Bible/macula-hebrew) & [MACULA Greek](https://github.com/Clear-Bible/macula-greek) (Clear Bible, CC BY 4.0)
 - Scholarly lexicons: [BDB](https://github.com/openscriptures/HebrewLexicon) and [Abbott-Smith](https://github.com/translatable-exegetical-tools/Abbott-Smith) (public domain digitizations)
+- Bundled recitation voice: [Piper](https://huggingface.co/rhasspy/piper-voices) `el_GR/rapunzelina` (voice MIT, dataset CC0), run by [sherpa-onnx](https://github.com/k2-fsa/sherpa-onnx) (Apache-2.0). The phonemizer data is eSpeak NG (GPL-3.0); keep its notice. Hebrew has no bundled voice — no redistributable model exists (see `docs/tasks/embedded-voices-findings.md`).
+- Long-form lexicon translations: machine-translated from the shipped English originals into the seven non-English languages, served offline from the local database (`data/lexicon_translations/`).
 
 ## Android Signing
 

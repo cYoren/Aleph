@@ -237,7 +237,7 @@
   "phraseSpacingTitle": "按语义分组",
   "phraseSpacingDesc": "依照马所拉重音在希伯来文中加入间隔，使经文以语义单位阅读，而不是逐字阅读。",
   "recitationVoiceTitle": "朗读语音",
-  "recitationVoiceDesc": "使用设备的语音朗读：希伯来文为现代以色列发音，希腊文为现代希腊发音。这是沿用至今的诵读传统，并非重建的古代发音。",
+  "recitationVoiceDesc": "各章由内置于应用中的语音朗读——无需下载，也无需联网：新约使用现代希腊语。希伯来语由您设备自带的语音朗读，因为我们尚无权捆绑任何希伯来语语音。这些都是活生生的诵读传统，而非重构的古代发音。",
   "voiceMissing": "朗读需要设备安装希伯来语或希腊语语音。安装只需片刻，且只需一次。",
   "voiceUnsupported": "本设备没有可用的语音引擎。",
   "voiceInstall": "安装语音",
@@ -287,7 +287,7 @@
     }
   },
   "onboardingRecitationTitle": "聆听朗读",
-  "onboardingRecitationDesc": "点按播放键，即可听到任意一章用希伯来语或希腊语朗读——使用的是现代通行的发音，而非重建的古代发音。可将语速调慢，直到耳朵跟得上为止。",
+  "onboardingRecitationDesc": "点按播放即可聆听任何章节的朗读。新约由内置于应用中的现代希腊语语音朗读，因此全新安装后也能离线使用。希伯来语使用您设备的语音。用速度控制大幅调慢，直到您的耳朵跟上。",
   "readingHintTitle": "三种入门方式",
   "readingHintBody": "点按词语可查看完整释义。长按可快速预览而不失去阅读位置。点按上方的 ▶ 即可听到本章朗读。",
   "readingHintDismiss": "知道了",
@@ -453,5 +453,6 @@
   "morphDative": "与格",
   "morphAccusative": "宾格",
   "morphVocative": "呼格",
-  "contentSourceNote": "以英文显示；暂无译文。"
+  "contentSourceNote": "以英文显示；暂无译文。",
+  "recitationVoiceHebrewGap": "目前希伯来语使用您设备的语音朗读功能。尚无允许再分发的希伯来语语音许可可用。"
 }

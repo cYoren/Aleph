@@ -289,7 +289,7 @@
   "phraseSpacingTitle": "Phrase spacing",
   "phraseSpacingDesc": "Space the Hebrew at the Masoretic accents, so a verse reads in sense units instead of word by word.",
   "recitationVoiceTitle": "Recitation voice",
-  "recitationVoiceDesc": "Read aloud by your device's speech voices: Modern Israeli for Hebrew, Modern Greek for Greek. These are living reading traditions, not reconstructed ancient pronunciation.",
+  "recitationVoiceDesc": "Chapters are read by voices built into the app — no download and no internet needed: Modern Greek for the New Testament. Hebrew is read by your device's own voice, because no Hebrew voice we are allowed to bundle exists yet. These are living reading traditions, not reconstructed ancient pronunciation.",
   "voiceMissing": "Your device needs a Hebrew or Greek speech voice to read this aloud. Installing one takes a moment and only has to be done once.",
   "voiceUnsupported": "This device has no speech engine available.",
   "voiceInstall": "Install voice",
@@ -339,7 +339,7 @@
     }
   },
   "onboardingRecitationTitle": "Hear It Recited",
-  "onboardingRecitationDesc": "Press play to hear any chapter read aloud in Hebrew or Greek, by living voices rather than a reconstructed ancient pronunciation. Slow it right down from the speed control until your ear catches up.",
+  "onboardingRecitationDesc": "Press play to hear any chapter read aloud. The New Testament is read by a Modern Greek voice built into the app, so it works offline on a fresh install. Hebrew uses your device's voice. Slow it right down from the speed control until your ear catches up.",
   "readingHintTitle": "Three ways in",
   "readingHintBody": "Tap a word for its full meaning. Long-press for a quick peek without losing your place. Press ▶ above to hear the chapter recited.",
   "readingHintDismiss": "Got it",
@@ -656,5 +656,6 @@
   "morphDative": "Dative",
   "morphAccusative": "Accusative",
   "morphVocative": "Vocative",
-  "contentSourceNote": "Shown in English; no translation is available yet."
+  "contentSourceNote": "Shown in English; no translation is available yet.",
+  "recitationVoiceHebrewGap": "Hebrew uses your device's speech voice for now. No Hebrew voice with a license that permits redistribution is available yet."
 }
