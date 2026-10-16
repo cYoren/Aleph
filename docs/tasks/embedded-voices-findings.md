@@ -1,7 +1,7 @@
 # Embedded voices: findings, licensing and evidence
 
-Status: **Greek shipped and working offline in the app bundle. Hebrew is
-blocked on licensing and deliberately not shipped.** Device playback is not yet
+Status: **Greek integration is implemented; source and build assets are prepared.
+No suitable Hebrew model has been validated for inclusion.** Device playback is not yet
 verified (no iOS/Android hardware here) — see "What is still pending".
 
 This is the reasoning behind `lib/features/audio/embedded_voices.dart` and
@@ -13,13 +13,13 @@ The goal was a Modern Israeli Hebrew (`he-IL`) and a Modern Greek (`el-GR`)
 voice that travel *inside* the app: no download, no internet, works on the very
 first run. Downloading a voice on first use does not count.
 
-* **Greek — done.** The app bundles a Piper VITS voice and synthesizes with it
-  offline. Nothing is downloaded at runtime.
-* **Hebrew — not possible today.** No Hebrew TTS voice with a license that
-  permits redistribution in a store app is known to exist. Hebrew therefore
-  keeps the device voice. This is stated in Settings, not hidden.
+* **Greek — implemented, mobile validation pending.** The app bundles a Piper
+  VITS voice for offline synthesis. Nothing is downloaded at runtime.
+* **Hebrew — unresolved.** The survey below did not establish a suitable
+  redistributable mobile model. It does not prove that none exists. Hebrew
+  keeps the device voice; further model selection or training remains open.
 
-Do not describe both voices as ready. Only the Greek voice is.
+Do not describe both voices as ready or claim mobile playback has been verified.
 
 ## The Greek voice
 
@@ -41,12 +41,13 @@ The hash matches both the sherpa-onnx release asset and the community registry
 
 ### Copyleft obligation (must be honoured)
 
-Piper voices are phonemized with eSpeak NG, whose *data* is GPL-3.0. Shipping
-that data is permitted but carries a notice obligation. The attribution is
-recorded in `assets/voices/manifest.json` and must appear in the app's credits /
-NOTICE file. If a GPL-free phonemizer is ever required, the alternative is a
-voice that does not use eSpeak (for example an MMS-style model) — but those are
-currently non-commercial, so they do not help Hebrew either.
+Piper voices use eSpeak NG components covered by GPL terms. Attribution alone
+does not establish compliance: the exact binaries and data being distributed,
+their licenses, corresponding source and applicable distribution terms must
+be checked before shipping a store build. This branch's source push is not
+clearance to distribute the binaries. See the [GPL text, section 6](https://www.gnu.org/licenses/gpl-3.0.html#section6)
+and [GNU licensing FAQ](https://www.gnu.org/licenses/gpl-faq.html#GPLInProprietarySystem).
+The generated manifest is build metadata and is not bundled as app credits.
 
 ### Smaller alternatives
 
@@ -111,5 +112,7 @@ support it with no code change.
   Greek pronunciation quality for the low-quality Piper voice is unknown.
 * **App-size budget.** +~79 MB (fp32). A final choice between fp32/int8/fp16 is
   the maintainer's call.
-* **Hebrew replacement.** Blocked until a permissively licensed Hebrew voice
-  exists.
+* **Hebrew replacement.** Select and validate a suitable model, or train one
+  from appropriately licensed data. No claim of universal nonexistence is made.
+* **Distribution licensing.** Verify the GPL components and corresponding-source
+  requirements before publishing a store build; a notice alone is insufficient.

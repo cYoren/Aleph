@@ -101,8 +101,8 @@ things currently undercut the "in depth" promise:
       - Voices: the **Greek** New Testament is read by a voice bundled *inside*
         the app (Piper `el_GR/rapunzelina` via sherpa-onnx) — no install, no
         internet, works on a fresh install. **Hebrew** is read by the device
-        voice, because no Hebrew voice with a redistributable license exists
-        yet; that is stated in Settings. See
+        voice; a suitable redistributable Hebrew model has not been validated
+        for this project. See
         `docs/tasks/embedded-voices-findings.md`.
       - **Pronunciation is Modern Israeli / Modern Greek** — living traditions,
         not reconstructed ancient pronunciation, and not the Erasmian Greek

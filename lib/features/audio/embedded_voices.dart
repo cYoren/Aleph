@@ -80,7 +80,7 @@ const Map<String, EmbeddedVoice> kEmbeddedVoices = {
 /// SASPEECH corpus (OpenSLR 134), whose licence is *"Custom non-commercial"*.
 /// It cannot be redistributed in an app distributed through the App Store or
 /// Play Store, and no permissively-licensed, mobile-sized Hebrew TTS model is
-/// known to exist. Hebrew therefore keeps the device voice as its path, and
+/// validated for this project. Hebrew therefore keeps the device voice as its path, and
 /// this string is the honest reason, shown in Settings.
 const String kHebrewEmbeddedVoiceUnavailableReason =
     'No Hebrew voice with a license that permits redistribution is available '

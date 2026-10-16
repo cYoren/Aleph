@@ -28,10 +28,11 @@ The engine is `sherpa-onnx` (Apache-2.0). The voices are Piper VITS models.
   Hebrew therefore keeps the device voice as its path.
 
 * **Phonemizer data (`espeak-ng-data`)** — Piper models are phonemized with
-  eSpeak NG, whose data is GPL-3.0. Redistributing it is permissible but carries
-  a copyleft notice obligation that must be honoured in NOTICE/credits. It is
-  fetched here because the Greek voice needs it; the obligation is recorded in
-  the manifest and in docs/ATTRIBUTIONS.md.
+  eSpeak NG, whose data is GPL-3.0. Attribution alone does not establish
+  distribution compliance. Verify the exact components, corresponding-source
+  requirements and distribution terms before shipping a store build. See
+  docs/tasks/embedded-voices-findings.md. The generated manifest is build
+  metadata, not a substitute for licenses or app credits.
 """
 
 from __future__ import annotations
@@ -63,7 +64,7 @@ VOICES = {
             "Piper el_GR/rapunzelina, converted by sherpa-onnx "
             "(https://huggingface.co/rhasspy/piper-voices). Training data: the "
             "Rapunzelina Greek single-speaker corpus (CC0). Phonemizer data: "
-            "eSpeak NG (GPL-3.0) — keep its notice."
+            "eSpeak NG (GPL-3.0) — verify license and source obligations before distribution."
         ),
     },
     "he_IL-saspeech-medium": {

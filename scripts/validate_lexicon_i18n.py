@@ -76,11 +76,12 @@ def main() -> int:
 
         integrity_problems = 0
         total_gaps = 0
-        languages = sorted(
-            {row[0] for row in db.execute("SELECT DISTINCT lang FROM lexicon_definition_i18n")}
-        )
+        present_languages = {
+            row[0] for row in db.execute("SELECT DISTINCT lang FROM lexicon_definition_i18n")
+        }
+        languages = sorted(set(LANGUAGES) | present_languages)
 
-        print(f"Languages with any translated content: {len(languages)}")
+        print(f"Languages with any translated content: {len(present_languages)}")
         for lang in languages:
             rows = {
                 lemma: (definition, extended, sdef, sext, method, revision)
@@ -98,6 +99,7 @@ def main() -> int:
                 empty = 0
                 stale = 0
                 identical = 0
+                missing = 0
                 expected = 0
                 for lemma, (definition, extended) in source.items():
                     english = definition if field == "definition" else extended
@@ -106,22 +108,29 @@ def main() -> int:
                     expected += 1
                     row = rows.get(lemma)
                     if row is None:
+                        missing += 1
                         continue
                     translated = row[index]
-                    if not translated:
+                    if translated is None:
+                        missing += 1
+                        continue
+                    if not translated.strip():
                         empty += 1
                         continue
-                    have += 1
                     stored_hash = row[2] if field == "definition" else row[3]
-                    if stored_hash and stored_hash != sha256_text(english):
+                    invalid = False
+                    if stored_hash != sha256_text(english):
                         stale += 1
+                        invalid = True
                     if translated.strip() == english.strip():
                         identical += 1
-                missing = expected - have - empty
+                        invalid = True
+                    if not invalid:
+                        have += 1
                 gaps = missing + empty + stale + identical
                 total_gaps += gaps
                 if empty or stale or identical:
-                    integrity_problems += empty + stale
+                    integrity_problems += empty + stale + identical
                 pct = 100.0 * have / expected if expected else 0.0
                 status = "OK" if gaps == 0 else "GAP"
                 print(
@@ -134,12 +143,12 @@ def main() -> int:
 
         if total_gaps:
             print(
-                "\nGaps reported above are untranslated or outdated rows. In the "
-                "app every such row falls back to the labelled English original, "
-                "so nothing is shown as a translation that is not one."
+                "\nMissing fields fall back to the labelled English original. "
+                "Invalid or outdated cached fields must be corrected and the "
+                "database rebuilt before distribution."
             )
         else:
-            print("\nAll present languages cover every field completely.")
+            print("\nAll seven target languages cover every field completely.")
 
         if args.require_full and total_gaps:
             print("\n--require-full was set and gaps remain.", file=sys.stderr)
@@ -148,7 +157,7 @@ def main() -> int:
             # Empty or stale rows are a real integrity problem, not just missing
             # work: fail regardless of --require-full.
             print(
-                f"\nIntegrity problem: {integrity_problems} empty/stale rows.",
+                f"\nIntegrity problem: {integrity_problems} empty/stale/unchanged fields.",
                 file=sys.stderr,
             )
             return 1
