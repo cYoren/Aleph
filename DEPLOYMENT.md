@@ -263,8 +263,9 @@ For questions: [your-email@example.com]
 
 For production builds:
 1. Regenerate `assets/bible.db` with `scripts/build_full_bible_db.py`.
-2. Run `./scripts/validate_release.sh`.
-3. Run `flutter analyze` and `flutter test`.
+2. Compact it and write the packed asset with `scripts/prepare_bible_db.py`.
+3. Run `./scripts/validate_release.sh`.
+4. Run `flutter analyze` and `flutter test`.
 
 ### Future Enhancements
 See `FEATURES_AND_RECOMMENDATIONS.md` for v1.1+ roadmap:
@@ -312,13 +313,19 @@ cp key.properties.example key.properties
 
 ### Database Not Found
 ```
-Error: assets/bible.db not found
+Error: assets/bible.db.gz not found
 ```
+
+The app ships the compressed asset, so a database that was built but never
+packed fails the build.
 
 **Fix**:
 ```bash
+python3 scripts/build_full_bible_db.py --output assets/bible.db \
+  --cache-dir /tmp/original_bible_db_cache --strict-coverage --fill-kjv-gaps
+python3 scripts/prepare_bible_db.py
 ./scripts/validate_release.sh
-# Should show: OK: database asset and schema checks passed
+# Should show: OK: database asset and full-release integrity checks passed.
 ```
 
 ---
