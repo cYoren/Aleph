@@ -64,6 +64,7 @@ Builds:
     prebuild:
       - $$flutter$$ pub get
       - python3 scripts/build_full_bible_db.py --output assets/bible.db --cache-dir /tmp/cache --strict-coverage --fill-kjv-gaps
+      - python3 scripts/prepare_bible_db.py
     build:
       - $$flutter$$ build apk --release
 ```
