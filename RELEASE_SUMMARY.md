@@ -4,6 +4,7 @@
 
 Release candidate is valid only when all of these are true:
 - `assets/bible.db` is rebuilt with `scripts/build_full_bible_db.py`
+- `assets/bible.db.gz` is written with `scripts/prepare_bible_db.py` (the asset the app ships)
 - `./scripts/validate_release.sh` passes full-corpus checks
 - `flutter analyze` and `flutter test` pass
 
@@ -30,6 +31,7 @@ python3 scripts/build_full_bible_db.py \
   --strict-coverage \
   --fill-kjv-gaps \
   --emit-coverage-report build/coverage_report.json
+python3 scripts/prepare_bible_db.py
 ./scripts/validate_release.sh
 flutter analyze
 flutter test
