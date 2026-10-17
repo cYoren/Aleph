@@ -69,7 +69,15 @@ python3 scripts/apply_gloss_translations.py
    Skipping this is not fatal — the app falls back to English glosses — but
    readers on the other seven languages lose their word meanings.
 
-4. Run the app:
+4. Compact the database and pack the asset the app bundles. This reshapes the
+   syntax trees into compressed per-book blocks and writes `assets/bible.db.gz`,
+   which is what `pubspec.yaml` ships; the app unpacks it on first launch. Run it
+   after every database build, or the build fails on a missing asset:
+```bash
+python3 scripts/prepare_bible_db.py
+```
+
+5. Run the app:
 ```bash
 flutter run
 ```
@@ -91,6 +99,13 @@ python3 scripts/apply_gloss_translations.py
    `lib/data/database/database_mobile.dart`. Installed copies of the database
    are reused forever unless that number changes, so a release that ships new
    data without bumping it reaches nobody who already has the app.
+
+   Also fold in any translated long-form lexicon content it has, then compact
+   the database and pack the asset the app ships:
+```bash
+python3 scripts/apply_lexicon_translations.py       # if long-form caches exist
+python3 scripts/prepare_bible_db.py                 # compact + write bible.db.gz
+```
 
 2. Run quality gates:
 ```bash
