@@ -6,7 +6,7 @@ import 'package:path/path.dart' as path;
 import 'package:sqflite/sqflite.dart';
 import 'package:original_bible/shared/utils/async_once.dart';
 
-/// Bumped whenever the bundled `assets/bible.db` gains content an already
+/// Bumped whenever the bundled `assets/bible.db.gz` gains content an already
 /// installed copy would not have.
 ///
 /// The on-device copy is written once and then reused forever, so without a
@@ -14,7 +14,11 @@ import 'package:original_bible/shared/utils/async_once.dart';
 /// indefinitely — which is exactly how cross-references came to look "not
 /// implemented" for existing users while the asset had 343k of them.
 /// Bump this on every regenerated release database.
-const int kBundledDatabaseVersion = 3;
+const int kBundledDatabaseVersion = 4;
+
+/// The database ships gzip-compressed to keep the app bundle small; the
+/// uncompressed form is written to the device on first launch.
+const String kBundledDatabaseAsset = 'assets/bible.db.gz';
 
 class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._init();
@@ -109,35 +113,32 @@ class DatabaseHelper {
 
     if (needsCopy) {
       if (kDebugMode) {
-        debugPrint('Copying database from assets...');
+        debugPrint('Unpacking database from assets...');
       }
 
       try {
         // Ensure directory exists
         await Directory(path.dirname(dbFilePath)).create(recursive: true);
 
-        // Load from assets
-        final ByteData data = await rootBundle.load('assets/$fileName');
-        final List<int> bytes = data.buffer.asUint8List(
-          data.offsetInBytes,
-          data.lengthInBytes,
+        // Load the compressed asset and stream it through the decoder straight
+        // to disk. The asset is ~1/6th of the unpacked database, so this holds
+        // far less in memory than copying the raw file would.
+        final ByteData data = await rootBundle.load(kBundledDatabaseAsset);
+        final compressed = Stream<List<int>>.value(
+          data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes),
         );
-
-        // Write to file system
-        await File(dbFilePath).writeAsBytes(bytes, flush: true);
+        await gzip.decoder.bind(compressed).pipe(File(dbFilePath).openWrite());
 
         // Written only after the copy succeeds, so an interrupted copy is
         // retried on the next launch rather than being trusted.
         await stampFile.writeAsString('$kBundledDatabaseVersion', flush: true);
 
         if (kDebugMode) {
-          debugPrint(
-            'Database copied successfully (${bytes.length} bytes) to $dbFilePath',
-          );
+          debugPrint('Database unpacked successfully to $dbFilePath');
         }
       } catch (e) {
         if (kDebugMode) {
-          debugPrint('Error copying database: $e');
+          debugPrint('Error unpacking database: $e');
         }
         rethrow;
       }

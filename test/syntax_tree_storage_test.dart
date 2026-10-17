@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:original_bible/data/database/daos/bible_dao.dart';
 import 'package:original_bible/data/models/real_syntax_node.dart';
@@ -51,6 +52,17 @@ void main() {
   });
 
   group('bundled database', () {
+    test('only the packed asset ships, never the raw build artifact', () async {
+      final manifest = await AssetManifest.loadFromAssetBundle(rootBundle);
+      final bundled = manifest.listAssets().toSet();
+      expect(bundled, contains('assets/bible.db.gz'));
+      expect(
+        bundled,
+        isNot(contains('assets/bible.db')),
+        reason: 'the raw database must not travel with the app',
+      );
+    });
+
     test('every book resolves real trees through the shipped asset', () async {
       // Exercises the unpack path (assets/bible.db.gz) and the compacted
       // reader end to end.
