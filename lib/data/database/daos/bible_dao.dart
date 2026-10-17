@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import '../../models/book.dart';
 import '../../models/verse.dart';
@@ -7,6 +9,7 @@ import '../../models/lexicon_entry.dart';
 import '../../models/translation.dart';
 import '../../../shared/utils/vocabulary_filter.dart';
 import '../database_helper.dart';
+import '../gunzip.dart';
 
 @visibleForTesting
 List<String> buildSearchQueryVariants(String query) {
@@ -36,6 +39,23 @@ String escapeLikePattern(String query) {
       .replaceAll('\\', r'\\')
       .replaceAll('%', r'\%')
       .replaceAll('_', r'\_');
+}
+
+/// Parses one decompressed syntax-tree block into `chapter:verse` → trees JSON.
+///
+/// The layout is written by `scripts/prepare_bible_db.py`: records are
+/// `chapter:verse<TAB>json`, separated by NUL. JSON cannot contain a raw NUL and
+/// the split is on the *first* tab, so a document holding either byte still
+/// round-trips.
+@visibleForTesting
+Map<String, String> parseSyntaxTreeBlock(String block) {
+  final parsed = <String, String>{};
+  for (final record in block.split('\u0000')) {
+    final separator = record.indexOf('\t');
+    if (separator <= 0) continue;
+    parsed[record.substring(0, separator)] = record.substring(separator + 1);
+  }
+  return parsed;
 }
 
 class BibleDAO {
@@ -913,11 +933,36 @@ class BibleDAO {
 
   /// Raw JSON array of MACULA sentence trees covering a verse, or null when
   /// the DB predates the syntax_trees table (or has no tree for the verse).
+  ///
+  /// The release database stores the trees as one gzip block per book
+  /// (`scripts/prepare_bible_db.py`), because one JSON document per verse cost
+  /// ~52 MB of the shipped file. Older local copies keep the original one-row-
+  /// per-verse shape and are read by the fallback below.
   Future<String?> getSyntaxTreesForVerse(
     String bookId,
     int chapter,
     int verse,
   ) async {
+    if (_treesAreCompacted != false) {
+      try {
+        final block = await _syntaxTreeBlock(bookId);
+        if (block != null) {
+          return block['$chapter:$verse'];
+        }
+      } catch (_) {
+        // No `blob` column: this database predates the compaction step. Note it
+        // so the fallback below is used without re-probing (and re-logging) on
+        // every verse.
+        _treesAreCompacted = false;
+        if (kDebugMode) {
+          debugPrint(
+            'BibleDAO: syntax trees are not compacted, reading per-verse rows',
+          );
+        }
+      }
+    }
+
+    // One row per verse (databases built before the trees were compacted).
     try {
       final db = await _dbHelper.database;
       final rows = await db.query(
@@ -936,6 +981,68 @@ class BibleDAO {
       }
     }
     return null;
+  }
+
+  /// Every verse's trees JSON for one book, keyed `chapter:verse`.
+  ///
+  /// The block is ~100 KB decoded and serves every verse in the book, so a
+  /// walk through a book decompresses once. Returns null only when the
+  /// database has no block column at all (the legacy shape).
+  Future<Map<String, String>?> _syntaxTreeBlock(String bookId) async {
+    if (_treeBlockBookId == bookId && _treeBlock != null) {
+      return _treeBlock;
+    }
+
+    final db = await _dbHelper.database;
+    final rows = await db.query(
+      'syntax_trees',
+      columns: ['blob'],
+      where: 'book_id = ?',
+      whereArgs: [bookId],
+      limit: 1,
+    );
+    _treesAreCompacted = true;
+    if (rows.isEmpty) {
+      return _cacheTreeBlock(bookId, const {});
+    }
+
+    final blob = rows.first['blob'];
+    if (blob is! List<int>) {
+      return null;
+    }
+
+    return _cacheTreeBlock(
+      bookId,
+      parseSyntaxTreeBlock(utf8.decode(gunzipBytes(blob))),
+    );
+  }
+
+  Map<String, String> _cacheTreeBlock(
+    String bookId,
+    Map<String, String> block,
+  ) {
+    _treeBlockBookId = bookId;
+    _treeBlock = block;
+    return block;
+  }
+
+  /// Last decoded tree block. Books are read one at a time, so a single entry
+  /// is enough and bounds the cache to roughly one block. Static because the
+  /// block is a pure function of the (immutable) database, and rebuilding it
+  /// per DAO instance would re-hash a whole book on every screen rebuild.
+  static String? _treeBlockBookId;
+  static Map<String, String>? _treeBlock;
+
+  /// Whether `syntax_trees` uses the compacted block shape. Null until the
+  /// first read settles it; false once a database without the `blob` column is
+  /// seen, so the legacy fallback is used for the rest of the session.
+  static bool? _treesAreCompacted;
+
+  @visibleForTesting
+  static void resetSyntaxTreeCache() {
+    _treeBlockBookId = null;
+    _treeBlock = null;
+    _treesAreCompacted = null;
   }
 
   /// Resolves a verses-table row id to (book, chapter, verse).
