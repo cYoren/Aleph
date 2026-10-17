@@ -31,7 +31,11 @@ import 'embedded_voices.dart';
 import 'wav_encoder.dart';
 
 /// Bump when the bundled voice files change so installed copies re-provision.
-const int kBundledVoiceVersion = 2;
+///
+/// 3: the phonemizer data is trimmed to the languages the voice speaks
+/// (`scripts/fetch_embedded_voices.py`), so an installed copy holding the
+/// full eSpeak NG data set is replaced.
+const int kBundledVoiceVersion = 3;
 
 /// Synthesized audio: mono PCM plus its sample rate.
 class EmbeddedSynthesis {

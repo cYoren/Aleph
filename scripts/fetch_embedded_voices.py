@@ -33,6 +33,17 @@ The engine is `sherpa-onnx` (Apache-2.0). The voices are Piper VITS models.
   requirements and distribution terms before shipping a store build. See
   docs/tasks/embedded-voices-findings.md. The generated manifest is build
   metadata, not a substitute for licenses or app credits.
+
+Trimming the phonemizer data
+----------------------------
+The upstream Piper bundle ships eSpeak NG's dictionary for roughly a hundred
+languages (~17 MB). A single-language voice reads exactly one of them, so the
+other dictionaries are dead weight in the app bundle. After extraction each
+voice keeps only the dictionaries named in its `espeak_dicts` entry; every
+shared file the phonemizer needs (`phondata`, `phontab`, `phonindex`,
+`intonations`, and the `lang/` and `voices/` trees) is left untouched. For the
+Greek voice this drops ~17 MB to ~0.8 MB with no change to the phonemes
+produced. Set `espeak_dicts` to `"all"` if a voice genuinely needs the full set.
 """
 
 from __future__ import annotations
@@ -66,6 +77,9 @@ VOICES = {
             "Rapunzelina Greek single-speaker corpus (CC0). Phonemizer data: "
             "eSpeak NG (GPL-3.0) — verify license and source obligations before distribution."
         ),
+        # Greek only: `el` is Modern Greek, `grc` is the Ancient Greek rules
+        # the model also reaches for. Everything else in the bundle is unused.
+        "espeak_dicts": ("el", "grc"),
     },
     "he_IL-saspeech-medium": {
         "url": f"{RELEASE}/vits-piper-he_IL-saspeech-medium.tar.bz2",
@@ -128,8 +142,40 @@ def fetch(name: str, spec: dict, verify_only: bool) -> bool:
     with tarfile.open(archive, "r:bz2") as tar:
         tar.extractall(target_dir)
     _flatten(target_dir)
+    removed = prune_espeak_dicts(target_dir, spec.get("espeak_dicts"))
     print(f"[ok  ] {name}: extracted to {target_dir.relative_to(REPO)}")
+    if removed:
+        print(f"[ok  ] {name}: pruned {removed / 1048576:.1f} MB of unused eSpeak dictionaries")
     return True
+
+
+def prune_espeak_dicts(directory: pathlib.Path, keep_langs) -> int:
+    """Delete eSpeak NG dictionaries the voice never phonemizes with.
+
+    eSpeak NG ships a dictionary per language (~17 MB in total). A voice that
+    speaks one language reads one of them, so the rest is dead weight. Only
+    `*_dict` files are considered; the shared tables and the `lang/` and
+    `voices/` trees the phonemizer also loads are always kept.
+
+    `keep_langs` is the voice's `espeak_dicts` entry: a tuple of language codes,
+    or `"all"`/None to leave the extracted data untouched. Returns the number of
+    bytes removed.
+    """
+    if not keep_langs or keep_langs == "all":
+        return 0
+
+    data = directory / "espeak-ng-data"
+    if not data.is_dir():
+        return 0
+
+    keep = {f"{lang}_dict" for lang in keep_langs}
+    removed = 0
+    for path in sorted(data.glob("*_dict")):
+        if path.name in keep:
+            continue
+        removed += path.stat().st_size
+        path.unlink()
+    return removed
 
 
 def _flatten(directory: pathlib.Path) -> None:
@@ -153,9 +199,18 @@ def write_manifest() -> None:
         "engine": {"name": "sherpa-onnx", "license": "Apache-2.0"},
         "voices": {
             name: {
-                k: v
+                k: (list(v) if isinstance(v, tuple) else v)
                 for k, v in spec.items()
-                if k in ("url", "sha256", "size", "license", "attribution", "disabled")
+                if k
+                in (
+                    "url",
+                    "sha256",
+                    "size",
+                    "license",
+                    "attribution",
+                    "disabled",
+                    "espeak_dicts",
+                )
             }
             for name, spec in VOICES.items()
         },
@@ -165,6 +220,12 @@ def write_manifest() -> None:
                 "Piper Hebrew voice uses the non-commercial SASPEECH dataset."
             ),
         },
+        "notes": (
+            "espeak_dicts lists the eSpeak NG language dictionaries kept in each "
+            "voice's espeak-ng-data after extraction; every other language's "
+            "dictionary is pruned to keep the bundle small. Shared phonemizer "
+            "files are never pruned."
+        ),
     }
     MANIFEST.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"Wrote {MANIFEST.relative_to(REPO)}")
