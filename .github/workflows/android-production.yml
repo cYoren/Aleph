@@ -37,6 +37,8 @@ jobs:
             --strict-coverage \
             --fill-kjv-gaps \
             --emit-coverage-report build/coverage_report.json
+      - name: Prepare bundled database asset
+        run: python3 scripts/prepare_bible_db.py
       - name: Validate release
         run: bash ./scripts/validate_release.sh
       - name: Install Android signing assets

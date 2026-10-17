@@ -45,6 +45,9 @@ jobs:
             --fill-kjv-gaps \
             --emit-coverage-report build/coverage_report.json
 
+      - name: Prepare bundled database asset
+        run: python3 scripts/prepare_bible_db.py
+
       - name: Configure Android Keystore (Optional)
         run: |
           echo "$ANDROID_KEY_PROPERTIES" > android/key.properties
