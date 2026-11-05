@@ -57,67 +57,44 @@ class LanguageSelectionScreen extends ConsumerWidget {
 
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Column(
-            children: [
-              const SizedBox(height: 48),
-
-              // App icon/logo
-              Container(
-                width: 100,
-                height: 100,
-                decoration: BoxDecoration(
-                  color: colorScheme.primaryContainer,
-                  shape: BoxShape.circle,
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 560),
+            child: ListView(
+              padding: const EdgeInsets.all(24),
+              children: [
+                const SizedBox(height: 24),
+                Icon(Icons.menu_book, size: 48, color: colorScheme.onSurface),
+                const SizedBox(height: 16),
+                Text(
+                  l10n.appTitle,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-                child: Icon(
-                  Icons.menu_book,
-                  size: 50,
-                  color: colorScheme.onPrimaryContainer,
+                const SizedBox(height: 8),
+                Text(
+                  l10n.selectLanguage,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                  ),
                 ),
-              ),
-
-              const SizedBox(height: 32),
-
-              // Title
-              Text(
-                l10n.appTitle,
-                style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-
-              const SizedBox(height: 8),
-
-              Text(
-                l10n.selectLanguage,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
-                ),
-              ),
-
-              const SizedBox(height: 48),
-
-              // Language buttons
-              Expanded(
-                child: ListView.separated(
-                  itemCount: languages.length,
-                  separatorBuilder: (context, index2) =>
-                      const SizedBox(height: 12),
-                  itemBuilder: (context, index) {
-                    final lang = languages[index];
-                    return _LanguageButton(
+                const SizedBox(height: 28),
+                for (final lang in languages)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: _LanguageButton(
                       code: lang['code']!,
                       name: lang['name']!,
                       flag: lang['flag']!,
                       translation: lang['translation']!,
                       onTap: () => _selectLanguage(context, ref, lang['code']!),
-                    );
-                  },
-                ),
-              ),
-            ],
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
       ),

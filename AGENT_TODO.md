@@ -1,45 +1,25 @@
-# Release 1.0.6: to-do for the release agent
+# Aleph integration verification
 
-Everything below is ready on `main`. These steps need Gus's accounts or Mac.
-Do them in order, tick each box, and **delete this file in the last step**.
+The old 1.0.6 billing/release instructions in this file were historical and are
+superseded by the current README build recipe and the local verification report.
+Do not trigger GitHub builds or submit a store release from this checklist.
 
-## Why this is urgent
+Current integration: `design/reading-activation-polish`, PR #8.
 
-Live iOS 1.0.5 (build 27) was built by CI without `assets/bible.db`: the 25 MB
-IPA has no Bible text, so every fresh iOS install since about 2026-09-07 is
-empty. The workflow is fixed and `pubspec.yaml` now names the file, so a build
-without it fails instead of shipping empty.
+- [x] Integrate the compressed database reader and packed-only asset manifest.
+- [x] Verify all 31,152 canonical syntax records, with no missing or extra verses.
+- [x] Keep the Bible and seven translated short-gloss languages complete.
+- [x] Integrate Android edge-to-edge and resource shrinking fixes.
+- [x] Preserve the existing visual identity while finishing first-reading flow.
+- [x] Adapt navigation and language selection for tablets, landscape and large text.
+- [x] Replace the old speech runtime with sherpa-onnx 2 and generated pronunciations.
+- [x] Exclude eSpeak code and dictionary data from the app bundle.
+- [x] Make data/font/voice attributions available offline in Settings.
+- [x] Keep the AI tutor off until a new reader explicitly enables it.
+- [ ] Record final Android, iOS and macOS native build/interaction evidence.
+- [ ] Reconcile final review comments and merge the verified source integration.
 
-## Steps
-
-- [ ] **Fix GitHub Actions billing.** On 2026-09-25 macOS jobs were refused:
-      "recent account payments have failed or your spending limit needs to be
-      increased" (Settings, Billing & plans).
-- [ ] **iOS build:** `gh workflow run ios-testflight.yml --ref main`.
-      Check the IPA is large (the database alone is over 200 MB). If the
-      Flutter build fails, look first at the notification setup
-      (`ios/Runner/AppDelegate.swift`), which has never been compiled.
-- [ ] **Store listing and screenshots:**
-      `./scripts/push_store_listings.sh` (dry run), then `--apply`. It writes
-      8-locale copy and 20 screenshots to the App Store 1.0.6 draft
-      (app 6758858816) and the Play listing.
-- [ ] **Submit iOS 1.0.6:** attach the new build to the 1.0.6 draft and submit
-      for review.
-- [ ] **Android:** power on the Mac and re-register its self-hosted runner
-      (the repo shows none; it holds the release keystore at
-      `~/Documents/Coding/Original bible/android/`). Then
-      `gh workflow run android-production.yml --ref main`. First compile of
-      the notification setup (core library desugaring, receivers in
-      `AndroidManifest.xml`); fix there if it fails.
-- [ ] **Optional, AI tutor:** deploy `proxy/` (`proxy/README.md`: wrangler
-      login, `OPENROUTER_API_KEY` secret, deploy), then set the repository
-      variable `ALEPH_AI_PROXY` to the worker URL and rebuild. Without it the
-      tutor stays hidden; nothing breaks.
-- [ ] **Launch posts:** use `docs/launch-kit.md` once the builds are live.
-- [ ] **Clean up:** delete this file and commit
-      (`git rm AGENT_TODO.md && git commit -m "chore: 1.0.6 released"`).
-
-## Next version, not part of this release
-
-Group and church codes (need server storage), share as video, human-recorded
-audio, home-screen widget.
+No new model, translation service, paid API or GitHub Actions build is required.
+The two local long-form translation commits remain preserved on their original
+feature branch; the four remaining language caches are a separate content task.
+Fallback English dictionary entries remain explicitly labeled in the app.

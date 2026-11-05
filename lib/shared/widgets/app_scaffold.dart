@@ -46,39 +46,80 @@ class _AppScaffoldState extends State<AppScaffold> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return Scaffold(
-      body: widget.child,
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _calculateSelectedIndex(context),
-        onDestinationSelected: (index) => _onItemTapped(index, context),
-        destinations: [
-          NavigationDestination(
-            icon: Icon(Icons.home_outlined),
-            selectedIcon: Icon(Icons.home),
-            label: l10n.home,
+    final destinations = [
+      (Icons.home_outlined, Icons.home, l10n.home),
+      (Icons.menu_book_outlined, Icons.menu_book, l10n.books),
+      (Icons.bookmark_outline, Icons.bookmark, l10n.bookmarks),
+      (Icons.search_outlined, Icons.search, l10n.search),
+      (Icons.settings_outlined, Icons.settings, l10n.settings),
+    ];
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final selected = _calculateSelectedIndex(context);
+        if (constraints.maxWidth < 720) {
+          return Scaffold(
+            body: widget.child,
+            bottomNavigationBar: NavigationBar(
+              selectedIndex: selected,
+              onDestinationSelected: (index) => _onItemTapped(index, context),
+              destinations: [
+                for (final (icon, selectedIcon, label) in destinations)
+                  NavigationDestination(
+                    icon: Icon(icon),
+                    selectedIcon: Icon(selectedIcon),
+                    label: label,
+                  ),
+              ],
+            ),
+          );
+        }
+        return Scaffold(
+          body: SafeArea(
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 112,
+                  child: NavigationRail(
+                    minWidth: 112,
+                    scrollable: true,
+                    selectedIndex: selected,
+                    labelType: NavigationRailLabelType.all,
+                    backgroundColor: Theme.of(
+                      context,
+                    ).colorScheme.surfaceContainerLow,
+                    indicatorColor: Theme.of(
+                      context,
+                    ).colorScheme.primaryContainer,
+                    onDestinationSelected: (index) =>
+                        _onItemTapped(index, context),
+                    destinations: [
+                      for (final (icon, selectedIcon, label) in destinations)
+                        NavigationRailDestination(
+                          icon: Icon(icon),
+                          selectedIcon: Icon(selectedIcon),
+                          label: SizedBox(
+                            width: 88,
+                            child: Text(label, textAlign: TextAlign.center),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: LayoutBuilder(
+                    builder: (context, content) => MediaQuery(
+                      data: MediaQuery.of(context).copyWith(
+                        size: Size(content.maxWidth, content.maxHeight),
+                      ),
+                      child: widget.child,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-          NavigationDestination(
-            icon: Icon(Icons.menu_book_outlined),
-            selectedIcon: Icon(Icons.menu_book),
-            label: l10n.books,
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.bookmark_outline),
-            selectedIcon: Icon(Icons.bookmark),
-            label: l10n.bookmarks,
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.search_outlined),
-            selectedIcon: Icon(Icons.search),
-            label: l10n.search,
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.settings_outlined),
-            selectedIcon: Icon(Icons.settings),
-            label: l10n.settings,
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

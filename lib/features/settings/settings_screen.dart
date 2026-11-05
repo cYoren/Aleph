@@ -367,6 +367,15 @@ class SettingsScreen extends ConsumerWidget {
           ),
           const Divider(),
 
+          ListTile(
+            leading: const Icon(Icons.info_outline),
+            title: Text(MaterialLocalizations.of(context).licensesPageTitle),
+            onTap: () => showLicensePage(
+              context: context,
+              applicationName: AppIdentity.publicAppName,
+            ),
+          ),
+
           // Responsible Entity Section
           _buildSectionHeader(l10n.appResponsible, colorScheme),
           ListTile(

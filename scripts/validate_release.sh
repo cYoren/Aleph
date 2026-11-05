@@ -206,6 +206,10 @@ if (( extended_lexicon_count < 8000 )); then
   exit 1
 fi
 
+echo "Checking bundled Greek speech assets and corpus pronunciations..."
+python3 "$ROOT_DIR/scripts/fetch_embedded_voices.py" --verify
+python3 "$ROOT_DIR/scripts/build_greek_pronunciation_lexicon.py" --db "$DB_PATH" --check
+
 echo "Running lexicon enrichment unit tests..."
 python3 "$ROOT_DIR/scripts/test_build_lexicon_enrichment.py" > /dev/null
 
