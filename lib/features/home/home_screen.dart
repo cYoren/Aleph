@@ -9,7 +9,7 @@ import '../../providers/database_provider.dart';
 import '../../data/models/verse.dart';
 import '../../shared/utils/transliterator.dart';
 import '../../shared/utils/reading_tradition.dart';
-import '../../app/theme.dart';
+import '../../shared/utils/readable_width.dart';
 import '../../providers/book_names_provider.dart';
 
 const _fallbackTranslationId = 'KJV';
@@ -151,12 +151,17 @@ class HomeScreen extends ConsumerWidget {
       body: SafeArea(
         bottom: false,
         child: ListView(
-          padding: const EdgeInsets.fromLTRB(20, 24, 20, 32),
+          padding: EdgeInsets.fromLTRB(
+            readableGutter(context, minimum: 20),
+            24,
+            readableGutter(context, minimum: 20),
+            32,
+          ),
           children: [
             _buildContinueReadingCard(context, ref, colorScheme, l10n),
-            const DivineRule(),
+            const SizedBox(height: 32),
             _buildVerseOfDayCard(context, ref, colorScheme, l10n),
-            const DivineRule(),
+            const SizedBox(height: 32),
             _buildStudyRow(context, colorScheme, l10n),
           ],
         ),
@@ -188,40 +193,32 @@ class HomeScreen extends ConsumerWidget {
 
     // No card, no border: the first thing on the page is a place, set like a
     // title page rather than boxed like a control.
-    return InkWell(
-      onTap: () => context.go('/reading'),
-      borderRadius: BorderRadius.circular(12),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    l10n.continueReading.toUpperCase(),
-                    style: TextStyle(
-                      fontSize: 11,
-                      letterSpacing: 1.6,
-                      fontWeight: FontWeight.w600,
-                      color: colorScheme.onSurfaceVariant,
-                    ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '$bookName ${settings.lastReadChapter}',
+                  style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                    color: colorScheme.onSurface,
                   ),
-                  const SizedBox(height: 6),
-                  Text(
-                    '$bookName ${settings.lastReadChapter}',
-                    style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                      color: colorScheme.onSurface,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+                const SizedBox(height: 16),
+                FilledButton.icon(
+                  onPressed: () => context.go('/reading'),
+                  icon: const Icon(Icons.menu_book_outlined),
+                  label: Text(l10n.continueReading),
+                  style: FilledButton.styleFrom(minimumSize: const Size(0, 48)),
+                ),
+              ],
             ),
-            Icon(Icons.arrow_forward, color: colorScheme.primary, size: 22),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -240,20 +237,11 @@ class HomeScreen extends ConsumerWidget {
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: colorScheme.outlineVariant, width: 0.8),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            l10n.verseOfDay.toUpperCase(),
-            style: TextStyle(
-              fontSize: 11,
-              letterSpacing: 1.6,
-              fontWeight: FontWeight.w600,
-              color: colorScheme.primary,
-            ),
-          ),
+          Text(l10n.verseOfDay, style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 16),
           verseAsync.when(
             loading: () => const Center(
@@ -262,7 +250,17 @@ class HomeScreen extends ConsumerWidget {
                 child: CircularProgressIndicator(strokeWidth: 2),
               ),
             ),
-            error: (err, stack) => Text('${l10n.error}: $err'),
+            error: (err, stack) => Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(l10n.error),
+                TextButton.icon(
+                  onPressed: () => ref.invalidate(verseOfDayProvider),
+                  icon: const Icon(Icons.refresh),
+                  label: Text(l10n.tryAgain),
+                ),
+              ],
+            ),
             data: (verseData) {
               if (verseData == null) {
                 return Text(l10n.noResults);
@@ -360,15 +358,7 @@ class HomeScreen extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          l10n.quickAccess.toUpperCase(),
-          style: TextStyle(
-            fontSize: 11,
-            letterSpacing: 1.6,
-            fontWeight: FontWeight.w600,
-            color: colorScheme.onSurfaceVariant,
-          ),
-        ),
+        Text(l10n.quickAccess, style: Theme.of(context).textTheme.titleLarge),
         const SizedBox(height: 14),
         const PathHomeCard(),
         const SizedBox(height: 10),
@@ -377,41 +367,26 @@ class HomeScreen extends ConsumerWidget {
         // no longer does — it asks you to recall a passage in a script you may
         // not be able to sound out yet, so it lives inside Vocabulary, which is
         // where someone who has started learning actually goes.
-        IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(
-                child: _buildStudyTile(
-                  context,
-                  colorScheme,
-                  Icons.abc_outlined,
-                  l10n.alphabetTitle,
-                  () => context.push('/alphabet'),
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: _buildStudyTile(
-                  context,
-                  colorScheme,
-                  Icons.style_outlined,
-                  l10n.vocabularyTitle,
-                  () => context.push('/vocabulary'),
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: _buildStudyTile(
-                  context,
-                  colorScheme,
-                  Icons.insights_outlined,
-                  l10n.readabilityTitle,
-                  () => context.push('/readability'),
-                ),
-              ),
-            ],
-          ),
+        _buildStudyTile(
+          context,
+          colorScheme,
+          Icons.abc_outlined,
+          l10n.alphabetTitle,
+          () => context.push('/alphabet'),
+        ),
+        _buildStudyTile(
+          context,
+          colorScheme,
+          Icons.style_outlined,
+          l10n.vocabularyTitle,
+          () => context.push('/vocabulary'),
+        ),
+        _buildStudyTile(
+          context,
+          colorScheme,
+          Icons.insights_outlined,
+          l10n.readabilityTitle,
+          () => context.push('/readability'),
         ),
         const SizedBox(height: 10),
         // The easiest thing in the app to share: your own name, in Hebrew.
@@ -437,35 +412,12 @@ class HomeScreen extends ConsumerWidget {
     String label,
     VoidCallback onTap,
   ) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(14),
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: colorScheme.outlineVariant, width: 0.8),
-          ),
-          child: Column(
-            children: [
-              Icon(icon, color: colorScheme.primary, size: 22),
-              const SizedBox(height: 10),
-              Text(
-                label,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 12.5,
-                  height: 1.3,
-                  fontWeight: FontWeight.w500,
-                  color: colorScheme.onSurface,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+      leading: Icon(icon, color: colorScheme.onSurfaceVariant),
+      title: Text(label),
+      trailing: const Icon(Icons.chevron_right),
+      onTap: onTap,
     );
   }
 }

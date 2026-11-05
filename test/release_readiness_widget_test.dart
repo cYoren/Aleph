@@ -225,7 +225,7 @@ void main() {
       expect(renderedTexts, contains(expected));
     });
 
-    testWidgets('onboarding flow reaches home without exceptions', (
+    testWidgets('onboarding skip reaches reader without exceptions', (
       WidgetTester tester,
     ) async {
       SharedPreferences.setMockInitialValues({
@@ -248,7 +248,7 @@ void main() {
 
       await tester.tap(find.text('English'));
       await tester.pumpAndSettle();
-      expect(find.text('Welcome'), findsOneWidget);
+      expect(find.text('Tap Any Word'), findsOneWidget);
 
       await tester.tap(find.text('Skip'));
       await tester.pumpAndSettle();
