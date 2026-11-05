@@ -16,6 +16,7 @@ Offline-first original-language Bible reader for iOS, Android, and macOS with He
 ```bash
 flutter pub get
 python3 scripts/build_full_bible_db.py --output assets/bible.db --cache-dir /tmp/original_bible_db_cache --strict-coverage --fill-kjv-gaps --emit-coverage-report build/coverage_report.json
+python3 scripts/prepare_bible_db.py         # compacts bible.db and writes bible.db.gz
 ./scripts/validate_release.sh
 flutter analyze
 flutter test

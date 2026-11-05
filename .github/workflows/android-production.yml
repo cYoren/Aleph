@@ -37,6 +37,8 @@ jobs:
             --strict-coverage \
             --fill-kjv-gaps \
             --emit-coverage-report build/coverage_report.json
+      - name: Prepare bundled database asset
+        run: python3 scripts/prepare_bible_db.py
       - name: Prepare bundled offline voices
         run: python3 scripts/fetch_embedded_voices.py
       - name: Validate release

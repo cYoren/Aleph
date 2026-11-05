@@ -91,8 +91,10 @@ session, where those tokens are expensive.
 >
 > ### Hard rules
 >
-> - **Never commit `assets/bible.db`.** It is a 228 MB generated artifact. The
->   durable output is the cache under `data/`, which you *should* commit.
+> - **Never commit `assets/bible.db` or `assets/bible.db.gz`.** The first is a
+>   ~210 MB generated artifact; the packed one the app bundles is ~52 MB. Both
+>   are gitignored. The durable output is the cache under `data/`, which you
+>   *should* commit.
 > - **Free models only.** Use `stealth/ox-alpha` for queue planning, research, and
 >   Kanban handoffs when the harness supports an explicit model. The bulk
 >   translation scripts have their own tested model defaults; do not replace those
@@ -134,9 +136,11 @@ session, where those tokens are expensive.
   degrades to English for anything not yet filled — so partial progress ships
   fine and there is no deadline pressure.
 - **After every full database rebuild**, `scripts/apply_gloss_translations.py`
-  has to run again, and `kBundledDatabaseVersion` in
-  `lib/data/database/database_mobile.dart` has to be bumped. Without the bump,
-  nobody who already has the app ever sees the new data.
+  has to run again, `scripts/prepare_bible_db.py` has to compact the database and
+  rewrite `assets/bible.db.gz` (the build fails on a missing asset otherwise), and
+  `kBundledDatabaseVersion` in `lib/data/database/database_mobile.dart` has to be
+  bumped. Without the bump, nobody who already has the app ever sees the new
+  data.
 - **What not to delegate.** Anything touching the reading experience, the
   theme, onboarding copy, or store metadata. Those are judgement calls, and a
   cheap model asked to "improve" them will add clutter — which is precisely the
