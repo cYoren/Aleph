@@ -41,9 +41,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         color: scheme.primary,
         isTraditionChoice: true,
       ),
-      // Only offered when this build can actually do it. The switch defaults to
-      // on, but the page states plainly what leaves the device, so the reader is
-      // choosing rather than discovering it later.
+      // Only offered when configured. New installs stay offline until the reader
+      // explicitly enables the tutor after seeing what leaves the device.
       if (ref.read(explainConfiguredProvider))
         _OnboardingPageData(
           icon: Icons.auto_awesome_outlined,
@@ -303,9 +302,8 @@ class _OnboardingPage extends ConsumerWidget {
                     ),
                   ],
 
-                  // AI opt-in: the switch is on by default, but the note below it
-                  // says exactly what leaves the device, so the reader is making a
-                  // choice here rather than finding out later.
+                  // AI opt-in: preserve an existing choice; new installs default off.
+                  // Skipping onboarding never grants consent.
                   if (data.isAiConsent) ...[
                     const SizedBox(height: 24),
                     Consumer(

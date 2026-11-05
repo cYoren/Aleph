@@ -73,8 +73,27 @@ part of the normal native release process. No store release is performed.
 - Rendered six states at each requested size: home, first-action introduction,
   tradition choice, configured AI privacy choice, dark home, and German tradition
   choice at 200% text size.
-- Data validation: the existing local assets/bible.db fails the release threshold
-  with 66 syntax trees versus at least 30,000 required. The UI change does not
-  regenerate or modify the Bible data. Resolve that separately before releasing.
+- Initial validation exposed an integration mismatch: the feature branch expected
+  one syntax-tree row per verse, while the database already used 66 compressed
+  book blocks. Integrating main restores the correct reader and validator. The
+  decoded corpus has exactly 31,152 canonical verse records, with none missing
+  or extra. The strengthened validator checks each record and its JSON.
 - Database generation command: not run; existing assets reused. Translation
   coverage and content attribution are unchanged by this patch.
+
+## Completion pass, 2026-11-04
+
+Integrated the existing compressed-database reader, packed-only asset packaging
+and Android edge-to-edge/shrinking fixes. Tablets and wide windows now use a
+scrollable navigation rail. The initial language chooser scrolls as a whole,
+including its heading, so landscape and large text cannot squeeze the list away.
+
+Migrated Greek recitation to sherpa-onnx 2.0.1 and a generated corpus lexicon.
+The same verified model is reused. eSpeak code and dictionaries no longer ship.
+See [Greek speech migration](../tasks/greek-speech-2.md). New installs keep AI
+off until explicitly enabled, while an existing saved choice is preserved.
+Data, font and voice notices are accessible offline from Settings → Licenses.
+
+An actual-platform integration runner now exercises first reading, dictionary
+lookup, syntax, search, core routes, dark theme, native synthesis and muted
+playback completion. Native results are recorded separately from fixture renders.

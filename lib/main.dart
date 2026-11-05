@@ -15,12 +15,14 @@ import 'l10n/generated/app_localizations.dart';
 import '../app/router.dart';
 import 'core/review_reminder.dart';
 import 'core/usage_events.dart';
+import 'core/licenses.dart';
 import '../app/theme.dart';
 import '../features/settings/settings_provider.dart';
 import '../providers/translations_provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  registerContentLicenses();
   // Desktop (local testing) has no native sqflite; use the FFI factory.
   if (!kIsWeb && (Platform.isLinux || Platform.isWindows)) {
     sqfliteFfiInit();

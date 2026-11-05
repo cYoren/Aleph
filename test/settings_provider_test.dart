@@ -14,6 +14,22 @@ Future<void> _waitUntilLoaded(SettingsNotifier notifier) async {
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
+  test(
+    'AI stays off until explicitly enabled and remembers the choice',
+    () async {
+      SharedPreferences.setMockInitialValues({});
+      final settings = SettingsNotifier();
+      addTearDown(settings.dispose);
+      await _waitUntilLoaded(settings);
+      expect(settings.state.aiExplainEnabled, isFalse);
+      await settings.setAiExplainEnabled(true);
+      final restored = SettingsNotifier();
+      addTearDown(restored.dispose);
+      await _waitUntilLoaded(restored);
+      expect(restored.state.aiExplainEnabled, isTrue);
+    },
+  );
+
   group('Settings language/translation behavior', () {
     test('recognizes regional and script language codes', () {
       expect(normalizeAppLanguage('pt-BR'), 'pt');

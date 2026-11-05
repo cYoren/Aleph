@@ -23,7 +23,7 @@ class EmbeddedVoice {
     required this.attribution,
     required this.modelAsset,
     required this.tokensAsset,
-    required this.dataDirAsset,
+    required this.lexiconAsset,
   });
 
   /// Stable identifier, also the directory name under `assets/voices/`.
@@ -44,7 +44,7 @@ class EmbeddedVoice {
   /// Asset paths as declared in `pubspec.yaml`.
   final String modelAsset;
   final String tokensAsset;
-  final String dataDirAsset;
+  final String lexiconAsset;
 }
 
 const String _elId = 'el_GR-rapunzelina-low';
@@ -54,19 +54,20 @@ const String _elBase = 'assets/voices/$_elId';
 ///
 /// Redistributable: the Piper voice weights come from the MIT-licensed
 /// `rhasspy/piper-voices` repository, the training data is the CC0 Rapunzelina
-/// corpus, and the phonemizer data is eSpeak NG (GPL-3.0, notice kept).
+/// corpus. sherpa-onnx 2 uses generated IPA pronunciations; no eSpeak
+/// code or dictionary data is bundled.
 const EmbeddedVoice kEmbeddedGreekVoice = EmbeddedVoice(
   id: _elId,
   languageCode: 'el-GR',
   isHebrew: false,
   sampleRate: 16000,
-  license: 'MIT weights / CC0 data / GPL-3.0 eSpeak NG data',
+  license: 'MIT weights / CC0 training data / generated IPA lexicon',
   attribution:
       'Piper el_GR/rapunzelina (rhasspy/piper-voices, MIT; data CC0), '
-      'converted by sherpa-onnx. Phonemizer: eSpeak NG (GPL-3.0).',
+      'converted by sherpa-onnx. Corpus pronunciations generated at build time.',
   modelAsset: '$_elBase/el_GR-rapunzelina-low.onnx',
   tokensAsset: '$_elBase/tokens.txt',
-  dataDirAsset: '$_elBase/espeak-ng-data',
+  lexiconAsset: '$_elBase/lexicon.txt',
 );
 
 /// Every bundled voice, keyed by language tag.

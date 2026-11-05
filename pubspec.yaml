@@ -34,7 +34,7 @@ dependencies:
   # bundled offline engine (sherpa-onnx + a redistributable Piper voice) is the
   # primary path where a voice is available. See lib/features/audio/.
   flutter_tts: ^4.2.0
-  sherpa_onnx: ^1.13.8
+  sherpa_onnx: 2.0.1
   audioplayers: ^6.1.0
 
   # Networking (opt-in AI passage explanation only; everything else is offline)
@@ -43,6 +43,8 @@ dependencies:
   timezone: ^0.11.1
 
 dev_dependencies:
+  integration_test:
+    sdk: flutter
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
@@ -76,6 +78,7 @@ flutter:
     # `assets/bible.db` the build leaves on disk is never packaged. Only the
     # packed asset further down ships; without this, iOS and macOS would carry
     # both.
+    - assets/attributions.txt
     - assets/alphabet_hints.json
     - assets/alphabet.json
     - assets/book_names.json
@@ -86,49 +89,12 @@ flutter:
     # database ships gzip-compressed and is unpacked on first launch; generate
     # it with `python3 scripts/prepare_bible_db.py`.
     - assets/bible.db.gz
-    # Bundled Greek recitation voice. Prepare it with
-    # `python3 scripts/fetch_embedded_voices.py`; the archive cache and the
-    # manifest are intentionally not bundled.
-    - assets/voices/el_GR-rapunzelina-low/
-    # Flutter does not recursively include subdirectories. The phonemizer
-    # needs these alongside the model, including the Greek language rules.
-    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/
-    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/
-    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/aav/
-    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/art/
-    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/azc/
-    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/bat/
-    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/bnt/
-    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/ccs/
-    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/cel/
-    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/cus/
-    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/dra/
-    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/esx/
-    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/gmq/
-    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/gmw/
-    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/grk/
-    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/inc/
-    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/ine/
-    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/ira/
-    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/iro/
-    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/itc/
-    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/jpx/
-    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/map/
-    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/miz/
-    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/myn/
-    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/poz/
-    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/roa/
-    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/sai/
-    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/sem/
-    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/sit/
-    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/tai/
-    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/trk/
-    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/urj/
-    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/zle/
-    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/zls/
-    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/lang/zlw/
-    - assets/voices/el_GR-rapunzelina-low/espeak-ng-data/voices/!v/
-  
+    # Only these verified assets ship. Build-time eSpeak data stays outside
+    # the bundle; sherpa-onnx 2 reads a generated corpus pronunciation table.
+    - assets/voices/el_GR-rapunzelina-low/el_GR-rapunzelina-low.onnx
+    - assets/voices/el_GR-rapunzelina-low/tokens.txt
+    - assets/voices/el_GR-rapunzelina-low/lexicon.txt
+
   fonts:
     - family: EzraSIL
       fonts:

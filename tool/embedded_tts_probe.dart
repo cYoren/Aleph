@@ -38,13 +38,13 @@ void main(List<String> args) {
         vits: sherpa.OfflineTtsVitsModelConfig(
           model: '$voiceDir/el_GR-rapunzelina-low.onnx',
           tokens: '$voiceDir/tokens.txt',
-          dataDir: '$voiceDir/espeak-ng-data',
+          lexicon: '$voiceDir/lexicon.txt',
         ),
         numThreads: 2,
         debug: false,
         provider: 'cpu',
       ),
-      maxNumSenetences: 1,
+      maxNumSentences: 1,
     ),
   );
 

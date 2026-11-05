@@ -150,7 +150,7 @@ class SettingsState {
     this.tradition = ReadingTradition.christian,
     this.showWordConnections = false,
     this.hasSeenReadingHint = false,
-    this.aiExplainEnabled = true,
+    this.aiExplainEnabled = false,
     this.aiProUnlocked = false,
     this.aiExplainUsedToday = 0,
     this.aiExplainUsageDay = '',
@@ -241,7 +241,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
       final tradition = ReadingTradition.fromName(prefs.getString('tradition'));
       final showWordConnections = prefs.getBool('showWordConnections') ?? false;
       final hasSeenReadingHint = prefs.getBool('hasSeenReadingHint') ?? false;
-      final aiExplainEnabled = prefs.getBool('aiExplainEnabled') ?? true;
+      final aiExplainEnabled = prefs.getBool('aiExplainEnabled') ?? false;
       final aiProUnlocked = prefs.getBool('aiProUnlocked') ?? false;
       final aiExplainUsedToday = prefs.getInt('aiExplainUsedToday') ?? 0;
       final aiExplainUsageDay = prefs.getString('aiExplainUsageDay') ?? '';

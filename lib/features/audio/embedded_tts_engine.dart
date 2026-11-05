@@ -140,7 +140,7 @@ class EmbeddedTtsEngine implements EmbeddedSpeechEngine {
         'id': id,
         'model': paths.model,
         'tokens': paths.tokens,
-        'dataDir': paths.dataDir,
+        'lexicon': paths.lexicon,
         'threads': 2,
       });
 
@@ -269,13 +269,13 @@ void _voiceIsolateMain(SendPort toMain) {
               vits: sherpa.OfflineTtsVitsModelConfig(
                 model: message['model'] as String,
                 tokens: message['tokens'] as String,
-                dataDir: message['dataDir'] as String,
+                lexicon: message['lexicon'] as String,
               ),
               numThreads: (message['threads'] as int?) ?? 2,
               debug: false,
               provider: 'cpu',
             ),
-            maxNumSenetences: 1,
+            maxNumSentences: 1,
           ),
         );
         toMain.send({'id': id, 'sampleRate': tts!.sampleRate});
@@ -311,10 +311,10 @@ void _voiceIsolateMain(SendPort toMain) {
 
 /// Filesystem paths the native library can open for one voice.
 class VoicePaths {
-  const VoicePaths(this.model, this.tokens, this.dataDir);
+  const VoicePaths(this.model, this.tokens, this.lexicon);
   final String model;
   final String tokens;
-  final String dataDir;
+  final String lexicon;
 }
 
 /// Copies a bundled voice's assets into a real directory, once per version.
@@ -336,9 +336,7 @@ Future<VoicePaths> provisionVoiceAssets(EmbeddedVoice voice) async {
   final requiredAssets = [
     voice.modelAsset,
     voice.tokensAsset,
-    '${voice.dataDirAsset}/phontab',
-    '${voice.dataDirAsset}/phonindex',
-    '${voice.dataDirAsset}/phondata',
+    voice.lexiconAsset,
   ];
   String localPath(String asset) =>
       p.join(base.path, asset.substring(prefix.length));
@@ -356,7 +354,7 @@ Future<VoicePaths> provisionVoiceAssets(EmbeddedVoice voice) async {
         .toList();
     if (!requiredAssets.every(assets.contains)) {
       throw StateError(
-        'Bundled voice ${voice.id} is missing model or phonemizer assets',
+        'Bundled voice ${voice.id} is missing model or pronunciation assets',
       );
     }
     for (final asset in assets) {
@@ -382,8 +380,8 @@ Future<VoicePaths> provisionVoiceAssets(EmbeddedVoice voice) async {
   final tokensFile = voice.tokensAsset.substring(
     'assets/voices/${voice.id}/'.length,
   );
-  final dataDir = voice.dataDirAsset.substring(
+  final lexicon = voice.lexiconAsset.substring(
     'assets/voices/${voice.id}/'.length,
   );
-  return VoicePaths(at(modelFile), at(tokensFile), at(dataDir));
+  return VoicePaths(at(modelFile), at(tokensFile), at(lexicon));
 }
