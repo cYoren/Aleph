@@ -454,5 +454,21 @@
   "morphAccusative": "宾格",
   "morphVocative": "呼格",
   "contentSourceNote": "以英文显示；暂无译文。",
-  "recitationVoiceHebrewGap": "希伯来语使用您设备的语音朗读功能。Aleph 尚未完成对内置希伯来语语音的验证。"
+  "recitationVoiceHebrewGap": "希伯来语使用您设备的语音朗读功能。Aleph 尚未完成对内置希伯来语语音的验证。",
+  "contentLoadError": "无法加载此内容。请重试。",
+  "diagnosticsSuccess": "成功率",
+  "diagnosticsMedian": "耗时中位数",
+  "diagnosticsCalls": "请求数",
+  "diagnosticsPoorAnswers": "低质量回答",
+  "diagnosticsErrors": "错误",
+  "diagnosticsLastProblem": "最近的问题",
+  "diagnosticsInUse": "正在使用",
+  "diagnosticsNotUsed": "尚未使用",
+  "diagnosticsTooEarly": "暂时无法判断",
+  "diagnosticsEarlyProblems": "暂时无法判断。已出现一些问题。",
+  "diagnosticsFailing": "运行异常。请更换模型。",
+  "diagnosticsUnreliable": "不够可靠。建议更换模型。",
+  "diagnosticsSlow": "速度很慢。建议更换模型。",
+  "diagnosticsMostlyGood": "总体正常。部分回答质量较差。",
+  "diagnosticsHealthy": "运行良好"
 }

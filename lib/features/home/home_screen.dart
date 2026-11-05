@@ -253,7 +253,7 @@ class HomeScreen extends ConsumerWidget {
             error: (err, stack) => Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(l10n.error),
+                Text(l10n.contentLoadError),
                 TextButton.icon(
                   onPressed: () => ref.invalidate(verseOfDayProvider),
                   icon: const Icon(Icons.refresh),

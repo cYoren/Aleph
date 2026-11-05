@@ -1,3 +1,4 @@
+import 'empty_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -128,8 +129,10 @@ class DefinitionSheet extends ConsumerWidget {
                 child: lexiconAsync.when(
                   loading: () =>
                       const Center(child: CircularProgressIndicator()),
-                  error: (err, stack) =>
-                      Center(child: Text('${l10n.error}: $err')),
+                  error: (error, stack) => ErrorState(
+                    message: l10n.contentLoadError,
+                    onRetry: () => ref.invalidate(selectedWordLexiconProvider),
+                  ),
                   data: (lexicon) {
                     if (lexicon == null) {
                       return Center(
@@ -498,7 +501,8 @@ class DefinitionSheet extends ConsumerWidget {
     );
   }
 
-  Widget _buildSection(String title, String content, ColorScheme colorScheme) {    return Padding(
+  Widget _buildSection(String title, String content, ColorScheme colorScheme) {
+    return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

@@ -1222,4 +1222,55 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get recitationVoiceHebrewGap =>
       'O hebraico usa a voz de leitura do seu aparelho. Uma voz hebraica integrada ainda não foi validada para o Aleph.';
+
+  @override
+  String get contentLoadError =>
+      'Não foi possível carregar este conteúdo. Tente novamente.';
+
+  @override
+  String get diagnosticsSuccess => 'Sucesso';
+
+  @override
+  String get diagnosticsMedian => 'Tempo mediano';
+
+  @override
+  String get diagnosticsCalls => 'Pedidos';
+
+  @override
+  String get diagnosticsPoorAnswers => 'Respostas ruins';
+
+  @override
+  String get diagnosticsErrors => 'Erros';
+
+  @override
+  String get diagnosticsLastProblem => 'Último problema';
+
+  @override
+  String get diagnosticsInUse => 'Em uso';
+
+  @override
+  String get diagnosticsNotUsed => 'Ainda não utilizado';
+
+  @override
+  String get diagnosticsTooEarly => 'Ainda é cedo para avaliar';
+
+  @override
+  String get diagnosticsEarlyProblems =>
+      'Ainda é cedo para avaliar. Houve problemas.';
+
+  @override
+  String get diagnosticsFailing => 'Falhando. Troque o modelo.';
+
+  @override
+  String get diagnosticsUnreliable => 'Pouco confiável. Considere trocar.';
+
+  @override
+  String get diagnosticsSlow => 'Muito lento. Considere trocar.';
+
+  @override
+  String get diagnosticsMostlyGood =>
+      'Em geral, funciona. Algumas respostas ruins.';
+
+  @override
+  String get diagnosticsHealthy => 'Funcionando bem';
 }

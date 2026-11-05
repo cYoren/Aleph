@@ -454,5 +454,21 @@
   "morphAccusative": "대격",
   "morphVocative": "호격",
   "contentSourceNote": "영어로 표시됨; 아직 번역이 없습니다.",
-  "recitationVoiceHebrewGap": "히브리어는 기기의 음성 낭독 기능을 사용합니다. Aleph에 내장할 히브리어 음성은 아직 검증되지 않았습니다."
+  "recitationVoiceHebrewGap": "히브리어는 기기의 음성 낭독 기능을 사용합니다. Aleph에 내장할 히브리어 음성은 아직 검증되지 않았습니다.",
+  "contentLoadError": "이 콘텐츠를 불러오지 못했습니다. 다시 시도해 주세요.",
+  "diagnosticsSuccess": "성공률",
+  "diagnosticsMedian": "응답 시간 중앙값",
+  "diagnosticsCalls": "요청 수",
+  "diagnosticsPoorAnswers": "품질이 낮은 답변",
+  "diagnosticsErrors": "오류",
+  "diagnosticsLastProblem": "최근 문제",
+  "diagnosticsInUse": "사용 중",
+  "diagnosticsNotUsed": "아직 사용하지 않음",
+  "diagnosticsTooEarly": "아직 판단하기 이릅니다",
+  "diagnosticsEarlyProblems": "아직 판단하기 이릅니다. 일부 문제가 있었습니다.",
+  "diagnosticsFailing": "오류가 잦습니다. 모델을 변경하세요.",
+  "diagnosticsUnreliable": "신뢰도가 낮습니다. 모델 변경을 고려하세요.",
+  "diagnosticsSlow": "매우 느립니다. 모델 변경을 고려하세요.",
+  "diagnosticsMostlyGood": "대체로 정상입니다. 일부 답변의 품질이 낮습니다.",
+  "diagnosticsHealthy": "정상 작동 중"
 }

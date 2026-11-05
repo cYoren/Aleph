@@ -1215,4 +1215,52 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get recitationVoiceHebrewGap =>
       'Hebrew uses your device\'s speech voice. A bundled Hebrew voice has not yet been validated for Aleph.';
+
+  @override
+  String get contentLoadError => 'Couldn\'t load this content. Try again.';
+
+  @override
+  String get diagnosticsSuccess => 'Success';
+
+  @override
+  String get diagnosticsMedian => 'Median time';
+
+  @override
+  String get diagnosticsCalls => 'Requests';
+
+  @override
+  String get diagnosticsPoorAnswers => 'Poor answers';
+
+  @override
+  String get diagnosticsErrors => 'Errors';
+
+  @override
+  String get diagnosticsLastProblem => 'Last problem';
+
+  @override
+  String get diagnosticsInUse => 'In use';
+
+  @override
+  String get diagnosticsNotUsed => 'Not used yet';
+
+  @override
+  String get diagnosticsTooEarly => 'Too early to tell';
+
+  @override
+  String get diagnosticsEarlyProblems => 'Too early to tell. Some problems.';
+
+  @override
+  String get diagnosticsFailing => 'Failing. Switch model.';
+
+  @override
+  String get diagnosticsUnreliable => 'Unreliable. Consider switching.';
+
+  @override
+  String get diagnosticsSlow => 'Very slow. Consider switching.';
+
+  @override
+  String get diagnosticsMostlyGood => 'Mostly fine. Some poor answers.';
+
+  @override
+  String get diagnosticsHealthy => 'Working well';
 }

@@ -13,7 +13,8 @@ import '../../shared/widgets/loading_skeleton.dart';
 import 'word_search_provider.dart';
 import '../../providers/book_names_provider.dart';
 
-final searchQueryProvider = StateProvider<String>((ref) => '');
+// The query belongs to the search screen and resets when its last listener leaves.
+final searchQueryProvider = StateProvider.autoDispose<String>((ref) => '');
 
 final searchResultsProvider = FutureProvider.autoDispose<List<Verse>>((
   ref,
@@ -57,7 +58,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     _debounce?.cancel();
     _searchController.removeListener(_onControllerChanged);
     _searchController.dispose();
-    ref.read(searchQueryProvider.notifier).state = '';
     super.dispose();
   }
 
@@ -65,6 +65,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final trimmed = value.trim();
     if (_debounce?.isActive ?? false) _debounce!.cancel();
     _debounce = Timer(const Duration(milliseconds: 400), () {
+      if (!mounted) return;
       ref.read(searchQueryProvider.notifier).state = trimmed;
     });
   }
@@ -216,7 +217,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   itemBuilder: (context, index) => const SearchResultSkeleton(),
                 ),
                 error: (err, stack) => ErrorState(
-                  message: err.toString(),
+                  message: l10n.contentLoadError,
                   onRetry: () => ref.invalidate(searchResultsProvider),
                 ),
               ),

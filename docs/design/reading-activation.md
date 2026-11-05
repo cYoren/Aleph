@@ -97,3 +97,8 @@ Data, font and voice notices are accessible offline from Settings → Licenses.
 An actual-platform integration runner now exercises first reading, dictionary
 lookup, syntax, search, core routes, dark theme, native synthesis and muted
 playback completion. Native results are recorded separately from fixture renders.
+
+Final wrap-up status and exact remaining native verification are in
+[completion-status.md](completion-status.md). The final suite has 335 passing
+tests, including retry recovery, Portuguese diagnostics at enlarged text size,
+and the navigation-disposal regression discovered by the Android test.
