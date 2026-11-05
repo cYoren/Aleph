@@ -84,8 +84,8 @@ const Map<String, EmbeddedVoice> kEmbeddedVoices = {
 /// validated for this project. Hebrew therefore keeps the device voice as its path, and
 /// this string is the honest reason, shown in Settings.
 const String kHebrewEmbeddedVoiceUnavailableReason =
-    'No Hebrew voice with a license that permits redistribution is available '
-    'yet, so Hebrew uses your device voice.';
+    'No bundled Hebrew voice has been validated for Aleph yet, '
+    'so Hebrew uses your device voice.';
 
 /// The bundled voice for a testament, or null when there is none.
 EmbeddedVoice? embeddedVoiceFor({required bool isHebrew}) =>

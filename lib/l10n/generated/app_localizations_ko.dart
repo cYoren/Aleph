@@ -1184,5 +1184,5 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get recitationVoiceHebrewGap =>
-      '현재 히브리어는 기기의 음성 낭독 기능을 사용합니다. 재배포가 허용된 라이선스를 가진 히브리어 음성은 아직 없습니다.';
+      '히브리어는 기기의 음성 낭독 기능을 사용합니다. Aleph에 내장할 히브리어 음성은 아직 검증되지 않았습니다.';
 }

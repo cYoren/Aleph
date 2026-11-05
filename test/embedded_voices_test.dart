@@ -73,7 +73,7 @@ void main() {
       expect(kHebrewEmbeddedVoiceUnavailableReason.trim(), isNotEmpty);
       expect(
         kHebrewEmbeddedVoiceUnavailableReason.toLowerCase(),
-        contains('license'),
+        contains('device voice'),
       );
     });
   });
