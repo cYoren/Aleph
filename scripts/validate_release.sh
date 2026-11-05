@@ -188,11 +188,17 @@ if (( cross_references_count < 200000 )); then
   exit 1
 fi
 
-syntax_trees_count="$(sqlite3 "$DB_PATH" "SELECT COUNT(*) FROM syntax_trees;")"
+syntax_trees_count="$(sqlite3 "$DB_PATH" "SELECT COALESCE(SUM(verses), 0) FROM syntax_trees;")"
 if (( syntax_trees_count < 30000 )); then
   echo "ERROR: Expected at least 30,000 verses with syntax trees, found $syntax_trees_count"
   exit 1
 fi
+
+# The trees ship as one gzip block per book and the app reads the packed asset,
+# so a database that was never compacted (or an asset that does not decode back
+# to it) must fail here rather than reach a store.
+echo "Checking the compacted database and the packed asset..."
+python3 "$ROOT_DIR/scripts/prepare_bible_db.py" --check --db "$DB_PATH"
 
 extended_lexicon_count="$(sqlite3 "$DB_PATH" "SELECT COUNT(*) FROM lexicon WHERE extended_definition IS NOT NULL AND extended_definition != '';")"
 if (( extended_lexicon_count < 8000 )); then
@@ -203,6 +209,8 @@ fi
 echo "Running lexicon enrichment unit tests..."
 python3 "$ROOT_DIR/scripts/test_build_lexicon_enrichment.py" > /dev/null
 
+echo "Running release-database compaction tests..."
+python3 "$ROOT_DIR/scripts/test_prepare_bible_db.py" > /dev/null
 echo "Running lexicon i18n pipeline tests..."
 python3 "$ROOT_DIR/scripts/test_lexicon_i18n.py" > /dev/null
 python3 "$ROOT_DIR/scripts/test_translation_delivery.py" > /dev/null

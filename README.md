@@ -69,15 +69,20 @@ python3 scripts/apply_gloss_translations.py
    Skipping this is not fatal — the app falls back to English glosses — but
    readers on the other seven languages lose their word meanings.
 
-4. Fetch the bundled recitation voice(s). These are large and are **not**
-   committed; the app lists them as assets, so a build without them fails loudly
-   rather than shipping silent:
+4. Compact the database and pack the asset the app bundles. This reshapes the
+   syntax trees into compressed per-book blocks and writes `assets/bible.db.gz`,
+   which is what `pubspec.yaml` ships; the app unpacks it on first launch. Run it
+   after every database build, or the build fails on a missing asset:
 ```bash
-python3 scripts/fetch_embedded_voices.py        # pinned URL + SHA-256 verified
-python3 scripts/fetch_embedded_voices.py --list # what exists, and why Hebrew is absent
+python3 scripts/prepare_bible_db.py
 ```
 
-5. Run the app:
+5. Fetch the bundled recitation voice(s), reusing the verified local cache:
+```bash
+python3 scripts/fetch_embedded_voices.py
+```
+
+6. Run the app:
 ```bash
 flutter run
 ```
@@ -100,12 +105,12 @@ python3 scripts/apply_gloss_translations.py
    are reused forever unless that number changes, so a release that ships new
    data without bumping it reaches nobody who already has the app.
 
-   Also fold in any translated long-form lexicon content and prepare the
-   bundled voice (both are picked up automatically / needed for the build):
+   Also incorporate translated content before packing, then prepare the bundled voice:
 ```bash
-python3 scripts/apply_lexicon_translations.py       # if long-form caches exist
-python3 scripts/fetch_embedded_voices.py            # pinned URL + SHA-256
-python3 scripts/fetch_embedded_voices.py --verify   # re-check the hashes
+python3 scripts/apply_lexicon_translations.py       # when translation caches exist
+python3 scripts/prepare_bible_db.py
+python3 scripts/fetch_embedded_voices.py
+python3 scripts/fetch_embedded_voices.py --verify
 ```
 
 2. Run quality gates:

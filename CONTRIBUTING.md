@@ -35,6 +35,12 @@ python3 scripts/build_full_bible_db.py \
   --emit-coverage-report build/coverage_report.json
 ```
 
+Then compact the database and write the compressed asset the app bundles.
+`pubspec.yaml` ships `assets/bible.db.gz`, so a build fails without this step:
+```bash
+python3 scripts/prepare_bible_db.py
+```
+
 ### Step 3: Run the App
 With the database in place, run the project on your preferred target device:
 ```bash

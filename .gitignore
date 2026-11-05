@@ -35,7 +35,9 @@ migrate_working_dir/
 
 # Large files
 assets/*.db
+assets/*.db.gz
 *.db
+*.db.gz
 
 # Symbolication related
 app.*.symbols

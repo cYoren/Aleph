@@ -72,11 +72,20 @@ flutter:
   uses-material-design: true
   
   assets:
-    - assets/
+    # Named individually instead of `- assets/`, so the raw generated
+    # `assets/bible.db` the build leaves on disk is never packaged. Only the
+    # packed asset further down ships; without this, iOS and macOS would carry
+    # both.
+    - assets/alphabet_hints.json
+    - assets/alphabet.json
+    - assets/book_names.json
+    - assets/names.json
     - assets/fonts/
     # Listed by name so a build without the generated database fails loudly
-    # instead of shipping an app with no Bible text (iOS build 27 did).
-    - assets/bible.db
+    # instead of shipping an app with no Bible text (iOS build 27 did). The
+    # database ships gzip-compressed and is unpacked on first launch; generate
+    # it with `python3 scripts/prepare_bible_db.py`.
+    - assets/bible.db.gz
     # Bundled Greek recitation voice. Prepare it with
     # `python3 scripts/fetch_embedded_voices.py`; the archive cache and the
     # manifest are intentionally not bundled.
