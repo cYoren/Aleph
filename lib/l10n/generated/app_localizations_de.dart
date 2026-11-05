@@ -1221,5 +1221,5 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get recitationVoiceHebrewGap =>
-      'Hebräisch nutzt vorerst die Sprachstimme deines Geräts. Noch gibt es keine hebräische Stimme mit einer Lizenz, die eine Weitergabe erlaubt.';
+      'Hebräisch nutzt die Sprachstimme deines Geräts. Eine integrierte hebräische Stimme wurde für Aleph noch nicht validiert.';
 }

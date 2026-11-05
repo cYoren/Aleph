@@ -1221,5 +1221,5 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get recitationVoiceHebrewGap =>
-      'Por enquanto, o hebraico usa a voz de leitura do seu aparelho. Ainda não há uma voz hebraica com licença que permita redistribuição.';
+      'O hebraico usa a voz de leitura do seu aparelho. Uma voz hebraica integrada ainda não foi validada para o Aleph.';
 }

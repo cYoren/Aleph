@@ -1170,5 +1170,5 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get recitationVoiceHebrewGap =>
-      '目前希伯来语使用您设备的语音朗读功能。尚无允许再分发的希伯来语语音许可可用。';
+      '希伯来语使用您设备的语音朗读功能。Aleph 尚未完成对内置希伯来语语音的验证。';
 }

@@ -2189,7 +2189,7 @@ abstract class AppLocalizations {
   /// No description provided for @recitationVoiceHebrewGap.
   ///
   /// In en, this message translates to:
-  /// **'Hebrew uses your device\'s speech voice for now. No Hebrew voice with a license that permits redistribution is available yet.'**
+  /// **'Hebrew uses your device\'s speech voice. A bundled Hebrew voice has not yet been validated for Aleph.'**
   String get recitationVoiceHebrewGap;
 }
 

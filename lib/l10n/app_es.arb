@@ -454,5 +454,5 @@
   "morphAccusative": "Acusativo",
   "morphVocative": "Vocativo",
   "contentSourceNote": "Se muestra en inglés; aún no hay traducción disponible.",
-  "recitationVoiceHebrewGap": "Por ahora, el hebreo usa la voz de lectura de tu dispositivo. Todavía no hay disponible ninguna voz hebrea con una licencia que permita su redistribución."
+  "recitationVoiceHebrewGap": "El hebreo usa la voz de lectura de tu dispositivo. Aún no se ha validado una voz hebrea integrada para Aleph."
 }
