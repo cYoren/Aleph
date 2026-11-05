@@ -208,7 +208,7 @@ class AppTheme {
         indicatorColor: scheme.primaryContainer,
         elevation: 0,
         height: 68,
-        labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
         labelTextStyle: WidgetStateProperty.resolveWith(
           (states) => TextStyle(
             fontFamily: fontFamily,
