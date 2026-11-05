@@ -18,6 +18,7 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:original_bible/app/theme.dart';
 import 'package:original_bible/features/onboarding/onboarding_screen.dart';
+import 'package:original_bible/features/onboarding/language_selection_screen.dart';
 import 'package:original_bible/features/explain/explain_provider.dart';
 import 'package:original_bible/shared/widgets/app_scaffold.dart';
 
@@ -163,6 +164,7 @@ void main() {
       'ai',
       'dark_home',
       'large_text',
+      'language',
     ]) {
       testWidgets('$page ${size.width}', (tester) async {
         SharedPreferences.setMockInitialValues({
@@ -178,6 +180,8 @@ void main() {
               builder: (context, state) =>
                   (page == 'home' || page == 'dark_home')
                   ? const AppScaffold(child: HomeScreen())
+                  : page == 'language'
+                  ? const LanguageSelectionScreen()
                   : const OnboardingScreen(),
             ),
           ],

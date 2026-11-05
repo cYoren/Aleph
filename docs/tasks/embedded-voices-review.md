@@ -1,3 +1,7 @@
+> Historical research for the original 1.13.8 integration. The current Greek
+> runtime migration and distribution details are recorded in [greek-speech-2.md](greek-speech-2.md).
+> Hebrew model research remains separate; the shipped Hebrew reader uses the device voice.
+
 # Revisão antes do push
 
 Branch: `feat/embedded-voices-lexicon-i18n`. Revisão do trabalho terceirizado
