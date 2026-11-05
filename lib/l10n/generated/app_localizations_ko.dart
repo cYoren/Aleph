@@ -1185,4 +1185,52 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String get recitationVoiceHebrewGap =>
       '히브리어는 기기의 음성 낭독 기능을 사용합니다. Aleph에 내장할 히브리어 음성은 아직 검증되지 않았습니다.';
+
+  @override
+  String get contentLoadError => '이 콘텐츠를 불러오지 못했습니다. 다시 시도해 주세요.';
+
+  @override
+  String get diagnosticsSuccess => '성공률';
+
+  @override
+  String get diagnosticsMedian => '응답 시간 중앙값';
+
+  @override
+  String get diagnosticsCalls => '요청 수';
+
+  @override
+  String get diagnosticsPoorAnswers => '품질이 낮은 답변';
+
+  @override
+  String get diagnosticsErrors => '오류';
+
+  @override
+  String get diagnosticsLastProblem => '최근 문제';
+
+  @override
+  String get diagnosticsInUse => '사용 중';
+
+  @override
+  String get diagnosticsNotUsed => '아직 사용하지 않음';
+
+  @override
+  String get diagnosticsTooEarly => '아직 판단하기 이릅니다';
+
+  @override
+  String get diagnosticsEarlyProblems => '아직 판단하기 이릅니다. 일부 문제가 있었습니다.';
+
+  @override
+  String get diagnosticsFailing => '오류가 잦습니다. 모델을 변경하세요.';
+
+  @override
+  String get diagnosticsUnreliable => '신뢰도가 낮습니다. 모델 변경을 고려하세요.';
+
+  @override
+  String get diagnosticsSlow => '매우 느립니다. 모델 변경을 고려하세요.';
+
+  @override
+  String get diagnosticsMostlyGood => '대체로 정상입니다. 일부 답변의 품질이 낮습니다.';
+
+  @override
+  String get diagnosticsHealthy => '정상 작동 중';
 }

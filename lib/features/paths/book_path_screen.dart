@@ -1,3 +1,4 @@
+import '../../shared/widgets/empty_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -54,7 +55,10 @@ class BookPathScreen extends ConsumerWidget {
       ),
       body: pathAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('${l10n.error}: $e')),
+        error: (error, stack) => ErrorState(
+          message: l10n.contentLoadError,
+          onRetry: () => ref.invalidate(bookPathProvider(active)),
+        ),
         data: (path) =>
             path == null ? const _BookChooser() : _PathBody(path: path),
       ),

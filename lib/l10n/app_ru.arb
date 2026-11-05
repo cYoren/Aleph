@@ -454,5 +454,21 @@
   "morphAccusative": "Винительный",
   "morphVocative": "Звательный",
   "contentSourceNote": "Показано на английском; перевод пока недоступен.",
-  "recitationVoiceHebrewGap": "Для иврита используется голос вашего устройства. Встроенный голос на иврите пока не прошёл проверку для Aleph."
+  "recitationVoiceHebrewGap": "Для иврита используется голос вашего устройства. Встроенный голос на иврите пока не прошёл проверку для Aleph.",
+  "contentLoadError": "Не удалось загрузить содержимое. Попробуйте ещё раз.",
+  "diagnosticsSuccess": "Успешность",
+  "diagnosticsMedian": "Медианное время",
+  "diagnosticsCalls": "Запросы",
+  "diagnosticsPoorAnswers": "Некачественные ответы",
+  "diagnosticsErrors": "Ошибки",
+  "diagnosticsLastProblem": "Последняя проблема",
+  "diagnosticsInUse": "Используется",
+  "diagnosticsNotUsed": "Ещё не использовалась",
+  "diagnosticsTooEarly": "Пока рано оценивать",
+  "diagnosticsEarlyProblems": "Пока рано оценивать. Были проблемы.",
+  "diagnosticsFailing": "Не работает должным образом. Смените модель.",
+  "diagnosticsUnreliable": "Ненадёжно. Подумайте о смене модели.",
+  "diagnosticsSlow": "Очень медленно. Подумайте о смене модели.",
+  "diagnosticsMostlyGood": "В целом работает. Есть некачественные ответы.",
+  "diagnosticsHealthy": "Работает хорошо"
 }

@@ -1171,4 +1171,52 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get recitationVoiceHebrewGap =>
       '希伯来语使用您设备的语音朗读功能。Aleph 尚未完成对内置希伯来语语音的验证。';
+
+  @override
+  String get contentLoadError => '无法加载此内容。请重试。';
+
+  @override
+  String get diagnosticsSuccess => '成功率';
+
+  @override
+  String get diagnosticsMedian => '耗时中位数';
+
+  @override
+  String get diagnosticsCalls => '请求数';
+
+  @override
+  String get diagnosticsPoorAnswers => '低质量回答';
+
+  @override
+  String get diagnosticsErrors => '错误';
+
+  @override
+  String get diagnosticsLastProblem => '最近的问题';
+
+  @override
+  String get diagnosticsInUse => '正在使用';
+
+  @override
+  String get diagnosticsNotUsed => '尚未使用';
+
+  @override
+  String get diagnosticsTooEarly => '暂时无法判断';
+
+  @override
+  String get diagnosticsEarlyProblems => '暂时无法判断。已出现一些问题。';
+
+  @override
+  String get diagnosticsFailing => '运行异常。请更换模型。';
+
+  @override
+  String get diagnosticsUnreliable => '不够可靠。建议更换模型。';
+
+  @override
+  String get diagnosticsSlow => '速度很慢。建议更换模型。';
+
+  @override
+  String get diagnosticsMostlyGood => '总体正常。部分回答质量较差。';
+
+  @override
+  String get diagnosticsHealthy => '运行良好';
 }

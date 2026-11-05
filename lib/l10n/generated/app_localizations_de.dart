@@ -1222,4 +1222,55 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get recitationVoiceHebrewGap =>
       'Hebräisch nutzt die Sprachstimme deines Geräts. Eine integrierte hebräische Stimme wurde für Aleph noch nicht validiert.';
+
+  @override
+  String get contentLoadError =>
+      'Dieser Inhalt konnte nicht geladen werden. Versuche es erneut.';
+
+  @override
+  String get diagnosticsSuccess => 'Erfolgsquote';
+
+  @override
+  String get diagnosticsMedian => 'Median der Dauer';
+
+  @override
+  String get diagnosticsCalls => 'Anfragen';
+
+  @override
+  String get diagnosticsPoorAnswers => 'Schlechte Antworten';
+
+  @override
+  String get diagnosticsErrors => 'Fehler';
+
+  @override
+  String get diagnosticsLastProblem => 'Letztes Problem';
+
+  @override
+  String get diagnosticsInUse => 'Wird verwendet';
+
+  @override
+  String get diagnosticsNotUsed => 'Noch nicht verwendet';
+
+  @override
+  String get diagnosticsTooEarly => 'Noch zu früh für eine Bewertung';
+
+  @override
+  String get diagnosticsEarlyProblems =>
+      'Noch zu früh für eine Bewertung. Einige Probleme.';
+
+  @override
+  String get diagnosticsFailing => 'Fehlerhaft. Modell wechseln.';
+
+  @override
+  String get diagnosticsUnreliable => 'Unzuverlässig. Modellwechsel erwägen.';
+
+  @override
+  String get diagnosticsSlow => 'Sehr langsam. Modellwechsel erwägen.';
+
+  @override
+  String get diagnosticsMostlyGood =>
+      'Überwiegend gut. Einige schlechte Antworten.';
+
+  @override
+  String get diagnosticsHealthy => 'Funktioniert gut';
 }

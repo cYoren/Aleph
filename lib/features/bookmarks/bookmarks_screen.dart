@@ -59,7 +59,7 @@ class BookmarksScreen extends ConsumerWidget {
           itemBuilder: (context, index) => const _BookmarkSkeletonCard(),
         ),
         error: (error, _) => ErrorState(
-          message: error.toString(),
+          message: l10n.contentLoadError,
           onRetry: () => ref.invalidate(bookmarksProvider),
         ),
         data: (bookmarks) {

@@ -320,9 +320,14 @@ class SettingsScreen extends ConsumerWidget {
               title: Text(l10n.loading),
             ),
             error: (err, stack) => ListTile(
-              leading: const Icon(Icons.error, color: Colors.red),
+              leading: Icon(Icons.error_outline, color: colorScheme.error),
               title: Text(l10n.error),
-              subtitle: Text('$err'),
+              subtitle: Text(l10n.contentLoadError),
+              trailing: IconButton(
+                tooltip: l10n.tryAgain,
+                icon: const Icon(Icons.refresh),
+                onPressed: () => ref.invalidate(translationsProvider),
+              ),
             ),
             data: (translations) {
               final enabledTranslations = translations

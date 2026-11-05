@@ -2191,6 +2191,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Hebrew uses your device\'s speech voice. A bundled Hebrew voice has not yet been validated for Aleph.'**
   String get recitationVoiceHebrewGap;
+
+  /// No description provided for @contentLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load this content. Try again.'**
+  String get contentLoadError;
+
+  /// No description provided for @diagnosticsSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Success'**
+  String get diagnosticsSuccess;
+
+  /// No description provided for @diagnosticsMedian.
+  ///
+  /// In en, this message translates to:
+  /// **'Median time'**
+  String get diagnosticsMedian;
+
+  /// No description provided for @diagnosticsCalls.
+  ///
+  /// In en, this message translates to:
+  /// **'Requests'**
+  String get diagnosticsCalls;
+
+  /// No description provided for @diagnosticsPoorAnswers.
+  ///
+  /// In en, this message translates to:
+  /// **'Poor answers'**
+  String get diagnosticsPoorAnswers;
+
+  /// No description provided for @diagnosticsErrors.
+  ///
+  /// In en, this message translates to:
+  /// **'Errors'**
+  String get diagnosticsErrors;
+
+  /// No description provided for @diagnosticsLastProblem.
+  ///
+  /// In en, this message translates to:
+  /// **'Last problem'**
+  String get diagnosticsLastProblem;
+
+  /// No description provided for @diagnosticsInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'In use'**
+  String get diagnosticsInUse;
+
+  /// No description provided for @diagnosticsNotUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'Not used yet'**
+  String get diagnosticsNotUsed;
+
+  /// No description provided for @diagnosticsTooEarly.
+  ///
+  /// In en, this message translates to:
+  /// **'Too early to tell'**
+  String get diagnosticsTooEarly;
+
+  /// No description provided for @diagnosticsEarlyProblems.
+  ///
+  /// In en, this message translates to:
+  /// **'Too early to tell. Some problems.'**
+  String get diagnosticsEarlyProblems;
+
+  /// No description provided for @diagnosticsFailing.
+  ///
+  /// In en, this message translates to:
+  /// **'Failing. Switch model.'**
+  String get diagnosticsFailing;
+
+  /// No description provided for @diagnosticsUnreliable.
+  ///
+  /// In en, this message translates to:
+  /// **'Unreliable. Consider switching.'**
+  String get diagnosticsUnreliable;
+
+  /// No description provided for @diagnosticsSlow.
+  ///
+  /// In en, this message translates to:
+  /// **'Very slow. Consider switching.'**
+  String get diagnosticsSlow;
+
+  /// No description provided for @diagnosticsMostlyGood.
+  ///
+  /// In en, this message translates to:
+  /// **'Mostly fine. Some poor answers.'**
+  String get diagnosticsMostlyGood;
+
+  /// No description provided for @diagnosticsHealthy.
+  ///
+  /// In en, this message translates to:
+  /// **'Working well'**
+  String get diagnosticsHealthy;
 }
 
 class _AppLocalizationsDelegate

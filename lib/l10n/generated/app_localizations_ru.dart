@@ -1238,4 +1238,55 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get recitationVoiceHebrewGap =>
       'Для иврита используется голос вашего устройства. Встроенный голос на иврите пока не прошёл проверку для Aleph.';
+
+  @override
+  String get contentLoadError =>
+      'Не удалось загрузить содержимое. Попробуйте ещё раз.';
+
+  @override
+  String get diagnosticsSuccess => 'Успешность';
+
+  @override
+  String get diagnosticsMedian => 'Медианное время';
+
+  @override
+  String get diagnosticsCalls => 'Запросы';
+
+  @override
+  String get diagnosticsPoorAnswers => 'Некачественные ответы';
+
+  @override
+  String get diagnosticsErrors => 'Ошибки';
+
+  @override
+  String get diagnosticsLastProblem => 'Последняя проблема';
+
+  @override
+  String get diagnosticsInUse => 'Используется';
+
+  @override
+  String get diagnosticsNotUsed => 'Ещё не использовалась';
+
+  @override
+  String get diagnosticsTooEarly => 'Пока рано оценивать';
+
+  @override
+  String get diagnosticsEarlyProblems => 'Пока рано оценивать. Были проблемы.';
+
+  @override
+  String get diagnosticsFailing =>
+      'Не работает должным образом. Смените модель.';
+
+  @override
+  String get diagnosticsUnreliable => 'Ненадёжно. Подумайте о смене модели.';
+
+  @override
+  String get diagnosticsSlow => 'Очень медленно. Подумайте о смене модели.';
+
+  @override
+  String get diagnosticsMostlyGood =>
+      'В целом работает. Есть некачественные ответы.';
+
+  @override
+  String get diagnosticsHealthy => 'Работает хорошо';
 }

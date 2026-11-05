@@ -454,5 +454,21 @@
   "morphAccusative": "Acusativo",
   "morphVocative": "Vocativo",
   "contentSourceNote": "Se muestra en inglés; aún no hay traducción disponible.",
-  "recitationVoiceHebrewGap": "El hebreo usa la voz de lectura de tu dispositivo. Aún no se ha validado una voz hebrea integrada para Aleph."
+  "recitationVoiceHebrewGap": "El hebreo usa la voz de lectura de tu dispositivo. Aún no se ha validado una voz hebrea integrada para Aleph.",
+  "contentLoadError": "No se pudo cargar este contenido. Inténtalo de nuevo.",
+  "diagnosticsSuccess": "Éxito",
+  "diagnosticsMedian": "Tiempo mediano",
+  "diagnosticsCalls": "Solicitudes",
+  "diagnosticsPoorAnswers": "Respuestas deficientes",
+  "diagnosticsErrors": "Errores",
+  "diagnosticsLastProblem": "Último problema",
+  "diagnosticsInUse": "En uso",
+  "diagnosticsNotUsed": "Aún no utilizado",
+  "diagnosticsTooEarly": "Aún es pronto para evaluar",
+  "diagnosticsEarlyProblems": "Aún es pronto para evaluar. Hubo problemas.",
+  "diagnosticsFailing": "Está fallando. Cambia de modelo.",
+  "diagnosticsUnreliable": "Poco fiable. Considera cambiarlo.",
+  "diagnosticsSlow": "Muy lento. Considera cambiarlo.",
+  "diagnosticsMostlyGood": "En general funciona. Algunas respuestas deficientes.",
+  "diagnosticsHealthy": "Funciona bien"
 }
