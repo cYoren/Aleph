@@ -63,8 +63,9 @@ void main() {
         ProviderScope(
           overrides: [
             booksProvider.overrideWith((ref) async {
-              if (attempts++ == 0)
+              if (attempts++ == 0) {
                 throw StateError('/private/database/path/secret.db');
+              }
               return [
                 Book(
                   id: 1,
