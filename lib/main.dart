@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:original_bible/shared/constants/app_identity.dart';
@@ -67,6 +68,14 @@ class OriginalBibleApp extends ConsumerWidget {
       themeMode: settings.themeMode,
       theme: AppTheme.light(settings.appLanguage),
       darkTheme: AppTheme.dark(settings.appLanguage),
+
+      // Keep edge-to-edge status icons legible on pages without an AppBar.
+      builder: (context, child) => AnnotatedRegion<SystemUiOverlayStyle>(
+        value: Theme.of(context).brightness == Brightness.dark
+            ? SystemUiOverlayStyle.light
+            : SystemUiOverlayStyle.dark,
+        child: child ?? const SizedBox.shrink(),
+      ),
 
       // Router - use static router
       routerConfig: router,
