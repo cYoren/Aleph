@@ -1,3 +1,7 @@
+> Historical research for the original 1.13.8 integration. The current Greek
+> runtime migration and distribution details are recorded in [greek-speech-2.md](greek-speech-2.md).
+> Hebrew model research remains separate; the shipped Hebrew reader uses the device voice.
+
 # Embedded voices: findings, licensing and evidence
 
 Status: **Greek integration is implemented; source and build assets are prepared.
