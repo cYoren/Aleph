@@ -1,5 +1,7 @@
 # Original Bible — Roadmap
 
+Status: current
+
 ## Mission
 
 Help people get truly in depth with the Bible **in its original languages** — Hebrew and
