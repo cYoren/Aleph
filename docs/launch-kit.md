@@ -1,5 +1,7 @@
 # Aleph launch kit (1.0.6)
 
+Status: current
+
 Ready-to-post material for the 1.0.6 release. Everything here only claims what
 ships in a CI build: no AI tutor (see MARKETING.md). No dashes in customer copy.
 

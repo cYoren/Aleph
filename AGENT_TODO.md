@@ -1,5 +1,7 @@
 # Release 1.0.6: to-do for the release agent
 
+Status: current
+
 Everything below is ready on `main`. These steps need Gus's accounts or Mac.
 Do them in order, tick each box, and **delete this file in the last step**.
 

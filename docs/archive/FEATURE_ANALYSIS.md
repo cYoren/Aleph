@@ -1,5 +1,7 @@
 # Original Bible App - Feature Analysis
 
+Status: historical (2026-06-02) — archived 2026-11-08; kept for provenance.
+
 > **Document Purpose**: Comprehensive gap analysis comparing current state to competitive requirements for both scholarly and layperson audiences.
 
 ---
