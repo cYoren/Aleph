@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:original_bible/shared/constants/app_identity.dart';
 import 'l10n/generated/app_localizations.dart';
 import '../app/router.dart';
@@ -11,17 +12,32 @@ import '../app/theme.dart';
 import '../features/settings/settings_provider.dart';
 import '../providers/translations_provider.dart';
 
-void main() {
+// Public by design: it ships inside the app and cannot read anything.
+const _sentryDsn =
+    'https://e39562958e8e46bfef713a8c56fd91b5@o4510739590742016.ingest.us.sentry.io/4512405014183936';
+
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  ReviewReminder.init(router.push).then((_) => ReviewReminder.reschedule());
-  // Recount due words whenever the learner leaves, so tonight's reminder
-  // reflects the reviews they just did.
-  AppLifecycleListener(
-    onPause: ReviewReminder.reschedule,
-    onResume: () => UsageEvents.record(UsageEvent.appOpen),
+  await SentryFlutter.init(
+    (options) {
+      options.dsn = _sentryDsn;
+      // 10% of sessions: enough to see a slow screen without paying for all of them.
+      options.tracesSampleRate = 0.1;
+      // Never attach IPs or account emails on its own.
+      options.sendDefaultPii = false;
+    },
+    appRunner: () {
+      ReviewReminder.init(router.push).then((_) => ReviewReminder.reschedule());
+      // Recount due words whenever the learner leaves, so tonight's reminder
+      // reflects the reviews they just did.
+      AppLifecycleListener(
+        onPause: ReviewReminder.reschedule,
+        onResume: () => UsageEvents.record(UsageEvent.appOpen),
+      );
+      UsageEvents.record(UsageEvent.appOpen);
+      runApp(const ProviderScope(child: OriginalBibleApp()));
+    },
   );
-  UsageEvents.record(UsageEvent.appOpen);
-  runApp(const ProviderScope(child: OriginalBibleApp()));
 }
 
 class OriginalBibleApp extends ConsumerWidget {
