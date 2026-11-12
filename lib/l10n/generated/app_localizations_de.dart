@@ -983,4 +983,39 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get usageSharingSubtitle =>
       'Welche Funktionen genutzt werden. Nie, was du liest, und nichts, was dich identifiziert.';
+
+  @override
+  String get supportTitle => 'Aleph unterstützen';
+
+  @override
+  String get supportBody =>
+      'Aleph ist die Arbeit einer Person: keine Werbung, kein Abo, kein Tracking. Eine einmalige Spende hält Text, Stimmen und Updates am Leben.';
+
+  @override
+  String get supportNote =>
+      'Spenden schalten nichts frei. Jedes Wort von Aleph gehört dir bereits.';
+
+  @override
+  String get supportTierSmall => 'Eine kleine Spende';
+
+  @override
+  String get supportTierMedium => 'Eine großzügige Spende';
+
+  @override
+  String get supportTierLarge => 'Eine große Spende';
+
+  @override
+  String get supportThanks => 'Danke. Das hilft wirklich.';
+
+  @override
+  String get supportUnavailable => 'Spenden sind gerade nicht verfügbar.';
+
+  @override
+  String get supportClose => 'Jetzt nicht';
+
+  @override
+  String get supportTerms => 'Bedingungen';
+
+  @override
+  String get supportPrivacy => 'Datenschutz';
 }

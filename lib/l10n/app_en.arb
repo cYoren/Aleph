@@ -578,5 +578,49 @@
     }
   },
   "usageSharingTitle": "Share anonymous usage counts",
-  "usageSharingSubtitle": "Which features get used. Never what you read, and nothing that identifies you."
+  "usageSharingSubtitle": "Which features get used. Never what you read, and nothing that identifies you.",
+  "supportTitle": "Support Aleph",
+  "@supportTitle": {
+    "description": "Aleph support (donation) sheet"
+  },
+  "supportBody": "Aleph is one person's work: no ads, no subscription, no tracking. A one-time tip keeps the text, the voices and the updates coming.",
+  "@supportBody": {
+    "description": "Aleph support (donation) sheet"
+  },
+  "supportNote": "Tips unlock nothing. Every word of Aleph is already yours.",
+  "@supportNote": {
+    "description": "Aleph support (donation) sheet"
+  },
+  "supportTierSmall": "A small tip",
+  "@supportTierSmall": {
+    "description": "Aleph support (donation) sheet"
+  },
+  "supportTierMedium": "A generous tip",
+  "@supportTierMedium": {
+    "description": "Aleph support (donation) sheet"
+  },
+  "supportTierLarge": "A big tip",
+  "@supportTierLarge": {
+    "description": "Aleph support (donation) sheet"
+  },
+  "supportThanks": "Thank you. That genuinely helps.",
+  "@supportThanks": {
+    "description": "Aleph support (donation) sheet"
+  },
+  "supportUnavailable": "Tips are not available right now.",
+  "@supportUnavailable": {
+    "description": "Aleph support (donation) sheet"
+  },
+  "supportClose": "Not now",
+  "@supportClose": {
+    "description": "Aleph support (donation) sheet"
+  },
+  "supportTerms": "Terms",
+  "@supportTerms": {
+    "description": "Aleph support (donation) sheet"
+  },
+  "supportPrivacy": "Privacy",
+  "@supportPrivacy": {
+    "description": "Aleph support (donation) sheet"
+  }
 }

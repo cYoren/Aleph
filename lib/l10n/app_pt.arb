@@ -375,5 +375,16 @@
   "nameNotFound": "Ainda não está na nossa lista. Tente outra grafia.",
   "nameShare": "Compartilhar",
   "usageSharingTitle": "Compartilhar contagens anônimas de uso",
-  "usageSharingSubtitle": "Quais recursos são usados. Nunca o que você lê, nem nada que identifique você."
+  "usageSharingSubtitle": "Quais recursos são usados. Nunca o que você lê, nem nada que identifique você.",
+  "supportTitle": "Apoiar o Aleph",
+  "supportBody": "O Aleph é o trabalho de uma pessoa: sem anúncios, sem assinatura, sem rastreamento. Uma contribuição única mantém o texto, as vozes e as atualizações chegando.",
+  "supportNote": "Contribuições não desbloqueiam nada. Cada palavra do Aleph já é sua.",
+  "supportTierSmall": "Uma contribuição pequena",
+  "supportTierMedium": "Uma contribuição generosa",
+  "supportTierLarge": "Uma contribuição grande",
+  "supportThanks": "Obrigado. Isso ajuda de verdade.",
+  "supportUnavailable": "Contribuições não estão disponíveis agora.",
+  "supportClose": "Agora não",
+  "supportTerms": "Termos",
+  "supportPrivacy": "Privacidade"
 }

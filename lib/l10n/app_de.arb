@@ -375,5 +375,16 @@
   "nameNotFound": "Noch nicht in unserer Liste. Versuch eine andere Schreibweise.",
   "nameShare": "Teilen",
   "usageSharingTitle": "Anonyme Nutzungszahlen teilen",
-  "usageSharingSubtitle": "Welche Funktionen genutzt werden. Nie, was du liest, und nichts, was dich identifiziert."
+  "usageSharingSubtitle": "Welche Funktionen genutzt werden. Nie, was du liest, und nichts, was dich identifiziert.",
+  "supportTitle": "Aleph unterstützen",
+  "supportBody": "Aleph ist die Arbeit einer Person: keine Werbung, kein Abo, kein Tracking. Eine einmalige Spende hält Text, Stimmen und Updates am Leben.",
+  "supportNote": "Spenden schalten nichts frei. Jedes Wort von Aleph gehört dir bereits.",
+  "supportTierSmall": "Eine kleine Spende",
+  "supportTierMedium": "Eine großzügige Spende",
+  "supportTierLarge": "Eine große Spende",
+  "supportThanks": "Danke. Das hilft wirklich.",
+  "supportUnavailable": "Spenden sind gerade nicht verfügbar.",
+  "supportClose": "Jetzt nicht",
+  "supportTerms": "Bedingungen",
+  "supportPrivacy": "Datenschutz"
 }

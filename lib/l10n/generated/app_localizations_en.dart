@@ -976,4 +976,39 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get usageSharingSubtitle =>
       'Which features get used. Never what you read, and nothing that identifies you.';
+
+  @override
+  String get supportTitle => 'Support Aleph';
+
+  @override
+  String get supportBody =>
+      'Aleph is one person\'s work: no ads, no subscription, no tracking. A one-time tip keeps the text, the voices and the updates coming.';
+
+  @override
+  String get supportNote =>
+      'Tips unlock nothing. Every word of Aleph is already yours.';
+
+  @override
+  String get supportTierSmall => 'A small tip';
+
+  @override
+  String get supportTierMedium => 'A generous tip';
+
+  @override
+  String get supportTierLarge => 'A big tip';
+
+  @override
+  String get supportThanks => 'Thank you. That genuinely helps.';
+
+  @override
+  String get supportUnavailable => 'Tips are not available right now.';
+
+  @override
+  String get supportClose => 'Not now';
+
+  @override
+  String get supportTerms => 'Terms';
+
+  @override
+  String get supportPrivacy => 'Privacy';
 }

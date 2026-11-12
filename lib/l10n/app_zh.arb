@@ -375,5 +375,16 @@
   "nameNotFound": "名单中暂时没有这个名字。试试别的写法。",
   "nameShare": "分享",
   "usageSharingTitle": "分享匿名使用统计",
-  "usageSharingSubtitle": "只统计哪些功能被使用。绝不包括你读的内容，也没有任何能识别你的信息。"
+  "usageSharingSubtitle": "只统计哪些功能被使用。绝不包括你读的内容，也没有任何能识别你的信息。",
+  "supportTitle": "支持 Aleph",
+  "supportBody": "Aleph 由一个人完成：没有广告，没有订阅，没有追踪。一次性的捐赠让经文、语音和更新得以继续。",
+  "supportNote": "捐赠不解锁任何内容。Aleph 的每一句话本来就属于你。",
+  "supportTierSmall": "小额捐赠",
+  "supportTierMedium": "慷慨捐赠",
+  "supportTierLarge": "大额捐赠",
+  "supportThanks": "谢谢。这真的很有帮助。",
+  "supportUnavailable": "目前无法捐赠。",
+  "supportClose": "以后再说",
+  "supportTerms": "条款",
+  "supportPrivacy": "隐私"
 }

@@ -375,5 +375,16 @@
   "nameNotFound": "Pas encore dans notre liste. Essayez une autre orthographe.",
   "nameShare": "Partager",
   "usageSharingTitle": "Partager des statistiques d'usage anonymes",
-  "usageSharingSubtitle": "Quelles fonctions sont utilisées. Jamais ce que vous lisez, ni rien qui vous identifie."
+  "usageSharingSubtitle": "Quelles fonctions sont utilisées. Jamais ce que vous lisez, ni rien qui vous identifie.",
+  "supportTitle": "Soutenir Aleph",
+  "supportBody": "Aleph est le travail d'une seule personne : pas de publicité, pas d'abonnement, pas de suivi. Un don unique fait vivre le texte, les voix et les mises à jour.",
+  "supportNote": "Un don ne débloque rien. Chaque mot d'Aleph t'appartient déjà.",
+  "supportTierSmall": "Un petit don",
+  "supportTierMedium": "Un don généreux",
+  "supportTierLarge": "Un grand don",
+  "supportThanks": "Merci. Cela aide vraiment.",
+  "supportUnavailable": "Les dons ne sont pas disponibles pour le moment.",
+  "supportClose": "Pas maintenant",
+  "supportTerms": "Conditions",
+  "supportPrivacy": "Confidentialité"
 }
