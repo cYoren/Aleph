@@ -25,7 +25,13 @@ enum UsageEvent {
   dailySessionDone('daily_session_done'),
   pathStarted('path_started'),
   cardShared('card_shared'),
-  reminderEnabled('reminder_enabled');
+  reminderEnabled('reminder_enabled'),
+
+  /// The tip jar, opened, started and completed. Counted like everything
+  /// else here: only if the reader opted in, and with no id attached.
+  supportOpened('support_opened'),
+  supportStarted('support_started'),
+  supportCompleted('support_completed');
 
   const UsageEvent(this.wireName);
   final String wireName;

@@ -1,1 +1,5 @@
-This is a standalone app. No login is required to test all features.
+Standalone app, no login, no account needed. Everything is free: the whole Bible, both lexicons, all translations, the voices and the AI explanations (the last one optional).
+
+Settings contains a tip jar with three consumable in-app purchases: "A small tip" (support_small), "A generous tip" (support_medium) and "A big tip" (support_large). They unlock nothing and deliver no digital content; they are thank-you payments, and the sheet says so before the buttons.
+
+To test one: Settings, Support Aleph, tap any tier, complete with a sandbox account. A tip is consumable and can be given again.

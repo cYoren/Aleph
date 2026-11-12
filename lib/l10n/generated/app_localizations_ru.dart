@@ -999,4 +999,39 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get usageSharingSubtitle =>
       'Какие функции используются. Никогда не то, что вы читаете, и ничего, что вас идентифицирует.';
+
+  @override
+  String get supportTitle => 'Поддержать Aleph';
+
+  @override
+  String get supportBody =>
+      'Aleph — работа одного человека: без рекламы, без подписки, без слежки. Разовый донат помогает тексту, голосам и обновлениям выходить дальше.';
+
+  @override
+  String get supportNote =>
+      'Донат ничего не открывает. Каждое слово Aleph уже ваше.';
+
+  @override
+  String get supportTierSmall => 'Небольшой донат';
+
+  @override
+  String get supportTierMedium => 'Щедрый донат';
+
+  @override
+  String get supportTierLarge => 'Крупный донат';
+
+  @override
+  String get supportThanks => 'Спасибо. Это правда помогает.';
+
+  @override
+  String get supportUnavailable => 'Донаты сейчас недоступны.';
+
+  @override
+  String get supportClose => 'Не сейчас';
+
+  @override
+  String get supportTerms => 'Условия';
+
+  @override
+  String get supportPrivacy => 'Конфиденциальность';
 }

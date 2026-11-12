@@ -986,4 +986,40 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get usageSharingSubtitle =>
       'Qué funciones se usan. Nunca lo que lees ni nada que te identifique.';
+
+  @override
+  String get supportTitle => 'Apoyar Aleph';
+
+  @override
+  String get supportBody =>
+      'Aleph es el trabajo de una persona: sin anuncios, sin suscripción, sin rastreo. Una contribución única mantiene el texto, las voces y las actualizaciones.';
+
+  @override
+  String get supportNote =>
+      'Las contribuciones no desbloquean nada. Cada palabra de Aleph ya es tuya.';
+
+  @override
+  String get supportTierSmall => 'Una contribución pequeña';
+
+  @override
+  String get supportTierMedium => 'Una contribución generosa';
+
+  @override
+  String get supportTierLarge => 'Una contribución grande';
+
+  @override
+  String get supportThanks => 'Gracias. Eso ayuda de verdad.';
+
+  @override
+  String get supportUnavailable =>
+      'Las contribuciones no están disponibles ahora.';
+
+  @override
+  String get supportClose => 'Ahora no';
+
+  @override
+  String get supportTerms => 'Términos';
+
+  @override
+  String get supportPrivacy => 'Privacidad';
 }
