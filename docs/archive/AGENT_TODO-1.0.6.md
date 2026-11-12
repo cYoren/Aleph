@@ -1,9 +1,10 @@
 # Release 1.0.6: to-do for the release agent
 
-Status: current
+Status: historical 2026-11-12 — 1.0.6 is live; kept for provenance.
 
-Everything below is ready on `main`. These steps need Gus's accounts or Mac.
-Do them in order, tick each box, and **delete this file in the last step**.
+Everything below was ready on `main` for the 1.0.6 release. These steps needed
+Gus's accounts or Mac. The release shipped, so this checklist is no longer
+current guidance; `queue.md` and `ROADMAP.md` are.
 
 ## Why this is urgent
 
