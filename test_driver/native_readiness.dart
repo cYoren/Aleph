@@ -1,0 +1,15 @@
+import 'dart:io';
+import 'package:integration_test/integration_test_driver_extended.dart';
+
+Future<void> main() async {
+  final target =
+      Platform.environment['ALEPH_CAPTURE_DIR'] ?? 'build/native-readiness';
+  await Directory(target).create(recursive: true);
+  await integrationDriver(
+    onScreenshot:
+        (String name, List<int> bytes, [Map<String, Object?>? args]) async {
+          await File('$target/$name.png').writeAsBytes(bytes);
+          return bytes.length > 1000;
+        },
+  );
+}

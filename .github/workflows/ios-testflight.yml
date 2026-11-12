@@ -51,6 +51,8 @@ jobs:
             --emit-coverage-report build/coverage_report.json
       - name: Prepare bundled database asset
         run: python3 scripts/prepare_bible_db.py
+      - name: Prepare bundled offline voices
+        run: python3 scripts/fetch_embedded_voices.py
       - name: Validate release database
         run: bash ./scripts/validate_release.sh
       - name: Verify Apple build toolchain

@@ -30,6 +30,7 @@ from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Tuple
 
 from apply_gloss_translations import write_gloss_translations
+from lexicon_definitions_i18n import write_lexicon_translations, coverage_report
 
 SOURCE_REPO_RAW = "https://raw.githubusercontent.com/themikejr/bible-mcp"
 DEFAULT_SOURCE_COMMIT = "65ed737a1ca800cfd8e49b60af3161fbf4149546"
@@ -2618,6 +2619,28 @@ def main() -> None:
             # here means no release path can forget the separate apply step.
             if write_gloss_translations(conn) == 0:
                 raise RuntimeError("No translated glosses found in data/gloss_translations")
+
+            # Long-form content (definition + extended_definition) lives in
+            # data/lexicon_translations. Unlike the glosses this is allowed to be
+            # partial: it is delivered in batches over time, and every row
+            # without a translation falls back to its labelled English original.
+            lexicon_i18n_values = write_lexicon_translations(conn)
+            if lexicon_i18n_values == 0:
+                print(
+                    "NOTE: no translated long-form lexicon content found in "
+                    "data/lexicon_translations — the app will show the labelled "
+                    "English original for definitions. See "
+                    "scripts/translate_lexicon_definitions.py --estimate."
+                )
+            else:
+                i18n_report = coverage_report(conn)
+                for i18n_lang, i18n_stats in sorted(i18n_report["languages"].items()):
+                    print(
+                        f"  lexicon i18n {i18n_lang}: definition "
+                        f"{i18n_stats['definition']['have']}/{i18n_stats['definition']['total']}, "
+                        f"extended {i18n_stats['extended_definition']['have']}/"
+                        f"{i18n_stats['extended_definition']['total']}"
+                    )
             conn.commit()
 
             finalize_sqlite_files(conn, output_path)

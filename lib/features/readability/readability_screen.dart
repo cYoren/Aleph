@@ -25,7 +25,7 @@ class ReadabilityScreen extends ConsumerWidget {
       body: reportAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, _) => ErrorState(
-          message: '$error',
+          message: l10n.contentLoadError,
           onRetry: () => ref.invalidate(readabilityReportProvider),
         ),
         data: (report) {
@@ -156,7 +156,9 @@ class _RecommendationCard extends ConsumerWidget {
                     .loadChapter(entry.book.abbreviation, 1);
                 context.go('/reading');
               },
-              child: Text(l10n.readBook(ref.watch(bookNamesProvider).of(entry.book))),
+              child: Text(
+                l10n.readBook(ref.watch(bookNamesProvider).of(entry.book)),
+              ),
             ),
           ],
         ),

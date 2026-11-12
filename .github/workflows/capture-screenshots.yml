@@ -30,6 +30,8 @@ jobs:
           fi
       - name: Prepare bundled database asset
         run: python3 scripts/prepare_bible_db.py
+      - name: Prepare bundled offline voices
+        run: python3 scripts/fetch_embedded_voices.py
       - name: Build simulator app
         run: |
           set -euo pipefail

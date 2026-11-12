@@ -1,3 +1,4 @@
+import '../../shared/widgets/empty_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -93,8 +94,12 @@ class _MemorizationPracticeScreenState
           Expanded(
             child: versesAsync.when(
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (err, stack) =>
-                  Center(child: Text('${l10n.error}: $err')),
+              error: (error, stack) => ErrorState(
+                message: l10n.contentLoadError,
+                onRetry: () => ref.invalidate(
+                  practiceVersesProvider((passage.bookId, passage.chapter)),
+                ),
+              ),
               data: (verses) => ListView.builder(
                 padding: const EdgeInsets.all(16),
                 itemCount: verses.length,
@@ -141,8 +146,7 @@ class _MemorizationPracticeScreenState
       for (var i = 0; i < tokens.length; i++)
         _buildToken(
           tokens[i],
-          isHidden: hidden.contains(i) &&
-              !_revealed.contains('$verseIndex:$i'),
+          isHidden: hidden.contains(i) && !_revealed.contains('$verseIndex:$i'),
           revealKey: '$verseIndex:$i',
           fontFamily: fontFamily,
           fontSize: fontSize,
@@ -193,9 +197,7 @@ class _MemorizationPracticeScreenState
         decoration: BoxDecoration(
           color: colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(6),
-          border: Border.all(
-            color: colorScheme.outlineVariant,
-          ),
+          border: Border.all(color: colorScheme.outlineVariant),
         ),
         child: Text(
           hint ?? '•••',

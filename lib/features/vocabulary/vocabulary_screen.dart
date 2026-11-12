@@ -1,3 +1,4 @@
+import '../../shared/widgets/empty_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -44,7 +45,12 @@ class _VocabularyScreenState extends ConsumerState<VocabularyScreen> {
           // Due for review
           ...dueAsync.when(
             loading: () => const [SizedBox.shrink()],
-            error: (err, stack) => const [SizedBox.shrink()],
+            error: (err, stack) => [
+              ErrorState(
+                message: l10n.contentLoadError,
+                onRetry: () => ref.invalidate(dueVocabularyProvider),
+              ),
+            ],
             data: (due) => due.isEmpty
                 ? const [SizedBox.shrink()]
                 : [
@@ -94,9 +100,9 @@ class _VocabularyScreenState extends ConsumerState<VocabularyScreen> {
               padding: EdgeInsets.all(32),
               child: Center(child: CircularProgressIndicator()),
             ),
-            error: (err, stack) => Padding(
-              padding: const EdgeInsets.all(16),
-              child: Text('${l10n.error}: $err'),
+            error: (err, stack) => ErrorState(
+              message: l10n.contentLoadError,
+              onRetry: () => ref.invalidate(vocabularyDeckProvider(_language)),
             ),
             data: (deck) {
               if (deck.items.isEmpty) {

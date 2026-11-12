@@ -6,7 +6,6 @@ import '../../data/database/daos/bible_dao.dart';
 import '../settings/settings_provider.dart';
 
 const _unsetError = Object();
-const _fallbackTranslationId = 'KJV';
 
 class ReadingState {
   final String bookId;
@@ -85,16 +84,11 @@ class ReadingNotifier extends StateNotifier<ReadingState> {
 
       // Fetch translations
       final settings = _ref.read(settingsProvider);
-      final translations = await loadTranslationsWithFallback(
+      final translations = await loadChapterTranslations(
         dao: _dao,
         bookId: bookId,
         chapter: chapter,
-        preferredTranslation: settings.translation,
-        persistNormalizedTranslation: (normalized) async {
-          await _ref
-              .read(settingsProvider.notifier)
-              .setTranslationFromSystem(normalized);
-        },
+        translationId: settings.translation,
       );
 
       if (kDebugMode) {
@@ -136,40 +130,20 @@ class ReadingNotifier extends StateNotifier<ReadingState> {
 }
 
 @visibleForTesting
-Future<Map<String, String>> loadTranslationsWithFallback({
+Future<Map<String, String>> loadChapterTranslations({
   required BibleDAO dao,
   required String bookId,
   required int chapter,
-  required String preferredTranslation,
-  required Future<void> Function(String normalizedTranslation)
-  persistNormalizedTranslation,
+  required String translationId,
 }) async {
-  final normalizedPreferred = preferredTranslation.trim().toUpperCase().isEmpty
-      ? _fallbackTranslationId
-      : preferredTranslation.trim().toUpperCase();
-
-  final preferred = await dao.getTranslationVersesForChapter(
+  // A missing chapter is a content gap, not a change of language preference.
+  // The reader already has a localized "translation unavailable" message.
+  // Showing English here used to persist KJV for every subsequent chapter.
+  return dao.getTranslationVersesForChapter(
     bookId,
     chapter,
-    normalizedPreferred,
+    translationId.trim().toUpperCase(),
   );
-  if (preferred.isNotEmpty) {
-    return preferred;
-  }
-
-  if (normalizedPreferred == _fallbackTranslationId) {
-    return {};
-  }
-
-  final fallback = await dao.getTranslationVersesForChapter(
-    bookId,
-    chapter,
-    _fallbackTranslationId,
-  );
-  if (fallback.isNotEmpty) {
-    await persistNormalizedTranslation(_fallbackTranslationId);
-  }
-  return fallback;
 }
 
 final readingProvider = StateNotifierProvider<ReadingNotifier, ReadingState>((

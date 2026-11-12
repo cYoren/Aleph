@@ -1,3 +1,4 @@
+import '../../../shared/widgets/empty_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -132,8 +133,12 @@ class CrossReferencesSheet extends ConsumerWidget {
                 child: refsAsync.when(
                   loading: () =>
                       const Center(child: CircularProgressIndicator()),
-                  error: (err, stack) =>
-                      Center(child: Text('${l10n.error}: $err')),
+                  error: (error, stack) => ErrorState(
+                    message: l10n.contentLoadError,
+                    onRetry: () => ref.invalidate(
+                      crossReferencesProvider((bookId, chapter, verse)),
+                    ),
+                  ),
                   data: (refs) {
                     if (refs.isEmpty) {
                       return Center(
@@ -182,9 +187,11 @@ class _CrossReferenceTile extends ConsumerWidget {
         ? '$bookName ${reference.toChapter}:${reference.toVerseStart}–${reference.toVerseEnd}'
         : '$bookName ${reference.toChapter}:${reference.toVerseStart}';
     final previewAsync = ref.watch(
-      crossReferencePreviewProvider(
-        (reference.toBook, reference.toChapter, reference.toVerseStart),
-      ),
+      crossReferencePreviewProvider((
+        reference.toBook,
+        reference.toChapter,
+        reference.toVerseStart,
+      )),
     );
 
     return ListTile(

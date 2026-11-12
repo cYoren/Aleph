@@ -45,6 +45,45 @@ ALLOWED_IDENTICAL = {
     "error",  # "Error" is also correct Spanish
 }
 
+# Same idea, but the convergence holds for one locale only. A grammar label
+# such as "singular" is genuinely a cognate in Portuguese and Spanish while
+# still needing a translation in, say, Chinese; a global allow-list would hide
+# a real gap in the other five languages.
+ALLOWED_IDENTICAL_BY_LOCALE = {
+    "pt": {
+        "alphabetFinalForm",  # "final" is also correct Portuguese
+        "traditionJewish",  # "Tanakh" is the standard Portuguese spelling
+        "morphSingular",
+        "morphPlural",
+        "morphDual",
+        "morphPronominal",
+    },
+    "es": {
+        "alphabetFinalForm",  # "final" is also correct Spanish
+        "morphSingular",
+        "morphPlural",
+        "morphDual",
+        "morphPersonal",
+        "morphPronominal",
+    },
+    "de": {
+        "morphAdverb",
+        "morphSuffix",
+        "morphVerb",
+        "morphPersonal",
+        "morphPronominal",
+        "morphAorist",
+    },
+    "fr": {
+        "alphabetFinalForm",  # "final" is also correct French
+        "traditionJewish",  # "Tanakh" is the standard French spelling
+        "tanakhTorah",  # "Torah" is the standard French spelling
+        "morphArticle",
+        "morphInterjection",
+        "morphPronominal",
+    },
+}
+
 
 def load(locale: str) -> dict:
     path = L10N_DIR / f"app_{locale}.arb"
@@ -60,10 +99,11 @@ def untranslated(locale: str) -> list[tuple[str, str]]:
     target = load(locale)
 
     result = []
+    allowed = ALLOWED_IDENTICAL | ALLOWED_IDENTICAL_BY_LOCALE.get(locale, set())
     for key, value in english.items():
         if key.startswith("@") or key.startswith("@@"):
             continue
-        if key in ALLOWED_IDENTICAL:
+        if key in allowed:
             continue
         if not isinstance(value, str):
             continue
