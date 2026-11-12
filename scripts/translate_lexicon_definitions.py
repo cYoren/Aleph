@@ -40,6 +40,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import pathlib
 import sqlite3
 import sys
@@ -63,7 +64,9 @@ from lexicon_definitions_i18n import (  # noqa: E402
     unique_source_texts,
 )
 
-ENDPOINT = "https://openrouter.ai/api/v1/chat/completions"
+ENDPOINT = os.environ.get(
+    "TRANSLATION_ENDPOINT", "https://openrouter.ai/api/v1/chat/completions"
+)
 DEFAULT_MODEL = "openai/gpt-4o-mini"
 
 SYSTEM_PROMPT = """You translate dictionary entries for an offline Hebrew and \
@@ -125,7 +128,6 @@ def request_batch(
 ) -> dict[str, str]:
     body = {
         "model": model,
-        "reasoning": {"exclude": True},
         "max_tokens": max_tokens,
         "temperature": 0,
         "messages": [
@@ -136,13 +138,32 @@ def request_batch(
             {"role": "user", "content": json.dumps(batch, ensure_ascii=False)},
         ],
     }
+    # OpenRouter only: ask it not to spend output on chain-of-thought. The
+    # OpenCode relay ignores the flag and returns an empty content field when
+    # it is present, so it is sent only to the endpoint that understands it.
+    if "openrouter.ai" in ENDPOINT:
+        body["reasoning"] = {"exclude": True}
+    else:
+        # The OpenCode relay honours the OpenAI-style switch. Without it the
+        # model spends most of the wall clock on chain-of-thought: five short
+        # entries took about a minute per batch.
+        body["reasoning_effort"] = "none"
+
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+        # Cloudflare in front of the OpenCode relay rejects the default
+        # urllib User-Agent with error 1010.
+        "User-Agent": "AlephLexiconTranslate/1.0",
+    }
+    session = os.environ.get("OPENCODE_SESSION")
+    if session:
+        headers["x-opencode-session"] = session
+
     request = urllib.request.Request(
         ENDPOINT,
         data=json.dumps(body).encode("utf-8"),
-        headers={
-            "Authorization": f"Bearer {api_key}",
-            "Content-Type": "application/json",
-        },
+        headers=headers,
     )
     with urllib.request.urlopen(request, timeout=timeout) as response:
         payload = json.loads(response.read().decode("utf-8"))
@@ -305,7 +326,7 @@ def main() -> int:
         )
         return 0
 
-    api_key = openrouter_api_key()
+    api_key = os.environ.get("TRANSLATION_API_KEY") or openrouter_api_key()
     if not api_key:
         print(MISSING_MESSAGE, file=sys.stderr)
         return 2
@@ -314,7 +335,7 @@ def main() -> int:
         cache = load_cache(lang)
         cache["_meta"].update(
             {
-                "provider": "openrouter",
+                "provider": os.environ.get("TRANSLATION_PROVIDER", "openrouter"),
                 "model": args.model,
                 "revision": TRANSLATION_REVISION,
             }
