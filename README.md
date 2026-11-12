@@ -77,7 +77,12 @@ python3 scripts/apply_gloss_translations.py
 python3 scripts/prepare_bible_db.py
 ```
 
-5. Run the app:
+5. Fetch the bundled recitation voice(s), reusing the verified local cache:
+```bash
+python3 scripts/fetch_embedded_voices.py
+```
+
+6. Run the app:
 ```bash
 flutter run
 ```
@@ -100,11 +105,12 @@ python3 scripts/apply_gloss_translations.py
    are reused forever unless that number changes, so a release that ships new
    data without bumping it reaches nobody who already has the app.
 
-   Also fold in any translated long-form lexicon content it has, then compact
-   the database and pack the asset the app ships:
+   Also incorporate translated content before packing, then prepare the bundled voice:
 ```bash
-python3 scripts/apply_lexicon_translations.py       # if long-form caches exist
-python3 scripts/prepare_bible_db.py                 # compact + write bible.db.gz
+python3 scripts/apply_lexicon_translations.py       # when translation caches exist
+python3 scripts/prepare_bible_db.py
+python3 scripts/fetch_embedded_voices.py
+python3 scripts/fetch_embedded_voices.py --verify
 ```
 
 2. Run quality gates:
@@ -145,6 +151,8 @@ trees, the personalized reader mode, passage memorization in Hebrew).
 - Cross-references: [OpenBible.info](https://www.openbible.info/labs/cross-references/) (CC Attribution)
 - Syntax trees: [MACULA Hebrew](https://github.com/Clear-Bible/macula-hebrew) & [MACULA Greek](https://github.com/Clear-Bible/macula-greek) (Clear Bible, CC BY 4.0)
 - Scholarly lexicons: [BDB](https://github.com/openscriptures/HebrewLexicon) and [Abbott-Smith](https://github.com/translatable-exegetical-tools/Abbott-Smith) (public domain digitizations)
+- Bundled recitation voice: [Piper](https://huggingface.co/rhasspy/piper-voices) `el_GR/rapunzelina` (voice MIT, dataset CC0), run by [sherpa-onnx 2.0.1](https://github.com/k2-fsa/sherpa-onnx) (Apache-2.0) with generated corpus pronunciations. eSpeak code and dictionary data are excluded from the bundle; see [the runtime migration](docs/tasks/greek-speech-2.md). No suitable Hebrew model has been validated for this project (see `docs/tasks/embedded-voices-findings.md`).
+- Long-form lexicon translations: the offline pipeline is implemented, but the seven-language translation cache has not been generated. English originals remain visible with a localized notice until translated content is incorporated.
 
 ## Android Signing
 

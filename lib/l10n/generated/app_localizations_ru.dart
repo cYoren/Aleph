@@ -628,7 +628,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get recitationVoiceDesc =>
-      'Чтение голосами вашего устройства: современный израильский для иврита и современный греческий для греческого. Это живые традиции чтения, а не реконструированное древнее произношение.';
+      'Главы читают голоса, встроенные в приложение, — без загрузки и без интернета: новогреческий для Нового Завета. Еврейский текст читает голос вашего устройства, потому что голоса на иврите, который мы вправе включить, пока не существует. Это живые традиции чтения, а не реконструированное древнее произношение.';
 
   @override
   String get voiceMissing =>
@@ -678,7 +678,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get onboardingRecitationDesc =>
-      'Нажмите кнопку воспроизведения, чтобы услышать любую главу на иврите или греческом — живыми голосами, а не реконструированным древним произношением. Замедлите темп, пока ухо не привыкнет.';
+      'Нажмите воспроизведение, чтобы услышать чтение любой главы вслух. Новый Завет читает голос новогреческого, встроенный в приложение, поэтому он работает офлайн сразу после установки. Для иврита используется голос вашего устройства. Сильно замедлите чтение с помощью регулятора скорости, пока слух не начнёт успевать.';
 
   @override
   String get readingHintTitle => 'Три способа начать';
@@ -1034,4 +1034,294 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get supportPrivacy => 'Конфиденциальность';
+
+  @override
+  String get morphHebrew => 'Иврит';
+
+  @override
+  String get morphAramaic => 'Арамейский';
+
+  @override
+  String get morphAdjective => 'Прилагательное';
+
+  @override
+  String get morphConjunction => 'Союз';
+
+  @override
+  String get morphAdverb => 'Наречие';
+
+  @override
+  String get morphNoun => 'Существительное';
+
+  @override
+  String get morphPronoun => 'Местоимение';
+
+  @override
+  String get morphPreposition => 'Предлог';
+
+  @override
+  String get morphSuffix => 'Суффикс';
+
+  @override
+  String get morphParticle => 'Частица';
+
+  @override
+  String get morphVerb => 'Глагол';
+
+  @override
+  String get morphArticle => 'Артикль';
+
+  @override
+  String get morphInterjection => 'Междометие';
+
+  @override
+  String get morphCommon => 'нарицательное';
+
+  @override
+  String get morphProper => 'собственное';
+
+  @override
+  String get morphGentilic => 'этникон';
+
+  @override
+  String get morphMasculine => 'мужской';
+
+  @override
+  String get morphFeminine => 'женский';
+
+  @override
+  String get morphBothGenders => 'оба рода';
+
+  @override
+  String get morphNeuter => 'средний';
+
+  @override
+  String get morphSingular => 'единственное';
+
+  @override
+  String get morphPlural => 'множественное';
+
+  @override
+  String get morphDual => 'двойственное';
+
+  @override
+  String get morphAbsolute => 'абсолютное';
+
+  @override
+  String get morphConstruct => 'сопряжённое';
+
+  @override
+  String get morphDetermined => 'определённое';
+
+  @override
+  String get morphFirstPerson => '1-е лицо';
+
+  @override
+  String get morphSecondPerson => '2-е лицо';
+
+  @override
+  String get morphThirdPerson => '3-е лицо';
+
+  @override
+  String get morphPerfect => 'Перфект';
+
+  @override
+  String get morphSequentialPerfect => 'Последовательный перфект';
+
+  @override
+  String get morphImperfect => 'Имперфект';
+
+  @override
+  String get morphSequentialImperfect => 'Последовательный имперфект';
+
+  @override
+  String get morphCohortative => 'Когортатив';
+
+  @override
+  String get morphJussive => 'Юссив';
+
+  @override
+  String get morphImperative => 'Императив';
+
+  @override
+  String get morphParticipleActive => 'Причастие действительное';
+
+  @override
+  String get morphParticiplePassive => 'Причастие страдательное';
+
+  @override
+  String get morphInfinitiveAbsolute => 'Абсолютный инфинитив';
+
+  @override
+  String get morphInfinitiveConstruct => 'Сопряжённый инфинитив';
+
+  @override
+  String get morphCardinalNumber => 'количественное числительное';
+
+  @override
+  String get morphOrdinalNumber => 'порядковое числительное';
+
+  @override
+  String get morphDemonstrative => 'указательное';
+
+  @override
+  String get morphIndefinite => 'неопределённое';
+
+  @override
+  String get morphInterrogative => 'вопросительное';
+
+  @override
+  String get morphPersonal => 'личное';
+
+  @override
+  String get morphRelative => 'относительное';
+
+  @override
+  String get morphReciprocal => 'взаимное';
+
+  @override
+  String get morphReflexive => 'возвратное';
+
+  @override
+  String get morphPossessive => 'притяжательное';
+
+  @override
+  String get morphCorrelative => 'коррелятивное';
+
+  @override
+  String get morphDirectional => 'направительное';
+
+  @override
+  String get morphParagogicHe => 'парагогический хе';
+
+  @override
+  String get morphParagogicNun => 'парагогический нун';
+
+  @override
+  String get morphPronominal => 'местоименный';
+
+  @override
+  String get morphPresent => 'Настоящее';
+
+  @override
+  String get morphFuture => 'Будущее';
+
+  @override
+  String get morphAorist => 'Аорист';
+
+  @override
+  String get morphPluperfect => 'Плюсквамперфект';
+
+  @override
+  String get morphNoTense => 'Без времени';
+
+  @override
+  String get morphActive => 'Действительный';
+
+  @override
+  String get morphMiddle => 'Средний';
+
+  @override
+  String get morphPassive => 'Страдательный';
+
+  @override
+  String get morphMiddlePassive => 'Средний/Страдательный';
+
+  @override
+  String get morphMiddleDeponent => 'Средний депонент';
+
+  @override
+  String get morphPassiveDeponent => 'Страдательный депонент';
+
+  @override
+  String get morphMiddlePassiveDeponent => 'Средний/Страдательный депонент';
+
+  @override
+  String get morphIndicative => 'Изъявительное';
+
+  @override
+  String get morphSubjunctive => 'Сослагательное';
+
+  @override
+  String get morphOptative => 'Оптатив';
+
+  @override
+  String get morphInfinitive => 'Инфинитив';
+
+  @override
+  String get morphParticiple => 'Причастие';
+
+  @override
+  String get morphNominative => 'Именительный';
+
+  @override
+  String get morphGenitive => 'Родительный';
+
+  @override
+  String get morphDative => 'Дательный';
+
+  @override
+  String get morphAccusative => 'Винительный';
+
+  @override
+  String get morphVocative => 'Звательный';
+
+  @override
+  String get contentSourceNote =>
+      'Показано на английском; перевод пока недоступен.';
+
+  @override
+  String get recitationVoiceHebrewGap =>
+      'Для иврита используется голос вашего устройства. Встроенный голос на иврите пока не прошёл проверку для Aleph.';
+
+  @override
+  String get contentLoadError =>
+      'Не удалось загрузить содержимое. Попробуйте ещё раз.';
+
+  @override
+  String get diagnosticsSuccess => 'Успешность';
+
+  @override
+  String get diagnosticsMedian => 'Медианное время';
+
+  @override
+  String get diagnosticsCalls => 'Запросы';
+
+  @override
+  String get diagnosticsPoorAnswers => 'Некачественные ответы';
+
+  @override
+  String get diagnosticsErrors => 'Ошибки';
+
+  @override
+  String get diagnosticsLastProblem => 'Последняя проблема';
+
+  @override
+  String get diagnosticsInUse => 'Используется';
+
+  @override
+  String get diagnosticsNotUsed => 'Ещё не использовалась';
+
+  @override
+  String get diagnosticsTooEarly => 'Пока рано оценивать';
+
+  @override
+  String get diagnosticsEarlyProblems => 'Пока рано оценивать. Были проблемы.';
+
+  @override
+  String get diagnosticsFailing =>
+      'Не работает должным образом. Смените модель.';
+
+  @override
+  String get diagnosticsUnreliable => 'Ненадёжно. Подумайте о смене модели.';
+
+  @override
+  String get diagnosticsSlow => 'Очень медленно. Подумайте о смене модели.';
+
+  @override
+  String get diagnosticsMostlyGood =>
+      'В целом работает. Есть некачественные ответы.';
+
+  @override
+  String get diagnosticsHealthy => 'Работает хорошо';
 }

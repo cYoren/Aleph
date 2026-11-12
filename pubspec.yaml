@@ -30,8 +30,12 @@ dependencies:
   
   share_plus: ^10.0.0
 
-  # Audio (original-language recitation via platform TTS)
+  # Audio (original-language recitation). Platform TTS is the fallback; the
+  # bundled offline engine (sherpa-onnx + a redistributable Piper voice) is the
+  # primary path where a voice is available. See lib/features/audio/.
   flutter_tts: ^4.2.0
+  sherpa_onnx: 2.0.1
+  audioplayers: ^6.1.0
 
   # Networking (opt-in AI passage explanation only; everything else is offline)
   http: ^1.2.2
@@ -42,6 +46,8 @@ dependencies:
   url_launcher: ^6.3.3
 
 dev_dependencies:
+  integration_test:
+    sdk: flutter
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
@@ -76,6 +82,7 @@ flutter:
     # `assets/bible.db` the build leaves on disk is never packaged. Only the
     # packed asset further down ships; without this, iOS and macOS would carry
     # both.
+    - assets/attributions.txt
     - assets/alphabet_hints.json
     - assets/alphabet.json
     - assets/book_names.json
@@ -86,7 +93,12 @@ flutter:
     # database ships gzip-compressed and is unpacked on first launch; generate
     # it with `python3 scripts/prepare_bible_db.py`.
     - assets/bible.db.gz
-  
+    # Only these verified assets ship. Build-time eSpeak data stays outside
+    # the bundle; sherpa-onnx 2 reads a generated corpus pronunciation table.
+    - assets/voices/el_GR-rapunzelina-low/el_GR-rapunzelina-low.onnx
+    - assets/voices/el_GR-rapunzelina-low/tokens.txt
+    - assets/voices/el_GR-rapunzelina-low/lexicon.txt
+
   fonts:
     - family: EzraSIL
       fonts:
