@@ -7,6 +7,8 @@
 /// deck, rather than learning an alphabet in isolation and hoping it sticks.
 library;
 
+import '../../shared/widgets/empty_state.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -40,11 +42,9 @@ class _AlphabetScreenState extends ConsumerState<AlphabetScreen> {
       appBar: AppBar(title: Text(l10n.alphabetTitle)),
       body: referenceAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, stack) => Center(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Text('${l10n.error}: $err'),
-          ),
+        error: (error, stack) => ErrorState(
+          message: l10n.contentLoadError,
+          onRetry: () => ref.invalidate(alphabetReferenceProvider),
         ),
         data: (reference) {
           final chart = reference.chart(_alphabet);

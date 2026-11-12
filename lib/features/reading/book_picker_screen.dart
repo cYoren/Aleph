@@ -1,3 +1,4 @@
+import '../../shared/widgets/empty_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -45,15 +46,9 @@ class _BookPickerScreenState extends ConsumerState<BookPickerScreen> {
       ),
       body: booksAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, stack) => Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.error, size: 48, color: Colors.red),
-              const SizedBox(height: 16),
-              Text('${l10n.error}: $err'),
-            ],
-          ),
+        error: (error, stack) => ErrorState(
+          message: l10n.contentLoadError,
+          onRetry: () => ref.invalidate(booksProvider),
         ),
         data: (books) {
           if (_selectedBook != null) {

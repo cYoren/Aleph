@@ -196,7 +196,36 @@ class SettingsScreen extends ConsumerWidget {
           ListTile(
             leading: const Icon(Icons.graphic_eq),
             title: Text(l10n.recitationVoiceTitle),
-            subtitle: Text(l10n.recitationVoiceDesc),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(l10n.recitationVoiceDesc),
+                const SizedBox(height: 6),
+                // The honest reason Hebrew still uses the device voice: stated
+                // in the app, not hidden behind a silent fallback.
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(
+                      Icons.info_outline,
+                      size: 14,
+                      color: colorScheme.onSurfaceVariant,
+                    ),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        l10n.recitationVoiceHebrewGap,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            isThreeLine: true,
           ),
           const Divider(),
 
@@ -292,9 +321,14 @@ class SettingsScreen extends ConsumerWidget {
               title: Text(l10n.loading),
             ),
             error: (err, stack) => ListTile(
-              leading: const Icon(Icons.error, color: Colors.red),
+              leading: Icon(Icons.error_outline, color: colorScheme.error),
               title: Text(l10n.error),
-              subtitle: Text('$err'),
+              subtitle: Text(l10n.contentLoadError),
+              trailing: IconButton(
+                tooltip: l10n.tryAgain,
+                icon: const Icon(Icons.refresh),
+                onPressed: () => ref.invalidate(translationsProvider),
+              ),
             ),
             data: (translations) {
               final enabledTranslations = translations
@@ -350,6 +384,14 @@ class SettingsScreen extends ConsumerWidget {
             onTap: () => showSupportSheet(context),
           ),
           const Divider(),
+          ListTile(
+            leading: const Icon(Icons.info_outline),
+            title: Text(MaterialLocalizations.of(context).licensesPageTitle),
+            onTap: () => showLicensePage(
+              context: context,
+              applicationName: AppIdentity.publicAppName,
+            ),
+          ),
 
           // Responsible Entity Section
           _buildSectionHeader(l10n.appResponsible, colorScheme),

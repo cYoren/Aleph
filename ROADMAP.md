@@ -95,15 +95,21 @@ things currently undercut the "in depth" promise:
       SM-2 engine (`/memorization`).
 - [ ] Add transliteration/pronunciation support inside practice mode (Hebrew niqqud
       display modes already apply).
-- [x] **Audio recitation shipped via platform TTS** (`lib/features/audio/`), which
-      avoids the recording-licensing question entirely. Continuous chapter
+- [x] **Audio recitation shipped** (`lib/features/audio/`): a bundled offline
+      Greek voice, with the device voice for Hebrew. Synthesized audio avoids
+      the recording-licensing question entirely. Continuous chapter
       playback with the spoken verse highlighted and scrolled into view; also
       word-level playback from the definition sheet.
-      - Voices: `he-IL` and `el-GR` from the OS. **Pronunciation is Modern
-        Israeli / Modern Greek** — living traditions, not reconstructed
-        ancient pronunciation, and not the Erasmian Greek most seminaries
-        teach. This is stated in Settings rather than glossed over. No
-        platform TTS can produce Erasmian.
+      - Voices: the **Greek** New Testament is read by a voice bundled *inside*
+        the app (Piper `el_GR/rapunzelina` via sherpa-onnx) — no install, no
+        internet, works on a fresh install. **Hebrew** is read by the device
+        voice; a suitable redistributable Hebrew model has not been validated
+        for this project. See
+        `docs/tasks/embedded-voices-findings.md`.
+      - **Pronunciation is Modern Israeli / Modern Greek** — living traditions,
+        not reconstructed ancient pronunciation, and not the Erasmian Greek
+        most seminaries teach. This is stated in Settings rather than glossed
+        over. No platform TTS can produce Erasmian.
       - Text prep is the real work, in `recitation_text.dart`: cantillation must
         be stripped (engines choke on it) while niqqud is kept, and polytonic
         Greek must be folded to monotonic or the engines cannot read it at all.
@@ -192,6 +198,13 @@ our data provides. Implemented in `lib/shared/utils/cantillation.dart`
 - `python3 scripts/find_untranslated.py` inventories what is still English:
   ARB values byte-identical to the English original, plus user-facing string
   literals hardcoded in Dart. **Run it before claiming a localization is done.**
+- **Content**, not just the interface, is localised too: the short glosses, the
+  long-form Strong's/BDB/Abbott-Smith definitions, and every grammar label
+  `MorphologyDecoder` emits are served in the reader's language. Long-form
+  content flows through `data/lexicon_translations/` and the
+  `lexicon_definition_i18n` table; grammar labels through the `morph*` ARB keys
+  and `lib/shared/utils/morphology_labels.dart`. Rows without a translation fall
+  back to the labelled English original.
 - When adding a UI string: add it to `app_en.arb`, translate `app_pt.arb`, and
   copy the English value into the remaining six so key parity holds and the app
   falls back rather than crashing. The script will then flag it for translation.
@@ -227,3 +240,5 @@ features. YouVersion wins that game; our niche is *actually engaging the origina
 | Abbott-Smith Greek lexicon | `translatable-exegetical-tools/Abbott-Smith` | public domain |
 | MACULA treebanks (syntax trees) | Clear Bible | CC BY 4.0 |
 | Cross-references | OpenBible.info (TSK-derived) | CC Attribution |
+| Bundled TTS voice (Greek) | Piper `el_GR/rapunzelina` via sherpa-onnx | MIT weights / CC0 data / GPL-3.0 eSpeak NG |
+| Long-form lexicon translations | machine-translated, cached in `data/lexicon_translations/` | derived from the CC BY-SA Strong's / public-domain BDB & Abbott-Smith originals |

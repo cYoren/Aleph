@@ -1,0 +1,9 @@
+{
+  "generator": "scripts/build_greek_pronunciation_lexicon.py",
+  "espeak_version": "1.52.0",
+  "voice": "el",
+  "words": 28475,
+  "sha256": "b8fe372eaf2e56bf080075f751c3b1ce723c8faf0aef5fca3a255592ab299f4c",
+  "source": "Bundled Greek New Testament text, token forms and lexicon lemmas",
+  "note": "Generated IPA output only; no eSpeak source code or dictionary data is distributed."
+}

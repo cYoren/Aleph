@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../recitation_provider.dart';
 import '../recitation_service.dart';
-import '../recitation_text.dart';
 import '../voice_setup.dart';
 
 /// Transport controls shown while a chapter is being recited.
@@ -280,13 +279,14 @@ class _SpeakWordButtonState extends ConsumerState<SpeakWordButton> {
     setState(() => _speaking = false);
 
     if (!ok) {
-      final tradition = widget.isHebrew
-          ? PronunciationTradition.modernIsraeli
-          : PronunciationTradition.modernGreek;
       final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(l10n.voiceMissingFor(tradition.label)),
+          content: Text(
+            l10n.voiceMissingFor(
+              widget.isHebrew ? l10n.hebrewLabel : l10n.greekLabel,
+            ),
+          ),
           // Without this the message is a dead end: it names the missing voice
           // and leaves the reader to find the installer on their own.
           action: canInstallVoices

@@ -180,5 +180,42 @@ class PrepareBibleDbTest(unittest.TestCase):
         self.assertTrue(any("not compacted" in problem for problem in problems))
 
 
+class SyntaxCoverageTest(unittest.TestCase):
+    def setUp(self):
+        self.db = sqlite3.connect(':memory:')
+        self.addCleanup(self.db.close)
+        self.db.executescript('CREATE TABLE verses(book_id TEXT, chapter INTEGER, verse_number INTEGER); CREATE TABLE syntax_trees(book_id TEXT, verses INTEGER, blob BLOB);')
+        self.db.execute("INSERT INTO verses VALUES ('GEN',1,1)")
+        self.write('1:1\t[{"c":"cl"}]', 1)
+
+    def write(self, text, count):
+        self.db.execute('DELETE FROM syntax_trees')
+        self.db.execute("INSERT INTO syntax_trees VALUES ('GEN',?,?)", (count, gzip.compress(text.encode())))
+
+    def test_exact_coverage_passes(self):
+        self.assertEqual(prep.check_syntax_blocks(self.db), [])
+
+    def test_missing_canonical_verse_fails(self):
+        self.db.execute("INSERT INTO verses VALUES ('GEN',1,2)")
+        self.assertTrue(any('1 missing' in p for p in prep.check_syntax_blocks(self.db)))
+
+    def test_declared_counts_cannot_hide_missing_records(self):
+        self.write('1:1\t[{"c":"cl"}]', 31152)
+        self.assertTrue(any('declared' in p for p in prep.check_syntax_blocks(self.db)))
+
+    def test_duplicate_records_fail(self):
+        self.write('1:1\t[{"c":"cl"}]\x001:1\t[{"c":"cl"}]', 2)
+        self.assertTrue(any('duplicate' in p for p in prep.check_syntax_blocks(self.db)))
+
+    def test_empty_or_invalid_tree_documents_fail(self):
+        for document in ['[]', '{}', 'invalid json']:
+            self.write('1:1\t' + document, 1)
+            self.assertTrue(prep.check_syntax_blocks(self.db))
+
+    def test_corrupt_compressed_data_fails(self):
+        self.db.execute("UPDATE syntax_trees SET blob = X'000102'")
+        self.assertTrue(prep.check_syntax_blocks(self.db))
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

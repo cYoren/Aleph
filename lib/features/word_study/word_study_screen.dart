@@ -1,3 +1,4 @@
+import '../../shared/widgets/empty_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -52,7 +53,10 @@ class WordStudyScreen extends ConsumerWidget {
       ),
       body: occurrencesAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, stack) => Center(child: Text('${l10n.error}: $err')),
+        error: (error, stack) => ErrorState(
+          message: l10n.contentLoadError,
+          onRetry: () => ref.invalidate(wordOccurrencesProvider(lexiconKey)),
+        ),
         data: (data) {
           if (data.verses.isEmpty) {
             return Center(

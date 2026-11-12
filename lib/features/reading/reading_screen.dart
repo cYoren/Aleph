@@ -325,7 +325,7 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
   ) {
     if (readingState.errorMessage != null) {
       return ErrorState(
-        message: readingState.errorMessage!,
+        message: AppLocalizations.of(context)!.contentLoadError,
         onRetry: () =>
             notifier.loadChapter(readingState.bookId, readingState.chapter),
       );

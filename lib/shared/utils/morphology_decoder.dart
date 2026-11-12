@@ -15,6 +15,26 @@ class MorphologyDecoder {
     }
   }
 
+  /// Decode a code and render each label in the reader's language.
+  ///
+  /// The English output of [decode] is what identifies a parsing, so it stays
+  /// the stable key; [translate] (see `MorphologyLabels`) maps each label to
+  /// the localized display string for the plain grammar a reader actually
+  /// reads. Labels with no translation (verb stems such as "Qal") pass through.
+  static String decodeLocalized(
+    String code, {
+    required bool isHebrew,
+    required String Function(String) translate,
+  }) {
+    final decoded = decode(code, isHebrew: isHebrew);
+    if (decoded.isEmpty) return decoded;
+    return decoded
+        .split(', ')
+        .map(translate)
+        .where((part) => part.isNotEmpty)
+        .join(', ');
+  }
+
   /// Decode Hebrew morphology code (OSHM format)
   /// Example: "HNcmsa" → "Hebrew Noun, common, masculine, singular, absolute"
   static String decodeHebrew(String code) {

@@ -1,0 +1,80 @@
+import 'dart:io';
+
+import 'package:flutter/services.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:original_bible/features/audio/embedded_voices.dart';
+
+void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
+  test(
+    'the bundle includes the model and corpus lexicon, with no GPL data',
+    () async {
+      final manifest = await AssetManifest.loadFromAssetBundle(rootBundle);
+      final bundled = manifest.listAssets().toSet();
+      for (final voice in kEmbeddedVoices.values) {
+        expect(
+          bundled,
+          containsAll([
+            voice.modelAsset,
+            voice.tokensAsset,
+            voice.lexiconAsset,
+          ]),
+        );
+        final files = bundled
+            .where((a) => a.startsWith('assets/voices/${voice.id}/'))
+            .toSet();
+        expect(files, {
+          voice.modelAsset,
+          voice.tokensAsset,
+          voice.lexiconAsset,
+        });
+        expect(File(voice.lexiconAsset).lengthSync(), greaterThan(100000));
+      }
+      expect(
+        bundled.any((a) => a.contains('espeak-ng-data') || a.endsWith('_dict')),
+        isFalse,
+      );
+    },
+  );
+
+  group('embedded voice registry', () {
+    test('ships a Greek voice and no Hebrew voice', () {
+      expect(kEmbeddedVoices.containsKey('el-GR'), isTrue);
+      expect(kEmbeddedVoices.containsKey('he-IL'), isFalse);
+
+      final greek = embeddedVoiceFor(isHebrew: false);
+      expect(greek, isNotNull);
+      expect(greek!.languageCode, 'el-GR');
+      expect(greek.isHebrew, isFalse);
+
+      expect(embeddedVoiceFor(isHebrew: true), isNull);
+    });
+
+    test('asset paths are rooted at the voice id', () {
+      for (final voice in kEmbeddedVoices.values) {
+        final prefix = 'assets/voices/${voice.id}/';
+        expect(voice.modelAsset.startsWith(prefix), isTrue);
+        expect(voice.tokensAsset.startsWith(prefix), isTrue);
+        expect(voice.lexiconAsset.startsWith(prefix), isTrue);
+        expect(voice.modelAsset.endsWith('.onnx'), isTrue);
+        expect(voice.sampleRate, greaterThan(0));
+      }
+    });
+
+    test('every voice records its license and attribution', () {
+      for (final voice in kEmbeddedVoices.values) {
+        expect(voice.license.trim(), isNotEmpty);
+        expect(voice.attribution.trim(), isNotEmpty);
+      }
+    });
+
+    test('the Hebrew gap is explained, not silently empty', () {
+      expect(kHebrewEmbeddedVoiceUnavailableReason.trim(), isNotEmpty);
+      expect(
+        kHebrewEmbeddedVoiceUnavailableReason.toLowerCase(),
+        contains('device voice'),
+      );
+    });
+  });
+}
