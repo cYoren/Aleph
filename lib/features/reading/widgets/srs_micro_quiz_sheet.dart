@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/foundation.dart';
 
+import '../../../data/models/lexicon_entry.dart';
 import '../../../data/models/word.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../providers/word_provider.dart';
@@ -54,15 +55,15 @@ class _SrsMicroQuizSheetState extends ConsumerState<SrsMicroQuizSheet> {
     final settings = ref.watch(settingsProvider);
     final l10n = AppLocalizations.of(context)!;
 
-    // We only load individual lexicon to show more details
-    final lexiconAsync = ref.watch(selectedWordLexiconProvider);
-    // Note: We need to set the selectedWordProvider for the Lexicon to load
-    // This is handled normally by TappableWord, but here we bypassed it. We can just set it:
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (ref.read(selectedWordProvider)?.id != widget.originalWord.id) {
-        ref.read(selectedWordProvider.notifier).state = widget.originalWord;
-      }
-    });
+    // Look the entry up by this word's own key. Deck review cards all share
+    // the sentinel id -1, so the shared selectedWordProvider could not tell
+    // them apart: every card after the first kept showing the first word's
+    // lexicon entry (the Hebrew object marker's "(et)") instead of its own.
+    final lookupKey = widget.originalWord.lexiconLookupKey;
+    final lexiconAsync = lookupKey == null
+        ? const AsyncValue<LexiconEntry?>.data(null)
+        : ref.watch(lexiconEntryProvider(lookupKey));
+    final secondaryGloss = _secondaryGloss(lexiconAsync.valueOrNull);
 
     final fontFamily = widget.isOT ? 'EzraSIL' : 'Gentium';
     final transliteration = Transliterator.transliterate(
@@ -194,10 +195,10 @@ class _SrsMicroQuizSheetState extends ConsumerState<SrsMicroQuizSheet> {
                 textAlign: TextAlign.center,
               ),
 
-              if (lexiconAsync is AsyncData && lexiconAsync.value != null) ...[
+              if (secondaryGloss != null) ...[
                 const SizedBox(height: 16),
                 Text(
-                  lexiconAsync.value!.gloss ?? '',
+                  secondaryGloss,
                   style: TextStyle(
                     fontSize: 16,
                     fontStyle: FontStyle.italic,
@@ -251,6 +252,16 @@ class _SrsMicroQuizSheetState extends ConsumerState<SrsMicroQuizSheet> {
         ),
       ),
     );
+  }
+
+  /// The lexicon gloss shown under the translation, when it adds anything.
+  ///
+  /// For a deck card the translation already is the lexicon gloss, so
+  /// repeating it would print the same word twice.
+  String? _secondaryGloss(LexiconEntry? entry) {
+    final gloss = entry?.gloss?.trim() ?? '';
+    if (gloss.isEmpty || gloss == widget.translatedWord.trim()) return null;
+    return gloss;
   }
 
   Future<void> _recordSrs(bool isCorrect) async {
