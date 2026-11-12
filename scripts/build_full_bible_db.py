@@ -854,6 +854,20 @@ def strip_greek_accents(text: str) -> str:
     ).lower().strip()
 
 
+# Marks that belong to the verse or the phrase rather than to the word:
+# cantillation (te'amim), meteg, rafe, paseq, and the maqaf that MACULA keeps
+# on some lemmas (מִן־). They never distinguish one lexical form from another,
+# so they must go before a token can be compared with its dictionary form.
+_HEBREW_NON_LEXICAL_RE = re.compile(r"[\u0591-\u05AF\u05BD\u05BF\u05C0\u05BE]")
+
+
+def hebrew_lexical_form(text: str) -> str:
+    """Hebrew consonants and vowel points, without verse/phrase marks."""
+    if not text:
+        return ""
+    return _HEBREW_NON_LEXICAL_RE.sub("", text).strip()
+
+
 def select_canonical_strongs(
     lemma: str,
     strong_counter: Counter,
@@ -1387,6 +1401,9 @@ def build_verses_and_words(
     lex_language: Dict[str, Counter] = defaultdict(Counter)
     lex_transliteration: Dict[str, Counter] = defaultdict(Counter)
     lex_pronunciation: Dict[str, Counter] = defaultdict(Counter)
+    # Transliteration of the token whose text *is* the lemma: the dictionary
+    # form, as opposed to the most frequent inflected surface form.
+    lex_lemma_form: Dict[str, Counter] = defaultdict(Counter)
 
     next_word_id = 1
 
@@ -1498,6 +1515,8 @@ def build_verses_and_words(
                 lex_language[lemma][language] += 1
                 if transliteration:
                     lex_transliteration[lemma][transliteration] += 1
+                    if hebrew_lexical_form(text) == hebrew_lexical_form(lemma):
+                        lex_lemma_form[lemma][transliteration] += 1
                 if pronunciation:
                     lex_pronunciation[lemma][pronunciation] += 1
 
@@ -1546,16 +1565,25 @@ def build_verses_and_words(
         language = lang_counter.most_common(1)[0][0] if lang_counter else None
 
         translit_counter = lex_transliteration.get(lemma, Counter())
-        transliteration = (
-            translit_counter.most_common(1)[0][0] if translit_counter else None
-        )
+        lemma_form_counter = lex_lemma_form.get(lemma, Counter())
+        # The most frequent surface transliteration is the most frequent
+        # *inflected* form, not the dictionary form: אָמַר was showing
+        # "yyōʾmer" (imperfect) instead of "ʾāmar". Prefer tokens whose text is
+        # the lemma itself, and keep the old majority vote as the fallback.
+        if lemma_form_counter:
+            transliteration = lemma_form_counter.most_common(1)[0][0]
+        else:
+            transliteration = (
+                translit_counter.most_common(1)[0][0] if translit_counter else None
+            )
 
         pronunciation_counter = lex_pronunciation.get(lemma, Counter())
-        pronunciation = (
-            pronunciation_counter.most_common(1)[0][0]
-            if pronunciation_counter
-            else transliteration
-        )
+        if lemma_form_counter:
+            pronunciation = lemma_form_counter.most_common(1)[0][0]
+        elif pronunciation_counter:
+            pronunciation = pronunciation_counter.most_common(1)[0][0]
+        else:
+            pronunciation = transliteration
 
         if gloss_counter:
             gloss = gloss_counter.most_common(1)[0][0]

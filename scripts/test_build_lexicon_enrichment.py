@@ -347,5 +347,89 @@ class AssembleOriginalVerseTextTest(unittest.TestCase):
         self.assertEqual(build_db.assemble_original_verse_text(tokens), "אֶת־הָאָרֶץ׃")
 
 
+_TSV_HEADER = (
+    "ref\ttext\ttransliteration\tafter\tstrongnumberx\tenglish\tlemma\tmorph\tlang\tpos\n"
+)
+
+
+class LexiconTransliterationTest(unittest.TestCase):
+    """The lexicon must show the dictionary form, not the commonest inflection."""
+
+    def _build(self, hebrew_rows: str) -> dict:
+        import sqlite3
+
+        with tempfile.TemporaryDirectory() as tmp:
+            hebrew = Path(tmp) / "macula-hebrew.tsv"
+            greek = Path(tmp) / "macula-greek-SBLGNT.tsv"
+            hebrew.write_text(_TSV_HEADER + hebrew_rows, encoding="utf-8")
+            greek.write_text(_TSV_HEADER, encoding="utf-8")
+            conn = sqlite3.connect(":memory:")
+            build_db.init_schema(conn)
+            build_db.build_verses_and_words(
+                conn, hebrew, greek, strongs_dicts=None, extended_lexicons=None
+            )
+            conn.row_factory = sqlite3.Row
+            rows = conn.execute(
+                "SELECT lemma, transliteration, pronunciation FROM lexicon"
+            ).fetchall()
+            conn.close()
+            return {row["lemma"]: dict(row) for row in rows}
+
+    def test_prefers_the_lemma_form_over_the_commonest_inflection(self):
+        rows = "".join(
+            "GEN 1:1!{n}\t{text}\t{tr}\t\t0559\tsaid\tאָמַר\tHVqp3ms\tH\tverb\n".format(
+                n=n, text=text, tr=tr
+            )
+            for n, (text, tr) in enumerate(
+                [
+                    ("אָמַר", "ʾāmar"),  # dictionary form, one occurrence
+                    ("יֹּאמֶר", "yyōʾmer"),
+                    ("יֹּאמֶר", "yyōʾmer"),
+                    ("וַיֹּאמֶר", "yyōʾmer"),
+                ],
+                start=1,
+            )
+        )
+        lexicon = self._build(rows)
+        self.assertEqual(lexicon["אָמַר"]["transliteration"], "ʾāmar")
+        self.assertEqual(lexicon["אָמַר"]["pronunciation"], "ʾāmar")
+
+    def test_falls_back_to_the_majority_when_the_lemma_never_appears(self):
+        rows = "".join(
+            "GEN 1:1!{n}\t{text}\t{tr}\t\t0559\tsaid\tאָמַר\tHVqp3ms\tH\tverb\n".format(
+                n=n, text=text, tr=tr
+            )
+            for n, (text, tr) in enumerate(
+                [("יֹּאמֶר", "yyōʾmer"), ("וַיֹּאמֶר", "yyōʾmer")], start=1
+            )
+        )
+        lexicon = self._build(rows)
+        self.assertEqual(lexicon["אָמַר"]["transliteration"], "yyōʾmer")
+
+    def test_cantillation_does_not_hide_the_lemma_form(self):
+        rows = (
+            "GEN 1:1!1\tאָמַ֖ר\tʾāmar\t\t0559\tsaid\tאָמַר\tHVqp3ms\tH\tverb\n"
+            "GEN 1:1!2\tיֹּאמֶר\tyyōʾmer\t\t0559\tsaid\tאָמַר\tHVqp3ms\tH\tverb\n"
+        )
+        lexicon = self._build(rows)
+        self.assertEqual(lexicon["אָמַר"]["transliteration"], "ʾāmar")
+
+    def test_maqaf_on_the_lemma_does_not_hide_the_lemma_form(self):
+        rows = (
+            "GEN 1:1!1\tמִן\tmin\t\t4480\tfrom\tמִן־\tHR\tH\tpreposition\n"
+            "GEN 1:1!2\tמִמֶּנּוּ\tmimmennû\t\t4480\tfrom\tמִן־\tHR\tH\tpreposition\n"
+            "GEN 1:1!3\tמִמֶּנּוּ\tmimmennû\t\t4480\tfrom\tמִן־\tHR\tH\tpreposition\n"
+        )
+        lexicon = self._build(rows)
+        self.assertEqual(lexicon["מִן־"]["transliteration"], "min")
+
+    def test_hebrew_lexical_form_keeps_consonants_and_vowels(self):
+        self.assertEqual(build_db.hebrew_lexical_form("אָמַ֖ר"), "אָמַר")
+        self.assertEqual(build_db.hebrew_lexical_form("בְּרֵאשִׁ֖ית"), "בְּרֵאשִׁית")
+        self.assertEqual(build_db.hebrew_lexical_form("מִן־"), "מִן")
+        # Shin/sin dots are lexical and must survive.
+        self.assertEqual(build_db.hebrew_lexical_form("שָׁמַע"), "שָׁמַע")
+
+
 if __name__ == "__main__":
     sys.exit(unittest.main(verbosity=2))
