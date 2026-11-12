@@ -619,7 +619,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get recitationVoiceDesc =>
-      'Lecture par les voix de synthèse de votre appareil : hébreu israélien moderne et grec moderne. Ce sont des traditions de lecture vivantes, et non la prononciation antique reconstituée.';
+      'Les chapitres sont lus par des voix intégrées à l\'application — sans téléchargement ni internet : le grec moderne pour le Nouveau Testament. L\'hébreu est lu par la voix de votre appareil, car aucune voix hébraïque que nous sommes autorisés à intégrer n\'existe encore. Ce sont des traditions de lecture vivantes, et non une prononciation ancienne reconstituée.';
 
   @override
   String get voiceMissing =>
@@ -669,7 +669,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get onboardingRecitationDesc =>
-      'Appuyez sur lecture pour entendre n\'importe quel chapitre lu à voix haute en hébreu ou en grec, avec des voix vivantes plutôt qu\'une prononciation antique reconstituée. Ralentissez le rythme jusqu\'à ce que votre oreille suive.';
+      'Appuyez sur lecture pour entendre n\'importe quel chapitre lu à voix haute. Le Nouveau Testament est lu par une voix de grec moderne intégrée à l\'application, donc cela fonctionne hors ligne dès l\'installation. L\'hébreu utilise la voix de votre appareil. Ralentissez fortement avec le contrôle de vitesse jusqu\'à ce que votre oreille suive.';
 
   @override
   String get readingHintTitle => 'Trois façons de commencer';
@@ -1020,4 +1020,293 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get supportPrivacy => 'Confidentialité';
+
+  @override
+  String get morphHebrew => 'Hébreu';
+
+  @override
+  String get morphAramaic => 'Araméen';
+
+  @override
+  String get morphAdjective => 'Adjectif';
+
+  @override
+  String get morphConjunction => 'Conjonction';
+
+  @override
+  String get morphAdverb => 'Adverbe';
+
+  @override
+  String get morphNoun => 'Nom';
+
+  @override
+  String get morphPronoun => 'Pronom';
+
+  @override
+  String get morphPreposition => 'Préposition';
+
+  @override
+  String get morphSuffix => 'Suffixe';
+
+  @override
+  String get morphParticle => 'Particule';
+
+  @override
+  String get morphVerb => 'Verbe';
+
+  @override
+  String get morphArticle => 'Article';
+
+  @override
+  String get morphInterjection => 'Interjection';
+
+  @override
+  String get morphCommon => 'commun';
+
+  @override
+  String get morphProper => 'propre';
+
+  @override
+  String get morphGentilic => 'gentilice';
+
+  @override
+  String get morphMasculine => 'masculin';
+
+  @override
+  String get morphFeminine => 'féminin';
+
+  @override
+  String get morphBothGenders => 'les deux genres';
+
+  @override
+  String get morphNeuter => 'neutre';
+
+  @override
+  String get morphSingular => 'singulier';
+
+  @override
+  String get morphPlural => 'pluriel';
+
+  @override
+  String get morphDual => 'duel';
+
+  @override
+  String get morphAbsolute => 'absolu';
+
+  @override
+  String get morphConstruct => 'construit';
+
+  @override
+  String get morphDetermined => 'déterminé';
+
+  @override
+  String get morphFirstPerson => '1re personne';
+
+  @override
+  String get morphSecondPerson => '2e personne';
+
+  @override
+  String get morphThirdPerson => '3e personne';
+
+  @override
+  String get morphPerfect => 'Parfait';
+
+  @override
+  String get morphSequentialPerfect => 'Parfait consécutif';
+
+  @override
+  String get morphImperfect => 'Imparfait';
+
+  @override
+  String get morphSequentialImperfect => 'Imparfait consécutif';
+
+  @override
+  String get morphCohortative => 'Cohortatif';
+
+  @override
+  String get morphJussive => 'Jussif';
+
+  @override
+  String get morphImperative => 'Impératif';
+
+  @override
+  String get morphParticipleActive => 'Participe actif';
+
+  @override
+  String get morphParticiplePassive => 'Participe passif';
+
+  @override
+  String get morphInfinitiveAbsolute => 'Infinitif absolu';
+
+  @override
+  String get morphInfinitiveConstruct => 'Infinitif construit';
+
+  @override
+  String get morphCardinalNumber => 'nombre cardinal';
+
+  @override
+  String get morphOrdinalNumber => 'nombre ordinal';
+
+  @override
+  String get morphDemonstrative => 'démonstratif';
+
+  @override
+  String get morphIndefinite => 'indéfini';
+
+  @override
+  String get morphInterrogative => 'interrogatif';
+
+  @override
+  String get morphPersonal => 'personnel';
+
+  @override
+  String get morphRelative => 'relatif';
+
+  @override
+  String get morphReciprocal => 'réciproque';
+
+  @override
+  String get morphReflexive => 'réfléchi';
+
+  @override
+  String get morphPossessive => 'possessif';
+
+  @override
+  String get morphCorrelative => 'corrélatif';
+
+  @override
+  String get morphDirectional => 'directionnel';
+
+  @override
+  String get morphParagogicHe => 'hé paragogique';
+
+  @override
+  String get morphParagogicNun => 'noun paragogique';
+
+  @override
+  String get morphPronominal => 'pronominal';
+
+  @override
+  String get morphPresent => 'Présent';
+
+  @override
+  String get morphFuture => 'Futur';
+
+  @override
+  String get morphAorist => 'Aoriste';
+
+  @override
+  String get morphPluperfect => 'Plus-que-parfait';
+
+  @override
+  String get morphNoTense => 'Sans temps';
+
+  @override
+  String get morphActive => 'Actif';
+
+  @override
+  String get morphMiddle => 'Moyen';
+
+  @override
+  String get morphPassive => 'Passif';
+
+  @override
+  String get morphMiddlePassive => 'Moyen/Passif';
+
+  @override
+  String get morphMiddleDeponent => 'Déponent moyen';
+
+  @override
+  String get morphPassiveDeponent => 'Déponent passif';
+
+  @override
+  String get morphMiddlePassiveDeponent => 'Déponent moyen/passif';
+
+  @override
+  String get morphIndicative => 'Indicatif';
+
+  @override
+  String get morphSubjunctive => 'Subjonctif';
+
+  @override
+  String get morphOptative => 'Optatif';
+
+  @override
+  String get morphInfinitive => 'Infinitif';
+
+  @override
+  String get morphParticiple => 'Participe';
+
+  @override
+  String get morphNominative => 'Nominatif';
+
+  @override
+  String get morphGenitive => 'Génitif';
+
+  @override
+  String get morphDative => 'Datif';
+
+  @override
+  String get morphAccusative => 'Accusatif';
+
+  @override
+  String get morphVocative => 'Vocatif';
+
+  @override
+  String get contentSourceNote =>
+      'Affiché en anglais ; aucune traduction disponible pour l\'instant.';
+
+  @override
+  String get recitationVoiceHebrewGap =>
+      'L’hébreu utilise la voix de synthèse de votre appareil. Aucune voix hébraïque intégrée n’a encore été validée pour Aleph.';
+
+  @override
+  String get contentLoadError => 'Impossible de charger ce contenu. Réessayez.';
+
+  @override
+  String get diagnosticsSuccess => 'Réussite';
+
+  @override
+  String get diagnosticsMedian => 'Durée médiane';
+
+  @override
+  String get diagnosticsCalls => 'Requêtes';
+
+  @override
+  String get diagnosticsPoorAnswers => 'Réponses médiocres';
+
+  @override
+  String get diagnosticsErrors => 'Erreurs';
+
+  @override
+  String get diagnosticsLastProblem => 'Dernier problème';
+
+  @override
+  String get diagnosticsInUse => 'En cours d’utilisation';
+
+  @override
+  String get diagnosticsNotUsed => 'Pas encore utilisé';
+
+  @override
+  String get diagnosticsTooEarly => 'Trop tôt pour évaluer';
+
+  @override
+  String get diagnosticsEarlyProblems =>
+      'Trop tôt pour évaluer. Quelques problèmes.';
+
+  @override
+  String get diagnosticsFailing => 'Défaillant. Changez de modèle.';
+
+  @override
+  String get diagnosticsUnreliable => 'Peu fiable. Envisagez un autre modèle.';
+
+  @override
+  String get diagnosticsSlow => 'Très lent. Envisagez un autre modèle.';
+
+  @override
+  String get diagnosticsMostlyGood =>
+      'Globalement correct. Quelques réponses médiocres.';
+
+  @override
+  String get diagnosticsHealthy => 'Fonctionne bien';
 }

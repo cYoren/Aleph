@@ -108,11 +108,10 @@ class RecitationNotifier extends StateNotifier<RecitationState> {
     required bool isHebrew,
     int? startVerse,
   }) async {
-    await stop();
-
-    if (verses.isEmpty) return;
-
-    final generation = ++_generation;
+    final stopping = stop();
+    final generation = _generation;
+    await stopping;
+    if (!mounted || generation != _generation || verses.isEmpty) return;
     state = state.copyWith(
       status: RecitationStatus.preparing,
       bookId: bookId,
@@ -124,6 +123,7 @@ class RecitationNotifier extends StateNotifier<RecitationState> {
 
     final language = voiceLanguageFor(isHebrew: isHebrew);
     final availability = await _service.availabilityFor(language);
+    if (!mounted || generation != _generation) return;
     if (availability != VoiceAvailability.ready) {
       if (generation != _generation) return;
       state = state.copyWith(
@@ -134,7 +134,7 @@ class RecitationNotifier extends StateNotifier<RecitationState> {
     }
 
     await _service.configure(languageCode: language, rate: state.rate);
-    if (generation != _generation) return;
+    if (!mounted || generation != _generation) return;
 
     final startIndex = startVerse == null
         ? 0
@@ -166,8 +166,14 @@ class RecitationNotifier extends StateNotifier<RecitationState> {
 
   /// Speaks a single word, for the definition sheet and vocabulary drills.
   Future<bool> speakWord(String text, {required bool isHebrew}) async {
+    final stopping = stop();
+    final generation = _generation;
+    await stopping;
+    if (!mounted || generation != _generation) return false;
+    state = state.copyWith(clearFailure: true);
     final language = voiceLanguageFor(isHebrew: isHebrew);
     final availability = await _service.availabilityFor(language);
+    if (!mounted || generation != _generation) return false;
     if (availability != VoiceAvailability.ready) {
       state = state.copyWith(failure: availability);
       return false;
@@ -175,13 +181,14 @@ class RecitationNotifier extends StateNotifier<RecitationState> {
 
     // A single word is easier to catch a little under normal pace.
     await _service.configure(languageCode: language, rate: 0.7);
+    if (!mounted || generation != _generation) return false;
     return _service.speak(prepareForSpeech(text, isHebrew: isHebrew));
   }
 
   Future<void> stop() async {
-    _generation++;
+    final generation = ++_generation;
     await _service.stop();
-    if (!mounted) return;
+    if (!mounted || generation != _generation) return;
     state = state.copyWith(status: RecitationStatus.idle, clearVerse: true);
   }
 

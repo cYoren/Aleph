@@ -596,7 +596,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get recitationVoiceDesc =>
-      '使用设备的语音朗读：希伯来文为现代以色列发音，希腊文为现代希腊发音。这是沿用至今的诵读传统，并非重建的古代发音。';
+      '各章由内置于应用中的语音朗读——无需下载，也无需联网：新约使用现代希腊语。希伯来语由您设备自带的语音朗读，因为我们尚无权捆绑任何希伯来语语音。这些都是活生生的诵读传统，而非重构的古代发音。';
 
   @override
   String get voiceMissing => '朗读需要设备安装希伯来语或希腊语语音。安装只需片刻，且只需一次。';
@@ -643,7 +643,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get onboardingRecitationDesc =>
-      '点按播放键，即可听到任意一章用希伯来语或希腊语朗读——使用的是现代通行的发音，而非重建的古代发音。可将语速调慢，直到耳朵跟得上为止。';
+      '点按播放即可聆听任何章节的朗读。新约由内置于应用中的现代希腊语语音朗读，因此全新安装后也能离线使用。希伯来语使用您设备的语音。用速度控制大幅调慢，直到您的耳朵跟上。';
 
   @override
   String get readingHintTitle => '三种入门方式';
@@ -966,4 +966,290 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get supportPrivacy => '隐私';
+
+  @override
+  String get morphHebrew => '希伯来语';
+
+  @override
+  String get morphAramaic => '亚兰语';
+
+  @override
+  String get morphAdjective => '形容词';
+
+  @override
+  String get morphConjunction => '连词';
+
+  @override
+  String get morphAdverb => '副词';
+
+  @override
+  String get morphNoun => '名词';
+
+  @override
+  String get morphPronoun => '代词';
+
+  @override
+  String get morphPreposition => '介词';
+
+  @override
+  String get morphSuffix => '后缀';
+
+  @override
+  String get morphParticle => '小品词';
+
+  @override
+  String get morphVerb => '动词';
+
+  @override
+  String get morphArticle => '冠词';
+
+  @override
+  String get morphInterjection => '感叹词';
+
+  @override
+  String get morphCommon => '普通';
+
+  @override
+  String get morphProper => '专有';
+
+  @override
+  String get morphGentilic => '民族形容词';
+
+  @override
+  String get morphMasculine => '阳性';
+
+  @override
+  String get morphFeminine => '阴性';
+
+  @override
+  String get morphBothGenders => '两性';
+
+  @override
+  String get morphNeuter => '中性';
+
+  @override
+  String get morphSingular => '单数';
+
+  @override
+  String get morphPlural => '复数';
+
+  @override
+  String get morphDual => '双数';
+
+  @override
+  String get morphAbsolute => '绝对';
+
+  @override
+  String get morphConstruct => '构造';
+
+  @override
+  String get morphDetermined => '确定';
+
+  @override
+  String get morphFirstPerson => '第一人称';
+
+  @override
+  String get morphSecondPerson => '第二人称';
+
+  @override
+  String get morphThirdPerson => '第三人称';
+
+  @override
+  String get morphPerfect => '完成式';
+
+  @override
+  String get morphSequentialPerfect => '连续完成式';
+
+  @override
+  String get morphImperfect => '未完成式';
+
+  @override
+  String get morphSequentialImperfect => '连续未完成式';
+
+  @override
+  String get morphCohortative => '劝勉式';
+
+  @override
+  String get morphJussive => '祈使式';
+
+  @override
+  String get morphImperative => '命令式';
+
+  @override
+  String get morphParticipleActive => '主动分词';
+
+  @override
+  String get morphParticiplePassive => '被动分词';
+
+  @override
+  String get morphInfinitiveAbsolute => '绝对不定式';
+
+  @override
+  String get morphInfinitiveConstruct => '构造不定式';
+
+  @override
+  String get morphCardinalNumber => '基数词';
+
+  @override
+  String get morphOrdinalNumber => '序数词';
+
+  @override
+  String get morphDemonstrative => '指示';
+
+  @override
+  String get morphIndefinite => '不定';
+
+  @override
+  String get morphInterrogative => '疑问';
+
+  @override
+  String get morphPersonal => '人称';
+
+  @override
+  String get morphRelative => '关系';
+
+  @override
+  String get morphReciprocal => '相互';
+
+  @override
+  String get morphReflexive => '反身';
+
+  @override
+  String get morphPossessive => '物主';
+
+  @override
+  String get morphCorrelative => '关联';
+
+  @override
+  String get morphDirectional => '方向';
+
+  @override
+  String get morphParagogicHe => '附加 he';
+
+  @override
+  String get morphParagogicNun => '附加 nun';
+
+  @override
+  String get morphPronominal => '代词性';
+
+  @override
+  String get morphPresent => '现在时';
+
+  @override
+  String get morphFuture => '将来时';
+
+  @override
+  String get morphAorist => '不定过去时';
+
+  @override
+  String get morphPluperfect => '过去完成时';
+
+  @override
+  String get morphNoTense => '无时态';
+
+  @override
+  String get morphActive => '主动';
+
+  @override
+  String get morphMiddle => '中动';
+
+  @override
+  String get morphPassive => '被动';
+
+  @override
+  String get morphMiddlePassive => '中动/被动';
+
+  @override
+  String get morphMiddleDeponent => '中动异相动词';
+
+  @override
+  String get morphPassiveDeponent => '被动异相动词';
+
+  @override
+  String get morphMiddlePassiveDeponent => '中动/被动异相动词';
+
+  @override
+  String get morphIndicative => '直陈式';
+
+  @override
+  String get morphSubjunctive => '虚拟式';
+
+  @override
+  String get morphOptative => '祈愿式';
+
+  @override
+  String get morphInfinitive => '不定式';
+
+  @override
+  String get morphParticiple => '分词';
+
+  @override
+  String get morphNominative => '主格';
+
+  @override
+  String get morphGenitive => '属格';
+
+  @override
+  String get morphDative => '与格';
+
+  @override
+  String get morphAccusative => '宾格';
+
+  @override
+  String get morphVocative => '呼格';
+
+  @override
+  String get contentSourceNote => '以英文显示；暂无译文。';
+
+  @override
+  String get recitationVoiceHebrewGap =>
+      '希伯来语使用您设备的语音朗读功能。Aleph 尚未完成对内置希伯来语语音的验证。';
+
+  @override
+  String get contentLoadError => '无法加载此内容。请重试。';
+
+  @override
+  String get diagnosticsSuccess => '成功率';
+
+  @override
+  String get diagnosticsMedian => '耗时中位数';
+
+  @override
+  String get diagnosticsCalls => '请求数';
+
+  @override
+  String get diagnosticsPoorAnswers => '低质量回答';
+
+  @override
+  String get diagnosticsErrors => '错误';
+
+  @override
+  String get diagnosticsLastProblem => '最近的问题';
+
+  @override
+  String get diagnosticsInUse => '正在使用';
+
+  @override
+  String get diagnosticsNotUsed => '尚未使用';
+
+  @override
+  String get diagnosticsTooEarly => '暂时无法判断';
+
+  @override
+  String get diagnosticsEarlyProblems => '暂时无法判断。已出现一些问题。';
+
+  @override
+  String get diagnosticsFailing => '运行异常。请更换模型。';
+
+  @override
+  String get diagnosticsUnreliable => '不够可靠。建议更换模型。';
+
+  @override
+  String get diagnosticsSlow => '速度很慢。建议更换模型。';
+
+  @override
+  String get diagnosticsMostlyGood => '总体正常。部分回答质量较差。';
+
+  @override
+  String get diagnosticsHealthy => '运行良好';
 }

@@ -204,6 +204,77 @@ class BibleDAO {
     return {...row, 'gloss': gloss};
   }
 
+  /// Translated long-form content for [lemmas], keyed by lemma.
+  ///
+  /// `lemma` is the lexicon's primary key: Strong's alone is not unique (H1121
+  /// has seven distinct lemma rows), so the long-form content is keyed and
+  /// looked up by lemma. Returns empty for English readers, for a database
+  /// built before `lexicon_definition_i18n` existed, or for any entry that has
+  /// no translation — in which case the English original is still there.
+  Future<Map<String, ({String? definition, String? extended})>>
+  _translatedDefinitions(Iterable<String> lemmas) async {
+    if (!_needsGlossTranslation) return const {};
+    final keys = lemmas.where((lemma) => lemma.isNotEmpty).toSet().toList();
+    if (keys.isEmpty) return const {};
+
+    try {
+      final db = await _dbHelper.database;
+      final placeholders = List.filled(keys.length, '?').join(',');
+      final rows = await db.rawQuery(
+        'SELECT lemma, definition, extended_definition '
+        'FROM lexicon_definition_i18n '
+        'WHERE lang = ? AND lemma IN ($placeholders)',
+        [glossLanguage, ...keys],
+      );
+      final result = <String, ({String? definition, String? extended})>{};
+      for (final row in rows) {
+        final lemma = row['lemma']?.toString() ?? '';
+        if (lemma.isEmpty) continue;
+        result[lemma] = (
+          definition: row['definition']?.toString(),
+          extended: row['extended_definition']?.toString(),
+        );
+      }
+      return result;
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('BibleDAO translated definitions unavailable: $e');
+      }
+      return const {};
+    }
+  }
+
+  /// Copy of [row] with its long-form fields replaced by the reader's language
+  /// where translations exist, and per-field language provenance so the UI can
+  /// label a row that fell back to the English original.
+  Map<String, dynamic> _withTranslatedContent(
+    Map<String, dynamic> row,
+    Map<String, ({String? definition, String? extended})> translations,
+  ) {
+    if (translations.isEmpty) return row;
+    final entry = translations[row['lemma']?.toString() ?? ''];
+    if (entry == null) return row;
+
+    var result = row;
+    final definition = entry.definition;
+    if (definition != null && definition.trim().isNotEmpty) {
+      result = {
+        ...result,
+        'definition': definition,
+        'definition_language': glossLanguage,
+      };
+    }
+    final extended = entry.extended;
+    if (extended != null && extended.trim().isNotEmpty) {
+      result = {
+        ...result,
+        'extended_definition': extended,
+        'extended_definition_language': glossLanguage,
+      };
+    }
+    return result;
+  }
+
   Future<LexiconEntry?> getLexiconEntry(String key) async {
     if (key.isEmpty) return null;
 
@@ -211,8 +282,12 @@ class BibleDAO {
 
     Future<LexiconEntry> localized(Map<String, dynamic> row) async {
       final strongsId = row['strongs_id']?.toString() ?? '';
-      final translations = await _translatedGlosses([strongsId]);
-      return LexiconEntry.fromMap(_withTranslatedGloss(row, translations));
+      final lemma = row['lemma']?.toString() ?? '';
+      final glosses = await _translatedGlosses([strongsId]);
+      final definitions = await _translatedDefinitions([lemma]);
+      return LexiconEntry.fromMap(
+        _withTranslatedContent(_withTranslatedGloss(row, glosses), definitions),
+      );
     }
 
     try {
@@ -266,13 +341,19 @@ class BibleDAO {
       final translations = await _translatedGlosses(
         maps.map((m) => m['strongs_id']?.toString() ?? ''),
       );
+      final definitions = await _translatedDefinitions(
+        maps.map((m) => m['lemma']?.toString() ?? ''),
+      );
 
       final Map<String, LexiconEntry> result = {};
       for (final map in maps) {
         final strongsId = map['strongs_id']?.toString() ?? '';
         if (strongsId.isNotEmpty && requestedKeys.contains(strongsId)) {
           result[strongsId] = LexiconEntry.fromMap(
-            _withTranslatedGloss(map, translations),
+            _withTranslatedContent(
+              _withTranslatedGloss(map, translations),
+              definitions,
+            ),
           );
         }
       }
@@ -296,13 +377,19 @@ class BibleDAO {
       final translations = await _translatedGlosses(
         maps.map((m) => m['strongs_id']?.toString() ?? ''),
       );
+      final definitions = await _translatedDefinitions(
+        maps.map((m) => m['lemma']?.toString() ?? ''),
+      );
 
       final Map<String, LexiconEntry> result = {};
       for (final map in maps) {
         final lemma = map['lemma']?.toString() ?? '';
         if (lemma.isNotEmpty && requestedKeys.contains(lemma)) {
           result[lemma] = LexiconEntry.fromMap(
-            _withTranslatedGloss(map, translations),
+            _withTranslatedContent(
+              _withTranslatedGloss(map, translations),
+              definitions,
+            ),
           );
         }
       }

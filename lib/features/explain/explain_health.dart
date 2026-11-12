@@ -46,12 +46,12 @@ class ExplainSample {
   final String? note;
 
   Map<String, dynamic> toMap() => {
-        'm': modelId,
-        'o': outcome.name,
-        'ms': milliseconds,
-        'at': at.millisecondsSinceEpoch,
-        if (note != null) 'n': note,
-      };
+    'm': modelId,
+    'o': outcome.name,
+    'ms': milliseconds,
+    'at': at.millisecondsSinceEpoch,
+    if (note != null) 'n': note,
+  };
 
   static ExplainSample? fromMap(Map<String, dynamic> map) {
     final outcome = ExplainOutcome.values
@@ -62,10 +62,23 @@ class ExplainSample {
       modelId: map['m']?.toString() ?? '',
       outcome: outcome,
       milliseconds: (map['ms'] as num?)?.toInt() ?? 0,
-      at: DateTime.fromMillisecondsSinceEpoch((map['at'] as num?)?.toInt() ?? 0),
+      at: DateTime.fromMillisecondsSinceEpoch(
+        (map['at'] as num?)?.toInt() ?? 0,
+      ),
       note: map['n']?.toString(),
     );
   }
+}
+
+enum ExplainHealthVerdict {
+  unused,
+  tooEarly,
+  earlyProblems,
+  failing,
+  unreliable,
+  slow,
+  mostlyGood,
+  healthy,
 }
 
 /// Rolled-up health for one model.
@@ -111,20 +124,31 @@ class ModelHealth {
   /// Gated on the same evidence threshold as [needsAttention], so the screen
   /// never advises switching models on a sample size that would not trigger
   /// the warning next to it.
-  String get verdict {
-    if (total == 0) return 'Not used yet';
-
+  ExplainHealthVerdict get verdictCode {
+    if (total == 0) return ExplainHealthVerdict.unused;
     if (!hasEnoughEvidence) {
-      if (suspect > 0 || errors > 0) return 'Too early to tell, some problems';
-      return 'Too early to tell';
+      return suspect > 0 || errors > 0
+          ? ExplainHealthVerdict.earlyProblems
+          : ExplainHealthVerdict.tooEarly;
     }
-
-    if (successRate < 0.5) return 'Failing — switch model';
-    if (successRate < 0.8) return 'Unreliable — consider switching';
-    if (medianMs > 25000) return 'Very slow — consider switching';
-    if (suspect > 0) return 'Mostly fine, some poor answers';
-    return 'Healthy';
+    if (successRate < 0.5) return ExplainHealthVerdict.failing;
+    if (successRate < 0.8) return ExplainHealthVerdict.unreliable;
+    if (medianMs > 25000) return ExplainHealthVerdict.slow;
+    if (suspect > 0) return ExplainHealthVerdict.mostlyGood;
+    return ExplainHealthVerdict.healthy;
   }
+
+  /// Stable English diagnostic representation; UI localizes [verdictCode].
+  String get verdict => switch (verdictCode) {
+    ExplainHealthVerdict.unused => 'Not used yet',
+    ExplainHealthVerdict.tooEarly => 'Too early to tell',
+    ExplainHealthVerdict.earlyProblems => 'Too early to tell, some problems',
+    ExplainHealthVerdict.failing => 'Failing — switch model',
+    ExplainHealthVerdict.unreliable => 'Unreliable — consider switching',
+    ExplainHealthVerdict.slow => 'Very slow — consider switching',
+    ExplainHealthVerdict.mostlyGood => 'Mostly fine, some poor answers',
+    ExplainHealthVerdict.healthy => 'Healthy',
+  };
 }
 
 /// Records and summarises explanation outcomes.
@@ -175,11 +199,12 @@ class ExplainHealthStore {
 
     final result = byModel.entries.map((entry) {
       final list = entry.value;
-      final durations = list
-          .where((s) => s.outcome != ExplainOutcome.error)
-          .map((s) => s.milliseconds)
-          .toList()
-        ..sort();
+      final durations =
+          list
+              .where((s) => s.outcome != ExplainOutcome.error)
+              .map((s) => s.milliseconds)
+              .toList()
+            ..sort();
 
       final lastFailure = list.lastWhere(
         (s) => s.outcome != ExplainOutcome.ok,
@@ -192,17 +217,18 @@ class ExplainHealthStore {
         ok: list.where((s) => s.outcome == ExplainOutcome.ok).length,
         suspect: list.where((s) => s.outcome == ExplainOutcome.suspect).length,
         errors: list.where((s) => s.outcome == ExplainOutcome.error).length,
-        medianMs: durations.isEmpty
-            ? 0
-            : durations[durations.length ~/ 2],
-        lastFailureNote:
-            lastFailure.outcome == ExplainOutcome.ok ? null : lastFailure.note,
+        medianMs: durations.isEmpty ? 0 : durations[durations.length ~/ 2],
+        lastFailureNote: lastFailure.outcome == ExplainOutcome.ok
+            ? null
+            : lastFailure.note,
         lastUsed: list.last.at,
       );
     }).toList();
 
-    result.sort((a, b) =>
-        (b.lastUsed ?? DateTime(0)).compareTo(a.lastUsed ?? DateTime(0)));
+    result.sort(
+      (a, b) =>
+          (b.lastUsed ?? DateTime(0)).compareTo(a.lastUsed ?? DateTime(0)),
+    );
     return result;
   }
 

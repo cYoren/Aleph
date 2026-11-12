@@ -1,3 +1,4 @@
+import '../../shared/widgets/empty_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -38,7 +39,10 @@ class ExplainDiagnosticsScreen extends ConsumerWidget {
       ),
       body: healthAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, _) => Center(child: Text('$error')),
+        error: (error, stack) => ErrorState(
+          message: l10n.contentLoadError,
+          onRetry: () => ref.invalidate(explainHealthProvider),
+        ),
         data: (models) {
           if (models.isEmpty) {
             return Center(
@@ -88,13 +92,24 @@ class _ModelCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context)!;
+    final verdict = switch (health.verdictCode) {
+      ExplainHealthVerdict.unused => l10n.diagnosticsNotUsed,
+      ExplainHealthVerdict.tooEarly => l10n.diagnosticsTooEarly,
+      ExplainHealthVerdict.earlyProblems => l10n.diagnosticsEarlyProblems,
+      ExplainHealthVerdict.failing => l10n.diagnosticsFailing,
+      ExplainHealthVerdict.unreliable => l10n.diagnosticsUnreliable,
+      ExplainHealthVerdict.slow => l10n.diagnosticsSlow,
+      ExplainHealthVerdict.mostlyGood => l10n.diagnosticsMostlyGood,
+      ExplainHealthVerdict.healthy => l10n.diagnosticsHealthy,
+    };
     final attention = health.needsAttention;
 
     final accent = attention
         ? colorScheme.error
         : health.suspect > 0
-            ? colorScheme.tertiary
-            : colorScheme.primary;
+        ? colorScheme.tertiary
+        : colorScheme.primary;
 
     return Card(
       elevation: 0,
@@ -136,9 +151,9 @@ class _ModelCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text(
-                      'in use',
+                      l10n.diagnosticsInUse,
                       style: TextStyle(
-                        fontSize: 10,
+                        fontSize: 12,
                         fontWeight: FontWeight.w600,
                         color: colorScheme.onPrimaryContainer,
                       ),
@@ -153,18 +168,20 @@ class _ModelCard extends StatelessWidget {
                   attention
                       ? Icons.error_outline
                       : health.suspect > 0
-                          ? Icons.warning_amber_outlined
-                          : Icons.check_circle_outline,
+                      ? Icons.warning_amber_outlined
+                      : Icons.check_circle_outline,
                   size: 18,
                   color: accent,
                 ),
                 const SizedBox(width: 8),
-                Text(
-                  health.verdict,
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: accent,
+                Expanded(
+                  child: Text(
+                    verdict,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: accent,
+                    ),
                   ),
                 ),
               ],
@@ -175,24 +192,30 @@ class _ModelCard extends StatelessWidget {
               runSpacing: 8,
               children: [
                 _Stat(
-                  label: 'success',
+                  label: l10n.diagnosticsSuccess,
                   value: '${(health.successRate * 100).round()}%',
                 ),
                 _Stat(
-                  label: 'median',
+                  label: l10n.diagnosticsMedian,
                   value: '${(health.medianMs / 1000).toStringAsFixed(1)}s',
                 ),
-                _Stat(label: 'calls', value: '${health.total}'),
+                _Stat(label: l10n.diagnosticsCalls, value: '${health.total}'),
                 if (health.suspect > 0)
-                  _Stat(label: 'poor answers', value: '${health.suspect}'),
+                  _Stat(
+                    label: l10n.diagnosticsPoorAnswers,
+                    value: '${health.suspect}',
+                  ),
                 if (health.errors > 0)
-                  _Stat(label: 'errors', value: '${health.errors}'),
+                  _Stat(
+                    label: l10n.diagnosticsErrors,
+                    value: '${health.errors}',
+                  ),
               ],
             ),
             if (health.lastFailureNote != null) ...[
               const SizedBox(height: 10),
               Text(
-                'Last problem: ${health.lastFailureNote}',
+                '${l10n.diagnosticsLastProblem}: ${health.lastFailureNote}',
                 style: TextStyle(
                   fontSize: 11,
                   color: colorScheme.onSurfaceVariant,
@@ -225,7 +248,7 @@ class _Stat extends StatelessWidget {
         ),
         Text(
           label,
-          style: TextStyle(fontSize: 10, color: colorScheme.onSurfaceVariant),
+          style: TextStyle(fontSize: 12, color: colorScheme.onSurfaceVariant),
         ),
       ],
     );

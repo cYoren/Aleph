@@ -602,7 +602,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get recitationVoiceDesc =>
-      '기기의 음성으로 읽어 줍니다. 히브리어는 현대 이스라엘 발음, 그리스어는 현대 그리스 발음입니다. 재구성한 고대 발음이 아니라 지금도 사용되는 낭독 전통입니다.';
+      '각 장은 앱에 내장된 음성으로 낭독됩니다. 다운로드도 인터넷도 필요하지 않습니다. 신약은 현대 그리스어 음성입니다. 히브리어는 기기 자체의 음성으로 낭독됩니다. 저희가 포함할 수 있는 히브리어 음성이 아직 없기 때문입니다. 이는 재구성된 고대 발음이 아니라 살아 있는 낭독 전통입니다.';
 
   @override
   String get voiceMissing =>
@@ -650,7 +650,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get onboardingRecitationDesc =>
-      '재생 버튼을 누르면 어느 장이든 히브리어나 그리스어로 낭독되는 것을 들을 수 있습니다. 복원된 고대 발음이 아니라 지금도 쓰이는 살아 있는 발음입니다. 속도 조절로 천천히 낮춰 귀에 익을 때까지 들어 보세요.';
+      '재생을 누르면 어떤 장이든 소리 내어 들을 수 있습니다. 신약은 앱에 내장된 현대 그리스어 음성으로 낭독되므로 새로 설치해도 오프라인에서 작동합니다. 히브리어는 기기의 음성을 사용합니다. 속도 조절로 아주 느리게 낮춰 귀가 따라올 때까지 들어 보세요.';
 
   @override
   String get readingHintTitle => '시작하는 세 가지 방법';
@@ -981,4 +981,290 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get supportPrivacy => '개인정보';
+
+  @override
+  String get morphHebrew => '히브리어';
+
+  @override
+  String get morphAramaic => '아람어';
+
+  @override
+  String get morphAdjective => '형용사';
+
+  @override
+  String get morphConjunction => '접속사';
+
+  @override
+  String get morphAdverb => '부사';
+
+  @override
+  String get morphNoun => '명사';
+
+  @override
+  String get morphPronoun => '대명사';
+
+  @override
+  String get morphPreposition => '전치사';
+
+  @override
+  String get morphSuffix => '접미사';
+
+  @override
+  String get morphParticle => '소사';
+
+  @override
+  String get morphVerb => '동사';
+
+  @override
+  String get morphArticle => '관사';
+
+  @override
+  String get morphInterjection => '감탄사';
+
+  @override
+  String get morphCommon => '보통';
+
+  @override
+  String get morphProper => '고유';
+
+  @override
+  String get morphGentilic => '민족 형용사';
+
+  @override
+  String get morphMasculine => '남성';
+
+  @override
+  String get morphFeminine => '여성';
+
+  @override
+  String get morphBothGenders => '양성';
+
+  @override
+  String get morphNeuter => '중성';
+
+  @override
+  String get morphSingular => '단수';
+
+  @override
+  String get morphPlural => '복수';
+
+  @override
+  String get morphDual => '쌍수';
+
+  @override
+  String get morphAbsolute => '절대';
+
+  @override
+  String get morphConstruct => '구성';
+
+  @override
+  String get morphDetermined => '한정';
+
+  @override
+  String get morphFirstPerson => '1인칭';
+
+  @override
+  String get morphSecondPerson => '2인칭';
+
+  @override
+  String get morphThirdPerson => '3인칭';
+
+  @override
+  String get morphPerfect => '완료';
+
+  @override
+  String get morphSequentialPerfect => '연속 완료';
+
+  @override
+  String get morphImperfect => '미완료';
+
+  @override
+  String get morphSequentialImperfect => '연속 미완료';
+
+  @override
+  String get morphCohortative => '권유형';
+
+  @override
+  String get morphJussive => '의지형';
+
+  @override
+  String get morphImperative => '명령형';
+
+  @override
+  String get morphParticipleActive => '능동 분사';
+
+  @override
+  String get morphParticiplePassive => '수동 분사';
+
+  @override
+  String get morphInfinitiveAbsolute => '절대 부정사';
+
+  @override
+  String get morphInfinitiveConstruct => '구성 부정사';
+
+  @override
+  String get morphCardinalNumber => '기수';
+
+  @override
+  String get morphOrdinalNumber => '서수';
+
+  @override
+  String get morphDemonstrative => '지시';
+
+  @override
+  String get morphIndefinite => '부정';
+
+  @override
+  String get morphInterrogative => '의문';
+
+  @override
+  String get morphPersonal => '인칭';
+
+  @override
+  String get morphRelative => '관계';
+
+  @override
+  String get morphReciprocal => '상호';
+
+  @override
+  String get morphReflexive => '재귀';
+
+  @override
+  String get morphPossessive => '소유';
+
+  @override
+  String get morphCorrelative => '상관';
+
+  @override
+  String get morphDirectional => '방향';
+
+  @override
+  String get morphParagogicHe => '첨가 헤';
+
+  @override
+  String get morphParagogicNun => '첨가 눈';
+
+  @override
+  String get morphPronominal => '대명사적';
+
+  @override
+  String get morphPresent => '현재';
+
+  @override
+  String get morphFuture => '미래';
+
+  @override
+  String get morphAorist => '부정과거';
+
+  @override
+  String get morphPluperfect => '과거완료';
+
+  @override
+  String get morphNoTense => '시제 없음';
+
+  @override
+  String get morphActive => '능동';
+
+  @override
+  String get morphMiddle => '중동';
+
+  @override
+  String get morphPassive => '수동';
+
+  @override
+  String get morphMiddlePassive => '중동/수동';
+
+  @override
+  String get morphMiddleDeponent => '중동 이태동사';
+
+  @override
+  String get morphPassiveDeponent => '수동 이태동사';
+
+  @override
+  String get morphMiddlePassiveDeponent => '중동/수동 이태동사';
+
+  @override
+  String get morphIndicative => '직설법';
+
+  @override
+  String get morphSubjunctive => '가정법';
+
+  @override
+  String get morphOptative => '기원법';
+
+  @override
+  String get morphInfinitive => '부정사';
+
+  @override
+  String get morphParticiple => '분사';
+
+  @override
+  String get morphNominative => '주격';
+
+  @override
+  String get morphGenitive => '속격';
+
+  @override
+  String get morphDative => '여격';
+
+  @override
+  String get morphAccusative => '대격';
+
+  @override
+  String get morphVocative => '호격';
+
+  @override
+  String get contentSourceNote => '영어로 표시됨; 아직 번역이 없습니다.';
+
+  @override
+  String get recitationVoiceHebrewGap =>
+      '히브리어는 기기의 음성 낭독 기능을 사용합니다. Aleph에 내장할 히브리어 음성은 아직 검증되지 않았습니다.';
+
+  @override
+  String get contentLoadError => '이 콘텐츠를 불러오지 못했습니다. 다시 시도해 주세요.';
+
+  @override
+  String get diagnosticsSuccess => '성공률';
+
+  @override
+  String get diagnosticsMedian => '응답 시간 중앙값';
+
+  @override
+  String get diagnosticsCalls => '요청 수';
+
+  @override
+  String get diagnosticsPoorAnswers => '품질이 낮은 답변';
+
+  @override
+  String get diagnosticsErrors => '오류';
+
+  @override
+  String get diagnosticsLastProblem => '최근 문제';
+
+  @override
+  String get diagnosticsInUse => '사용 중';
+
+  @override
+  String get diagnosticsNotUsed => '아직 사용하지 않음';
+
+  @override
+  String get diagnosticsTooEarly => '아직 판단하기 이릅니다';
+
+  @override
+  String get diagnosticsEarlyProblems => '아직 판단하기 이릅니다. 일부 문제가 있었습니다.';
+
+  @override
+  String get diagnosticsFailing => '오류가 잦습니다. 모델을 변경하세요.';
+
+  @override
+  String get diagnosticsUnreliable => '신뢰도가 낮습니다. 모델 변경을 고려하세요.';
+
+  @override
+  String get diagnosticsSlow => '매우 느립니다. 모델 변경을 고려하세요.';
+
+  @override
+  String get diagnosticsMostlyGood => '대체로 정상입니다. 일부 답변의 품질이 낮습니다.';
+
+  @override
+  String get diagnosticsHealthy => '정상 작동 중';
 }

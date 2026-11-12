@@ -32,10 +32,12 @@ from __future__ import annotations
 import argparse
 import gzip
 import hashlib
+import json
 import pathlib
 import shutil
 import sqlite3
 import sys
+import zlib
 
 REPO = pathlib.Path(__file__).resolve().parent.parent
 DEFAULT_DB = REPO / "assets" / "bible.db"
@@ -157,6 +159,7 @@ def check(db_path: pathlib.Path, gz_path: pathlib.Path) -> list[str]:
             verses = db.execute("SELECT COALESCE(SUM(verses), 0) FROM syntax_trees;").fetchone()[0]
             if verses <= 0:
                 problems.append("syntax_trees holds no verses")
+            problems.extend(check_syntax_blocks(db))
         if db.execute(
             "SELECT COUNT(*) FROM sqlite_master "
             "WHERE type = 'index' AND name = 'idx_translation_ref_map_target';"
@@ -174,6 +177,37 @@ def check(db_path: pathlib.Path, gz_path: pathlib.Path) -> list[str]:
         problems.append(
             f"{gz_path.name} does not decode to {db_path.name}; re-run the pack step"
         )
+    return problems
+
+
+def check_syntax_blocks(db: sqlite3.Connection) -> list[str]:
+    """Validate the actual records, rather than trusting stored verse counts."""
+    problems = []
+    actual = set()
+    for book, declared, blob in db.execute("SELECT book_id, verses, blob FROM syntax_trees"):
+        try:
+            records = gzip.decompress(blob).decode("utf-8").split("\x00")
+            if len(records) != declared:
+                problems.append(f"{book}: declared {declared} trees, decoded {len(records)}")
+            for record in records:
+                key, document = record.split("\t", 1)
+                chapter, verse = map(int, key.split(":"))
+                reference = (book, chapter, verse)
+                if chapter < 1 or verse < 1 or reference in actual:
+                    raise ValueError(f"invalid or duplicate reference {key}")
+                trees = json.loads(document)
+                if not isinstance(trees, list) or not trees or not all(isinstance(t, dict) for t in trees):
+                    raise ValueError(f"invalid tree document at {key}")
+                actual.add(reference)
+        except (OSError, EOFError, UnicodeError, ValueError, TypeError, zlib.error) as error:
+            problems.append(f"{book}: unreadable syntax block: {error}")
+    # Small compaction fixtures can omit the corpus; release validation requires
+    # this table before invoking us, so the production check is always exact.
+    if db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='verses'").fetchone():
+        expected = set(db.execute("SELECT book_id, chapter, verse_number FROM verses"))
+        missing, extra = expected - actual, actual - expected
+        if missing or extra:
+            problems.append(f"syntax coverage: {len(missing)} missing and {len(extra)} noncanonical verses")
     return problems
 
 
