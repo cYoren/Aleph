@@ -82,6 +82,9 @@ accents. Do not transliterate them and do not translate them.
 - Keep every biblical reference exactly as written (e.g. "Gen 1:1", "Matt 5:3", \
 "Ps 23").
 - Keep every Strong's number exactly as written (e.g. H0430, G26, H0871A).
+- Keep the edition and work labels verbatim: KJV, BDB, LXX, MT, Targ, q.v., cf.
+  Never replace KJV with a translation of the target language (not RVR, not
+  LUT, not ARC, not 和合本): it names the source the renderings come from.
 - Keep scholarly abbreviations that a reader would look up (e.g. BDB, LXX, MT, \
 Targ, cf., q.v., Aram, cf. Syr) recognisable; translate only ordinary prose.
 - Keep all numbered or lettered senses in the same order and keep the \
