@@ -1717,6 +1717,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Which features get used. Never what you read, and nothing that identifies you.'**
   String get usageSharingSubtitle;
+
+  /// Aleph support (donation) sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Support Aleph'**
+  String get supportTitle;
+
+  /// Aleph support (donation) sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Aleph is one person\'s work: no ads, no subscription, no tracking. A one-time tip keeps the text, the voices and the updates coming.'**
+  String get supportBody;
+
+  /// Aleph support (donation) sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Tips unlock nothing. Every word of Aleph is already yours.'**
+  String get supportNote;
+
+  /// Aleph support (donation) sheet
+  ///
+  /// In en, this message translates to:
+  /// **'A small tip'**
+  String get supportTierSmall;
+
+  /// Aleph support (donation) sheet
+  ///
+  /// In en, this message translates to:
+  /// **'A generous tip'**
+  String get supportTierMedium;
+
+  /// Aleph support (donation) sheet
+  ///
+  /// In en, this message translates to:
+  /// **'A big tip'**
+  String get supportTierLarge;
+
+  /// Aleph support (donation) sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you. That genuinely helps.'**
+  String get supportThanks;
+
+  /// Aleph support (donation) sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Tips are not available right now.'**
+  String get supportUnavailable;
+
+  /// Aleph support (donation) sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get supportClose;
+
+  /// Aleph support (donation) sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Terms'**
+  String get supportTerms;
+
+  /// Aleph support (donation) sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy'**
+  String get supportPrivacy;
 }
 
 class _AppLocalizationsDelegate

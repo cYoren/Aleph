@@ -947,4 +947,38 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String get usageSharingSubtitle =>
       '어떤 기능이 쓰이는지만 보냅니다. 읽는 내용이나 신원을 알 수 있는 정보는 절대 보내지 않아요.';
+
+  @override
+  String get supportTitle => 'Aleph 후원하기';
+
+  @override
+  String get supportBody =>
+      'Aleph은 한 사람이 만듭니다. 광고도, 구독도, 추적도 없습니다. 한 번의 후원이 본문과 음성, 업데이트를 이어 갑니다.';
+
+  @override
+  String get supportNote => '후원은 아무것도 잠금 해제하지 않습니다. Aleph의 모든 문장은 이미 당신의 것입니다.';
+
+  @override
+  String get supportTierSmall => '작은 후원';
+
+  @override
+  String get supportTierMedium => '든든한 후원';
+
+  @override
+  String get supportTierLarge => '큰 후원';
+
+  @override
+  String get supportThanks => '감사합니다. 정말 큰 힘이 됩니다.';
+
+  @override
+  String get supportUnavailable => '지금은 후원할 수 없습니다.';
+
+  @override
+  String get supportClose => '나중에';
+
+  @override
+  String get supportTerms => '약관';
+
+  @override
+  String get supportPrivacy => '개인정보';
 }

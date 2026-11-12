@@ -1,1 +1,2 @@
-New: book paths. Pick Ruth, Jonah or John and learn exactly the words that book needs. New: see what your name means in Hebrew or Greek and share it. New: Today's 5 minutes, a streak, and an optional evening reminder. Search works again, chapters open faster, word meanings now appear in your language, and the English text is correctly labelled as the Berean Standard Bible.
+New: a tip jar in Settings, for anyone who wants to give something back. It unlocks nothing: Aleph stays free, offline and unsubscribed.
+Also in this release: book paths for Ruth, Jonah and John, name meanings in Hebrew and Greek, and Today's 5 minutes with a streak and an optional evening reminder.
