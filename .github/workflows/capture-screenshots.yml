@@ -16,8 +16,8 @@ jobs:
     env:
       BUNDLE_ID: com.originalbible.originalBible
     steps:
-      - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2
+      - uses: actions/checkout@v4.4.0
+      - uses: subosito/flutter-action@v2.23.0
         with:
           channel: stable
           cache: true
@@ -73,7 +73,7 @@ jobs:
           file "$GITHUB_WORKSPACE/store-screenshots"/*.png
       - name: Upload native screenshots
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4.6.2
         with:
           name: original-bible-native-screenshots
           path: store-screenshots/*.png
