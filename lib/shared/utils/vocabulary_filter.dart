@@ -69,7 +69,7 @@ bool isDeckWorthy({
   if (trimmedLemma.isEmpty || trimmedGloss.isEmpty) return false;
 
   // A gloss that is only punctuation or a bare Strong's marker, e.g. "(et)".
-  if (!_hasLetter(trimmedGloss)) return false;
+  if (_isBareMarker(trimmedGloss)) return false;
 
   // Grammar, not vocabulary.
   if (isProcliticPrefix(trimmedLemma, isHebrew: isHebrew)) return false;
@@ -84,5 +84,21 @@ bool isDeckWorthy({
 }
 
 /// True when [text] contains at least one letter in any script.
-bool _hasLetter(String text) =>
-    RegExp(r'[A-Za-zͰ-Ͽ֐-׿ἀ-῿]').hasMatch(text);
+///
+/// Unicode-aware on purpose. The gloss may be Hangul (Korean), Cyrillic
+/// (Russian), Han (Chinese) or any other script the app ships a translation
+/// for; a Latin/Greek/Hebrew-only test silently emptied every deck in those
+/// languages and left only the one card whose gloss happened to be Latin.
+bool _hasLetter(String text) => RegExp(r'\p{L}', unicode: true).hasMatch(text);
+
+/// Whether a gloss is only a grammatical marker rather than a meaning.
+///
+/// The Hebrew direct-object particle carries the gloss "(et)" — a
+/// transliteration in parentheses, not a translation. The letters inside the
+/// parentheses must not count as a meaning, or the card survives the filter
+/// and, being the most frequent Hebrew word after the prefixes, heads the
+/// deck with nothing to learn.
+bool _isBareMarker(String gloss) {
+  final withoutParentheticals = gloss.replaceAll(RegExp(r'\([^)]*\)'), '');
+  return !_hasLetter(withoutParentheticals);
+}

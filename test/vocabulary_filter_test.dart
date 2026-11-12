@@ -99,5 +99,48 @@ void main() {
         isFalse,
       );
     });
+
+    test('rejects the bare object-marker gloss "(et)"', () {
+      // The letters inside the parentheses are a transliteration, not a
+      // meaning. This card used to head the Hebrew deck and then leak its
+      // gloss into every later review.
+      expect(
+        isDeckWorthy(lemma: 'אֵת', gloss: '(et)', isHebrew: true),
+        isFalse,
+      );
+    });
+
+    test('keeps a gloss that only adds a parenthetical transliteration', () {
+      expect(
+        isDeckWorthy(lemma: 'אֱלֹהִים', gloss: 'God (Elohim)', isHebrew: true),
+        isTrue,
+      );
+    });
+
+    test('accepts translated glosses in every shipped script', () {
+      // The deck is built from the localized gloss once the reader picks a
+      // language. A Latin/Greek/Hebrew-only letter test emptied the Korean,
+      // Russian and Chinese decks, leaving a single card.
+      expect(
+        isDeckWorthy(lemma: 'מִן', gloss: '~로부터', isHebrew: true),
+        isTrue,
+        reason: 'Korean',
+      );
+      expect(
+        isDeckWorthy(lemma: 'מִן', gloss: 'из', isHebrew: true),
+        isTrue,
+        reason: 'Russian',
+      );
+      expect(
+        isDeckWorthy(lemma: 'מִן', gloss: '从', isHebrew: true),
+        isTrue,
+        reason: 'Chinese',
+      );
+      expect(
+        isDeckWorthy(lemma: 'מִן', gloss: 'von', isHebrew: true),
+        isTrue,
+        reason: 'German',
+      );
+    });
   });
 }
