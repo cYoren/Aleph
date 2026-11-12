@@ -227,7 +227,12 @@ def translate_language(
                         f"(+{len(result)})"
                     )
                     break
-                except (urllib.error.HTTPError, urllib.error.URLError) as exc:
+                except (
+                    urllib.error.HTTPError,
+                    urllib.error.URLError,
+                    TimeoutError,
+                    ConnectionError,
+                ) as exc:
                     status = getattr(exc, "code", None)
                     if status in (401, 403):
                         print(
