@@ -1,0 +1,25 @@
+{
+  "generated_by": "scripts/fetch_embedded_voices.py",
+  "engine": {
+    "name": "sherpa-onnx",
+    "version": "2.0.1",
+    "license": "Apache-2.0"
+  },
+  "voices": {
+    "el_GR-rapunzelina-low": {
+      "url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/vits-piper-el_GR-rapunzelina-low.tar.bz2",
+      "archive_sha256": "bb868070a9ba0d7220b3d7c9291a998c2f60accdb73525bd63b8751b86dd4839",
+      "files": {
+        "el_GR-rapunzelina-low.onnx": "7824cd5c9912e8aab9fce653f7af9d609c4e2e1d6e4c81d823699afa6d1b1537",
+        "tokens.txt": "42d1a69ed2b91a51928a711aa228ed9f3dc021c6d359a3e9c4f37eb1d20f80bd",
+        "lexicon.txt": "b8fe372eaf2e56bf080075f751c3b1ce723c8faf0aef5fca3a255592ab299f4c"
+      },
+      "license": "MIT weights / CC0 training data / generated IPA output",
+      "pronunciation_entries": 28475
+    }
+  },
+  "not_shipped": {
+    "he_IL": "Hebrew uses the device voice; no bundled candidate has been validated."
+  },
+  "notes": "eSpeak code and dictionary data are build tools only and are not bundled."
+}

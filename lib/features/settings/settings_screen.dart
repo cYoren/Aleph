@@ -12,6 +12,7 @@ import '../explain/explain_provider.dart';
 import '../../core/review_reminder.dart';
 import '../../core/usage_events.dart';
 import '../explain/explain_service.dart';
+import 'support_sheet.dart';
 
 const _interfaceLanguages = <String, String>{
   'en': 'English',
@@ -335,6 +336,18 @@ class SettingsScreen extends ConsumerWidget {
                 ),
               );
             },
+          ),
+          const Divider(),
+
+          // Support Section. The one place money can be given, and it
+          // unlocks nothing: it is a tip jar, not a paywall.
+          _buildSectionHeader(l10n.supportTitle, colorScheme),
+          ListTile(
+            leading: const Icon(Icons.favorite_outline),
+            title: Text(l10n.supportTitle),
+            subtitle: Text(l10n.supportNote),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => showSupportSheet(context),
           ),
           const Divider(),
 

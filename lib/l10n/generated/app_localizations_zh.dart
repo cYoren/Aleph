@@ -933,4 +933,37 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get usageSharingSubtitle => '只统计哪些功能被使用。绝不包括你读的内容，也没有任何能识别你的信息。';
+
+  @override
+  String get supportTitle => '支持 Aleph';
+
+  @override
+  String get supportBody => 'Aleph 由一个人完成：没有广告，没有订阅，没有追踪。一次性的捐赠让经文、语音和更新得以继续。';
+
+  @override
+  String get supportNote => '捐赠不解锁任何内容。Aleph 的每一句话本来就属于你。';
+
+  @override
+  String get supportTierSmall => '小额捐赠';
+
+  @override
+  String get supportTierMedium => '慷慨捐赠';
+
+  @override
+  String get supportTierLarge => '大额捐赠';
+
+  @override
+  String get supportThanks => '谢谢。这真的很有帮助。';
+
+  @override
+  String get supportUnavailable => '目前无法捐赠。';
+
+  @override
+  String get supportClose => '以后再说';
+
+  @override
+  String get supportTerms => '条款';
+
+  @override
+  String get supportPrivacy => '隐私';
 }
