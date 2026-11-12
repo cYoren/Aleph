@@ -33,8 +33,12 @@ Remaining native verification, intentionally not claimed as complete:
 - Run iPhone/iPad and macOS native builds/checks. An iPhone simulator was created
   but no Apple build or interaction pass was completed.
 
-The user requested wrap-up before these remaining native checks. No store
-release or merge was performed. PR #8 remains draft until those checks finish.
+The user requested wrap-up before these remaining native checks. PR #8 was
+merged into `main` on 2026-11-12 (merge commit `3cbf1db`) after the branch was
+merged with `main` and the conflicts resolved; the gate on the merged tree is
+`flutter analyze` clean, 345 tests passing (2 skipped) and
+`scripts/validate_release.sh` passing. No store release was performed. The two
+native checks above are still owner-gated on the Mac.
 Automated review exhausted its quota and produced no code review; changes were
 self-reviewed and all paginated review sources were checked.
 
