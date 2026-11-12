@@ -6,7 +6,7 @@ Read this before any file in `docs/`. It says what is current and what is histor
 
 ## Current
 
-Root docs: `../MARKETING.md`, `../RELEASE_SUMMARY.md`, `../WORKER.md`, `../ROADMAP.md`, `../DEPLOYMENT.md`, `../PUBLISHING.md`, `../PAPERCUTS.md`, `../queue.md`.
+Root docs: `../AGENT_TODO.md`, `../MARKETING.md`, `../RELEASE_SUMMARY.md`, `../WORKER.md`, `../ROADMAP.md`, `../DEPLOYMENT.md`, `../PUBLISHING.md`, `../PAPERCUTS.md`, `../queue.md`.
 
 | Doc | What it is |
 | --- | --- |
