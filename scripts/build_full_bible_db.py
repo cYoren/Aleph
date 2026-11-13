@@ -22,6 +22,7 @@ import json
 import re
 import shutil
 import sqlite3
+import string
 import tempfile
 import unicodedata
 import urllib.request
@@ -104,7 +105,8 @@ CNTR_RAW = "https://raw.githubusercontent.com/Center-for-New-Testament-Restorati
 DEFAULT_CNTR_COMMIT = "4be18e67c6870388d317d38d2b10a70e8b5e8775"
 CNTR_EDITION = "SR"
 # The Statistical Restoration numbers its verses 40 (Matthew) through 66
-# (Revelation) in an eight-digit id: bbccvvvv.
+# (Revelation) in an eight-digit id: two digits of book, three of chapter, three
+# of verse (40001001 is Matthew 1:1).
 CNTR_BOOKS = {
     40: "MAT", 41: "MRK", 42: "LUK", 43: "JHN", 44: "ACT", 45: "ROM",
     46: "1CO", 47: "2CO", 48: "GAL", 49: "EPH", 50: "PHP", 51: "COL",
@@ -1520,8 +1522,12 @@ _HEBREW_CONSONANT_RE = re.compile(r"[\u0591-\u05C7\u05BE\u05C0/]")
 
 
 def hebrew_consonants(text: str) -> str:
-    """Hebrew letters only, for aligning two traditions' spellings."""
-    return _HEBREW_CONSONANT_RE.sub("", text or "").strip()
+    """Hebrew letters only, for aligning two traditions' spellings.
+
+    Whitespace goes too: a reading can be two words, and the verse's tokens are
+    concatenated before the search.
+    """
+    return "".join(_HEBREW_CONSONANT_RE.sub("", text or "").split())
 
 
 def find_token_span(
@@ -1788,8 +1794,28 @@ def diff_verse_words(
             continue
         if i1 == i2 and j1 == j2:
             continue
-        differences.append((" ".join(base[i1:i2]), " ".join(other[j1:j2])))
+        differences.append(
+            (
+                _reading_text(base[i1:i2]),
+                _reading_text(other[j1:j2]),
+            )
+        )
     return differences
+
+
+def _reading_text(words: List[str]) -> str:
+    """A reading as it is stored: the words, without the editions' punctuation.
+
+    The comparison already ignores punctuation; storing it would put a trailing
+    full stop on one side of the pane and nothing on the other, for no gain.
+    Accents and breathings stay: they are how the edition prints the word.
+    """
+    cleaned = []
+    for word in words:
+        stripped = word.strip(string.punctuation + "\u2018\u2019\u201c\u201d\u00b6\u00b7")
+        if stripped:
+            cleaned.append(stripped)
+    return " ".join(cleaned)
 
 
 def build_textual_variants(
@@ -3621,6 +3647,24 @@ def validate_database(conn: sqlite3.Connection) -> None:
             "Expected readings from other editions in all "
             f"{EXPECTED_COUNTS['textual_variant_books_min']} New Testament books, "
             f"found {counts['textual_variant_books']}"
+        )
+
+    # Each edition on its own: a total of 27 books passes even if one edition
+    # covers Matthew and the other covers the rest.
+    thin_editions = [
+        (edition, books)
+        for edition, books in conn.execute(
+            "SELECT edition, COUNT(DISTINCT book_id) FROM textual_variants "
+            "GROUP BY edition"
+        )
+        if books < EXPECTED_COUNTS["textual_variant_books_min"]
+    ]
+    if thin_editions:
+        detail = ", ".join(f"{edition}: {books}" for edition, books in thin_editions)
+        raise RuntimeError(
+            "Expected every other edition to cover all "
+            f"{EXPECTED_COUNTS['textual_variant_books_min']} New Testament books; "
+            f"found {detail}"
         )
 
 

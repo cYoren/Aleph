@@ -276,6 +276,17 @@ class CoverageGateTest(unittest.TestCase):
             build_db.validate_database(self.conn)
         self.assertIn("New Testament books", str(ctx.exception))
 
+    def test_each_edition_must_cover_every_book(self):
+        # 27 books in total is not 27 books per edition: a collation that
+        # stopped matching in one edition would still pass the total.
+        self.conn.execute(
+            "DELETE FROM textual_variants WHERE edition = 'SR' AND book_id != 'MAT'"
+        )
+        self.conn.commit()
+        with self.assertRaises(RuntimeError) as ctx:
+            build_db.validate_database(self.conn)
+        self.assertIn("every other edition", str(ctx.exception))
+
     def test_missing_qere_ketiv_aborts_the_build(self):
         self.conn.execute("UPDATE words SET qere_text = NULL")
         self.conn.commit()

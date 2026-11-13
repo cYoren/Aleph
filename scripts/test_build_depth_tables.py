@@ -317,9 +317,7 @@ class QereKetivParseTest(unittest.TestCase):
         # Two words, and the same consonants as the source: comparing pointing
         # codepoint by codepoint would be testing the fixture, not the parser.
         self.assertEqual(len(job.qere.split()), 2)
-        self.assertEqual(
-            build_db.hebrew_consonants(job.qere).replace(" ", ""), "מןהסערה"
-        )
+        self.assertEqual(build_db.hebrew_consonants(job.qere), "מןהסערה")
         # The id that identifies a two-word reading is the longer word's.
         self.assertEqual(job.qere_strongs, "H5591")
 
@@ -588,6 +586,25 @@ class DiffVerseWordsTest(unittest.TestCase):
                 ["\u03c0\u03bf\u03bd\u03b7\u03c1\u03bf\u03c5", "\u03b1\u03bc\u03b7\u03bd"],
             ),
             [("", "\u03b1\u03bc\u03b7\u03bd")],
+        )
+
+    def test_stored_readings_drop_the_editions_punctuation(self):
+        # The comparison ignores punctuation, so the stored reading must too:
+        # one side with a trailing full stop and the other without reads as a
+        # difference that is not there.
+        self.assertEqual(
+            build_db.diff_verse_words(
+                ["\u03c4\u03b7\u03c1\u03ae\u03c3\u03b1\u03c4\u03b5"],
+                ["\u03c4\u03b7\u03c1\u03ae\u03c3\u03b1\u03c4\u03b5."],
+            ),
+            [],
+        )
+        self.assertEqual(
+            build_db.diff_verse_words(
+                ["\u03c0\u03bf\u03bd\u03b7\u03c1\u03bf\u1fe6"],
+                ["\u03c0\u03bf\u03bd\u03b7\u03c1\u03bf\u03c5.", "\u1f00\u03bc\u03ae\u03bd."],
+            ),
+            [("", "\u1f00\u03bc\u03ae\u03bd")],
         )
 
     def test_an_omission_has_an_empty_other_side(self):
