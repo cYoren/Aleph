@@ -248,23 +248,32 @@ our data provides. Implemented in `lib/shared/utils/cantillation.dart`
       reading unpointed text is itself a learning progression.
 - [x] **Qere/Ketiv (2026-11-13).** The Open Scriptures Hebrew Bible (CC BY 4.0)
       marks a written word `<w type="x-ketiv">` and carries the reading in the
-      variant note beside it. `build_qere_ketiv` parses all 1,244 pairs and
-      marks **1,190 tokens** with the reading (`qere_text`), the written form
-      (`ketiv_text`) and the reading's own dictionary form where it is a
-      different word (`qere_lemma`, 33 tokens). Alignment is by the
-      concatenated consonants of the verse, never by token index, because MACULA
-      and OSHB split proclitics differently; a tie is broken by the reading's
-      Strong's id, and an ambiguity that survives that is left unmarked rather
-      than guessed (53 pairs). The flowing text carries the *reading* in 1,075
-      of the pairs, so the display mode shows the **written** form beside the
-      word with the printed editions' siglum (כ), and shows the reading (ק) for
-      the handful where the text carries what is written. The definition sheet
-      labels both. Gates: `build_qere_ketiv` + `validate_database`,
-      `validate_release.sh` (1,100 tokens, and every marked token must carry
-      both forms). Tests: `scripts/test_build_depth_tables.py`
-      (`QereKetivParseTest`, `QereKetivAlignTest`, `WriteQereKetivTest`),
-      `test/qere_ketiv_reader_test.dart`, `test/definition_depth_sheet_test.dart`,
-      `test/hebrew_display_test.dart`.
+      variant note beside it. A ketiv is a *run* of words and the reading can be
+      several words too (`מִן ׀ הַסְּעָרָה`), with editorial `<note n="M">`
+      elements inside the run; `parse_oshb_qere_ketiv` walks the verse in
+      document order so neither the run nor the reading is truncated and no
+      commentary reaches the text. 1,245 pairs; **1,192 tokens** marked with the
+      reading (`qere_text`), the written form (`ketiv_text`), the reading's own
+      dictionary form where it differs (`qere_lemma`, 33 tokens), and two facts
+      the reader must not guess: `qere_anchor` (which form the flowing text
+      carries: 1,182 reading, 10 written) and `qere_span` (how many tokens the
+      word occupies: 424 one, 768 more; a token carries one pair, so a second
+      pair landing on the same token is left unmarked rather than overwriting). Alignment is by the concatenated
+      consonants of the verse, never by token index, because MACULA and OSHB
+      split proclitics differently; a tie is broken by the reading's Strong's
+      id, and an ambiguity that survives that is left unmarked rather than
+      guessed (53 pairs). The display mode shows the **other** form beside a
+      word, with the printed editions' siglum (כ written, ק read) — but only for
+      the 424 words that are a single token, because for the other 768 the
+      proclitic and suffix are already rendered as their own tokens and the
+      whole form would repeat them. The definition sheet shows the pair for all
+      1,192. Gates: `build_qere_ketiv` + `validate_database` (≥1,180 tokens, and
+      no marked row may carry ASCII or a newline), `validate_release.sh` (the
+      same two). Tests: `scripts/test_build_depth_tables.py`
+      (`QereKetivParseTest` including the multi-word run and the editorial note,
+      `QereKetivAlignTest`, `WriteQereKetivTest` including the anchor and span),
+      `scripts/test_pipeline_gates.py`, `test/qere_ketiv_reader_test.dart`,
+      `test/definition_depth_sheet_test.dart`, `test/hebrew_display_test.dart`.
 - [x] Cross-references: OpenBible.info dataset (CC-BY, ~340k pairs), per-verse
       sheet in the reader with previews, best-voted first.
 - [x] **Participant/referent data from MACULA.** Hebrew verbs carry their subject
@@ -367,7 +376,7 @@ features. YouVersion wins that game; our niche is *actually engaging the origina
   more than once in the verse and the reading's Strong's id does not separate
   them (1SA 22:18 has דואג twice, both times the same word). Resolving them
   needs a positional heuristic against OSHB's own word order, which is the
-  "index alone" guess the alignment avoids on purpose. 1,190 of 1,244 is the
+  "index alone" guess the alignment avoids on purpose. 1,192 of 1,245 is the
   honest number until then.
 - **Textual variants (NA/Byz).** The Byzantine text is free; the *collation* is
   the copyrighted work (NA28 apparatus). Deferred until a licence-clean collation

@@ -205,8 +205,10 @@ class CoverageGateTest(unittest.TestCase):
             "WHERE id % 10 = 0"
         )
         # Every five-hundredth token is one of the ~1.2k qere/ketiv places.
+        # Hebrew letters, not placeholders: the gate rejects any marked text
+        # that is not Hebrew, which is what catches editorial prose.
         self.conn.execute(
-            "UPDATE words SET qere_text = 'q', ketiv_text = 'k' "
+            "UPDATE words SET qere_text = 'ק', ketiv_text = 'כ' "
             "WHERE id % 500 = 0"
         )
         self.conn.executemany(
@@ -247,6 +249,18 @@ class CoverageGateTest(unittest.TestCase):
         with self.assertRaises(RuntimeError) as ctx:
             build_db.validate_database(self.conn)
         self.assertIn("qere/ketiv", str(ctx.exception))
+
+    def test_english_prose_in_a_qere_row_aborts_the_build(self):
+        # The defect this catches: a backtracking match swallowed an OSHB
+        # editorial note into ketiv_text, and it rendered in the reader.
+        self.conn.execute(
+            "UPDATE words SET ketiv_text = 'Marks a word with a final consonant' "
+            "WHERE qere_text IS NOT NULL"
+        )
+        self.conn.commit()
+        with self.assertRaises(RuntimeError) as ctx:
+            build_db.validate_database(self.conn)
+        self.assertIn("editorial prose", str(ctx.exception))
 
     def test_a_thin_lexicon_aborts_the_build(self):
         self.conn.execute("DELETE FROM lexicon WHERE rowid > 100")

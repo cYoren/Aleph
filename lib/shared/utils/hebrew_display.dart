@@ -25,9 +25,18 @@ enum HebrewTextDisplay {
   }
 }
 
+/// Marks that separate or punctuate rather than spell: maqaf, paseq, sof pasuq
+/// and nun hafukha. The consonantal *display* mode keeps them on purpose, but
+/// they never distinguish one spelling of a word from another, so a comparison
+/// has to drop them — the build drops the same set.
+final RegExp _hebrewSeparators = RegExp('[\u05BE\u05C0\u05C3\u05C6]');
+
 /// The consonants of [text], for comparing two spellings of the same word.
 String hebrewConsonants(String text) {
-  return applyHebrewDisplay(text, HebrewTextDisplay.consonantal);
+  return applyHebrewDisplay(
+    text,
+    HebrewTextDisplay.consonantal,
+  ).replaceAll(_hebrewSeparators, '');
 }
 
 bool _isCantillation(int codeUnit) {
