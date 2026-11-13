@@ -130,6 +130,20 @@ EXPECTED_COUNTS = {
     "kjv_translation_verses_min": 31100,
     "words_min": 600000,
     "lexicon_min": 13000,
+    # Structured senses: BDB marks up ~1.8k Hebrew entries (a large share of the
+    # tokens a reader actually looks up) and Abbott-Smith ~5.2k Greek entries.
+    # Measured 2026-11-13: 17,030 rows over 1,807 Hebrew + 5,249 Greek entries,
+    # which is 42.6% of Hebrew and 86.8% of Greek tokens. The gates sit just
+    # under that so a parser regression fails loudly while a new lexicon
+    # revision does not.
+    "lexicon_senses_min": 16000,
+    "hebrew_sense_entries_min": 1700,
+    "greek_sense_entries_min": 5100,
+    # Hebrew roots via TWOT: measured 5,275 Strong's ids over 2,730 roots.
+    "lexicon_roots_min": 4800,
+    # MACULA participant links ("who is he"): ~59k tokens carry a subject or
+    # referent pointer; nearly all resolve to a surface form.
+    "participant_links_min": 40000,
 }
 
 _REF_WHITESPACE_RE = re.compile(r"\s+")
@@ -511,14 +525,32 @@ def build_open_bible_url(source_file: str, open_bibles_commit: str) -> str:
     return f"{OPEN_BIBLES_REPO_RAW}/{open_bibles_commit}/{source_file}"
 
 
-def download_file(url: str, dst: Path) -> None:
+def download_file(url: str, dst: Path, *, expect_xml: bool = False) -> None:
+    """Fetch [url] to [dst], reusing a cached copy when it is intact.
+
+    `expect_xml` makes a cached file earn its reuse: an interrupted download
+    leaves a truncated document behind, and trusting it turns a killed run into
+    a `ParseError` hundreds of files later with nothing naming the culprit. A
+    file that does not parse is dropped and fetched again.
+    """
     if dst.exists() and dst.stat().st_size > 0:
-        print(f"Using cached file: {dst.name}")
-        return
+        if not expect_xml or _xml_parses(dst):
+            print(f"Using cached file: {dst.name}")
+            return
+        print(f"Discarding unreadable cached file: {dst.name}")
+        dst.unlink()
     print(f"Downloading {dst.name} ...")
     with urllib.request.urlopen(url) as response, dst.open("wb") as out:
         shutil.copyfileobj(response, out)
     print(f"Downloaded {dst.name} ({dst.stat().st_size:,} bytes)")
+
+
+def _xml_parses(path: Path) -> bool:
+    try:
+        ET.parse(path)
+        return True
+    except ET.ParseError:
+        return False
 
 
 def init_schema(conn: sqlite3.Connection) -> None:
@@ -539,6 +571,8 @@ def init_schema(conn: sqlite3.Connection) -> None:
         DROP TABLE IF EXISTS lexicon;
         DROP TABLE IF EXISTS cross_references;
         DROP TABLE IF EXISTS syntax_trees;
+        DROP TABLE IF EXISTS lexicon_senses;
+        DROP TABLE IF EXISTS lexicon_roots;
 
         CREATE TABLE books (
             id INTEGER PRIMARY KEY,
@@ -601,7 +635,14 @@ def init_schema(conn: sqlite3.Connection) -> None:
             lemma TEXT,
             morph TEXT,
             strongs TEXT,
-            language TEXT NOT NULL DEFAULT 'heb'
+            language TEXT NOT NULL DEFAULT 'heb',
+            -- MACULA participant data: the word this token's subject (or a
+            -- pronoun's referent) is, resolved to surface text and Strong's id
+            -- at build time. Answers "who is he in this verse".
+            subject_text TEXT,
+            subject_strongs TEXT,
+            referent_text TEXT,
+            referent_strongs TEXT
         );
 
         CREATE TABLE lexicon (
@@ -637,6 +678,23 @@ def init_schema(conn: sqlite3.Connection) -> None:
             PRIMARY KEY (book_id, chapter, verse)
         );
 
+        CREATE TABLE lexicon_senses (
+            id INTEGER PRIMARY KEY,
+            strongs_id TEXT NOT NULL,
+            source TEXT NOT NULL,
+            level INTEGER NOT NULL,
+            number TEXT,
+            heading TEXT,
+            summary TEXT
+        );
+
+        CREATE TABLE lexicon_roots (
+            strongs_id TEXT PRIMARY KEY,
+            root TEXT NOT NULL,
+            root_gloss TEXT,
+            twot TEXT NOT NULL
+        );
+
         CREATE INDEX idx_books_order ON books(book_order);
         CREATE INDEX idx_cross_references_from
             ON cross_references(from_book, from_chapter, from_verse);
@@ -646,8 +704,22 @@ def init_schema(conn: sqlite3.Connection) -> None:
         CREATE INDEX idx_words_lemma ON words(lemma);
         CREATE INDEX idx_words_strongs ON words(strongs);
         CREATE INDEX idx_lexicon_strongs ON lexicon(strongs_id);
+        CREATE INDEX idx_lexicon_senses_strongs ON lexicon_senses(strongs_id);
+        CREATE INDEX idx_lexicon_roots_twot ON lexicon_roots(twot);
         """
     )
+
+
+def macula_id(raw: str) -> str:
+    """MACULA node id without its one-letter prefix ('o0100…' -> '0100…').
+
+    Hebrew ids are prefixed `o`, Greek ones `n`; only the first character is a
+    prefix, so it is dropped character by character rather than with lstrip.
+    """
+    value = (raw or "").strip()
+    if value[:1].lower() in {"o", "n"}:
+        return value[1:]
+    return value
 
 
 def parse_ref(ref: str) -> Tuple[str, int, int]:
@@ -1144,13 +1216,13 @@ def download_macula_files(
             filename = f"{book.order:02d}-{code}-{chapter:03d}-lowfat.xml"
             url = f"{MACULA_HEBREW_RAW}/{hebrew_commit}/WLC/lowfat/{filename}"
             dst = tree_dir / filename
-            download_file(url, dst)
+            download_file(url, dst, expect_xml=True)
             paths.append(dst)
 
     for filename in MACULA_GREEK_FILES:
         url = f"{MACULA_GREEK_RAW}/{greek_commit}/SBLGNT/lowfat/{filename}"
         dst = tree_dir / filename
-        download_file(url, dst)
+        download_file(url, dst, expect_xml=True)
         paths.append(dst)
 
     return paths
@@ -1239,6 +1311,375 @@ def parse_abbott_smith_lexicon(path: Path) -> Dict[str, str]:
         if key not in result or len(text) > len(result[key]):
             result[key] = text
     return result
+
+
+# --- Structured senses ---------------------------------------------------
+#
+# BDB and Abbott-Smith both mark up a numbered sense hierarchy with nested
+# <sense> elements. The lexicon table keeps only the flattened entry text, so a
+# reader who wants "which of these meanings is this one" gets a paragraph. These
+# rows keep the structure: level, the dictionary's own sense number, a short
+# heading (the entry's <def>/<gloss> words), and the sense's own prose with
+# scripture references stripped (they belong in the concordance, not here).
+
+Sense = Tuple[int, str, str, str]  # level, number, heading, summary
+
+_SENSE_HEADING_TAGS = {"def", "gloss", "stem", "asp"}
+_SENSE_OWN_TEXT_SKIP = {"ref", "sense", "status", "note", "page"}
+_MAX_SENSE_SUMMARY = 400
+
+
+def _clean_sense_text(value: str) -> str:
+    text = _REF_WHITESPACE_RE.sub(" ", value or "").strip()
+    for bad, good in ((" ,", ","), (" ;", ";"), (" .", "."), ("( ", "("), (" )", ")")):
+        text = text.replace(bad, good)
+    return text.strip(" ;,.")
+
+
+def _sense_heading(el: ET.Element) -> str:
+    parts: List[str] = []
+    for child in el:
+        if _local_name(child.tag) not in _SENSE_HEADING_TAGS:
+            continue
+        text = _clean_sense_text("".join(child.itertext()))
+        if text:
+            parts.append(text)
+    return _clean_sense_text(", ".join(parts))
+
+
+def _sense_summary(el: ET.Element) -> str:
+    text = _clean_sense_text(flatten_xml_text(el, skip_tags=_SENSE_OWN_TEXT_SKIP))
+    if len(text) > _MAX_SENSE_SUMMARY:
+        text = text[: _MAX_SENSE_SUMMARY - 1].rstrip() + "\u2026"
+    return text
+
+
+def _collect_senses(el: ET.Element, level: int = 0) -> List[Sense]:
+    rows: List[Sense] = []
+    for child in el:
+        if _local_name(child.tag) != "sense":
+            continue
+        heading = _sense_heading(child)
+        summary = _sense_summary(child)
+        if heading or summary:
+            rows.append((level, (child.get("n") or "").strip(), heading, summary))
+        rows.extend(_collect_senses(child, level + 1))
+    return rows
+
+
+def parse_bdb_senses(bdb_path: Path, index_path: Path) -> Dict[str, List[Sense]]:
+    """Strong's key ('H1') -> numbered BDB sense rows.
+
+    Only entries whose editor marked up senses produce rows; BDB left many rare
+    words as a single prose line. The definition sheet falls back to the entry
+    text for those, so a gap here is a shallower pane, never a blank one.
+    """
+    entries = {}
+    for el in ET.parse(bdb_path).getroot().iter():
+        if _local_name(el.tag) != "entry":
+            continue
+        entry_id = el.get("id")
+        if entry_id:
+            entries[entry_id] = el
+
+    best: Dict[str, List[Sense]] = {}
+    for el in ET.parse(index_path).getroot().iter():
+        if _local_name(el.tag) != "xref":
+            continue
+        strong = (el.get("strong") or "").strip()
+        bdb_id = (el.get("bdb") or "").strip()
+        if not strong.isdigit() or bdb_id not in entries:
+            continue
+        rows = _collect_senses(entries[bdb_id])
+        if not rows:
+            continue
+        key = f"H{int(strong)}"
+        # Several Strong's numbers can point at one BDB entry; keep the fullest.
+        if key not in best or len(rows) > len(best[key]):
+            best[key] = rows
+    return best
+
+
+def parse_abbott_smith_senses(path: Path) -> Dict[str, List[Sense]]:
+    """Strong's key ('G26') -> numbered Abbott-Smith sense rows."""
+    best: Dict[str, List[Sense]] = {}
+    for el in ET.parse(path).getroot().iter():
+        if _local_name(el.tag) != "entry":
+            continue
+        n = el.get("n") or ""
+        if "|" not in n:
+            continue
+        strong = n.split("|", 1)[1].strip().upper()
+        if not strong.startswith("G") or not strong[1:].isdigit():
+            continue
+        rows = _collect_senses(el)
+        if not rows:
+            continue
+        key = f"G{int(strong[1:])}"
+        if key not in best or len(rows) > len(best[key]):
+            best[key] = rows
+    return best
+
+
+_STRONGS_SUFFIX_RE = re.compile(r"^([HG])0*(\d+)([A-Z].*)?$")
+
+
+def normalize_lexicon_key(strongs_id: str) -> str:
+    """Key form used by BDB/TWOT: 'H0430' -> 'H430', 'H1254a' -> 'H1254a'."""
+    value = (strongs_id or "").strip().upper()
+    match = _STRONGS_SUFFIX_RE.match(value)
+    if match is None:
+        return value
+    prefix, digits, suffix = match.group(1), match.group(2), match.group(3) or ""
+    return f"{prefix}{int(digits)}{suffix.lower()}"
+
+
+def _lexicon_key_map(conn: sqlite3.Connection) -> Dict[str, str]:
+    """Normalized Strong's id -> the id the lexicon actually stores.
+
+    The lexicon keeps the padded form the token stream used ("H0430") while BDB
+    and TWOT key on plain "H430". Sense and root rows have to be written under
+    the lexicon's own id or the join in `BibleDAO` finds nothing.
+    """
+    mapping: Dict[str, str] = {}
+    for (stored,) in conn.execute(
+        "SELECT strongs_id FROM lexicon WHERE strongs_id IS NOT NULL AND strongs_id != ''"
+    ):
+        mapping.setdefault(normalize_lexicon_key(stored), stored)
+    return mapping
+
+
+def build_lexicon_senses(
+    conn: sqlite3.Connection,
+    hebrew: Dict[str, List[Sense]],
+    greek: Dict[str, List[Sense]],
+    minimums: Optional[Dict[str, int]] = None,
+) -> Tuple[int, int, int]:
+    """Writes sense rows for lexicon entries that exist, and gates coverage.
+
+    Returns (rows, hebrew ids, greek ids) after writing.
+    """
+    limits = minimums if minimums is not None else EXPECTED_COUNTS
+    key_map = _lexicon_key_map(conn)
+
+    def rows_for(data: Dict[str, List[Sense]], source: str) -> List[Tuple]:
+        out: List[Tuple] = []
+        for key, senses in data.items():
+            stored = key_map.get(normalize_lexicon_key(key))
+            if stored is None:
+                continue
+            for level, number, heading, summary in senses:
+                out.append((stored, source, level, number, heading, summary))
+        return out
+
+    payload = rows_for(hebrew, "BDB") + rows_for(greek, "Abbott-Smith")
+    conn.executemany(
+        """
+        INSERT INTO lexicon_senses (strongs_id, source, level, number, heading, summary)
+        VALUES (?, ?, ?, ?, ?, ?)
+        """,
+        payload,
+    )
+
+    hebrew_ids = len(
+        {key for key in hebrew if normalize_lexicon_key(key) in key_map}
+    )
+    greek_ids = len({key for key in greek if normalize_lexicon_key(key) in key_map})
+    print(
+        f"  inserted {len(payload):,} sense rows "
+        f"({hebrew_ids:,} Hebrew entries, {greek_ids:,} Greek)"
+    )
+    # What a reader actually meets: the share of tokens in each language whose
+    # word has a numbered sense list behind it. Rows are one thing, this is the
+    # number that decides whether the definition sheet feels structured.
+    for language in ("heb", "grc"):
+        covered, total = conn.execute(
+            """
+            SELECT
+              COALESCE(SUM(CASE WHEN s.strongs_id IS NOT NULL THEN 1 ELSE 0 END), 0),
+              COUNT(*)
+            FROM words w
+            LEFT JOIN (SELECT DISTINCT strongs_id FROM lexicon_senses) s
+              ON s.strongs_id = w.strongs
+            WHERE w.language = ? AND w.strongs IS NOT NULL AND w.strongs != ''
+            """,
+            (language,),
+        ).fetchone()
+        share = (100.0 * covered / total) if total else 0.0
+        print(f"  {language} token coverage with senses: {share:.1f}%")
+
+    if len(payload) < limits["lexicon_senses_min"]:
+        raise RuntimeError(
+            f"Lexicon senses coverage too low ({len(payload)} rows, need "
+            f"{limits['lexicon_senses_min']}); check BDB/Abbott-Smith parsing"
+        )
+    if hebrew_ids < limits["hebrew_sense_entries_min"]:
+        raise RuntimeError(
+            f"Hebrew sense coverage too low ({hebrew_ids} entries, need "
+            f"{limits['hebrew_sense_entries_min']})"
+        )
+    if greek_ids < limits["greek_sense_entries_min"]:
+        raise RuntimeError(
+            f"Greek sense coverage too low ({greek_ids} entries, need "
+            f"{limits['greek_sense_entries_min']})"
+        )
+    return len(payload), hebrew_ids, greek_ids
+
+
+@dataclass(frozen=True)
+class RootInfo:
+    """A Hebrew root, as BDB and TWOT name it.
+
+    [twot] is the Theological Wordbook root number: words that share it are
+    built on the same root, which is what makes a search across binyanim
+    possible. BDB's entry ids group words by headword instead, so the TWOT
+    number is the grouping key and BDB supplies the root's own letters.
+    """
+
+    root: str
+    gloss: str
+    twot: str
+
+
+def _bdb_head_word(el: ET.Element) -> str:
+    for child in el:
+        if _local_name(child.tag) != "w":
+            continue
+        word = _REF_WHITESPACE_RE.sub(" ", "".join(child.itertext())).strip()
+        return word.strip("[]()")
+    return ""
+
+
+def parse_bdb_roots(bdb_path: Path, index_path: Path) -> Dict[str, RootInfo]:
+    """Strong's key ('H1288') -> root ('בָּרַךְ', 'kneel', TWOT 285)."""
+    entries = {}
+    bucket_root: Dict[str, str] = {}
+    for el in ET.parse(bdb_path).getroot().iter():
+        if _local_name(el.tag) != "entry":
+            continue
+        entry_id = el.get("id")
+        if not entry_id:
+            continue
+        entries[entry_id] = el
+        if el.get("type") == "root":
+            bucket_root[".".join(entry_id.split(".")[:2])] = entry_id
+
+    strong_to_twot: Dict[str, str] = {}
+    strong_to_bdb: Dict[str, str] = {}
+    for el in ET.parse(index_path).getroot().iter():
+        if _local_name(el.tag) != "xref":
+            continue
+        strong = (el.get("strong") or "").strip()
+        if not strong.isdigit():
+            continue
+        key = f"H{int(strong)}"
+        twot = (el.get("twot") or "").strip()
+        bdb_id = (el.get("bdb") or "").strip()
+        if twot:
+            strong_to_twot.setdefault(key, twot)
+        if bdb_id:
+            strong_to_bdb.setdefault(key, bdb_id)
+
+    troot_for_strong: Dict[str, str] = {}
+    for key, twot in strong_to_twot.items():
+        match = re.match(r"^(\d+)", twot)
+        if match:
+            troot_for_strong[key] = match.group(1)
+
+    members: Dict[str, List[str]] = defaultdict(list)
+    for key, troot in troot_for_strong.items():
+        members[troot].append(key)
+
+    result: Dict[str, RootInfo] = {}
+    for troot, keys in members.items():
+        root_word = ""
+        root_gloss = ""
+        best_score = None
+        for key in keys:
+            bdb_id = strong_to_bdb.get(key)
+            if not bdb_id:
+                continue
+            bucket = ".".join(bdb_id.split(".")[:2])
+            root_id = bucket_root.get(bucket)
+            if not root_id:
+                continue
+            word = _bdb_head_word(entries[root_id])
+            if not word:
+                continue
+            # Prefer the bucket whose root entry is the one we are standing in,
+            # then the shortest TWOT suffix (the root itself, not a derivative).
+            score = (0 if bdb_id.startswith(bucket + ".") else 1, len(strong_to_twot.get(key, "")))
+            if best_score is None or score < best_score:
+                best_score = score
+                root_word = word
+                root_gloss = ""
+                for child in entries[root_id]:
+                    if _local_name(child.tag) == "def":
+                        root_gloss = _clean_sense_text("".join(child.itertext()))
+                        break
+        if not root_word:
+            continue
+        for key in keys:
+            result[key] = RootInfo(root=root_word, gloss=root_gloss, twot=troot)
+    return result
+
+
+def build_lexicon_roots(
+    conn: sqlite3.Connection,
+    roots: Dict[str, RootInfo],
+    minimums: Optional[Dict[str, int]] = None,
+) -> int:
+    limits = minimums if minimums is not None else EXPECTED_COUNTS
+    key_map = _lexicon_key_map(conn)
+    payload = [
+        (key_map[normalize_lexicon_key(key)], info.root, info.gloss, info.twot)
+        for key, info in roots.items()
+        if normalize_lexicon_key(key) in key_map
+    ]
+    conn.executemany(
+        """
+        INSERT OR REPLACE INTO lexicon_roots (strongs_id, root, root_gloss, twot)
+        VALUES (?, ?, ?, ?)
+        """,
+        payload,
+    )
+    print(f"  inserted {len(payload):,} Hebrew roots ({len({p[3] for p in payload}):,} distinct)")
+    if len(payload) < limits["lexicon_roots_min"]:
+        raise RuntimeError(
+            f"Lexicon root coverage too low ({len(payload)} entries, need "
+            f"{limits['lexicon_roots_min']}); check TWOT/BDB parsing"
+        )
+    return len(payload)
+
+
+def load_lexicon_senses(
+    cache_dir: Path,
+    hebrew_lexicon_commit: str,
+    abbott_smith_commit: str,
+) -> Tuple[Dict[str, List[Sense]], Dict[str, List[Sense]]]:
+    bdb_path = cache_dir / "BrownDriverBriggs.xml"
+    index_path = cache_dir / "LexicalIndex.xml"
+    as_path = cache_dir / "abbott-smith.tei.xml"
+    download_file(
+        f"{HEBREW_LEXICON_RAW}/{hebrew_lexicon_commit}/BrownDriverBriggs.xml",
+        bdb_path,
+    )
+    download_file(
+        f"{HEBREW_LEXICON_RAW}/{hebrew_lexicon_commit}/LexicalIndex.xml",
+        index_path,
+    )
+    download_file(
+        f"{ABBOTT_SMITH_RAW}/{abbott_smith_commit}/abbott-smith.tei.xml",
+        as_path,
+    )
+    hebrew = parse_bdb_senses(bdb_path, index_path)
+    greek = parse_abbott_smith_senses(as_path)
+    print(
+        f"Loaded structured senses: {len(hebrew):,} Hebrew entries "
+        f"({sum(len(v) for v in hebrew.values()):,} rows), "
+        f"{len(greek):,} Greek ({sum(len(v) for v in greek.values()):,} rows)"
+    )
+    return hebrew, greek
 
 
 def load_extended_lexicons(
@@ -1408,10 +1849,16 @@ def build_verses_and_words(
 
     next_word_id = 1
 
+    # MACULA points at other tokens by xml:id. The ids are collected as the
+    # files stream past and resolved after both are read, because a subject can
+    # sit in an earlier verse.
+    surface_by_id: Dict[str, Tuple[str, str]] = {}
+    pending_refs: List[Tuple[int, str, str]] = []  # (word id, ref, kind)
+
     def flush_group(
         key: Optional[Tuple[str, int, int]],
         verse_tokens: List[Tuple[str, str]],
-        word_rows: List[Tuple[str, str, str, str, str, str]],
+        word_rows: List[Tuple[str, str, str, str, str, str, str, str]],
     ) -> None:
         nonlocal next_word_id
         if key is None:
@@ -1435,7 +1882,16 @@ def build_verses_and_words(
         verse_row_id = verse_row[0]
 
         position = 1
-        for word_text, lemma, morph, strong, language, _pos in word_rows:
+        for (
+            word_text,
+            lemma,
+            morph,
+            strong,
+            language,
+            _pos,
+            subject_ref,
+            referent_ref,
+        ) in word_rows:
             conn.execute(
                 """
                 INSERT INTO words
@@ -1453,6 +1909,10 @@ def build_verses_and_words(
                     language,
                 ),
             )
+            if subject_ref:
+                pending_refs.append((next_word_id, subject_ref, "subject"))
+            if referent_ref:
+                pending_refs.append((next_word_id, referent_ref, "referent"))
             next_word_id += 1
             position += 1
 
@@ -1466,7 +1926,7 @@ def build_verses_and_words(
     ) -> None:
         current_key: Optional[Tuple[str, int, int]] = None
         current_verse_tokens: List[Tuple[str, str]] = []
-        current_words: List[Tuple[str, str, str, str, str, str]] = []
+        current_words: List[Tuple[str, str, str, str, str, str, str, str]] = []
 
         rows_processed = 0
         for row in iter_tsv_rows(path):
@@ -1499,9 +1959,26 @@ def build_verses_and_words(
             if not pronunciation:
                 pronunciation = transliteration
 
+            token_id = (row.get("xml:id") or "").strip()
+            subject_ref = macula_id(row.get("subjref") or "")
+            referent_ref = macula_id(row.get("referent") or "")
+
             if text:
                 current_verse_tokens.append((text, after))
-                current_words.append((text, lemma, morph, strong, language, pos))
+                current_words.append(
+                    (
+                        text,
+                        lemma,
+                        morph,
+                        strong,
+                        language,
+                        pos,
+                        subject_ref,
+                        referent_ref,
+                    )
+                )
+                if token_id:
+                    surface_by_id[macula_id(token_id)] = (text, strong)
 
             if lemma:
                 if gloss:
@@ -1546,6 +2023,39 @@ def build_verses_and_words(
         default_language="grc",
         transliteration_col="",
         pronunciation_col="",
+    )
+
+    print("Resolving MACULA participant references...")
+    subject_updates: List[Tuple[str, Optional[str], int]] = []
+    referent_updates: List[Tuple[str, Optional[str], int]] = []
+    for word_id, ref, kind in pending_refs:
+        surface = surface_by_id.get(ref)
+        if surface is None:
+            continue
+        text, strong = surface
+        entry = (text, strong or None, word_id)
+        if kind == "subject":
+            subject_updates.append(entry)
+        else:
+            referent_updates.append(entry)
+
+    conn.executemany(
+        """
+        UPDATE words SET subject_text = ?, subject_strongs = ?
+        WHERE id = ?
+        """,
+        subject_updates,
+    )
+    conn.executemany(
+        """
+        UPDATE words SET referent_text = ?, referent_strongs = ?
+        WHERE id = ?
+        """,
+        referent_updates,
+    )
+    print(
+        f"  resolved {len(subject_updates):,} subject and "
+        f"{len(referent_updates):,} referent links"
     )
 
     print("Building lexicon table...")
@@ -2240,6 +2750,8 @@ def get_counts(conn: sqlite3.Connection) -> Dict[str, int]:
         "translation_ref_map",
         "words",
         "lexicon",
+        "lexicon_senses",
+        "lexicon_roots",
     ]:
         table_counts[table] = conn.execute(
             f"SELECT COUNT(*) FROM {table}"
@@ -2255,6 +2767,11 @@ def get_counts(conn: sqlite3.Connection) -> Dict[str, int]:
 
     table_counts["enabled_translations"] = conn.execute(
         "SELECT COUNT(*) FROM translations WHERE enabled = 1"
+    ).fetchone()[0]
+
+    table_counts["participant_links"] = conn.execute(
+        "SELECT COUNT(*) FROM words WHERE subject_text IS NOT NULL "
+        "OR referent_text IS NOT NULL"
     ).fetchone()[0]
 
     return table_counts
@@ -2414,6 +2931,27 @@ def validate_database(conn: sqlite3.Connection) -> None:
             f"Expected at least {EXPECTED_COUNTS['lexicon_min']} lexicon entries, found {counts['lexicon']}"
         )
 
+    if counts["lexicon_senses"] < EXPECTED_COUNTS["lexicon_senses_min"]:
+        raise RuntimeError(
+            "Expected at least "
+            f"{EXPECTED_COUNTS['lexicon_senses_min']} structured sense rows, found "
+            f"{counts['lexicon_senses']}"
+        )
+
+    if counts["lexicon_roots"] < EXPECTED_COUNTS["lexicon_roots_min"]:
+        raise RuntimeError(
+            "Expected at least "
+            f"{EXPECTED_COUNTS['lexicon_roots_min']} Hebrew roots, found "
+            f"{counts['lexicon_roots']}"
+        )
+
+    if counts["participant_links"] < EXPECTED_COUNTS["participant_links_min"]:
+        raise RuntimeError(
+            "Expected at least "
+            f"{EXPECTED_COUNTS['participant_links_min']} participant links, found "
+            f"{counts['participant_links']}"
+        )
+
 
 def print_summary(conn: sqlite3.Connection, source_commit: str, open_bibles_commit: str) -> None:
     counts = get_counts(conn)
@@ -2429,6 +2967,9 @@ def print_summary(conn: sqlite3.Connection, source_commit: str, open_bibles_comm
         "translation_ref_map",
         "words",
         "lexicon",
+        "lexicon_senses",
+        "lexicon_roots",
+        "participant_links",
         "distinct_verse_books",
         "kjv_translation_verses",
         "enabled_translations",
@@ -2528,6 +3069,24 @@ def main() -> None:
                 abbott_smith_commit=args.abbott_smith_commit,
             )
 
+        # Structured senses and Hebrew roots come from the same two lexicons and
+        # are what turn a definition paragraph into a numbered meaning list and
+        # a root search. Skipped with --no-extended-lexicon, same as the text.
+        hebrew_senses: Dict[str, List[Sense]] = {}
+        greek_senses: Dict[str, List[Sense]] = {}
+        roots: Dict[str, RootInfo] = {}
+        if args.extended_lexicon:
+            hebrew_senses, greek_senses = load_lexicon_senses(
+                cache_dir,
+                hebrew_lexicon_commit=args.hebrew_lexicon_commit,
+                abbott_smith_commit=args.abbott_smith_commit,
+            )
+            roots = parse_bdb_roots(
+                cache_dir / "BrownDriverBriggs.xml",
+                cache_dir / "LexicalIndex.xml",
+            )
+            print(f"Loaded Hebrew roots: {len(roots):,} Strong's ids")
+
         cross_references_txt: Optional[Path] = None
         if args.cross_references:
             cross_references_txt = download_cross_references(cache_dir)
@@ -2557,6 +3116,9 @@ def main() -> None:
                 strongs_dicts=strongs_dicts,
                 extended_lexicons=extended_lexicons,
             )
+            if args.extended_lexicon:
+                build_lexicon_senses(conn, hebrew_senses, greek_senses)
+                build_lexicon_roots(conn, roots)
             build_kjv_translation_verses(
                 conn,
                 ot_tsv=cache_dir / "ot_BSB.tsv",

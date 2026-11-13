@@ -67,6 +67,102 @@ void main() {
       await db.close();
     });
 
+    test('depth layers are present at release scale', () async {
+      final dbPath = getDbPath();
+      final db = await databaseFactory.openDatabase(
+        dbPath,
+        options: OpenDatabaseOptions(readOnly: true),
+      );
+
+      Future<int> count(String sql) async =>
+          (await db.rawQuery(sql)).first.values.first as int;
+
+      // Numbered senses: what the definition sheet renders instead of one
+      // flattened paragraph. Measured 17,030 rows over 1,807 Hebrew and 5,249
+      // Greek entries; the gate sits under that.
+      expect(
+        await count('SELECT COUNT(*) FROM lexicon_senses'),
+        greaterThanOrEqualTo(16000),
+      );
+      expect(
+        await count(
+          "SELECT COUNT(DISTINCT strongs_id) FROM lexicon_senses "
+          "WHERE source = 'BDB'",
+        ),
+        greaterThanOrEqualTo(1700),
+      );
+      expect(
+        await count(
+          "SELECT COUNT(DISTINCT strongs_id) FROM lexicon_senses "
+          "WHERE source = 'Abbott-Smith'",
+        ),
+        greaterThanOrEqualTo(5100),
+      );
+
+      // Hebrew roots from TWOT: the basis of root search across binyanim.
+      expect(
+        await count('SELECT COUNT(*) FROM lexicon_roots'),
+        greaterThanOrEqualTo(4800),
+      );
+      expect(
+        await count('SELECT COUNT(DISTINCT twot) FROM lexicon_roots'),
+        greaterThanOrEqualTo(2000),
+      );
+
+      // MACULA participant links: "who is he in this verse".
+      expect(
+        await count(
+          'SELECT COUNT(*) FROM words WHERE subject_text IS NOT NULL '
+          'OR referent_text IS NOT NULL',
+        ),
+        greaterThanOrEqualTo(40000),
+      );
+
+      await db.close();
+    });
+
+    test('a Hebrew root groups words across Strong\'s numbers', () async {
+      final dbPath = getDbPath();
+      final db = await databaseFactory.openDatabase(
+        dbPath,
+        options: OpenDatabaseOptions(readOnly: true),
+      );
+
+      // בָּרַךְ (to bless) and בְּרָכָה (a blessing) are separate Strong's
+      // numbers on one root; searching either alone hides the other.
+      final rows = await db.query(
+        'lexicon_roots',
+        where: 'strongs_id IN (?, ?)',
+        whereArgs: ['H1288', 'H1293'],
+      );
+      expect(rows, hasLength(2));
+      final twots = rows.map((r) => r['twot']).toSet();
+      expect(twots, hasLength(1));
+
+      await db.close();
+    });
+
+    test('sense rows follow the dictionary numbering', () async {
+      final dbPath = getDbPath();
+      final db = await databaseFactory.openDatabase(
+        dbPath,
+        options: OpenDatabaseOptions(readOnly: true),
+      );
+
+      // אָב (father): BDB's own numbered senses, not a paragraph.
+      final rows = await db.query(
+        'lexicon_senses',
+        where: 'strongs_id = ?',
+        whereArgs: ['H0001'],
+        orderBy: 'id',
+      );
+      expect(rows.length, greaterThanOrEqualTo(3));
+      expect(rows.first['number'], '1');
+      expect(rows.first['heading'], contains('father'));
+
+      await db.close();
+    });
+
     test('Database has full-release scale', () async {
       final dbPath = getDbPath();
       final db = await databaseFactory.openDatabase(

@@ -2,6 +2,12 @@
 
 ## Open
 
+- [ ] **Real asset I/O never settles inside a widget test.** `rootBundle.loadString`
+      for `alphabet.json` and `bible.db.gz` leaves a `CircularProgressIndicator`
+      spinning forever under `pumpAndSettle`, which is why the alphabet and
+      first-steps widget tests override the providers with fixtures. Any new test
+      that reaches a screen loading an asset will have to do the same.
+
 - [ ] Verify the legacy Flutter repository is not used by CI, release jobs, or local automation before quarantine.
       Confirmed still live: a `flutter run` on 2026-08-11 emitted `Stale file ... /Users/<user>/Documents/Coding/Original bible/lib/l10n/generated/...` warnings, so the legacy checkout is still being referenced by the local build.
 - [ ] Keep generated database assets and coverage reports outside source-oriented paths.
@@ -13,6 +19,33 @@
       the actual store release, not just the simulator build used here.
 
 ## Resolved
+
+- [x] 2026-11-13: **A killed build poisoned the download cache.** When a MACULA
+      download was interrupted, the next build died ~600 files later with
+      `ParseError: unclosed token` and nothing naming the file. `download_file`
+      now parses a cached XML before trusting it and re-fetches when it does not
+      (`test_build_depth_tables.py::CachedDownloadTest`).
+- [x] 2026-11-13: **The definition sheet showed a paragraph where the dictionary
+      had nine meanings.** BDB and Abbott-Smith both mark up a numbered sense
+      hierarchy; the pipeline flattened it into one text blob. `lexicon_senses`
+      now keeps the structure (17,030 rows) and the sheet renders the numbering,
+      headings and indentation.
+- [x] 2026-11-13: **Onboarding ended on a home screen a beginner could not use.**
+      Skip or finish, and the first thing shown was "Continue reading Genesis 1"
+      to someone who cannot sound out a letter. Onboarding now ends in `/start`:
+      three letters, one word, one verse with every word glossed, five words as
+      real review cards — and the closing card prints how long it took.
+- [x] 2026-11-13: **The startup gate could route a returning reader into the
+      on-ramp.** It read `firstRunProvider.isComplete` before the stored stamps
+      had finished loading, so for one frame every launch looked like a first
+      launch. `FirstRunState.isLoaded` now gates the decision.
+- [x] 2026-11-13: **Reader mode's gloss bar was the same for everyone.** It lived
+      at 30 occurrences forever, so an advanced reader who had never seen a
+      40-occurrence word got no help and a beginner was assumed to know it. The
+      bar now follows the reader's own review history.
+- [x] 2026-11-13: **A word the reader already knew had to be reviewed to be
+      believed.** The definition sheet now marks a word known from reading
+      exposure, keeping whatever history it already had.
 
 - [x] 2026-09-24: **iOS 1.0.5 (build 27) shipped without `bible.db`.** The
       TestFlight workflow never generated it and Flutter's `assets/` folder

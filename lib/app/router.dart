@@ -8,6 +8,7 @@ import '../features/search/search_screen.dart';
 import '../features/settings/settings_screen.dart';
 import '../features/bookmarks/bookmarks_screen.dart';
 import '../features/onboarding/language_selection_screen.dart';
+import '../features/onboarding/first_steps_screen.dart';
 import '../features/onboarding/onboarding_screen.dart';
 import '../features/startup/startup_gate_screen.dart';
 import '../features/export/export_composer_screen.dart';
@@ -19,6 +20,7 @@ import '../features/alphabet/alphabet_provider.dart';
 import '../features/alphabet/alphabet_screen.dart';
 import '../features/vocabulary/parsing_quiz_screen.dart';
 import '../features/vocabulary/vocabulary_screen.dart';
+import '../features/word_study/root_study_screen.dart';
 import '../features/word_study/word_study_screen.dart';
 import '../data/models/memorization_passage.dart';
 import '../shared/widgets/app_scaffold.dart';
@@ -43,6 +45,11 @@ final router = GoRouter(
     GoRoute(
       path: '/onboarding',
       builder: (context, state) => const OnboardingScreen(),
+    ),
+    // The on-ramp: three letters, one word, one verse, five words.
+    GoRoute(
+      path: '/start',
+      builder: (context, state) => const FirstStepsScreen(),
     ),
 
     // Main app routes (with scaffold)
@@ -196,6 +203,30 @@ final router = GoRouter(
           displayWord: displayWord,
           isHebrew: isHebrew,
         );
+      },
+    ),
+    // One Hebrew root: every word on it and every verse they appear in
+    GoRoute(
+      path: '/root',
+      builder: (context, state) {
+        final l10n = AppLocalizations.of(context)!;
+        final extra = state.extra;
+        if (extra is! Map<String, dynamic>) {
+          return _RouteDataErrorScreen(
+            title: l10n.rootWordsTitle,
+            message: l10n.missingWordStudyRouteData,
+          );
+        }
+        final root = extra['root'];
+        final gloss = extra['gloss'];
+        final twot = extra['twot'];
+        if (root is! String || gloss is! String || twot is! String) {
+          return _RouteDataErrorScreen(
+            title: l10n.rootWordsTitle,
+            message: l10n.missingWordStudyRouteData,
+          );
+        }
+        return RootStudyScreen(root: root, gloss: gloss, twot: twot);
       },
     ),
     // Full-screen modal for syntax tree

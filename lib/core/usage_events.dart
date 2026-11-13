@@ -27,6 +27,12 @@ enum UsageEvent {
   cardShared('card_shared'),
   reminderEnabled('reminder_enabled'),
 
+  /// The on-ramp, counted at the two points that decide whether a beginner
+  /// stays: the first verse they could read, and the first review they
+  /// finished. No text, no timing — the minutes themselves stay on the device.
+  firstVerseRead('first_verse_read'),
+  firstReviewDone('first_review_done'),
+
   /// The tip jar, opened, started and completed. Counted like everything
   /// else here: only if the reader opted in, and with no id attached.
   supportOpened('support_opened'),

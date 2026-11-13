@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import '../../models/srs_progress.dart';
+import '../../../shared/utils/reader_mode.dart';
 import '../../../shared/utils/sm2.dart';
 import '../user_database_helper.dart';
 
@@ -37,13 +39,56 @@ class SrsDao {
   /// schedules a quick relearning review.
   Future<void> recordReview(String strongsId, {required bool isCorrect}) async {
     final current = await getProgress(strongsId);
+    final now = DateTime.now();
     final updated = applySm2(
       current,
       strongsId: strongsId,
       isCorrect: isCorrect,
-      now: DateTime.now(),
+      now: now,
     );
     await saveProgress(updated);
+    await _logReview(strongsId, isCorrect: isCorrect, before: current, now: now);
+  }
+
+  /// One row per answered card, appended after the state moves.
+  ///
+  /// Nothing reads this yet: SM-2 keeps its own state. It is written because a
+  /// scheduler that fits itself to history cannot be added later to readers who
+  /// have no history, and writing it costs one insert per review.
+  Future<void> _logReview(
+    String strongsId, {
+    required bool isCorrect,
+    required SrsProgress? before,
+    required DateTime now,
+  }) async {
+    try {
+      final db = await _dbHelper.database;
+      await db.insert('srs_reviews', {
+        'strongs_id': strongsId,
+        'reviewed_at': now.millisecondsSinceEpoch,
+        'grade': isCorrect ? 1 : 0,
+        'repetitions_before': before?.repetitions ?? 0,
+        'easiness_before': before?.easiness ?? 2.5,
+        'interval_before': before?.intervalDays ?? 0.0,
+      });
+    } catch (e) {
+      // An older install without the log table must not lose the review itself.
+      if (kDebugMode) debugPrint('SrsDao review log error: $e');
+    }
+  }
+
+  /// How many reviews this reader has answered, ever.
+  ///
+  /// The trigger for revisiting FSRS: parameter fitting needs a few hundred
+  /// reviews per user before it beats SM-2's defaults measurably.
+  Future<int> countReviews() async {
+    try {
+      final db = await _dbHelper.database;
+      final rows = await db.rawQuery('SELECT COUNT(*) AS n FROM srs_reviews');
+      return (rows.first['n'] as num?)?.toInt() ?? 0;
+    } catch (_) {
+      return 0;
+    }
   }
 
   /// Pure SM-2 state transition, separated from persistence for testability.
@@ -97,6 +142,58 @@ class SrsDao {
       result[progress.strongsId] = progress;
     }
     return result;
+  }
+
+  /// Marks a word known from reading exposure, without pretending it was
+  /// reviewed.
+  ///
+  /// The reader knows plenty of words the app has never quizzed them on; making
+  /// them sit through a card for each one is why vocabulary decks go untouched.
+  /// This records the claim at a mastery above the reader-mode suppression
+  /// threshold and schedules it far out, so the word stops being glossed and
+  /// does not queue for review. Existing history is kept: exposure count and
+  /// easiness are untouched, and nothing is ever lowered.
+  Future<SrsProgress> markKnown(String strongsId, {DateTime? now}) async {
+    final at = now ?? DateTime.now();
+    final current = await getProgress(strongsId);
+    final masteries = <double>[
+      current?.masteryScore ?? 0.0,
+      kReaderModeMasterySuppression + 0.15,
+    ];
+    final updated = SrsProgress(
+      id: current?.id,
+      strongsId: strongsId,
+      exposureCount: current?.exposureCount ?? 0,
+      masteryScore: masteries.reduce((a, b) => a > b ? a : b),
+      lastReviewedAt: current?.lastReviewedAt ?? at,
+      nextReviewAt: at.add(const Duration(days: 180)),
+      repetitions: current == null || current.repetitions < 1
+          ? 1
+          : current.repetitions,
+      easiness: current?.easiness ?? 2.5,
+      intervalDays: 180,
+    );
+    await saveProgress(updated);
+    return updated;
+  }
+
+  /// Words the reader has met but not yet mastered, newest first.
+  ///
+  /// Reader mode uses this to find where the reader's own edge is; the cap
+  /// keeps the frequency lookup that follows to one bounded query.
+  Future<List<SrsProgress>> getProgressBelowMastery(
+    double threshold, {
+    int limit = 2000,
+  }) async {
+    final db = await _dbHelper.database;
+    final maps = await db.query(
+      'srs_progress',
+      where: 'mastery_score < ?',
+      whereArgs: [threshold],
+      orderBy: 'last_reviewed_at DESC',
+      limit: limit,
+    );
+    return maps.map((m) => SrsProgress.fromMap(m)).toList();
   }
 
   /// Lexicon keys the reader has mastered at or above [threshold].

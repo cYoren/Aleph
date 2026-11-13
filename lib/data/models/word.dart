@@ -8,6 +8,14 @@ class Word {
   final String? morphCode;
   final String language; // 'heb' or 'grc'
 
+  /// MACULA participant data: the word this token's subject actually is, and —
+  /// for a pronoun — what it refers back to. Resolved from the treebank's own
+  /// node ids at build time, which is how the app can answer "who is he here".
+  final String? subjectText;
+  final String? subjectStrongs;
+  final String? referentText;
+  final String? referentStrongs;
+
   Word({
     required this.id,
     required this.verseId,
@@ -17,6 +25,10 @@ class Word {
     this.strongs,
     this.morphCode,
     required this.language,
+    this.subjectText,
+    this.subjectStrongs,
+    this.referentText,
+    this.referentStrongs,
   });
 
   factory Word.fromMap(Map<String, dynamic> map) {
@@ -34,7 +46,17 @@ class Word {
       strongs: map['strongs']?.toString() ?? map['strongs_id']?.toString(),
       morphCode: map['morph_code']?.toString() ?? map['morph']?.toString(),
       language: map['language']?.toString() ?? 'heb',
+      subjectText: _nonEmpty(map['subject_text']?.toString()),
+      subjectStrongs: _nonEmpty(map['subject_strongs']?.toString()),
+      referentText: _nonEmpty(map['referent_text']?.toString()),
+      referentStrongs: _nonEmpty(map['referent_strongs']?.toString()),
     );
+  }
+
+  static String? _nonEmpty(String? value) {
+    if (value == null) return null;
+    final trimmed = value.trim();
+    return trimmed.isEmpty ? null : trimmed;
   }
 
   /// Stable key for lexicon lookups and learning/SRS features.
