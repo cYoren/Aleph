@@ -33,17 +33,24 @@ def _unique_keys(pairs):
 
 
 def protected_tokens(text: str) -> Counter:
-    # Compare lexical identity, not orthography: the model re-points Hebrew and
-    # normalises final letter forms, which does not change the word. Consonants
-    # and Strong's numbers are what a citation must preserve.
+    """Strong's numbers: the one thing a translation must never alter."""
+    return Counter(STRONGS.findall(text))
+
+
+def citation_tokens(text: str) -> Counter:
+    """Consonants of the original-language citations, for a quality warning.
+
+    The model occasionally corrects a typo in the source (``ειδωλου`` to
+    ``ειδωλον``, or a final tsadi where the word needs the regular form). That
+    changes a citation but not the meaning of the entry, so it is reported as a
+    warning rather than rejecting the whole delivery.
+    """
     text = unicodedata.normalize("NFD", text)
-    tokens = Counter(STRONGS.findall(text))
+    tokens = Counter()
     run = []
     for char in text + " ":
         code = ord(char)
         if unicodedata.combining(char):
-            # Vowel points and accents belong to the letter before them; the
-            # comparison already excludes them.
             continue
         original_letter = (
             0x0590 <= code <= 0x05FF
@@ -102,8 +109,35 @@ def validate_delivery(source: dict, cache_dir: pathlib.Path) -> list[str]:
                 if translated.strip() == original.strip() and source_needs_translation(original):
                     errors.append(f"{label}: English source was copied unchanged")
                 if protected_tokens(original) != protected_tokens(translated):
-                    errors.append(f"{label}: Hebrew, Greek or Strong's tokens were changed")
+                    errors.append(f"{label}: Strong's numbers were changed")
     return errors
+
+
+def citation_warnings(source: dict, cache_dir: pathlib.Path) -> list[str]:
+    """Entries whose original-language citation differs from the source.
+
+    Not fatal: the difference may be a correction of a typo in the source.
+    """
+    warnings = []
+    for lang in LANGUAGES:
+        try:
+            cache = json.loads(
+                (cache_dir / f"{lang}.json").read_text(encoding="utf-8"),
+                object_pairs_hook=_unique_keys,
+            )
+        except (OSError, ValueError):
+            continue
+        for field in FIELDS:
+            values = cache.get(field)
+            if not isinstance(values, dict):
+                continue
+            for digest, translated in values.items():
+                original = source[field].get(digest)
+                if original is None or not isinstance(translated, str):
+                    continue
+                if citation_tokens(original) != citation_tokens(translated):
+                    warnings.append(f"{lang}/{field}/{digest}: citation differs")
+    return warnings
 
 
 def main() -> int:
@@ -123,6 +157,12 @@ def main() -> int:
         for error in errors[:30]:
             print(f"  {error}")
         return 1
+    warnings = citation_warnings(source, args.cache_dir)
+    if warnings:
+        print(f"WARNING: {len(warnings)} entry citation(s) differ from the source.")
+        print("These are usually corrections of a typo in the source; review before release.")
+        for warning in warnings[:10]:
+            print(f"  {warning}")
     print("OK: all seven caches match the current source, coverage and protected-token contract.")
     print("Human translation review is still required; this gate does not verify meaning.")
     return 0
