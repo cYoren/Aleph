@@ -112,13 +112,30 @@ things currently undercut the "in depth" promise:
 
 ## Phase 2 — The learning loop (unify depth + learning)
 
-### 2.1 Proper spaced repetition — **in progress**
+### 2.1 Proper spaced repetition — **shipped**
 - [x] Replace the linear ±0.2 mastery bump with the SM-2 algorithm
       (easiness factor, expanding intervals) in `SrsDao`.
-- [ ] Upgrade to FSRS once review volume justifies it. **Deferred** — see the
-      deferred list at the end. The data it needs is now being collected:
-      `srs_reviews` records grade, elapsed interval and pre-review state on every
-      answered card, and `SrsDao.countReviews` is the trigger metric.
+- [x] **FSRS replaced SM-2 (2026-11-13).** `fsrs` 2.x ships 21 pretrained
+      weights, so it schedules correctly with no review history; the earlier
+      "wait for volume" reason was wrong (volume is only needed to *personalise*
+      the weights, which nothing does). Card state lives on `srs_progress`
+      (`fsrs_stability`, `fsrs_difficulty`, `fsrs_state`, `fsrs_step`,
+      `fsrs_reps`, `fsrs_lapses`); the due date stays `next_review_at`, and the
+      SM-2 columns stay as readable history. The binary quiz maps to
+      `Rating.good` / `Rating.again` — no four-button sheet. Migration v6 seeds
+      stability from `interval_days`, keeps `last_reviewed_at`, and writes
+      nothing else, so no mastery score can be lowered. The first review after
+      the migration is floored at the interval SM-2 would have scheduled
+      (`fsrs_floor_pending`), so the upgrade cannot pull a review forward — a
+      guard rather than the mechanism, since at due time FSRS's own interval is
+      already longer (6 d → 21 d against SM-2's 15, 30 → 91 against 75, 180 →
+      478 against 450; pinned by `at due time FSRS already schedules longer`).
+      `srs_reviews` logs the rating, the elapsed days and the stability and
+      difficulty the card was answered from, which is what fitting the weights
+      would consume. Tests: `test/srs_fsrs_test.dart` (the 40-review replay gate
+      at due time *and* early, the migration, the v5 → v6 upgrade run through
+      `UserDatabaseHelper` itself, the log columns), `test/srs_sm2_test.dart`
+      (SM-2, still the memorization scheduler and the migration reference).
 - [x] Frequency-ordered vocabulary decks with live text-coverage stats and an SRS
       review queue (`/vocabulary`).
 
@@ -323,14 +340,11 @@ features. YouVersion wins that game; our niche is *actually engaging the origina
 
 ## Deferred, and why
 
-- **FSRS scheduler.** SM-2 is in place and its state is persisted. FSRS fits its
-  parameters (and beats SM-2's defaults) only with a per-review history of grade
-  and elapsed interval, which the app did not keep. That history is now being
-  appended to `srs_reviews` on every answered card, so the migration path exists;
-  what is missing is *volume*. With the daily session capped at 10 due reviews, a
-  beginner reaches the few hundred reviews per user where FSRS differs measurably
-  in about a month of daily use. Revisit when `SrsDao.countReviews()` is in the
-  hundreds for real installs; nothing has to be rewritten to get there.
+- **Fitting the FSRS weights to a reader.** FSRS ships pretrained defaults and
+  schedules from them; fitting them to one reader needs a few hundred reviews
+  each, and `srs_reviews` now records what a fit would need (rating, elapsed
+  interval, pre-review state). Not a product gap — the defaults are the
+  algorithm's own recommendation for a new user.
 - **Qere/Ketiv display.** The shipped WLC text carries the ketiv consonants and
   the qere vowels in the standard convention, and nothing in the pipeline marks
   which verses even have a qere. A real display needs a dedicated qere/ketiv
