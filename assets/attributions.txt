@@ -16,6 +16,11 @@ Qere/Ketiv readings: Open Scriptures Hebrew Bible (Westminster Leningrad Codex),
 https://github.com/openscriptures/morphhb
 https://creativecommons.org/licenses/by/4.0/
 
+Other editions of the Greek New Testament: the Robinson-Pierpont Byzantine Textform 2018 (public domain) and the Statistical Restoration Greek New Testament, Alan Bunning, Center for New Testament Restoration, 2022, CC BY 4.0. Only the places where they read differently from the SBLGNT are stored; the app compares texts and makes no claim about which reading is original.
+https://github.com/byztxt/byzantine-majority-text
+https://github.com/Center-for-New-Testament-Restoration/SR
+https://creativecommons.org/licenses/by/4.0/
+
 Extended lexicons: Brown-Driver-Briggs and Abbott-Smith public-domain digitizations.
 https://github.com/openscriptures/HebrewLexicon
 https://github.com/translatable-exegetical-tools/Abbott-Smith

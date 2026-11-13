@@ -445,6 +445,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get hebrewTextQere => 'Qere / Ketiv（书写形式并列朗读形式）';
 
   @override
+  String get otherEditions => '其他版本';
+
+  @override
+  String get otherEditionsOmitted => '无';
+
+  @override
   String get qereTitle => 'Qere / Ketiv';
 
   @override

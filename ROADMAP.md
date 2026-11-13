@@ -281,8 +281,29 @@ our data provides. Implemented in `lib/shared/utils/cantillation.dart`
       at build time and shown in the sheet as "subject" / "refers to". Tests:
       `test/definition_depth_sheet_test.dart`; participant gate in
       `build_full_bible_db.py` and `scripts/validate_release.sh`.
-- [ ] Textual variants (NT: NA/Byz differences) — long-term, **deferred**: the
-      collation is the copyrighted work even where both texts are free.
+- [x] **Other editions (2026-11-13).** NA28 is out; edition comparison is in,
+      and it says exactly what it is. Two licence-clean texts ship beside the
+      SBLGNT this app carries: Robinson–Pierpont Byzantine 2018
+      (`byztxt/byzantine-majority-text`, public domain) and the Center for New
+      Testament Restoration's Statistical Restoration
+      (`Center-for-New-Testament-Restoration/SR`, CC BY 4.0). `textual_variants`
+      holds **9,354 readings** — 7,987 from RP2018, 1,367 from SR — across all
+      27 New Testament books, computed by a word-level diff per verse on
+      accent-, breathing-, punctuation- and final-sigma-folded forms, so a
+      difference in pointing is never reported as a difference in reading. An
+      empty side is an omission or an addition (the Byzantine doxology of
+      Matthew 6:13 has nothing on the base side). The reader shows a one-line
+      **Other editions** row under the verse, only where a difference exists,
+      naming the edition; tapping opens the two readings. It is never called a
+      critical apparatus: no manuscripts, no claim about the original. Gates:
+      `build_textual_variants` + `validate_database` (8,000 readings, all 27
+      books, both editions) and `validate_release.sh`. Tests:
+      `scripts/test_build_depth_tables.py` (`OtherEditionsParseTest`,
+      `DiffVerseWordsTest`, `WriteTextualVariantsTest`),
+      `scripts/test_pipeline_gates.py`, `test/textual_variants_pane_test.dart`.
+- [ ] A real apparatus from `Center-for-New-Testament-Restoration/transcriptions`
+      (26 MB, CC BY-SA 4.0). **Deferred** — it is manuscript transcriptions, so
+      it needs its own reading model, not a column on `textual_variants`.
 
 ---
 
@@ -359,6 +380,8 @@ features. YouVersion wins that game; our niche is *actually engaging the origina
 | Abbott-Smith Greek lexicon | `translatable-exegetical-tools/Abbott-Smith` | public domain |
 | MACULA treebanks (syntax trees) | Clear Bible | CC BY 4.0 |
 | Qere/Ketiv readings | `openscriptures/morphhb` (WLC) | CC BY 4.0 |
+| Byzantine text (other editions) | `byztxt/byzantine-majority-text` (RP2018) | public domain |
+| Statistical Restoration (other editions) | `Center-for-New-Testament-Restoration/SR` | CC BY 4.0 |
 | Cross-references | OpenBible.info (TSK-derived) | CC Attribution |
 | Bundled TTS voice (Greek) | Piper `el_GR/rapunzelina` via sherpa-onnx | MIT weights / CC0 data / GPL-3.0 eSpeak NG |
 | Long-form lexicon translations | machine-translated, cached in `data/lexicon_translations/` | derived from the CC BY-SA Strong's / public-domain BDB & Abbott-Smith originals |
@@ -378,9 +401,10 @@ features. YouVersion wins that game; our niche is *actually engaging the origina
   needs a positional heuristic against OSHB's own word order, which is the
   "index alone" guess the alignment avoids on purpose. 1,192 of 1,245 is the
   honest number until then.
-- **Textual variants (NA/Byz).** The Byzantine text is free; the *collation* is
-  the copyrighted work (NA28 apparatus). Deferred until a licence-clean collation
-  is verified.
+- **A critical apparatus (NA28/ECM).** NA28 is copyrighted and the collation is
+  the copyrighted work even where the texts are free. What ships instead is a
+  text comparison against two licence-clean editions, which is a different
+  thing and is labelled as such everywhere it appears.
 - **Phrase-paced recitation** (tap a break to hear just that phrase). The data is
   there — `senseUnits` already splits the verse — but pacing the player means the
   recitation bar needs a phrase queue, highlighting, and a stop rule for a queue
