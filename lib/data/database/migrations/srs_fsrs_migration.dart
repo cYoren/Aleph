@@ -26,7 +26,7 @@ Future<void> addFsrsColumns(Database db) async {
     'fsrs_step': 'INTEGER',
     'fsrs_reps': 'INTEGER NOT NULL DEFAULT 0',
     'fsrs_lapses': 'INTEGER NOT NULL DEFAULT 0',
-    'fsrs_migrated': 'INTEGER NOT NULL DEFAULT 0',
+    'fsrs_floor_pending': 'INTEGER NOT NULL DEFAULT 0',
   };
   for (final entry in additions.entries) {
     if (srsColumns.contains(entry.key)) continue;
@@ -36,8 +36,17 @@ Future<void> addFsrsColumns(Database db) async {
   }
 
   final reviewColumns = await _columnNames(db, 'srs_reviews');
-  if (reviewColumns.isNotEmpty && !reviewColumns.contains('rating')) {
-    await db.execute('ALTER TABLE srs_reviews ADD COLUMN rating INTEGER');
+  final reviewAdditions = <String, String>{
+    'rating': 'INTEGER',
+    'stability_before': 'REAL',
+    'difficulty_before': 'REAL',
+    'elapsed_days': 'REAL',
+  };
+  for (final entry in reviewAdditions.entries) {
+    if (reviewColumns.isEmpty || reviewColumns.contains(entry.key)) continue;
+    await db.execute(
+      'ALTER TABLE srs_reviews ADD COLUMN ${entry.key} ${entry.value}',
+    );
   }
 }
 
@@ -56,7 +65,7 @@ Future<void> backfillFsrsState(Database db) async {
         'fsrs_step': migrated.fsrsStep,
         'fsrs_reps': migrated.fsrsReps,
         'fsrs_lapses': migrated.fsrsLapses,
-        'fsrs_migrated': migrated.fsrsMigrated ? 1 : 0,
+        'fsrs_floor_pending': migrated.fsrsFloorPending ? 1 : 0,
       },
       where: 'id = ?',
       whereArgs: [progress.id],

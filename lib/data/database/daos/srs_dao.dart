@@ -53,9 +53,10 @@ class SrsDao {
   /// One row per answered card, appended after the state moves.
   ///
   /// Nothing schedules from this: FSRS keeps its own state. It is written
-  /// because personalising the FSRS weights needs the grade and the elapsed
-  /// interval of every past review, and a reader who starts today cannot be
-  /// given that history later.
+  /// because personalising the FSRS weights needs, per review, the rating, the
+  /// elapsed days and the memory state the card was in — and a reader who
+  /// starts today cannot be given that history later. The SM-2 numbers are
+  /// kept beside the FSRS ones so the two eras stay comparable.
   Future<void> _logReview(
     String strongsId, {
     required bool isCorrect,
@@ -64,6 +65,9 @@ class SrsDao {
   }) async {
     try {
       final db = await _dbHelper.database;
+      final elapsedDays = before == null
+          ? null
+          : now.difference(before.lastReviewedAt).inMinutes / (24 * 60);
       await db.insert('srs_reviews', {
         'strongs_id': strongsId,
         'reviewed_at': now.millisecondsSinceEpoch,
@@ -72,6 +76,9 @@ class SrsDao {
         'repetitions_before': before?.repetitions ?? 0,
         'easiness_before': before?.easiness ?? 2.5,
         'interval_before': before?.intervalDays ?? 0.0,
+        'stability_before': before?.fsrsStability,
+        'difficulty_before': before?.fsrsDifficulty,
+        'elapsed_days': elapsedDays,
       });
     } catch (e) {
       // An older install without the log table must not lose the review itself.
@@ -151,7 +158,7 @@ class SrsDao {
       fsrsState: kFsrsStateReview,
       fsrsReps: current?.fsrsReps ?? 0,
       fsrsLapses: current?.fsrsLapses ?? 0,
-      fsrsMigrated: true,
+      fsrsFloorPending: true,
     );
     await saveProgress(updated);
     return updated;

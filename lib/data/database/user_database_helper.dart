@@ -14,13 +14,21 @@ class UserDatabaseHelper {
 
   UserDatabaseHelper._init();
 
+  /// Test hook: open this file instead of the app's own database.
+  ///
+  /// The upgrade path is the thing worth testing (a migration that never runs
+  /// leaves every other test green), and it only runs when a file with an older
+  /// `user_version` is opened through this class. The app never sets this.
+  @visibleForTesting
+  static String? debugDatabasePathOverride;
+
   Future<Database> get database async {
     return _databaseLoader.getOrCreate(() => _initDB('user_data.db'));
   }
 
   Future<Database> _initDB(String fileName) async {
-    final dbPath = await getDatabasesPath();
-    final dbFilePath = path.join(dbPath, fileName);
+    final override = debugDatabasePathOverride;
+    final dbFilePath = override ?? path.join(await getDatabasesPath(), fileName);
 
     // Ensure directory exists
     await Directory(path.dirname(dbFilePath)).create(recursive: true);
@@ -49,7 +57,10 @@ class UserDatabaseHelper {
         rating INTEGER,
         repetitions_before INTEGER NOT NULL DEFAULT 0,
         easiness_before REAL NOT NULL DEFAULT 2.5,
-        interval_before REAL NOT NULL DEFAULT 0.0
+        interval_before REAL NOT NULL DEFAULT 0.0,
+        stability_before REAL,
+        difficulty_before REAL,
+        elapsed_days REAL
       )
     ''');
 

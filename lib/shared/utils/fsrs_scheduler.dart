@@ -79,7 +79,7 @@ SrsProgress migrateSm2ProgressToFsrs(SrsProgress progress) {
     return progress.copyWith(
       fsrsState: kFsrsStateLearning,
       fsrsReps: progress.repetitions,
-      fsrsMigrated: false,
+      fsrsFloorPending: false,
     );
   }
 
@@ -88,7 +88,7 @@ SrsProgress migrateSm2ProgressToFsrs(SrsProgress progress) {
     fsrsDifficulty: fsrsDifficultyFromEasiness(progress.easiness),
     fsrsState: kFsrsStateReview,
     fsrsReps: progress.repetitions,
-    fsrsMigrated: true,
+    fsrsFloorPending: true,
   );
 }
 
@@ -131,7 +131,7 @@ SrsProgress applyFsrsReview(
     isCorrect: isCorrect,
   );
 
-  if (current != null && current.fsrsMigrated) {
+  if (current != null && current.fsrsFloorPending) {
     intervalDays = math.max(intervalDays, sm2.intervalDays);
   }
 
@@ -153,7 +153,7 @@ SrsProgress applyFsrsReview(
     fsrsStep: outcome.card.step,
     fsrsReps: (current?.fsrsReps ?? 0) + (isCorrect ? 1 : 0),
     fsrsLapses: (current?.fsrsLapses ?? 0) + (isCorrect ? 0 : 1),
-    fsrsMigrated: false,
+    fsrsFloorPending: false,
   );
 }
 

@@ -124,13 +124,18 @@ things currently undercut the "in depth" promise:
       SM-2 columns stay as readable history. The binary quiz maps to
       `Rating.good` / `Rating.again` — no four-button sheet. Migration v6 seeds
       stability from `interval_days`, keeps `last_reviewed_at`, and writes
-      nothing else, so no mastery score can be lowered; the first post-migration
-      review is floored at the interval SM-2 would have scheduled, so the
-      upgrade never pulls a review forward. `srs_reviews` now logs the FSRS
-      rating alongside the grade. Tests: `test/srs_fsrs_test.dart` (the 40-review
-      replay gate, the migration, the in-place v5 → v6 upgrade),
-      `test/srs_sm2_test.dart` (SM-2, still the memorization scheduler and the
-      migration reference).
+      nothing else, so no mastery score can be lowered. The first review after
+      the migration is floored at the interval SM-2 would have scheduled
+      (`fsrs_floor_pending`), so the upgrade cannot pull a review forward — a
+      guard rather than the mechanism, since at due time FSRS's own interval is
+      already longer (6 d → 21 d against SM-2's 15, 30 → 91 against 75, 180 →
+      478 against 450; pinned by `at due time FSRS already schedules longer`).
+      `srs_reviews` logs the rating, the elapsed days and the stability and
+      difficulty the card was answered from, which is what fitting the weights
+      would consume. Tests: `test/srs_fsrs_test.dart` (the 40-review replay gate
+      at due time *and* early, the migration, the v5 → v6 upgrade run through
+      `UserDatabaseHelper` itself, the log columns), `test/srs_sm2_test.dart`
+      (SM-2, still the memorization scheduler and the migration reference).
 - [x] Frequency-ordered vocabulary decks with live text-coverage stats and an SRS
       review queue (`/vocabulary`).
 

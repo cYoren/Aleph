@@ -37,14 +37,18 @@ class SrsProgress {
   /// Successful FSRS reviews of this card.
   final int fsrsReps;
 
-  /// Times this card has been forgotten since it reached the review state.
+  /// Times this card has been answered wrong, in any state — a new card
+  /// forgotten in its learning steps counts.
   final int fsrsLapses;
 
-  /// True while this row still carries the state SM-2 left it in.
+  /// True while the next review of this row must not come sooner than the
+  /// interval SM-2 would have scheduled.
   ///
-  /// The first FSRS review of such a row is floored at the interval SM-2 would
-  /// have scheduled, so upgrading the scheduler never pulls a review forward.
-  final bool fsrsMigrated;
+  /// Set when a row arrives from SM-2, and when the reader marks a word known
+  /// from reading exposure: both are claims about a word that have never been
+  /// through FSRS, and neither may tighten a schedule. Cleared by the first
+  /// FSRS review.
+  final bool fsrsFloorPending;
 
   const SrsProgress({
     this.id,
@@ -62,7 +66,7 @@ class SrsProgress {
     this.fsrsStep,
     this.fsrsReps = 0,
     this.fsrsLapses = 0,
-    this.fsrsMigrated = false,
+    this.fsrsFloorPending = false,
   });
 
   Map<String, dynamic> toMap() {
@@ -82,7 +86,7 @@ class SrsProgress {
       'fsrs_step': fsrsStep,
       'fsrs_reps': fsrsReps,
       'fsrs_lapses': fsrsLapses,
-      'fsrs_migrated': fsrsMigrated ? 1 : 0,
+      'fsrs_floor_pending': fsrsFloorPending ? 1 : 0,
     };
   }
 
@@ -105,7 +109,7 @@ class SrsProgress {
       fsrsStep: (map['fsrs_step'] as num?)?.toInt(),
       fsrsReps: (map['fsrs_reps'] as num?)?.toInt() ?? 0,
       fsrsLapses: (map['fsrs_lapses'] as num?)?.toInt() ?? 0,
-      fsrsMigrated: ((map['fsrs_migrated'] as num?)?.toInt() ?? 0) != 0,
+      fsrsFloorPending: ((map['fsrs_floor_pending'] as num?)?.toInt() ?? 0) != 0,
     );
   }
 
@@ -125,7 +129,7 @@ class SrsProgress {
     int? fsrsStep,
     int? fsrsReps,
     int? fsrsLapses,
-    bool? fsrsMigrated,
+    bool? fsrsFloorPending,
   }) {
     return SrsProgress(
       id: id ?? this.id,
@@ -143,7 +147,7 @@ class SrsProgress {
       fsrsStep: fsrsStep ?? this.fsrsStep,
       fsrsReps: fsrsReps ?? this.fsrsReps,
       fsrsLapses: fsrsLapses ?? this.fsrsLapses,
-      fsrsMigrated: fsrsMigrated ?? this.fsrsMigrated,
+      fsrsFloorPending: fsrsFloorPending ?? this.fsrsFloorPending,
     );
   }
 }

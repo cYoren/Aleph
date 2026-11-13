@@ -10,7 +10,9 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fsrs/fsrs.dart' as fsrs;
+import 'package:original_bible/data/database/daos/srs_dao.dart';
 import 'package:original_bible/data/database/migrations/srs_fsrs_migration.dart';
+import 'package:original_bible/data/database/user_database_helper.dart';
 import 'package:original_bible/data/models/srs_progress.dart';
 import 'package:original_bible/shared/utils/fsrs_scheduler.dart';
 import 'package:original_bible/shared/utils/sm2.dart';
@@ -48,7 +50,7 @@ void main() {
       // FSRS's own first interval for a remembered card, not SM-2's 1 day.
       expect(result.intervalDays, greaterThanOrEqualTo(1));
       expect(result.nextReviewAt.isAfter(now), isTrue);
-      expect(result.fsrsMigrated, isFalse);
+      expect(result.fsrsFloorPending, isFalse);
     });
 
     test('a forgotten card comes back in the relearning step', () {
@@ -128,7 +130,7 @@ void main() {
       expect(migrated.fsrsStability, 6.0);
       expect(migrated.fsrsState, kFsrsStateReview);
       expect(migrated.fsrsStep, isNull);
-      expect(migrated.fsrsMigrated, isTrue);
+      expect(migrated.fsrsFloorPending, isTrue);
       expect(migrated.lastReviewedAt, now.subtract(const Duration(days: 6)));
       expect(migrated.masteryScore, 0.2);
     });
@@ -156,7 +158,7 @@ void main() {
 
       expect(migrated.fsrsStability, isNull);
       expect(migrated.fsrsState, kFsrsStateLearning);
-      expect(migrated.fsrsMigrated, isFalse);
+      expect(migrated.fsrsFloorPending, isFalse);
     });
 
     test('difficulty follows easiness monotonically', () {
@@ -175,16 +177,20 @@ void main() {
       // A fixture history of 40 reviews: five words, eight reviews each, one
       // lapse apiece, every review taken when the card came due. Each word ends
       // in a different SM-2 state, so the gate is not one lucky row.
+      //
+      // Each migrated row is then reviewed twice — when it is due (the path the
+      // app actually runs) and early (where the floor is the only thing keeping
+      // the interval from tightening).
       final words = <String>['H7225', 'H430', 'H9001', 'G26', 'G2316'];
       const grades = <bool>[true, true, true, false, true, true, true, true];
 
       var checked = 0;
       for (final word in words) {
         Sm2State? state;
-        var lastReviewedAt = DateTime(2025, 1, 1, 9);
+        var dueAt = DateTime(2025, 1, 1, 9);
         for (final grade in grades) {
           state = applySm2Transition(previous: state, isCorrect: grade);
-          lastReviewedAt = lastReviewedAt.add(state.interval);
+          dueAt = dueAt.add(state.interval);
         }
 
         final row = SrsProgress(
@@ -194,36 +200,78 @@ void main() {
           repetitions: state.repetitions,
           easiness: state.easiness,
           intervalDays: state.intervalDays,
-          nextReviewAt: lastReviewedAt,
-          lastReviewedAt: lastReviewedAt,
+          nextReviewAt: dueAt,
+          lastReviewedAt: dueAt.subtract(state.interval),
         );
         final migrated = migrateSm2ProgressToFsrs(row);
 
-        for (final grade in <bool>[true, false]) {
-          final fsrsNext = applyFsrsReview(
-            migrated,
-            strongsId: word,
-            isCorrect: grade,
-            now: lastReviewedAt,
-            scheduler: _scheduler,
-          );
-          final sm2Next = applySm2Transition(
-            previous: state,
-            isCorrect: grade,
-          );
+        for (final atDueTime in <bool>[true, false]) {
+          final reviewedAt = atDueTime ? dueAt : row.lastReviewedAt;
+          for (final grade in <bool>[true, false]) {
+            final fsrsNext = applyFsrsReview(
+              migrated,
+              strongsId: word,
+              isCorrect: grade,
+              now: reviewedAt,
+              scheduler: _scheduler,
+            );
+            final sm2Next = applySm2Transition(
+              previous: state,
+              isCorrect: grade,
+            );
 
-          expect(
-            fsrsNext.nextReviewAt.difference(lastReviewedAt),
-            greaterThanOrEqualTo(sm2Next.interval),
-            reason:
-                '$word (${grade ? 'correct' : 'lapsed'}) was scheduled sooner '
-                'than SM-2 would have',
-          );
-          checked++;
+            expect(
+              fsrsNext.nextReviewAt.difference(reviewedAt),
+              greaterThanOrEqualTo(sm2Next.interval),
+              reason:
+                  '$word (${grade ? 'correct' : 'lapsed'}, '
+                  '${atDueTime ? 'due' : 'early'}) was scheduled sooner than '
+                  'SM-2 would have',
+            );
+            checked++;
+          }
         }
       }
 
-      expect(checked, 10);
+      expect(checked, 20);
+    });
+
+    test('at due time FSRS already schedules longer than SM-2', () {
+      // The floor is a guard, not the mechanism: for a card reviewed when it is
+      // due, FSRS's own interval is longer than SM-2's, so nothing is tightened
+      // even without it. This is the measurement the guard is insurance against.
+      final row = SrsProgress(
+        strongsId: 'H7225',
+        exposureCount: 3,
+        masteryScore: 0.2,
+        repetitions: 2,
+        easiness: 2.5,
+        intervalDays: 6,
+        nextReviewAt: now.add(const Duration(days: 6)),
+        lastReviewedAt: now,
+      );
+      final migrated = migrateSm2ProgressToFsrs(row).copyWith(
+        fsrsFloorPending: false,
+      );
+
+      final fsrsNext = applyFsrsReview(
+        migrated,
+        strongsId: 'H7225',
+        isCorrect: true,
+        now: now.add(const Duration(days: 6)),
+        scheduler: _scheduler,
+      );
+      final sm2 = applySm2Transition(
+        previous: const Sm2State(
+          repetitions: 2,
+          easiness: 2.5,
+          intervalDays: 6,
+          masteryScore: 0.2,
+        ),
+        isCorrect: true,
+      );
+
+      expect(fsrsNext.intervalDays, greaterThan(sm2.intervalDays));
     });
 
     test('without the floor FSRS would pull the same row forward', () {
@@ -232,7 +280,7 @@ void main() {
       // stability to four days, SM-2 to six.
       final row = sm2Row(intervalDays: 1, easiness: 2.5, repetitions: 1);
       final migrated = migrateSm2ProgressToFsrs(row);
-      final unfloored = migrated.copyWith(fsrsMigrated: false);
+      final unfloored = migrated.copyWith(fsrsFloorPending: false);
 
       final fsrsOnly = applyFsrsReview(
         unfloored,
@@ -264,7 +312,7 @@ void main() {
         scheduler: _scheduler,
       );
 
-      expect(first.fsrsMigrated, isFalse);
+      expect(first.fsrsFloorPending, isFalse);
       expect(first.intervalDays, greaterThanOrEqualTo(6 * 2.5));
     });
   });
@@ -276,9 +324,13 @@ void main() {
     setUp(() async {
       tempDir = await Directory.systemTemp.createTemp('aleph_srs_migration');
       path = p.join(tempDir.path, 'user_data.db');
+      await UserDatabaseHelper.instance.close();
+      UserDatabaseHelper.debugDatabasePathOverride = path;
     });
 
     tearDown(() async {
+      await UserDatabaseHelper.instance.close();
+      UserDatabaseHelper.debugDatabasePathOverride = null;
       await tempDir.delete(recursive: true);
     });
 
@@ -330,9 +382,10 @@ void main() {
       });
       await legacy.close();
 
-      // The version 6 step, run against the fixture the way the helper runs it.
-      final db = await databaseFactory.openDatabase(path);
-      await migrateSrsToFsrs(db);
+      // Opened through the helper, so the version 6 step runs from
+      // `_onUpgrade` — a migration that never runs leaves every other test in
+      // this file green.
+      final db = await UserDatabaseHelper.instance.database;
 
       final rows = await db.query(
         'srs_progress',
@@ -340,6 +393,7 @@ void main() {
         whereArgs: ['H7225'],
       );
       final progress = SrsProgress.fromMap(rows.single);
+      expect(await db.getVersion(), 6);
 
       expect(progress.masteryScore, 0.2);
       expect(progress.exposureCount, 9);
@@ -349,7 +403,7 @@ void main() {
       expect(progress.nextReviewAt, dueAt);
       expect(progress.fsrsStability, 6.0);
       expect(progress.fsrsState, kFsrsStateReview);
-      expect(progress.fsrsMigrated, isTrue);
+      expect(progress.fsrsFloorPending, isTrue);
 
       // And the review log gained the rating column the new rows write.
       final columns = await db.rawQuery('PRAGMA table_info(srs_reviews)');
@@ -359,6 +413,27 @@ void main() {
       );
 
       await db.close();
+    });
+
+    test('a review logs what a weight fit would need', () async {
+      final dao = SrsDao();
+      await dao.recordReview('H7225', isCorrect: true);
+      await dao.recordReview('H7225', isCorrect: true);
+
+      final db = await UserDatabaseHelper.instance.database;
+      final rows = await db.query('srs_reviews', orderBy: 'id ASC');
+      expect(rows, hasLength(2));
+
+      // The first review has no prior state to record.
+      expect(rows.first['rating'], 3);
+      expect(rows.first['stability_before'], isNull);
+      expect(rows.first['elapsed_days'], isNull);
+
+      // The second carries the memory state it was answered from.
+      expect(rows.last['rating'], 3);
+      expect(rows.last['stability_before'], isNotNull);
+      expect(rows.last['difficulty_before'], isNotNull);
+      expect(rows.last['elapsed_days'], isNotNull);
     });
 
     test('running the migration twice changes nothing', () async {
@@ -403,8 +478,8 @@ void main() {
       });
       await legacy.close();
 
-      final db = await databaseFactory.openDatabase(path);
-      await migrateSrsToFsrs(db);
+      final db = await UserDatabaseHelper.instance.database;
+      // Running the step again on an already-migrated file must be a no-op.
       await migrateSrsToFsrs(db);
 
       final rows = await db.query('srs_progress');
