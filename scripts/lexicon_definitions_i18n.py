@@ -94,12 +94,13 @@ _SCHOLARLY_LABELS = {
 # proper names do not contain them, which makes them a cleaner signal than
 # counting Latin fragments.
 _ENGLISH_FUNCTION_WORDS = {
-    "an", "and", "are", "as", "at", "be", "been", "but", "by", "can", "did",
-    "do", "does", "for", "from", "had", "has", "have", "he", "her", "his",
-    "in", "into", "is", "it", "its", "may", "might", "must", "not", "of",
-    "on", "or", "our", "shall", "she", "should", "that", "the", "their",
-    "them", "then", "there", "these", "they", "this", "those", "to", "was",
-    "we", "were", "which", "who", "will", "with", "would", "you", "your",
+    "a", "an", "and", "are", "as", "at", "be", "been", "but", "by", "can",
+    "did", "do", "does", "for", "from", "had", "has", "have", "he", "her",
+    "his", "in", "into", "is", "it", "its", "may", "might", "must", "not",
+    "of", "on", "or", "our", "shall", "she", "should", "that", "the",
+    "their", "them", "then", "there", "these", "they", "this", "those", "to",
+    "was", "we", "were", "which", "who", "will", "with", "would", "you",
+    "your",
 }
 
 
@@ -121,10 +122,14 @@ def source_needs_translation(text: str) -> bool:
     """
     folded = _fold(text)
     lowered = folded.lower()
-    if any(
-        re.search(rf"(?<![a-z]){word}(?![a-z])", lowered)
+    # Delimit on letters and dots so notation such as "[a.be.ad]" does not read
+    # as the English word "be".
+    hits = sum(
+        1
         for word in _ENGLISH_FUNCTION_WORDS
-    ):
+        if re.search(rf"(?<![A-Za-z.]){word}(?![A-Za-z.])", lowered)
+    )
+    if hits >= 2:
         return True
     ordinary = [
         word
