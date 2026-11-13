@@ -161,6 +161,12 @@ Widget _panes() {
                 referentStrongs: null,
                 isHebrew: true,
               ),
+              QereKetivSection(
+                qereText: 'הַיְצֵ֣א',
+                ketivText: 'הוצא',
+                qereLemma: 'יָצָא',
+                isHebrew: true,
+              ),
               AttestedFormsSection(lemma: 'בָּרַךְ', isHebrew: true),
             ],
           ),
@@ -216,6 +222,45 @@ void main() {
 
     expect(find.text('SUBJECT'), findsOneWidget);
     expect(find.text('אֱלֹהִים'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('shows what is written beside what is read', (tester) async {
+    await tester.pumpWidget(_panes());
+    await tester.pumpAndSettle();
+
+    expect(find.text('QERE / KETIV'), findsOneWidget);
+    expect(find.text('READ'), findsOneWidget);
+    expect(find.text('הַיְצֵ֣א'), findsOneWidget);
+    expect(find.text('WRITTEN'), findsOneWidget);
+    expect(find.text('הוצא'), findsOneWidget);
+    // The reading is a different word, so its dictionary form is named too.
+    expect(find.text('READ AS'), findsOneWidget);
+    expect(find.text('יָצָא'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('a word without a qere shows no qere pane', (tester) async {
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [bibleDaoProvider.overrideWithValue(_EmptyDao())],
+        child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const Scaffold(
+            body: QereKetivSection(
+              qereText: null,
+              ketivText: null,
+              qereLemma: null,
+              isHebrew: true,
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('QERE / KETIV'), findsNothing);
     expect(tester.takeException(), isNull);
   });
 

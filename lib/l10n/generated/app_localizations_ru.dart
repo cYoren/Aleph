@@ -469,6 +469,21 @@ class AppLocalizationsRu extends AppLocalizations {
   String get hebrewTextConsonantal => 'Только согласные';
 
   @override
+  String get hebrewTextQere => 'Кере / Кетив (написанное рядом с прочитанным)';
+
+  @override
+  String get qereTitle => 'Кере / Кетив';
+
+  @override
+  String get qereReadLabel => 'Прочитано';
+
+  @override
+  String get qereWrittenLabel => 'Написано';
+
+  @override
+  String get qereLemmaLabel => 'Прочитано как';
+
+  @override
   String get memorizationTitle => 'Заучивание';
 
   @override

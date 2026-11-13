@@ -139,6 +139,10 @@ class SettingsScreen extends ConsumerWidget {
                   value: HebrewTextDisplay.consonantal,
                   child: Text(l10n.hebrewTextConsonantal),
                 ),
+                DropdownMenuItem(
+                  value: HebrewTextDisplay.qere,
+                  child: Text(l10n.hebrewTextQere),
+                ),
               ],
             ),
           ),

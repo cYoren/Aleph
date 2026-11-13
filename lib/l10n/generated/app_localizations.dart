@@ -866,6 +866,36 @@ abstract class AppLocalizations {
   /// **'Consonants only'**
   String get hebrewTextConsonantal;
 
+  /// No description provided for @hebrewTextQere.
+  ///
+  /// In en, this message translates to:
+  /// **'Qere / Ketiv (written beside read)'**
+  String get hebrewTextQere;
+
+  /// No description provided for @qereTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Qere / Ketiv'**
+  String get qereTitle;
+
+  /// No description provided for @qereReadLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Read'**
+  String get qereReadLabel;
+
+  /// No description provided for @qereWrittenLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Written'**
+  String get qereWrittenLabel;
+
+  /// No description provided for @qereLemmaLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Read as'**
+  String get qereLemmaLabel;
+
   /// No description provided for @memorizationTitle.
   ///
   /// In en, this message translates to:

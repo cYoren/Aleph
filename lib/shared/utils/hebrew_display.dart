@@ -10,7 +10,12 @@ enum HebrewTextDisplay {
   noCantillation,
 
   /// Consonantal text only, as in a Torah scroll.
-  consonantal;
+  consonantal,
+
+  /// Full text, plus the other half of every qere/ketiv pair: where the scroll
+  /// writes one thing and the reading tradition says another, the reader sees
+  /// what is written beside what is read.
+  qere;
 
   static HebrewTextDisplay fromName(String? name) {
     return HebrewTextDisplay.values.firstWhere(
@@ -18,6 +23,20 @@ enum HebrewTextDisplay {
       orElse: () => HebrewTextDisplay.full,
     );
   }
+}
+
+/// Marks that separate or punctuate rather than spell: maqaf, paseq, sof pasuq
+/// and nun hafukha. The consonantal *display* mode keeps them on purpose, but
+/// they never distinguish one spelling of a word from another, so a comparison
+/// has to drop them — the build drops the same set.
+final RegExp _hebrewSeparators = RegExp('[\u05BE\u05C0\u05C3\u05C6]');
+
+/// The consonants of [text], for comparing two spellings of the same word.
+String hebrewConsonants(String text) {
+  return applyHebrewDisplay(
+    text,
+    HebrewTextDisplay.consonantal,
+  ).replaceAll(_hebrewSeparators, '');
 }
 
 bool _isCantillation(int codeUnit) {
@@ -39,7 +58,9 @@ bool _isVocalization(int codeUnit) {
 /// Applies a [HebrewTextDisplay] mode to Hebrew [text].
 /// Non-Hebrew characters pass through untouched.
 String applyHebrewDisplay(String text, HebrewTextDisplay mode) {
-  if (mode == HebrewTextDisplay.full || text.isEmpty) {
+  if (mode == HebrewTextDisplay.full ||
+      mode == HebrewTextDisplay.qere ||
+      text.isEmpty) {
     return text;
   }
 

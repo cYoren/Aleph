@@ -459,6 +459,21 @@ class AppLocalizationsPt extends AppLocalizations {
   String get hebrewTextConsonantal => 'Somente consoantes';
 
   @override
+  String get hebrewTextQere => 'Qere / Ketiv (escrito ao lado do lido)';
+
+  @override
+  String get qereTitle => 'Qere / Ketiv';
+
+  @override
+  String get qereReadLabel => 'Lido';
+
+  @override
+  String get qereWrittenLabel => 'Escrito';
+
+  @override
+  String get qereLemmaLabel => 'Lido como';
+
+  @override
   String get memorizationTitle => 'Memorização';
 
   @override

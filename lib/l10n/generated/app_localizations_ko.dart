@@ -446,6 +446,21 @@ class AppLocalizationsKo extends AppLocalizations {
   String get hebrewTextConsonantal => '자음만';
 
   @override
+  String get hebrewTextQere => '케레 / 크티브 (기록된 형태와 읽는 형태)';
+
+  @override
+  String get qereTitle => '케레 / 크티브';
+
+  @override
+  String get qereReadLabel => '읽기';
+
+  @override
+  String get qereWrittenLabel => '쓰기';
+
+  @override
+  String get qereLemmaLabel => '읽는 형태';
+
+  @override
   String get memorizationTitle => '암송';
 
   @override
