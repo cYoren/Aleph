@@ -190,6 +190,8 @@
   "hebrewTextNoCantillation": "모음 기호만",
   "hebrewTextConsonantal": "자음만",
   "hebrewTextQere": "케레 / 크티브 (기록된 형태와 읽는 형태)",
+  "otherEditions": "다른 판본",
+  "otherEditionsOmitted": "없음",
   "qereTitle": "케레 / 크티브",
   "qereReadLabel": "읽기",
   "qereWrittenLabel": "쓰기",

@@ -872,6 +872,18 @@ abstract class AppLocalizations {
   /// **'Qere / Ketiv (written beside read)'**
   String get hebrewTextQere;
 
+  /// No description provided for @otherEditions.
+  ///
+  /// In en, this message translates to:
+  /// **'Other editions'**
+  String get otherEditions;
+
+  /// No description provided for @otherEditionsOmitted.
+  ///
+  /// In en, this message translates to:
+  /// **'not present'**
+  String get otherEditionsOmitted;
+
   /// No description provided for @qereTitle.
   ///
   /// In en, this message translates to:

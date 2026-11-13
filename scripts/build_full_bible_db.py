@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import difflib
 import html
 import json
 import re
@@ -80,6 +81,37 @@ OSHB_WLC_FILES = (
     "Prov", "Job", "Song", "Ruth", "Lam", "Eccl", "Esth", "Dan", "Ezra",
     "Neh", "1Chr", "2Chr",
 )
+
+# Other editions of the Greek New Testament, for the "other editions" pane.
+# Robinson-Pierpont Byzantine Textform 2018 (public domain) and the Center for
+# New Testament Restoration's Statistical Restoration (CC BY 4.0). Both are
+# texts, not apparatuses: what ships is where they read differently from the
+# SBLGNT this app carries, never a claim about which reading is original.
+BYZANTINE_RAW = "https://raw.githubusercontent.com/byztxt/byzantine-majority-text"
+DEFAULT_BYZANTINE_COMMIT = "3b2b0806cc8af4144313ea70ec9cf654141e5996"
+BYZANTINE_EDITION = "RP2018"
+# Upstream book file -> app book id.
+BYZANTINE_FILES = {
+    "MAT": "MAT", "MAR": "MRK", "LUK": "LUK", "JOH": "JHN", "ACT": "ACT",
+    "ROM": "ROM", "1CO": "1CO", "2CO": "2CO", "GAL": "GAL", "EPH": "EPH",
+    "PHP": "PHP", "COL": "COL", "1TH": "1TH", "2TH": "2TH", "1TI": "1TI",
+    "2TI": "2TI", "TIT": "TIT", "PHM": "PHM", "HEB": "HEB", "JAM": "JAS",
+    "1PE": "1PE", "2PE": "2PE", "1JO": "1JN", "2JO": "2JN", "3JO": "3JN",
+    "JUD": "JUD", "REV": "REV",
+}
+
+CNTR_RAW = "https://raw.githubusercontent.com/Center-for-New-Testament-Restoration/SR"
+DEFAULT_CNTR_COMMIT = "4be18e67c6870388d317d38d2b10a70e8b5e8775"
+CNTR_EDITION = "SR"
+# The Statistical Restoration numbers its verses 40 (Matthew) through 66
+# (Revelation) in an eight-digit id: bbccvvvv.
+CNTR_BOOKS = {
+    40: "MAT", 41: "MRK", 42: "LUK", 43: "JHN", 44: "ACT", 45: "ROM",
+    46: "1CO", 47: "2CO", 48: "GAL", 49: "EPH", 50: "PHP", 51: "COL",
+    52: "1TH", 53: "2TH", 54: "1TI", 55: "2TI", 56: "TIT", 57: "PHM",
+    58: "HEB", 59: "JAS", 60: "1PE", 61: "2PE", 62: "1JN", 63: "2JN",
+    64: "3JN", 65: "JUD", 66: "REV",
+}
 
 # MACULA treebanks (Clear Bible, CC BY 4.0): real syntax trees.
 MACULA_GREEK_RAW = "https://raw.githubusercontent.com/Clear-Bible/macula-greek"
@@ -163,6 +195,13 @@ EXPECTED_COUNTS = {
     # so a parser or alignment regression fails loudly, and a separate check
     # rejects any marked text that is not Hebrew letters and pointing.
     "qere_ketiv_min": 1180,
+    # Other editions: measured 2026-11-13, 7,987 Byzantine (RP2018) readings and
+    # 1,367 Statistical Restoration readings across all 27 New Testament books.
+    # A collation that silently stops matching would still clear a low bar, so
+    # the gate requires each edition to appear in every book, not just two
+    # editions somewhere.
+    "textual_variants_min": 8000,
+    "textual_variant_books_min": 27,
 }
 
 _REF_WHITESPACE_RE = re.compile(r"\s+")
@@ -476,6 +515,23 @@ def parse_args() -> argparse.Namespace:
         help="Pinned commit for openscriptures/morphhb",
     )
     parser.add_argument(
+        "--no-textual-variants",
+        dest="textual_variants",
+        action="store_false",
+        default=True,
+        help="Skip the other-editions comparison (Byzantine, Statistical Restoration)",
+    )
+    parser.add_argument(
+        "--byzantine-commit",
+        default=DEFAULT_BYZANTINE_COMMIT,
+        help="Pinned commit for byztxt/byzantine-majority-text",
+    )
+    parser.add_argument(
+        "--cntr-commit",
+        default=DEFAULT_CNTR_COMMIT,
+        help="Pinned commit for Center-for-New-Testament-Restoration/SR",
+    )
+    parser.add_argument(
         "--no-syntax-trees",
         dest="syntax_trees",
         action="store_false",
@@ -739,6 +795,20 @@ def init_schema(conn: sqlite3.Connection) -> None:
             twot TEXT NOT NULL
         );
 
+        -- Where another edition of the Greek New Testament reads differently
+        -- from the SBLGNT this app carries. A text comparison, not a critical
+        -- apparatus: no manuscript witnesses, no claim about the original.
+        CREATE TABLE textual_variants (
+            id INTEGER PRIMARY KEY,
+            book_id TEXT NOT NULL,
+            chapter INTEGER NOT NULL,
+            verse INTEGER NOT NULL,
+            position INTEGER NOT NULL,
+            edition TEXT NOT NULL,
+            base_reading TEXT NOT NULL,
+            other_reading TEXT NOT NULL
+        );
+
         CREATE INDEX idx_books_order ON books(book_order);
         CREATE INDEX idx_cross_references_from
             ON cross_references(from_book, from_chapter, from_verse);
@@ -750,6 +820,8 @@ def init_schema(conn: sqlite3.Connection) -> None:
         CREATE INDEX idx_lexicon_strongs ON lexicon(strongs_id);
         CREATE INDEX idx_lexicon_senses_strongs ON lexicon_senses(strongs_id);
         CREATE INDEX idx_lexicon_roots_twot ON lexicon_roots(twot);
+        CREATE INDEX idx_textual_variants_verse
+            ON textual_variants(book_id, chapter, verse);
         """
     )
 
@@ -1613,6 +1685,170 @@ def build_qere_ketiv(conn: sqlite3.Connection, pairs: List[QereKetiv]) -> int:
         f"{inline:,} are one token in the flowing text and can be shown beside it"
     )
     return len(updates)
+
+
+def download_other_editions(
+    cache_dir: Path, byzantine_commit: str, cntr_commit: str
+) -> Tuple[List[Path], Path]:
+    """The Byzantine and Statistical Restoration texts, as verse-keyed files."""
+    byz_dir = cache_dir / "byzantine"
+    byz_dir.mkdir(parents=True, exist_ok=True)
+    paths: List[Path] = []
+    for name in BYZANTINE_FILES:
+        dst = byz_dir / f"{name}.csv"
+        download_file(
+            f"{BYZANTINE_RAW}/{byzantine_commit}/csv-unicode/ccat/no-variants/{name}.csv",
+            dst,
+        )
+        paths.append(dst)
+
+    sr_path = cache_dir / "SR.tsv"
+    download_file(f"{CNTR_RAW}/{cntr_commit}/SR.tsv", sr_path)
+    return paths, sr_path
+
+
+def parse_byzantine_edition(paths: List[Path]) -> Dict[Tuple[str, int, int], List[str]]:
+    """chapter,verse,text CSV per book, accented and punctuated as printed.
+
+    The `ccat/no-variants` files are the accented text without the apparatus
+    markers; the unaccented `strongs` files would show a reader Greek with no
+    breathings, which reads as a bug rather than as another edition.
+    """
+    verses: Dict[Tuple[str, int, int], List[str]] = {}
+    for path in paths:
+        book_id = BYZANTINE_FILES.get(path.stem)
+        if book_id is None:
+            continue
+        with path.open(encoding="utf-8", newline="") as handle:
+            for row in csv.DictReader(handle):
+                try:
+                    key = (book_id, int(row["chapter"]), int(row["verse"]))
+                except (KeyError, TypeError, ValueError):
+                    continue
+                words = [
+                    word.replace("\u00b6", "")
+                    for word in (row.get("text") or "").split()
+                ]
+                words = [word for word in words if greek_compare_form(word)]
+                if words:
+                    verses[key] = words
+    return verses
+
+
+def parse_cntr_edition(path: Path) -> Dict[Tuple[str, int, int], List[str]]:
+    """One row per word; the verse id is bbccvvvv."""
+    verses: Dict[Tuple[str, int, int], List[str]] = defaultdict(list)
+    with path.open(encoding="utf-8", newline="") as handle:
+        for row in csv.DictReader(handle, delimiter="\t"):
+            raw = (row.get("Verse") or "").strip()
+            if len(raw) != 8 or not raw.isdigit():
+                continue
+            book_id = CNTR_BOOKS.get(int(raw[:2]))
+            if book_id is None:
+                continue
+            word = (row.get("Modern") or "").replace("\u00b6", "").strip()
+            if not word or not greek_compare_form(word):
+                continue
+            key = (book_id, int(raw[2:5]), int(raw[5:8]))
+            verses[key].append(word)
+    return dict(verses)
+
+
+# Only Greek letters survive comparison: accents, breathings, punctuation,
+# quotation marks and the nomina sacra marks are not readings.
+_GREEK_LETTERS_RE = re.compile(r"[^\u0370-\u03FF\u1F00-\u1FFF]")
+
+
+def greek_compare_form(word: str) -> str:
+    """A word reduced to what makes two editions read the same."""
+    decomposed = unicodedata.normalize("NFD", word or "")
+    bare = "".join(
+        ch for ch in decomposed if unicodedata.category(ch) != "Mn"
+    )
+    return _GREEK_LETTERS_RE.sub("", bare.lower().replace("\u03c2", "\u03c3"))
+
+
+def diff_verse_words(
+    base: List[str], other: List[str]
+) -> List[Tuple[str, str]]:
+    """The places where two word lists disagree, as (base, other) readings.
+
+    An empty side is an omission or an addition, which is the whole point of
+    the pane: the Byzantine doxology of Matthew 6:13 has nothing on the base
+    side. Compared on [greek_compare_form], so a difference in pointing is not
+    reported as a difference in reading.
+    """
+    base_forms = [greek_compare_form(word) for word in base]
+    other_forms = [greek_compare_form(word) for word in other]
+    matcher = difflib.SequenceMatcher(a=base_forms, b=other_forms, autojunk=False)
+
+    differences: List[Tuple[str, str]] = []
+    for tag, i1, i2, j1, j2 in matcher.get_opcodes():
+        if tag == "equal":
+            continue
+        if i1 == i2 and j1 == j2:
+            continue
+        differences.append((" ".join(base[i1:i2]), " ".join(other[j1:j2])))
+    return differences
+
+
+def build_textual_variants(
+    conn: sqlite3.Connection,
+    editions: Dict[str, Dict[Tuple[str, int, int], List[str]]],
+) -> int:
+    """Writes where each other edition differs from the base text."""
+    print("Building textual_variants from the other Greek editions...")
+
+    base_verses: Dict[Tuple[str, int, int], List[str]] = defaultdict(list)
+    for book_id, chapter, verse, word in conn.execute(
+        """
+        SELECT v.book_id, v.chapter, v.verse_number, w.word
+        FROM words w JOIN verses v ON v.id = w.verse_id
+        WHERE w.language = 'grc'
+        ORDER BY v.book_id, v.chapter, v.verse_number, w.position
+        """
+    ):
+        base_verses[(book_id, chapter, verse)].append(word)
+
+    rows: List[Tuple[str, int, int, int, str, str, str]] = []
+    books_by_edition: Dict[str, set] = defaultdict(set)
+    for edition, verses in editions.items():
+        for key, other_words in verses.items():
+            base_words = base_verses.get(key)
+            if not base_words:
+                continue
+            for position, (base_reading, other_reading) in enumerate(
+                diff_verse_words(base_words, other_words)
+            ):
+                rows.append(
+                    (
+                        key[0],
+                        key[1],
+                        key[2],
+                        position,
+                        edition,
+                        base_reading,
+                        other_reading,
+                    )
+                )
+                books_by_edition[edition].add(key[0])
+
+    conn.executemany(
+        """
+        INSERT INTO textual_variants
+        (book_id, chapter, verse, position, edition, base_reading, other_reading)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        """,
+        rows,
+    )
+
+    for edition in sorted(books_by_edition):
+        print(
+            f"  {edition}: {sum(1 for r in rows if r[4] == edition):,} readings "
+            f"across {len(books_by_edition[edition])} books"
+        )
+    print(f"  {len(rows):,} differences in total")
+    return len(rows)
 
 
 def _local_name(tag: str) -> str:
@@ -3165,6 +3401,14 @@ def get_counts(conn: sqlite3.Connection) -> Dict[str, int]:
         "SELECT COUNT(*) FROM words WHERE qere_text IS NOT NULL"
     ).fetchone()[0]
 
+    table_counts["textual_variants"] = conn.execute(
+        "SELECT COUNT(*) FROM textual_variants"
+    ).fetchone()[0]
+
+    table_counts["textual_variant_books"] = conn.execute(
+        "SELECT COUNT(DISTINCT book_id) FROM textual_variants"
+    ).fetchone()[0]
+
     return table_counts
 
 
@@ -3365,6 +3609,19 @@ def validate_database(conn: sqlite3.Connection) -> None:
             "the parser is leaking note text into scripture"
         )
 
+    if counts["textual_variants"] < EXPECTED_COUNTS["textual_variants_min"]:
+        raise RuntimeError(
+            "Expected at least "
+            f"{EXPECTED_COUNTS['textual_variants_min']} readings from other "
+            f"editions, found {counts['textual_variants']}"
+        )
+
+    if counts["textual_variant_books"] < EXPECTED_COUNTS["textual_variant_books_min"]:
+        raise RuntimeError(
+            "Expected readings from other editions in all "
+            f"{EXPECTED_COUNTS['textual_variant_books_min']} New Testament books, "
+            f"found {counts['textual_variant_books']}"
+        )
 
 
 def print_summary(conn: sqlite3.Connection, source_commit: str, open_bibles_commit: str) -> None:
@@ -3385,6 +3642,8 @@ def print_summary(conn: sqlite3.Connection, source_commit: str, open_bibles_comm
         "lexicon_roots",
         "participant_links",
         "qere_ketiv",
+        "textual_variants",
+        "textual_variant_books",
         "distinct_verse_books",
         "kjv_translation_verses",
         "enabled_translations",
@@ -3513,6 +3772,21 @@ def main() -> None:
                 qere_ketiv_pairs.extend(parse_oshb_qere_ketiv(path))
             print(f"Parsed {len(qere_ketiv_pairs):,} qere/ketiv pairs from OSHB")
 
+        other_editions: Dict[str, Dict[Tuple[str, int, int], List[str]]] = {}
+        if args.textual_variants:
+            byz_paths, sr_path = download_other_editions(
+                cache_dir, args.byzantine_commit, args.cntr_commit
+            )
+            other_editions[BYZANTINE_EDITION] = parse_byzantine_edition(byz_paths)
+            other_editions[CNTR_EDITION] = parse_cntr_edition(sr_path)
+            print(
+                "Parsed other editions: "
+                + ", ".join(
+                    f"{name} {len(verses):,} verses"
+                    for name, verses in sorted(other_editions.items())
+                )
+            )
+
         macula_paths: List[Path] = []
         if args.syntax_trees:
             macula_paths = download_macula_files(
@@ -3543,6 +3817,8 @@ def main() -> None:
                 build_lexicon_roots(conn, roots)
             if qere_ketiv_pairs:
                 build_qere_ketiv(conn, qere_ketiv_pairs)
+            if other_editions:
+                build_textual_variants(conn, other_editions)
             build_kjv_translation_verses(
                 conn,
                 ot_tsv=cache_dir / "ot_BSB.tsv",

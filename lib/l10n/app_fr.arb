@@ -190,6 +190,8 @@
   "hebrewTextNoCantillation": "Voyelles seulement",
   "hebrewTextConsonantal": "Consonnes seulement",
   "hebrewTextQere": "Qéré / Ketiv (écrit à côté de lu)",
+  "otherEditions": "Autres éditions",
+  "otherEditionsOmitted": "absent",
   "qereTitle": "Qéré / Ketiv",
   "qereReadLabel": "Lu",
   "qereWrittenLabel": "Écrit",

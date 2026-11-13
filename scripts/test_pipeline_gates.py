@@ -163,6 +163,11 @@ class CoverageGateTest(unittest.TestCase):
                                          heading TEXT, summary TEXT);
             CREATE TABLE lexicon_roots (strongs_id TEXT PRIMARY KEY, root TEXT,
                                         root_gloss TEXT, twot TEXT);
+            CREATE TABLE textual_variants (id INTEGER PRIMARY KEY,
+                                           book_id TEXT, chapter INTEGER,
+                                           verse INTEGER, position INTEGER,
+                                           edition TEXT, base_reading TEXT,
+                                           other_reading TEXT);
             """
         )
         self.addCleanup(self.conn.close)
@@ -224,6 +229,20 @@ class CoverageGateTest(unittest.TestCase):
             "INSERT INTO lexicon_roots (strongs_id, root, twot) VALUES (?, 'r', '1')",
             [(f"H{i}",) for i in range(lexicon_roots)],
         )
+        # One reading per New Testament book, from each of the two editions.
+        nt_books = [b.abbr for b in books if b.testament == "NT"]
+        self.conn.executemany(
+            "INSERT INTO textual_variants (book_id, chapter, verse, position, "
+            "edition, base_reading, other_reading) "
+            "VALUES (?, 1, 1, 0, ?, 'a', 'b')",
+            [(book, edition) for book in nt_books for edition in ("RP2018", "SR")],
+        )
+        self.conn.executemany(
+            "INSERT INTO textual_variants (book_id, chapter, verse, position, "
+            "edition, base_reading, other_reading) "
+            "VALUES ('MAT', 1, ?, 0, 'RP2018', 'a', 'b')",
+            [(i,) for i in range(2, 9001)],
+        )
         self.conn.commit()
 
     def test_the_full_expected_shape_passes(self):
@@ -242,6 +261,20 @@ class CoverageGateTest(unittest.TestCase):
         with self.assertRaises(RuntimeError) as ctx:
             build_db.validate_database(self.conn)
         self.assertIn("Hebrew roots", str(ctx.exception))
+
+    def test_missing_other_editions_aborts_the_build(self):
+        self.conn.execute("DELETE FROM textual_variants")
+        self.conn.commit()
+        with self.assertRaises(RuntimeError) as ctx:
+            build_db.validate_database(self.conn)
+        self.assertIn("other editions", str(ctx.exception))
+
+    def test_other_editions_must_cover_every_new_testament_book(self):
+        self.conn.execute("DELETE FROM textual_variants WHERE book_id = 'REV'")
+        self.conn.commit()
+        with self.assertRaises(RuntimeError) as ctx:
+            build_db.validate_database(self.conn)
+        self.assertIn("New Testament books", str(ctx.exception))
 
     def test_missing_qere_ketiv_aborts_the_build(self):
         self.conn.execute("UPDATE words SET qere_text = NULL")

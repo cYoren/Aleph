@@ -118,6 +118,21 @@ void main() {
         greaterThanOrEqualTo(40000),
       );
 
+      // Other editions: where the Byzantine text and the Statistical
+      // Restoration read differently from the base text.
+      expect(
+        await count('SELECT COUNT(*) FROM textual_variants'),
+        greaterThanOrEqualTo(8000),
+      );
+      expect(
+        await count('SELECT COUNT(DISTINCT book_id) FROM textual_variants'),
+        27,
+      );
+      expect(
+        await count('SELECT COUNT(DISTINCT edition) FROM textual_variants'),
+        2,
+      );
+
       // Qere/Ketiv: the written form and the reading, both stored.
       expect(
         await count(

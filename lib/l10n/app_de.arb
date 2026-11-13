@@ -190,6 +190,8 @@
   "hebrewTextNoCantillation": "Nur Vokale",
   "hebrewTextConsonantal": "Nur Konsonanten",
   "hebrewTextQere": "Qere / Ketiv (Geschriebenes neben Gelesenem)",
+  "otherEditions": "Andere Ausgaben",
+  "otherEditionsOmitted": "fehlt",
   "qereTitle": "Qere / Ketiv",
   "qereReadLabel": "Gelesen",
   "qereWrittenLabel": "Geschrieben",

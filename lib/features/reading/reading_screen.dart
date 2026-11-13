@@ -18,6 +18,7 @@ import '../../shared/widgets/empty_state.dart';
 import 'widgets/visual_context_overlay.dart';
 import 'widgets/dynamic_translation_text.dart';
 import 'widgets/cross_references_sheet.dart';
+import 'widgets/textual_variants_pane.dart';
 import '../audio/recitation_provider.dart';
 import '../explain/explain_provider.dart';
 import '../explain/widgets/explain_sheet.dart';
@@ -589,6 +590,16 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
                         ),
                       ),
               ),
+              // Where another edition of the Greek New Testament reads
+              // differently here. Absent for the Hebrew Bible and for verses
+              // where the editions agree.
+              if (!isOT)
+                TextualVariantsPane(
+                  bookId: readingState.bookId,
+                  chapter: readingState.chapter,
+                  verse: verse.verseNumber,
+                  fontSize: settings.fontSize,
+                ),
             ],
           ),
         ),
