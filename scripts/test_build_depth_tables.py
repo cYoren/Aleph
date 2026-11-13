@@ -260,6 +260,186 @@ class WriteSensesTest(unittest.TestCase):
                 build_db.build_lexicon_roots(self.conn, roots)
 
 
+OSHB_VERSE = """<?xml version="1.0" encoding="UTF-8"?>
+<osis xmlns="http://www.bibletechnologies.net/2003/OSIS/namespace">
+<verse osisID="Gen.8.17">
+  <w lemma="3605" morph="HNcmsc" id="01PUa">כָּל</w>
+  <w type="x-ketiv" lemma="3318" morph="HVhv2ms" id="01Pdv">הוצא</w><note type="variant"><catchWord>הוצא</catchWord><rdg type="x-qere"><w lemma="3318" morph="HVhv2ms" id="01S7t">הַיְצֵ֣א</w></rdg></note>
+  <w lemma="854" morph="HR/Sp2fs" id="018F2">אִתָּ֑/ךְ</w>
+</verse>
+<verse osisID="Gen.2.16">
+  <w type="x-ketiv" lemma="c/269" id="01abc">ו/אחיתי/הם</w><note type="variant"><catchWord>ו/אחיתי/הם</catchWord><rdg type="x-qere"><w lemma="c/269" id="01def">וְ/אַחְיוֹתֵי/הֶ֖ם</w></rdg></note>
+</verse>
+<verse osisID="Gen.3.1">
+  <w type="x-ketiv" lemma="3318" id="01ghi">הוצא</w><note type="variant"><catchWord>הוצא</catchWord></note>
+</verse>
+</osis>
+"""
+
+
+class QereKetivParseTest(unittest.TestCase):
+    """The written form and the reading, out of the OSHB variant markup."""
+
+    def setUp(self):
+        self.path = _write(OSHB_VERSE, ".xml")
+        self.addCleanup(self.path.unlink)
+
+    def test_a_ketiv_word_yields_both_forms(self):
+        pairs = build_db.parse_oshb_qere_ketiv(self.path)
+        first = pairs[0]
+        self.assertEqual((first.book_id, first.chapter, first.verse), ("GEN", 8, 17))
+        self.assertEqual(first.ketiv, "הוצא")
+        self.assertEqual(first.qere, "הַיְצֵ֣א")
+        self.assertEqual(first.qere_strongs, "H3318")
+        self.assertEqual(first.ketiv_strongs, "H3318")
+
+    def test_morpheme_slashes_are_not_part_of_the_word(self):
+        pairs = build_db.parse_oshb_qere_ketiv(self.path)
+        second = pairs[1]
+        self.assertEqual(second.ketiv, "ואחיתיהם")
+        self.assertEqual(second.qere, "וְאַחְיוֹתֵיהֶ֖ם")
+
+    def test_a_variant_note_without_a_reading_is_not_a_pair(self):
+        pairs = build_db.parse_oshb_qere_ketiv(self.path)
+        self.assertEqual(len(pairs), 2)
+
+    def test_a_compound_lemma_keeps_its_own_number(self):
+        self.assertEqual(build_db._oshb_strongs("c/269"), "H0269")
+        self.assertEqual(build_db._oshb_strongs("l"), None)
+        self.assertEqual(build_db._oshb_strongs(""), None)
+
+
+class QereKetivAlignTest(unittest.TestCase):
+    """Alignment by consonants, never by token index."""
+
+    def test_a_word_split_by_proclitics_still_matches(self):
+        tokens = ["וְ", "אַחְיוֹתֵי", "הֶ֖ם"]
+        self.assertEqual(
+            build_db.find_token_span(tokens, "וְ/אַחְיוֹתֵי/הֶ֖ם"), (0, 2)
+        )
+
+    def test_an_ambiguous_match_is_refused(self):
+        tokens = ["דּוֹאֵ֣ג", "וַ", "יִּסֹּ֞ב", "דּוֹאֵ֣ג"]
+        self.assertIsNone(build_db.find_token_span(tokens, "דואג"))
+
+    def test_the_readings_strongs_id_breaks_the_tie(self):
+        tokens = ["לְ", "דּוֹאֵ֔ג", "וַ", "יִּסֹּ֞ב", "דּוֹאֵ֣ג"]
+        strongs = ["H3807A", "H1673", "H2050B", "H5437", "H1673"]
+        # Both occurrences are the same word here, so the id cannot decide.
+        self.assertIsNone(
+            build_db.find_token_span(tokens, "דואג", "H1673", strongs)
+        )
+        # With only one of them carrying the reading's id, it decides.
+        strongs[1] = "H0999"
+        self.assertEqual(
+            build_db.find_token_span(tokens, "דואג", "H1673", strongs), (4, 4)
+        )
+
+    def test_consonants_ignore_pointing_and_marks(self):
+        self.assertEqual(build_db.hebrew_consonants("הַיְצֵ֣א"), "היצא")
+        self.assertEqual(build_db.hebrew_consonants("בְּ/נֵי־"), "בני")
+
+
+class WriteQereKetivTest(unittest.TestCase):
+    """The words table gets both forms, and the gate can fail."""
+
+    def setUp(self):
+        self.conn = sqlite3.connect(":memory:")
+        self.conn.executescript(
+            """
+            CREATE TABLE verses (
+                id INTEGER PRIMARY KEY,
+                book_id TEXT NOT NULL,
+                chapter INTEGER NOT NULL,
+                verse_number INTEGER NOT NULL
+            );
+            CREATE TABLE words (
+                id INTEGER PRIMARY KEY,
+                verse_id INTEGER NOT NULL,
+                position INTEGER NOT NULL,
+                word TEXT NOT NULL,
+                strongs TEXT,
+                language TEXT NOT NULL DEFAULT 'heb',
+                qere_text TEXT,
+                ketiv_text TEXT,
+                qere_lemma TEXT
+            );
+            CREATE TABLE lexicon (lemma TEXT PRIMARY KEY, strongs_id TEXT);
+            INSERT INTO verses (id, book_id, chapter, verse_number)
+                VALUES (1, 'GEN', 8, 17);
+            INSERT INTO words (id, verse_id, position, word, strongs)
+                VALUES (1, 1, 1, 'הָ', 'H1886A'),
+                       (2, 1, 2, 'יְצֵ֣א', 'H3318');
+            INSERT INTO lexicon (lemma, strongs_id) VALUES ('הוֹדַוְיָה', 'H1938');
+            """
+        )
+        self.addCleanup(self.conn.close)
+
+    def test_both_forms_land_on_the_stem_token(self):
+        pairs = [
+            build_db.QereKetiv(
+                book_id="GEN",
+                chapter=8,
+                verse=17,
+                ketiv="הוצא",
+                ketiv_strongs="H3318",
+                qere="הַיְצֵ֣א",
+                qere_strongs="H3318",
+            )
+        ]
+        with _quiet():
+            written = build_db.build_qere_ketiv(self.conn, pairs)
+        self.assertEqual(written, 1)
+        row = self.conn.execute(
+            "SELECT qere_text, ketiv_text, qere_lemma FROM words WHERE id = 2"
+        ).fetchone()
+        self.assertEqual(row, ("הַיְצֵ֣א", "הוצא", None))
+
+    def test_a_different_reading_carries_its_own_lemma(self):
+        self.conn.execute(
+            "UPDATE words SET word = 'הוֹדַוְיָ֡הוּ', strongs = 'H1939' WHERE id = 2"
+        )
+        pairs = [
+            build_db.QereKetiv(
+                book_id="GEN",
+                chapter=8,
+                verse=17,
+                ketiv="הדיוהו",
+                ketiv_strongs="H1939",
+                qere="הוֹדַוְיָ֡הוּ",
+                qere_strongs="H1938",
+            )
+        ]
+        with _quiet():
+            build_db.build_qere_ketiv(self.conn, pairs)
+        row = self.conn.execute(
+            "SELECT qere_lemma FROM words WHERE id = 2"
+        ).fetchone()
+        self.assertEqual(row, ("הוֹדַוְיָה",))
+
+    def test_an_unaligned_pair_writes_nothing(self):
+        pairs = [
+            build_db.QereKetiv(
+                book_id="GEN",
+                chapter=8,
+                verse=17,
+                ketiv="שלום",
+                ketiv_strongs=None,
+                qere="שלום",
+                qere_strongs=None,
+            )
+        ]
+        with _quiet():
+            written = build_db.build_qere_ketiv(self.conn, pairs)
+        self.assertEqual(written, 0)
+        self.assertEqual(
+            self.conn.execute(
+                "SELECT COUNT(*) FROM words WHERE qere_text IS NOT NULL"
+            ).fetchone()[0],
+            0,
+        )
+
+
 def _no_minimums():
     """Gate thresholds relaxed to the fixture, so a write path can be tested."""
     return {

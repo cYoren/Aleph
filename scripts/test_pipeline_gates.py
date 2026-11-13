@@ -152,7 +152,9 @@ class CoverageGateTest(unittest.TestCase):
                                 position INTEGER, word TEXT, lemma TEXT,
                                 morph TEXT, strongs TEXT, language TEXT,
                                 subject_text TEXT, subject_strongs TEXT,
-                                referent_text TEXT, referent_strongs TEXT);
+                                referent_text TEXT, referent_strongs TEXT,
+                                qere_text TEXT, ketiv_text TEXT,
+                                qere_lemma TEXT);
             CREATE TABLE lexicon (lemma TEXT PRIMARY KEY, strongs_id TEXT,
                                   gloss TEXT);
             CREATE TABLE lexicon_senses (id INTEGER PRIMARY KEY,
@@ -202,6 +204,11 @@ class CoverageGateTest(unittest.TestCase):
             "UPDATE words SET subject_text = 'x', subject_strongs = 'H1' "
             "WHERE id % 10 = 0"
         )
+        # Every five-hundredth token is one of the ~1.2k qere/ketiv places.
+        self.conn.execute(
+            "UPDATE words SET qere_text = 'q', ketiv_text = 'k' "
+            "WHERE id % 500 = 0"
+        )
         self.conn.executemany(
             "INSERT INTO lexicon (lemma, strongs_id, gloss) VALUES (?, ?, 'g')",
             [(f"l{i}", f"H{i}") for i in range(13001)],
@@ -233,6 +240,13 @@ class CoverageGateTest(unittest.TestCase):
         with self.assertRaises(RuntimeError) as ctx:
             build_db.validate_database(self.conn)
         self.assertIn("Hebrew roots", str(ctx.exception))
+
+    def test_missing_qere_ketiv_aborts_the_build(self):
+        self.conn.execute("UPDATE words SET qere_text = NULL")
+        self.conn.commit()
+        with self.assertRaises(RuntimeError) as ctx:
+            build_db.validate_database(self.conn)
+        self.assertIn("qere/ketiv", str(ctx.exception))
 
     def test_a_thin_lexicon_aborts_the_build(self):
         self.conn.execute("DELETE FROM lexicon WHERE rowid > 100")

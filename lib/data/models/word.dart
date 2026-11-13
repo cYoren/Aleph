@@ -16,6 +16,16 @@ class Word {
   final String? referentText;
   final String? referentStrongs;
 
+  /// Qere/Ketiv: the reading tradition's form of a word the scroll writes
+  /// differently. Both are stored because the flowing text follows one or the
+  /// other case by case, and the app must not assume which.
+  final String? qereText;
+  final String? ketivText;
+
+  /// The dictionary form of the reading, when it is a different word from the
+  /// one written (H1938 for a ketiv of H1939, for instance).
+  final String? qereLemma;
+
   Word({
     required this.id,
     required this.verseId,
@@ -29,6 +39,9 @@ class Word {
     this.subjectStrongs,
     this.referentText,
     this.referentStrongs,
+    this.qereText,
+    this.ketivText,
+    this.qereLemma,
   });
 
   factory Word.fromMap(Map<String, dynamic> map) {
@@ -50,8 +63,14 @@ class Word {
       subjectStrongs: _nonEmpty(map['subject_strongs']?.toString()),
       referentText: _nonEmpty(map['referent_text']?.toString()),
       referentStrongs: _nonEmpty(map['referent_strongs']?.toString()),
+      qereText: _nonEmpty(map['qere_text']?.toString()),
+      ketivText: _nonEmpty(map['ketiv_text']?.toString()),
+      qereLemma: _nonEmpty(map['qere_lemma']?.toString()),
     );
   }
+
+  /// True where the written text and the reading differ.
+  bool get hasQereKetiv => qereText != null && ketivText != null;
 
   static String? _nonEmpty(String? value) {
     if (value == null) return null;

@@ -442,6 +442,21 @@ class AppLocalizationsZh extends AppLocalizations {
   String get hebrewTextConsonantal => '仅辅音';
 
   @override
+  String get hebrewTextQere => 'Qere / Ketiv（书写形式并列朗读形式）';
+
+  @override
+  String get qereTitle => 'Qere / Ketiv';
+
+  @override
+  String get qereReadLabel => '朗读';
+
+  @override
+  String get qereWrittenLabel => '书写';
+
+  @override
+  String get qereLemmaLabel => '朗读为';
+
+  @override
   String get memorizationTitle => '背诵';
 
   @override

@@ -229,8 +229,25 @@ our data provides. Implemented in `lib/shared/utils/cantillation.dart`
 
 - [x] Display controls for the Hebrew text: full / vowels-only / consonantal modes —
       reading unpointed text is itself a learning progression.
-- [ ] Qere/Ketiv display. **Deferred** — no licence-clean qere/ketiv layer exists
-      in the pipeline yet; see the deferred list.
+- [x] **Qere/Ketiv (2026-11-13).** The Open Scriptures Hebrew Bible (CC BY 4.0)
+      marks a written word `<w type="x-ketiv">` and carries the reading in the
+      variant note beside it. `build_qere_ketiv` parses all 1,244 pairs and
+      marks **1,190 tokens** with the reading (`qere_text`), the written form
+      (`ketiv_text`) and the reading's own dictionary form where it is a
+      different word (`qere_lemma`, 33 tokens). Alignment is by the
+      concatenated consonants of the verse, never by token index, because MACULA
+      and OSHB split proclitics differently; a tie is broken by the reading's
+      Strong's id, and an ambiguity that survives that is left unmarked rather
+      than guessed (53 pairs). The flowing text carries the *reading* in 1,075
+      of the pairs, so the display mode shows the **written** form beside the
+      word with the printed editions' siglum (כ), and shows the reading (ק) for
+      the handful where the text carries what is written. The definition sheet
+      labels both. Gates: `build_qere_ketiv` + `validate_database`,
+      `validate_release.sh` (1,100 tokens, and every marked token must carry
+      both forms). Tests: `scripts/test_build_depth_tables.py`
+      (`QereKetivParseTest`, `QereKetivAlignTest`, `WriteQereKetivTest`),
+      `test/qere_ketiv_reader_test.dart`, `test/definition_depth_sheet_test.dart`,
+      `test/hebrew_display_test.dart`.
 - [x] Cross-references: OpenBible.info dataset (CC-BY, ~340k pairs), per-verse
       sheet in the reader with previews, best-voted first.
 - [x] **Participant/referent data from MACULA.** Hebrew verbs carry their subject
@@ -315,6 +332,7 @@ features. YouVersion wins that game; our niche is *actually engaging the origina
 | BDB Hebrew lexicon | `openscriptures/HebrewLexicon` | public domain |
 | Abbott-Smith Greek lexicon | `translatable-exegetical-tools/Abbott-Smith` | public domain |
 | MACULA treebanks (syntax trees) | Clear Bible | CC BY 4.0 |
+| Qere/Ketiv readings | `openscriptures/morphhb` (WLC) | CC BY 4.0 |
 | Cross-references | OpenBible.info (TSK-derived) | CC Attribution |
 | Bundled TTS voice (Greek) | Piper `el_GR/rapunzelina` via sherpa-onnx | MIT weights / CC0 data / GPL-3.0 eSpeak NG |
 | Long-form lexicon translations | machine-translated, cached in `data/lexicon_translations/` | derived from the CC BY-SA Strong's / public-domain BDB & Abbott-Smith originals |
@@ -331,12 +349,12 @@ features. YouVersion wins that game; our niche is *actually engaging the origina
   beginner reaches the few hundred reviews per user where FSRS differs measurably
   in about a month of daily use. Revisit when `SrsDao.countReviews()` is in the
   hundreds for real installs; nothing has to be rewritten to get there.
-- **Qere/Ketiv display.** The shipped WLC text carries the ketiv consonants and
-  the qere vowels in the standard convention, and nothing in the pipeline marks
-  which verses even have a qere. A real display needs a dedicated qere/ketiv
-  dataset (Tanach.us publishes one) added to `build_full_bible_db.py` with its
-  licence recorded in `assets/attributions.txt`, plus a column per token. A
-  "qere" toggle over unmarked data would be a guess presented as scholarship.
+- **The 53 qere/ketiv pairs that could not be aligned.** Their consonants occur
+  more than once in the verse and the reading's Strong's id does not separate
+  them (1SA 22:18 has דואג twice, both times the same word). Resolving them
+  needs a positional heuristic against OSHB's own word order, which is the
+  "index alone" guess the alignment avoids on purpose. 1,190 of 1,244 is the
+  honest number until then.
 - **Textual variants (NA/Byz).** The Byzantine text is free; the *collation* is
   the copyrighted work (NA28 apparatus). Deferred until a licence-clean collation
   is verified.

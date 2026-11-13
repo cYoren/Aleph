@@ -12,6 +12,10 @@ Strong's dictionary: Copyright 2009, Open Scriptures, CC BY-SA, derived from the
 https://github.com/openscriptures/strongs
 https://raw.githubusercontent.com/openscriptures/strongs/master/greek/strongs-greek-dictionary.js
 
+Qere/Ketiv readings: Open Scriptures Hebrew Bible (Westminster Leningrad Codex), CC BY 4.0. The written form (ketiv) and the reading tradition's form (qere) are taken from its variant markup.
+https://github.com/openscriptures/morphhb
+https://creativecommons.org/licenses/by/4.0/
+
 Extended lexicons: Brown-Driver-Briggs and Abbott-Smith public-domain digitizations.
 https://github.com/openscriptures/HebrewLexicon
 https://github.com/translatable-exegetical-tools/Abbott-Smith

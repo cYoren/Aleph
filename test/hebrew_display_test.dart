@@ -52,6 +52,12 @@ void main() {
       );
     });
 
+    test('qere mode keeps the full text', () {
+      // The written form is rendered beside the word, not instead of it, so
+      // nothing is stripped from the verse itself.
+      expect(applyHebrewDisplay(pointed, HebrewTextDisplay.qere), pointed);
+    });
+
     test('fromName parses stored preference values', () {
       expect(
         HebrewTextDisplay.fromName('noCantillation'),
@@ -61,8 +67,14 @@ void main() {
         HebrewTextDisplay.fromName('consonantal'),
         HebrewTextDisplay.consonantal,
       );
+      expect(HebrewTextDisplay.fromName('qere'), HebrewTextDisplay.qere);
       expect(HebrewTextDisplay.fromName(null), HebrewTextDisplay.full);
       expect(HebrewTextDisplay.fromName('bogus'), HebrewTextDisplay.full);
+    });
+
+    test('consonants compare two spellings of the same word', () {
+      expect(hebrewConsonants('הַיְצֵ֣א'), hebrewConsonants('היצא'));
+      expect(hebrewConsonants('הַיְצֵ֣א'), isNot(hebrewConsonants('הוצא')));
     });
   });
 }

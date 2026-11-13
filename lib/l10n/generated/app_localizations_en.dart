@@ -455,6 +455,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get hebrewTextConsonantal => 'Consonants only';
 
   @override
+  String get hebrewTextQere => 'Qere / Ketiv (written beside read)';
+
+  @override
+  String get qereTitle => 'Qere / Ketiv';
+
+  @override
+  String get qereReadLabel => 'Read';
+
+  @override
+  String get qereWrittenLabel => 'Written';
+
+  @override
+  String get qereLemmaLabel => 'Read as';
+
+  @override
   String get memorizationTitle => 'Memorization';
 
   @override
