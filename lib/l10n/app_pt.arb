@@ -190,6 +190,8 @@
   "hebrewTextNoCantillation": "Somente vogais",
   "hebrewTextConsonantal": "Somente consoantes",
   "hebrewTextQere": "Qere / Ketiv (escrito ao lado do lido)",
+  "otherEditions": "Outras edições",
+  "otherEditionsOmitted": "não consta",
   "qereTitle": "Qere / Ketiv",
   "qereReadLabel": "Lido",
   "qereWrittenLabel": "Escrito",

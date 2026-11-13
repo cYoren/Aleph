@@ -472,6 +472,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get hebrewTextQere => 'Кере / Кетив (написанное рядом с прочитанным)';
 
   @override
+  String get otherEditions => 'Другие издания';
+
+  @override
+  String get otherEditionsOmitted => 'отсутствует';
+
+  @override
   String get qereTitle => 'Кере / Кетив';
 
   @override

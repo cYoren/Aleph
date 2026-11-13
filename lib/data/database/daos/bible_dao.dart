@@ -8,6 +8,7 @@ import '../../models/cross_reference.dart';
 import '../../models/lexicon_entry.dart';
 import '../../models/lexicon_root.dart';
 import '../../models/lexicon_sense.dart';
+import '../../models/textual_variant.dart';
 import '../../models/translation.dart';
 import '../../../shared/utils/vocabulary_filter.dart';
 import '../database_helper.dart';
@@ -1202,6 +1203,34 @@ class BibleDAO {
     } catch (e) {
       if (kDebugMode) {
         debugPrint('BibleDAO senses error: $e');
+      }
+      return const [];
+    }
+  }
+
+  /// Where another edition of the Greek New Testament reads differently from
+  /// the base text in this verse.
+  ///
+  /// Returns [] for databases built before `textual_variants` existed, so the
+  /// reader simply has no pane rather than an empty one.
+  Future<List<TextualVariant>> getTextualVariants({
+    required String bookId,
+    required int chapter,
+    required int verse,
+  }) async {
+    if (bookId.isEmpty) return const [];
+    try {
+      final db = await _dbHelper.database;
+      final rows = await db.query(
+        'textual_variants',
+        where: 'book_id = ? AND chapter = ? AND verse = ?',
+        whereArgs: [bookId, chapter, verse],
+        orderBy: 'edition ASC, position ASC',
+      );
+      return rows.map(TextualVariant.fromMap).toList();
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('BibleDAO textual variants error: $e');
       }
       return const [];
     }

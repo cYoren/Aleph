@@ -461,6 +461,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get hebrewTextQere => 'Qere / Ketiv (Geschriebenes neben Gelesenem)';
 
   @override
+  String get otherEditions => 'Andere Ausgaben';
+
+  @override
+  String get otherEditionsOmitted => 'fehlt';
+
+  @override
   String get qereTitle => 'Qere / Ketiv';
 
   @override

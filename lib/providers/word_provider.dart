@@ -5,6 +5,7 @@ import '../data/models/lexicon_entry.dart';
 import '../data/models/srs_progress.dart';
 import '../data/models/lexicon_root.dart';
 import '../data/models/lexicon_sense.dart';
+import '../data/models/textual_variant.dart';
 import '../shared/utils/paradigm.dart';
 import '../shared/utils/transliterator.dart';
 import '../shared/utils/hebrew_syllables.dart';
@@ -49,6 +50,22 @@ final wordsForVerseProvider = FutureProvider.family<List<Word>, String>((
 ) async {
   final dao = ref.watch(bibleDaoProvider);
   return dao.getWordsForVerse(verseId);
+});
+
+/// Where another edition of the Greek New Testament reads differently from the
+/// base text in one verse. Empty for the Hebrew Bible and for verses where the
+/// editions agree, which is most of them.
+final textualVariantsProvider =
+    FutureProvider.family<List<TextualVariant>, (String, int, int)>((
+  ref,
+  key,
+) async {
+  final dao = ref.watch(bibleDaoProvider);
+  return dao.getTextualVariants(
+    bookId: key.$1,
+    chapter: key.$2,
+    verse: key.$3,
+  );
 });
 
 /// Transliterations for a verse - word ID -> transliteration.

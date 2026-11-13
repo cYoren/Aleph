@@ -211,6 +211,8 @@
   "hebrewTextNoCantillation": "Vowels only",
   "hebrewTextConsonantal": "Consonants only",
   "hebrewTextQere": "Qere / Ketiv (written beside read)",
+  "otherEditions": "Other editions",
+  "otherEditionsOmitted": "not present",
   "qereTitle": "Qere / Ketiv",
   "qereReadLabel": "Read",
   "qereWrittenLabel": "Written",
