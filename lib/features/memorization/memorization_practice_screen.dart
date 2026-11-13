@@ -7,7 +7,9 @@ import '../../data/models/verse.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../providers/books_provider.dart';
 import '../../shared/utils/hebrew_display.dart';
+import '../../shared/utils/hebrew_syllables.dart';
 import '../../shared/utils/memorization.dart';
+import '../../shared/utils/transliterator.dart';
 import '../settings/settings_provider.dart';
 import 'memorization_provider.dart';
 
@@ -30,6 +32,11 @@ class _MemorizationPracticeScreenState
   /// Revealed hidden words, keyed as "verseIndex:wordIndex".
   final Set<String> _revealed = {};
 
+  /// Reciting from memory in a script you cannot yet sound out is a memory test
+  /// with the alphabet as a second obstacle. The transliteration line removes
+  /// that one, for as long as the reader needs it.
+  bool _showTransliteration = false;
+
   @override
   void initState() {
     super.initState();
@@ -50,6 +57,17 @@ class _MemorizationPracticeScreenState
     return Scaffold(
       appBar: AppBar(
         title: Text('${book?.name ?? passage.bookId} ${passage.chapter}'),
+        actions: [
+          IconButton(
+            tooltip: l10n.transliterationLabel,
+            isSelected: _showTransliteration,
+            icon: const Icon(Icons.translate),
+            selectedIcon: const Icon(Icons.translate, color: null),
+            onPressed: () => setState(
+              () => _showTransliteration = !_showTransliteration,
+            ),
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -103,8 +121,13 @@ class _MemorizationPracticeScreenState
               data: (verses) => ListView.builder(
                 padding: const EdgeInsets.all(16),
                 itemCount: verses.length,
-                itemBuilder: (context, index) =>
-                    _buildVerse(verses[index], index, isOT, colorScheme),
+                itemBuilder: (context, index) => _buildVerse(
+                  verses[index],
+                  index,
+                  isOT,
+                  colorScheme,
+                  verses.length,
+                ),
               ),
             ),
           ),
@@ -120,6 +143,7 @@ class _MemorizationPracticeScreenState
     int verseIndex,
     bool isOT,
     ColorScheme colorScheme,
+    int verseCount,
   ) {
     final settings = ref.watch(settingsProvider);
     final displayText = isOT
@@ -156,15 +180,70 @@ class _MemorizationPracticeScreenState
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
-      child: Wrap(
-        alignment: isOT ? WrapAlignment.end : WrapAlignment.start,
-        textDirection: isOT ? TextDirection.rtl : TextDirection.ltr,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        spacing: 6,
-        runSpacing: 8,
-        children: wordWidgets,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Wrap(
+            alignment: isOT ? WrapAlignment.end : WrapAlignment.start,
+            textDirection: isOT ? TextDirection.rtl : TextDirection.ltr,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 6,
+            runSpacing: 8,
+            children: wordWidgets,
+          ),
+          if (_showTransliteration)
+            Padding(
+              padding: const EdgeInsets.only(top: 6),
+              child: Text(
+                _transliterate(
+                  tokens,
+                  isOT: isOT,
+                  isLastVerse: verseIndex == verseCount - 1,
+                ),
+                textDirection: TextDirection.ltr,
+                style: TextStyle(
+                  fontSize: fontSize * 0.62,
+                  height: 1.5,
+                  fontStyle: FontStyle.italic,
+                  color: colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ),
+        ],
       ),
     );
+  }
+
+  /// The whole verse as it sounds, word by word.
+  ///
+  /// Hebrew keeps its pointing and gains stress from the accents
+  /// (`bə·rēʾ·ˈšîṯ`); Greek is transliterated letter for letter. Silluq only
+  /// falls on the last word of a verse, so only the final verse of the passage
+  /// tells us U+05BD is an accent rather than meteg.
+  String _transliterate(
+    List<String> tokens, {
+    required bool isOT,
+    required bool isLastVerse,
+  }) {
+    final parts = <String>[];
+    for (var i = 0; i < tokens.length; i++) {
+      final token = tokens[i];
+      if (token.trim().isEmpty) continue;
+      if (isOT) {
+        final syllabified = syllabifyHebrew(
+          token,
+          isVerseFinal: isLastVerse && i == tokens.length - 1,
+        );
+        parts.add(
+          syllabified.isEmpty
+              ? Transliterator.transliterate(token, isHebrew: true)
+              : syllabified.marked,
+        );
+      } else {
+        parts.add(Transliterator.transliterate(token, isHebrew: false));
+      }
+    }
+    return parts.join(' ');
   }
 
   Widget _buildToken(

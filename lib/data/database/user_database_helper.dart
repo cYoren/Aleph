@@ -26,9 +26,34 @@ class UserDatabaseHelper {
 
     return await openDatabase(
       dbFilePath,
-      version: 4,
+      version: 5,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
+    );
+  }
+
+  /// Per-review history, one row per answered card.
+  ///
+  /// SM-2 only needs the current state, so this table changes nothing about
+  /// scheduling today. It exists so FSRS — which fits parameters from the grade
+  /// and the elapsed interval of every past review — becomes possible without
+  /// having to reconstruct history the app never kept.
+  Future<void> _createReviewLogTable(Database db) async {
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS srs_reviews (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        strongs_id TEXT NOT NULL,
+        reviewed_at INTEGER NOT NULL,
+        grade INTEGER NOT NULL,
+        repetitions_before INTEGER NOT NULL DEFAULT 0,
+        easiness_before REAL NOT NULL DEFAULT 2.5,
+        interval_before REAL NOT NULL DEFAULT 0.0
+      )
+    ''');
+
+    await db.execute(
+      'CREATE INDEX IF NOT EXISTS idx_srs_reviews_strongs '
+      'ON srs_reviews(strongs_id)',
     );
   }
 
@@ -124,6 +149,7 @@ class UserDatabaseHelper {
 
     // Spaced Repetition System table
     await _createSrsTable(db);
+    await _createReviewLogTable(db);
 
     // Passage memorization table
     await _createMemorizationTable(db);
@@ -159,6 +185,10 @@ class UserDatabaseHelper {
 
     if (oldVersion < 4) {
       await _createMemorizationTable(db);
+    }
+
+    if (oldVersion < 5) {
+      await _createReviewLogTable(db);
     }
   }
 

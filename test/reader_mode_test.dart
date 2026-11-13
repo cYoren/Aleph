@@ -114,5 +114,86 @@ void main() {
       expect(gloss.endsWith('…'), isTrue);
       expect(gloss.length, lessThan(longGloss.length));
     });
+
+    test('a word the reader is stuck on is glossed past the fixed bar', () {
+      // 120 occurrences, so the printed-reader bar of 30 skips it — but this
+      // reader has it in review and has not mastered it, which is the app's own
+      // evidence that the bar is wrong for them.
+      final words = [_word(1, strongs: 'H7777')];
+      final frequencies = {'H7777': 120};
+      final progress = {'H7777': _progress(0.2)};
+      final lexicon = {'H7777': _entry('stuck word')};
+
+      expect(
+        selectReaderGlosses(
+          words: words,
+          frequencies: frequencies,
+          progress: progress,
+          lexicon: lexicon,
+        ),
+        isEmpty,
+      );
+
+      final threshold = adaptiveReaderThreshold(
+        progress: progress,
+        frequencies: frequencies,
+      );
+      expect(threshold, 121);
+      expect(
+        selectReaderGlosses(
+          words: words,
+          frequencies: frequencies,
+          progress: progress,
+          lexicon: lexicon,
+          threshold: threshold,
+        ),
+        {1: 'stuck word'},
+      );
+    });
+  });
+
+  group('adaptiveReaderThreshold', () {
+    test('starts at the printed-reader convention with nothing in review', () {
+      expect(
+        adaptiveReaderThreshold(progress: {}, frequencies: {}),
+        kReaderModeFrequencyThreshold,
+      );
+    });
+
+    test('rises to the most frequent word the reader has not mastered', () {
+      final threshold = adaptiveReaderThreshold(
+        progress: {
+          'H1': _progress(0.1),
+          'H2': _progress(0.3),
+        },
+        frequencies: {'H1': 400, 'H2': 90},
+      );
+      expect(threshold, 401);
+    });
+
+    test('words already mastered do not move the bar', () {
+      final threshold = adaptiveReaderThreshold(
+        progress: {'H1': _progress(kReaderModeMasterySuppression)},
+        frequencies: {'H1': 900},
+      );
+      expect(threshold, kReaderModeFrequencyThreshold);
+    });
+
+    test('never falls below the base bar and never runs away', () {
+      expect(
+        adaptiveReaderThreshold(
+          progress: {'H1': _progress(0.1)},
+          frequencies: {'H1': 3},
+        ),
+        kReaderModeFrequencyThreshold,
+      );
+      expect(
+        adaptiveReaderThreshold(
+          progress: {'H1': _progress(0.1)},
+          frequencies: {'H1': 40000},
+        ),
+        kReaderModeMaxAdaptiveThreshold,
+      );
+    });
   });
 }

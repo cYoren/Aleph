@@ -149,10 +149,12 @@ trees, the personalized reader mode, passage memorization in Hebrew).
 - Translations: [`seven1m/open-bibles`](https://github.com/seven1m/open-bibles) (public domain / per-file licenses)
 - Strong's dictionary definitions: [`openscriptures/strongs`](https://github.com/openscriptures/strongs) (CC BY-SA, © Open Scriptures)
 - Cross-references: [OpenBible.info](https://www.openbible.info/labs/cross-references/) (CC Attribution)
-- Syntax trees: [MACULA Hebrew](https://github.com/Clear-Bible/macula-hebrew) & [MACULA Greek](https://github.com/Clear-Bible/macula-greek) (Clear Bible, CC BY 4.0)
-- Scholarly lexicons: [BDB](https://github.com/openscriptures/HebrewLexicon) and [Abbott-Smith](https://github.com/translatable-exegetical-tools/Abbott-Smith) (public domain digitizations)
+- Syntax trees and participant data ("who is the subject of this verb", "what does this pronoun refer to"): [MACULA Hebrew](https://github.com/Clear-Bible/macula-hebrew) & [MACULA Greek](https://github.com/Clear-Bible/macula-greek) (Clear Bible, CC BY 4.0)
+- Scholarly lexicons, including their numbered sense hierarchies: [BDB](https://github.com/openscriptures/HebrewLexicon) and [Abbott-Smith](https://github.com/translatable-exegetical-tools/Abbott-Smith) (public domain digitizations)
+- Hebrew root (shoresh) grouping: TWOT root numbers from the [Open Scriptures HebrewLexicon](https://github.com/openscriptures/HebrewLexicon) index (public domain)
 - Bundled recitation voice: [Piper](https://huggingface.co/rhasspy/piper-voices) `el_GR/rapunzelina` (voice MIT, dataset CC0), run by [sherpa-onnx 2.0.1](https://github.com/k2-fsa/sherpa-onnx) (Apache-2.0) with generated corpus pronunciations. eSpeak code and dictionary data are excluded from the bundle; see [the runtime migration](docs/tasks/greek-speech-2.md). No suitable Hebrew model has been validated for this project (see `docs/tasks/embedded-voices-findings.md`).
 - Long-form lexicon translations: the offline pipeline is implemented, but the seven-language translation cache has not been generated. English originals remain visible with a localized notice until translated content is incorporated.
+
 
 ## Android Signing
 

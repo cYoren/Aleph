@@ -1252,4 +1252,118 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get diagnosticsHealthy => '运行良好';
+
+  @override
+  String get sensesLabel => '义项';
+
+  @override
+  String get sensesUnavailable => '此词条在本词典中没有编号义项。';
+
+  @override
+  String get rootLabel => '字根';
+
+  @override
+  String get rootWordsTitle => '同一字根的词';
+
+  @override
+  String rootWordCount(int count) {
+    return '$count 个词';
+  }
+
+  @override
+  String get formsInTextLabel => '文本中的形式';
+
+  @override
+  String get formsInTextNote => '只列出文本中真实出现的形式。';
+
+  @override
+  String showAllCount(int count) {
+    return '显示全部 $count 项';
+  }
+
+  @override
+  String get markAsKnown => '标记为已认识';
+
+  @override
+  String get markedAsKnown => '已认识';
+
+  @override
+  String get markAsKnownDone => '已标记为认识。阅读模式下不再为它加注。';
+
+  @override
+  String get transliterationLabel => '转写';
+
+  @override
+  String get refersToLabel => '指代';
+
+  @override
+  String get subjectLabel => '主语';
+
+  @override
+  String get firstStepsHomeTitle => '从这里开始';
+
+  @override
+  String get firstStepsHomeDesc => '三个字母、一节经文、五个词。';
+
+  @override
+  String get firstStepsTitle => '你的第一节经文';
+
+  @override
+  String get firstStepsLettersTitle => '三个字母';
+
+  @override
+  String get firstStepsLettersDesc => '这三个字母就够读一个真实的词。点击字母可以听发音。';
+
+  @override
+  String get firstStepsWordTitle => '一个词';
+
+  @override
+  String get firstStepsWordDesc => '你刚认识的字母，就在圣经里的一个词当中。';
+
+  @override
+  String get firstStepsVerseTitle => '一节经文';
+
+  @override
+  String get firstStepsVerseDesc => '每个词都带着读音和意思。这里没有考试。';
+
+  @override
+  String get firstStepsVerseHint => '点击任何词可以看完整词条。';
+
+  @override
+  String get firstStepsReviewTitle => '五个词';
+
+  @override
+  String get firstStepsReviewDesc => '这节经文里值得记住的五个词。过一遍就结束。';
+
+  @override
+  String get firstStepsReviewButton => '复习这五个词';
+
+  @override
+  String get firstStepsStart => '开始';
+
+  @override
+  String get firstStepsContinue => '继续';
+
+  @override
+  String get firstStepsRestart => '重新开始';
+
+  @override
+  String firstVerseInMinutes(int minutes) {
+    return '你在 $minutes 分钟内读到了第一节经文。';
+  }
+
+  @override
+  String get firstVerseUnderMinute => '你在一分钟内读到了第一节经文。';
+
+  @override
+  String get firstStepsDoneTitle => '入门就是这样';
+
+  @override
+  String get firstStepsDoneDesc => '字母、一个词、一节经文、五个还会再遇到的词。阅读器已经为你打开。';
+
+  @override
+  String get firstStepsDoneReader => '打开阅读器';
+
+  @override
+  String get verseLabel => '经文';
 }

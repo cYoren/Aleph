@@ -130,6 +130,32 @@ class MorphologyDecoder {
 
   // ========== Hebrew Parsing Helpers ==========
 
+  /// The binyan (stem) of a Hebrew verb code, e.g. 'Vpw3ms' -> 'Qal'.
+  ///
+  /// Returns null for anything that is not a verb, so callers can fall back to
+  /// the part of speech.
+  static String? hebrewVerbStem(String code) {
+    if (code.isEmpty) return null;
+    var index = (code.startsWith('H') || code.startsWith('A')) ? 1 : 0;
+    if (index >= code.length || code[index] != 'V') return null;
+    index++;
+    if (index >= code.length) return null;
+    return _hebrewVerbStem[code[index]];
+  }
+
+  /// Tense and voice of a Greek verb code, e.g. 'V-AAI-3S' -> 'Aorist Active'.
+  ///
+  /// Returns null for anything that is not a verb.
+  static String? greekTenseVoice(String code) {
+    if (code.isEmpty || !code.startsWith('V')) return null;
+    final segments = code.split('-');
+    if (segments.length < 2 || segments[1].length < 2) return null;
+    final tense = _greekTense[segments[1][0]];
+    final voice = _greekVoice[segments[1][1]];
+    if (tense == null || voice == null) return null;
+    return '$tense $voice';
+  }
+
   static List<String> _parseHebrewNoun(String code) {
     final parts = <String>[];
     if (code.isEmpty) return parts;

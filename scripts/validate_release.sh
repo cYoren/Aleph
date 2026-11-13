@@ -21,6 +21,8 @@ required_tables=(
   lexicon
   cross_references
   syntax_trees
+  lexicon_senses
+  lexicon_roots
 )
 
 for table in "${required_tables[@]}"; do
@@ -210,11 +212,40 @@ echo "Checking bundled Greek speech assets and corpus pronunciations..."
 python3 "$ROOT_DIR/scripts/fetch_embedded_voices.py" --verify
 python3 "$ROOT_DIR/scripts/build_greek_pronunciation_lexicon.py" --db "$DB_PATH" --check
 
+# Structured senses: the definition sheet renders these instead of a flattened
+# paragraph, so a release without them is a silent downgrade of the app's
+# central screen.
+lexicon_senses_count="$(sqlite3 "$DB_PATH" "SELECT COUNT(*) FROM lexicon_senses;")"
+if (( lexicon_senses_count < 16000 )); then
+  echo "ERROR: Expected at least 16,000 structured sense rows, found $lexicon_senses_count"
+  exit 1
+fi
+
+# Hebrew roots (TWOT): the basis of root search across binyanim.
+lexicon_roots_count="$(sqlite3 "$DB_PATH" "SELECT COUNT(*) FROM lexicon_roots;")"
+if (( lexicon_roots_count < 4800 )); then
+  echo "ERROR: Expected at least 4,800 Hebrew roots, found $lexicon_roots_count"
+  exit 1
+fi
+
+# MACULA participant links: "who is he in this verse".
+participant_links_count="$(sqlite3 "$DB_PATH" "SELECT COUNT(*) FROM words WHERE subject_text IS NOT NULL OR referent_text IS NOT NULL;")"
+if (( participant_links_count < 40000 )); then
+  echo "ERROR: Expected at least 40,000 participant links, found $participant_links_count"
+  exit 1
+fi
+
 echo "Running lexicon enrichment unit tests..."
 python3 "$ROOT_DIR/scripts/test_build_lexicon_enrichment.py" > /dev/null
 
 echo "Running release-database compaction tests..."
 python3 "$ROOT_DIR/scripts/test_prepare_bible_db.py" > /dev/null
+
+echo "Running structured-sense and root-parsing tests..."
+python3 "$ROOT_DIR/scripts/test_build_depth_tables.py" > /dev/null
+
+echo "Running versification and coverage-gate tests..."
+python3 "$ROOT_DIR/scripts/test_pipeline_gates.py" > /dev/null
 echo "Running lexicon i18n pipeline tests..."
 python3 "$ROOT_DIR/scripts/test_lexicon_i18n.py" > /dev/null
 python3 "$ROOT_DIR/scripts/test_translation_delivery.py" > /dev/null
@@ -234,7 +265,14 @@ if compgen -G "$ROOT_DIR/data/lexicon_translations/[a-z][a-z].json" > /dev/null;
   python3 "$ROOT_DIR/scripts/validate_lexicon_i18n.py" --db "$DB_PATH" --require-full
 fi
 
+echo "Running structured-sense and root-parsing tests..."
+python3 "$ROOT_DIR/scripts/test_build_depth_tables.py" > /dev/null
+
+echo "Running versification and coverage-gate tests..."
+python3 "$ROOT_DIR/scripts/test_pipeline_gates.py" > /dev/null
+
 echo "OK: database asset and full-release integrity checks passed."
 echo "  books=$books_count distinct_verse_books=$distinct_verse_books verses=$verses_count"
 echo "  kjv_translation_verses=$kjv_translation_verses words=$words_count lexicon=$lexicon_count enabled_translations=$enabled_translations"
 echo "  enriched_lexicon=$enriched_lexicon"
+echo "  lexicon_senses=$lexicon_senses_count lexicon_roots=$lexicon_roots_count participant_links=$participant_links_count"

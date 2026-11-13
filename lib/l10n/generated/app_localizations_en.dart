@@ -1298,4 +1298,127 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get diagnosticsHealthy => 'Working well';
+
+  @override
+  String get sensesLabel => 'Senses';
+
+  @override
+  String get sensesUnavailable =>
+      'This entry has no numbered senses in the dictionary.';
+
+  @override
+  String get rootLabel => 'Root';
+
+  @override
+  String get rootWordsTitle => 'Words on this root';
+
+  @override
+  String rootWordCount(int count) {
+    return '$count words';
+  }
+
+  @override
+  String get formsInTextLabel => 'Forms in the text';
+
+  @override
+  String get formsInTextNote =>
+      'Only the forms that actually occur in the text.';
+
+  @override
+  String showAllCount(int count) {
+    return 'Show all $count';
+  }
+
+  @override
+  String get markAsKnown => 'Mark as known';
+
+  @override
+  String get markedAsKnown => 'Known';
+
+  @override
+  String get markAsKnownDone =>
+      'Marked as known. It stops being glossed in reading mode.';
+
+  @override
+  String get transliterationLabel => 'Transliteration';
+
+  @override
+  String get refersToLabel => 'Refers to';
+
+  @override
+  String get subjectLabel => 'Subject';
+
+  @override
+  String get firstStepsHomeTitle => 'Start here';
+
+  @override
+  String get firstStepsHomeDesc => 'Three letters, one verse, five words.';
+
+  @override
+  String get firstStepsTitle => 'Your first verse';
+
+  @override
+  String get firstStepsLettersTitle => 'Three letters';
+
+  @override
+  String get firstStepsLettersDesc =>
+      'These three are enough to read a real word. Tap a letter to hear it.';
+
+  @override
+  String get firstStepsWordTitle => 'One word';
+
+  @override
+  String get firstStepsWordDesc =>
+      'The letters you just met, inside a word from the Bible.';
+
+  @override
+  String get firstStepsVerseTitle => 'One verse';
+
+  @override
+  String get firstStepsVerseDesc =>
+      'Every word carries its sound and its meaning. Nothing here is a test.';
+
+  @override
+  String get firstStepsVerseHint =>
+      'Tap any word for its full dictionary entry.';
+
+  @override
+  String get firstStepsReviewTitle => 'Five words';
+
+  @override
+  String get firstStepsReviewDesc =>
+      'The five words worth keeping from this verse. One pass, then you are done.';
+
+  @override
+  String get firstStepsReviewButton => 'Review these five';
+
+  @override
+  String get firstStepsStart => 'Start';
+
+  @override
+  String get firstStepsContinue => 'Continue';
+
+  @override
+  String get firstStepsRestart => 'Start again';
+
+  @override
+  String firstVerseInMinutes(int minutes) {
+    return 'Your first verse in $minutes minutes.';
+  }
+
+  @override
+  String get firstVerseUnderMinute => 'Your first verse in under a minute.';
+
+  @override
+  String get firstStepsDoneTitle => 'That is the way in';
+
+  @override
+  String get firstStepsDoneDesc =>
+      'Letters, a word, a verse, five words you will meet again. The reader is open to you now.';
+
+  @override
+  String get firstStepsDoneReader => 'Open the reader';
+
+  @override
+  String get verseLabel => 'Verse';
 }

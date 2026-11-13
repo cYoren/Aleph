@@ -1308,4 +1308,127 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get diagnosticsHealthy => 'Funktioniert gut';
+
+  @override
+  String get sensesLabel => 'Bedeutungen';
+
+  @override
+  String get sensesUnavailable =>
+      'Dieser Eintrag hat im Wörterbuch keine numerierten Bedeutungen.';
+
+  @override
+  String get rootLabel => 'Wurzel';
+
+  @override
+  String get rootWordsTitle => 'Wörter dieser Wurzel';
+
+  @override
+  String rootWordCount(int count) {
+    return '$count Wörter';
+  }
+
+  @override
+  String get formsInTextLabel => 'Formen im Text';
+
+  @override
+  String get formsInTextNote =>
+      'Nur die Formen, die im Text tatsächlich vorkommen.';
+
+  @override
+  String showAllCount(int count) {
+    return 'Alle $count zeigen';
+  }
+
+  @override
+  String get markAsKnown => 'Als bekannt markieren';
+
+  @override
+  String get markedAsKnown => 'Bekannt';
+
+  @override
+  String get markAsKnownDone =>
+      'Als bekannt markiert. Im Lesemodus wird es nicht mehr erklärt.';
+
+  @override
+  String get transliterationLabel => 'Umschrift';
+
+  @override
+  String get refersToLabel => 'Bezieht sich auf';
+
+  @override
+  String get subjectLabel => 'Subjekt';
+
+  @override
+  String get firstStepsHomeTitle => 'Hier anfangen';
+
+  @override
+  String get firstStepsHomeDesc => 'Drei Buchstaben, ein Vers, fünf Wörter.';
+
+  @override
+  String get firstStepsTitle => 'Dein erster Vers';
+
+  @override
+  String get firstStepsLettersTitle => 'Drei Buchstaben';
+
+  @override
+  String get firstStepsLettersDesc =>
+      'Diese drei reichen für ein echtes Wort. Tippe einen Buchstaben an, um ihn zu hören.';
+
+  @override
+  String get firstStepsWordTitle => 'Ein Wort';
+
+  @override
+  String get firstStepsWordDesc =>
+      'Die Buchstaben von eben, in einem Wort aus der Bibel.';
+
+  @override
+  String get firstStepsVerseTitle => 'Ein Vers';
+
+  @override
+  String get firstStepsVerseDesc =>
+      'Jedes Wort trägt seinen Klang und seine Bedeutung. Nichts hier ist eine Prüfung.';
+
+  @override
+  String get firstStepsVerseHint =>
+      'Tippe ein Wort an, um den ganzen Eintrag zu sehen.';
+
+  @override
+  String get firstStepsReviewTitle => 'Fünf Wörter';
+
+  @override
+  String get firstStepsReviewDesc =>
+      'Die fünf Wörter aus diesem Vers, die zu behalten sind. Ein Durchgang, dann bist du fertig.';
+
+  @override
+  String get firstStepsReviewButton => 'Diese fünf wiederholen';
+
+  @override
+  String get firstStepsStart => 'Anfangen';
+
+  @override
+  String get firstStepsContinue => 'Weiter';
+
+  @override
+  String get firstStepsRestart => 'Neu anfangen';
+
+  @override
+  String firstVerseInMinutes(int minutes) {
+    return 'Dein erster Vers in $minutes Minuten.';
+  }
+
+  @override
+  String get firstVerseUnderMinute => 'Dein erster Vers in unter einer Minute.';
+
+  @override
+  String get firstStepsDoneTitle => 'Das ist der Einstieg';
+
+  @override
+  String get firstStepsDoneDesc =>
+      'Buchstaben, ein Wort, ein Vers, fünf Wörter, die dir wieder begegnen. Der Leser steht dir offen.';
+
+  @override
+  String get firstStepsDoneReader => 'Leser öffnen';
+
+  @override
+  String get verseLabel => 'Vers';
 }
