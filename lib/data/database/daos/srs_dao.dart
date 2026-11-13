@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import '../../models/srs_progress.dart';
+import '../../../shared/utils/fsrs_scheduler.dart';
 import '../../../shared/utils/reader_mode.dart';
-import '../../../shared/utils/sm2.dart';
 import '../user_database_helper.dart';
 
 class SrsDao {
@@ -32,15 +32,15 @@ class SrsDao {
     );
   }
 
-  /// Records a review outcome using the SM-2 spaced-repetition algorithm.
+  /// Records a review outcome through the FSRS scheduler.
   ///
-  /// Correct answers grow the interval (1 day, 6 days, then interval x
-  /// easiness); a failure resets the repetition streak, lowers easiness, and
-  /// schedules a quick relearning review.
+  /// A correct answer grows the stability and pushes the card out; a failure
+  /// drops it into relearning, back in ten minutes. See
+  /// `lib/shared/utils/fsrs_scheduler.dart` for the transition itself.
   Future<void> recordReview(String strongsId, {required bool isCorrect}) async {
     final current = await getProgress(strongsId);
     final now = DateTime.now();
-    final updated = applySm2(
+    final updated = applyFsrsReview(
       current,
       strongsId: strongsId,
       isCorrect: isCorrect,
@@ -52,9 +52,11 @@ class SrsDao {
 
   /// One row per answered card, appended after the state moves.
   ///
-  /// Nothing reads this yet: SM-2 keeps its own state. It is written because a
-  /// scheduler that fits itself to history cannot be added later to readers who
-  /// have no history, and writing it costs one insert per review.
+  /// Nothing schedules from this: FSRS keeps its own state. It is written
+  /// because personalising the FSRS weights needs, per review, the rating, the
+  /// elapsed days and the memory state the card was in — and a reader who
+  /// starts today cannot be given that history later. The SM-2 numbers are
+  /// kept beside the FSRS ones so the two eras stay comparable.
   Future<void> _logReview(
     String strongsId, {
     required bool isCorrect,
@@ -63,13 +65,20 @@ class SrsDao {
   }) async {
     try {
       final db = await _dbHelper.database;
+      final elapsedDays = before == null
+          ? null
+          : now.difference(before.lastReviewedAt).inMinutes / (24 * 60);
       await db.insert('srs_reviews', {
         'strongs_id': strongsId,
         'reviewed_at': now.millisecondsSinceEpoch,
         'grade': isCorrect ? 1 : 0,
+        'rating': fsrsRatingFor(isCorrect: isCorrect).value,
         'repetitions_before': before?.repetitions ?? 0,
         'easiness_before': before?.easiness ?? 2.5,
         'interval_before': before?.intervalDays ?? 0.0,
+        'stability_before': before?.fsrsStability,
+        'difficulty_before': before?.fsrsDifficulty,
+        'elapsed_days': elapsedDays,
       });
     } catch (e) {
       // An older install without the log table must not lose the review itself.
@@ -79,8 +88,8 @@ class SrsDao {
 
   /// How many reviews this reader has answered, ever.
   ///
-  /// The trigger for revisiting FSRS: parameter fitting needs a few hundred
-  /// reviews per user before it beats SM-2's defaults measurably.
+  /// The trigger for fitting the FSRS weights to this reader: that needs a few
+  /// hundred reviews per user, and the defaults are what schedule until then.
   Future<int> countReviews() async {
     try {
       final db = await _dbHelper.database;
@@ -89,38 +98,6 @@ class SrsDao {
     } catch (_) {
       return 0;
     }
-  }
-
-  /// Pure SM-2 state transition, separated from persistence for testability.
-  static SrsProgress applySm2(
-    SrsProgress? current, {
-    required String strongsId,
-    required bool isCorrect,
-    required DateTime now,
-  }) {
-    final next = applySm2Transition(
-      previous: current == null
-          ? null
-          : Sm2State(
-              repetitions: current.repetitions,
-              easiness: current.easiness,
-              intervalDays: current.intervalDays,
-              masteryScore: current.masteryScore,
-            ),
-      isCorrect: isCorrect,
-    );
-
-    return SrsProgress(
-      id: current?.id,
-      strongsId: strongsId,
-      exposureCount: (current?.exposureCount ?? 0) + 1,
-      masteryScore: next.masteryScore,
-      lastReviewedAt: now,
-      nextReviewAt: now.add(next.interval),
-      repetitions: next.repetitions,
-      easiness: next.easiness,
-      intervalDays: next.intervalDays,
-    );
   }
 
   /// Batch progress lookup for reader mode and vocabulary decks.
@@ -153,6 +130,9 @@ class SrsDao {
   /// threshold and schedules it far out, so the word stops being glossed and
   /// does not queue for review. Existing history is kept: exposure count and
   /// easiness are untouched, and nothing is ever lowered.
+  ///
+  /// The FSRS state is set to match, so a word claimed this way is not treated
+  /// as a card that has never been seen the first time it is reviewed.
   Future<SrsProgress> markKnown(String strongsId, {DateTime? now}) async {
     final at = now ?? DateTime.now();
     final current = await getProgress(strongsId);
@@ -160,6 +140,7 @@ class SrsDao {
       current?.masteryScore ?? 0.0,
       kReaderModeMasterySuppression + 0.15,
     ];
+    final easiness = current?.easiness ?? 2.5;
     final updated = SrsProgress(
       id: current?.id,
       strongsId: strongsId,
@@ -170,8 +151,14 @@ class SrsDao {
       repetitions: current == null || current.repetitions < 1
           ? 1
           : current.repetitions,
-      easiness: current?.easiness ?? 2.5,
+      easiness: easiness,
       intervalDays: 180,
+      fsrsStability: 180,
+      fsrsDifficulty: fsrsDifficultyFromEasiness(easiness),
+      fsrsState: kFsrsStateReview,
+      fsrsReps: current?.fsrsReps ?? 0,
+      fsrsLapses: current?.fsrsLapses ?? 0,
+      fsrsFloorPending: true,
     );
     await saveProgress(updated);
     return updated;
