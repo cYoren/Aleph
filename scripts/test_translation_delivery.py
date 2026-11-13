@@ -49,9 +49,15 @@ class DeliveryTest(unittest.TestCase):
         self.assertTrue(any('duplicate JSON key' in e for e in validate_delivery(self.source, self.directory)))
 
     def test_changed_protected_word_is_rejected(self):
-        self.cache["definition"][sha256_text(self.english)] = "Uma palavra, λογος, de G3056."
+        self.cache["definition"][sha256_text(self.english)] = "Uma palavra, λοξος, de G3056."
         self.write("pt")
         self.assertTrue(any('tokens were changed' in e for e in validate_delivery(self.source, self.directory)))
+
+    def test_accent_only_variance_is_allowed(self):
+        # The contract protects lexical identity, not pointing or accents.
+        self.cache["definition"][sha256_text(self.english)] = "Uma palavra, λογος, de G3056."
+        self.write("pt")
+        self.assertEqual(validate_delivery(self.source, self.directory), [])
 
     def test_missing_strongs_reference_is_rejected(self):
         self.cache["definition"][sha256_text(self.english)] = "Uma palavra, λόγος."
