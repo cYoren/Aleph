@@ -28,6 +28,7 @@ import json
 import pathlib
 import re
 import sqlite3
+import unicodedata
 from typing import Iterable, Iterator
 
 REPO = pathlib.Path(__file__).resolve().parent.parent
@@ -85,25 +86,52 @@ _SCHOLARLY_LABELS = {
     "dem", "diod", "etc", "eur", "eus", "gent", "herod", "hom", "impf",
     "inf", "ins", "jos", "lat", "loc", "lxx", "mm", "ms", "mss", "mt",
     "part", "perf", "pl", "plat", "plut", "polyb", "prep", "pron", "qv",
-    "rec", "sing", "sq", "subst", "suff", "sv", "syr", "targ", "thuc", "wh",
+    "rec", "sing", "sq", "strong", "strongs", "subst", "suff", "sv", "syr",
+    "targ", "thuc", "wh",
+}
+
+# Function words appear only in prose. Notation, headwords, references and
+# proper names do not contain them, which makes them a cleaner signal than
+# counting Latin fragments.
+_ENGLISH_FUNCTION_WORDS = {
+    "an", "and", "are", "as", "at", "be", "been", "but", "by", "can", "did",
+    "do", "does", "for", "from", "had", "has", "have", "he", "her", "his",
+    "in", "into", "is", "it", "its", "may", "might", "must", "not", "of",
+    "on", "or", "our", "shall", "she", "should", "that", "the", "their",
+    "them", "then", "there", "these", "they", "this", "those", "to", "was",
+    "we", "were", "which", "who", "will", "with", "would", "you", "your",
 }
 
 
+def _fold(text: str) -> str:
+    """Lowercase and drop diacritics so transliterated names stay one word."""
+    decomposed = unicodedata.normalize("NFD", text)
+    return "".join(ch for ch in decomposed if not unicodedata.combining(ch))
+
+
 def source_needs_translation(text: str) -> bool:
-    """English prose needs translation; labels and cross-entries do not.
+    """Whether a lexicon entry contains English prose that must be translated.
 
     Scholarly entries are often nothing but original-language headwords,
-    grammatical labels and references (``כִּידֹן n.pr.m. 1 Ch 13:9``,
-    ``Πρίσκιλλα, v.s. Πρίσκα.``). Counting fragments such as ``Ch`` or ``adj``
-    as English marked hundreds of those as untranslated and made a complete
-    run impossible. Two ordinary Latin words is where a label turns into prose.
+    grammatical labels, references and transliterated proper names
+    (``כִּידֹן n.pr.m. 1 Ch 13:9``, ``עַשְׁתֹּ֫רֶת n.pr.deae. ‛Aštōreth``,
+    ``Ram. Strong's G0.``). Counting Latin fragments or capitalised names as
+    English marked hundreds of those as untranslated, so ``--require-full``
+    could never pass. Prose is detected by the function words it cannot avoid.
     """
-    words = [
-        word.lower()
-        for word in re.findall(r"[A-Za-z]{3,}", text)
-        if word.lower() not in _SCHOLARLY_LABELS
+    folded = _fold(text)
+    lowered = folded.lower()
+    if any(
+        re.search(rf"(?<![a-z]){word}(?![a-z])", lowered)
+        for word in _ENGLISH_FUNCTION_WORDS
+    ):
+        return True
+    ordinary = [
+        word
+        for word in re.findall(r"[A-Za-z]{4,}", folded)
+        if word.lower() not in _SCHOLARLY_LABELS and word.islower()
     ]
-    return len(words) >= 2
+    return len(ordinary) >= 3
 
 
 def read_source_rows(db: sqlite3.Connection) -> Iterator[tuple]:
