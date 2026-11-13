@@ -239,8 +239,17 @@ fi
 # tradition reads another. Both forms are stored per token; a build that skips
 # the OSHB pass ships a reader that cannot show them.
 qere_ketiv_count="$(sqlite3 "$DB_PATH" "SELECT COUNT(*) FROM words WHERE qere_text IS NOT NULL;")"
-if (( qere_ketiv_count < 1100 )); then
-  echo "ERROR: Expected at least 1,100 qere/ketiv tokens, found $qere_ketiv_count"
+if (( qere_ketiv_count < 1180 )); then
+  echo "ERROR: Expected at least 1,180 qere/ketiv tokens, found $qere_ketiv_count"
+  exit 1
+fi
+
+# A marked row must be Hebrew and pointing only. This is the check that catches
+# an OSHB editorial note (or a raw newline and its indentation) leaking into
+# scripture, which the reader would render in the Hebrew font.
+qere_dirty="$(sqlite3 "$DB_PATH" "SELECT COUNT(*) FROM words WHERE qere_text IS NOT NULL AND (qere_text GLOB '*[A-Za-z]*' OR ketiv_text GLOB '*[A-Za-z]*' OR qere_text LIKE '%' || char(10) || '%' OR ketiv_text LIKE '%' || char(10) || '%');")"
+if (( qere_dirty != 0 )); then
+  echo "ERROR: $qere_dirty qere/ketiv rows carry markup or editorial prose"
   exit 1
 fi
 

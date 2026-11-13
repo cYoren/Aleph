@@ -26,6 +26,19 @@ class Word {
   /// one written (H1938 for a ketiv of H1939, for instance).
   final String? qereLemma;
 
+  /// Which of the two forms the flowing text carries: `qere` or `ketiv`.
+  ///
+  /// Decided at build time, where the alignment happens. The reader must not
+  /// infer it from this token: MACULA splits proclitics and suffixes into their
+  /// own tokens, so the token is often one affix of the word and matches
+  /// neither form.
+  final String? qereAnchor;
+
+  /// How many tokens the word occupies in the flowing text (1 for a word that
+  /// is a single token). A pair that spans more than one token is shown in the
+  /// definition sheet, not beside a token that is only part of it.
+  final int? qereSpan;
+
   Word({
     required this.id,
     required this.verseId,
@@ -42,6 +55,8 @@ class Word {
     this.qereText,
     this.ketivText,
     this.qereLemma,
+    this.qereAnchor,
+    this.qereSpan,
   });
 
   factory Word.fromMap(Map<String, dynamic> map) {
@@ -66,11 +81,26 @@ class Word {
       qereText: _nonEmpty(map['qere_text']?.toString()),
       ketivText: _nonEmpty(map['ketiv_text']?.toString()),
       qereLemma: _nonEmpty(map['qere_lemma']?.toString()),
+      qereAnchor: _nonEmpty(map['qere_anchor']?.toString()),
+      qereSpan: (map['qere_span'] as num?)?.toInt(),
     );
   }
 
   /// True where the written text and the reading differ.
   bool get hasQereKetiv => qereText != null && ketivText != null;
+
+  /// The form to show beside this token, or null when it cannot be shown here.
+  ///
+  /// Only a word that is one token in the flowing text can carry its other form
+  /// underneath: for a word split across tokens, the surrounding affixes are
+  /// already rendered as their own tokens and the whole form would repeat them.
+  ({String siglum, String text})? get qereKetivAside {
+    if (!hasQereKetiv || qereSpan != 1) return null;
+    final showingReading = qereAnchor == 'qere';
+    return showingReading
+        ? (siglum: 'כ', text: ketivText!)
+        : (siglum: 'ק', text: qereText!);
+  }
 
   static String? _nonEmpty(String? value) {
     if (value == null) return null;

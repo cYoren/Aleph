@@ -16,6 +16,8 @@ Word _word({
   String displayText = 'הַיְצֵ֣א',
   String? qereText = 'הַיְצֵ֣א',
   String? ketivText = 'הוצא',
+  String? anchor = 'qere',
+  int? span = 1,
   String language = 'heb',
 }) {
   return Word(
@@ -29,6 +31,8 @@ Word _word({
     language: language,
     qereText: qereText,
     ketivText: ketivText,
+    qereAnchor: anchor,
+    qereSpan: span,
   );
 }
 
@@ -82,12 +86,29 @@ void main() {
   testWidgets('when the text carries the written form, the reading is shown', (
     tester,
   ) async {
-    // 1,075 of the 1,244 pairs have the reading in the flowing text; the rest
-    // do not, and the app must not assume which.
+    // 11 of the 1,191 aligned pairs have the written form in the flowing text;
+    // the build records which, and the app must not assume.
     SharedPreferences.setMockInitialValues({'hebrewTextDisplay': 'qere'});
-    await tester.pumpWidget(_reader(_word(displayText: 'הוצא')));
+    await tester.pumpWidget(
+      _reader(_word(displayText: 'הוצא', anchor: 'ketiv')),
+    );
     await tester.pumpAndSettle();
 
     expect(find.text('ק הַיְצֵ֣א'), findsOneWidget);
+  });
+
+  testWidgets('a word split across tokens shows nothing beside one of them', (
+    tester,
+  ) async {
+    // 749 of the 1,191 pairs are two or more tokens in the flowing text: the
+    // proclitic and the suffix are already rendered, so the whole form would
+    // repeat them. The definition sheet still shows the pair.
+    SharedPreferences.setMockInitialValues({'hebrewTextDisplay': 'qere'});
+    await tester.pumpWidget(_reader(_word(span: 2)));
+    await tester.pumpAndSettle();
+
+    expect(find.text('הַיְצֵ֣א'), findsOneWidget);
+    expect(find.textContaining('כ '), findsNothing);
+    expect(find.textContaining('ק '), findsNothing);
   });
 }

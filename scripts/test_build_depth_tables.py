@@ -273,6 +273,13 @@ OSHB_VERSE = """<?xml version="1.0" encoding="UTF-8"?>
 <verse osisID="Gen.3.1">
   <w type="x-ketiv" lemma="3318" id="01ghi">הוצא</w><note type="variant"><catchWord>הוצא</catchWord></note>
 </verse>
+<verse osisID="Job.38.1">
+  <w lemma="853" morph="HTo" id="01a">אֶת</w>
+  <w type="x-ketiv" lemma="4480 a" morph="HR" id="01b">מנ</w>
+  <note n="M">Marks a word with a final consonant that is a medial (not a final) form. </note>
+  <w type="x-ketiv" lemma="d/5591 b" morph="HTd/Ncfsa" id="01c">ה/סערה</w><note type="variant"><catchWord>מנ ה/סערה</catchWord><rdg type="x-qere"><w lemma="4480 a" morph="HR" id="01d">מִ֥ן</w> <seg type="x-paseq">׀</seg><w lemma="d/5591 b" n="1" morph="HTd/Ncfsa" id="01e">הַ/סְּעָרָ֗ה</w></rdg></note>
+  <w lemma="c/559" morph="HC/Vqw3ms" id="01f">וַ/יֹּאמַֽר</w>
+</verse>
 </osis>
 """
 
@@ -301,7 +308,29 @@ class QereKetivParseTest(unittest.TestCase):
 
     def test_a_variant_note_without_a_reading_is_not_a_pair(self):
         pairs = build_db.parse_oshb_qere_ketiv(self.path)
-        self.assertEqual(len(pairs), 2)
+        self.assertEqual(len(pairs), 3)
+
+    def test_a_multi_word_ketiv_run_stays_one_pair(self):
+        pairs = build_db.parse_oshb_qere_ketiv(self.path)
+        job = [pair for pair in pairs if pair.book_id == "JOB"][0]
+        self.assertEqual(job.ketiv, "מנ הסערה")
+        # Two words, and the same consonants as the source: comparing pointing
+        # codepoint by codepoint would be testing the fixture, not the parser.
+        self.assertEqual(len(job.qere.split()), 2)
+        self.assertEqual(
+            build_db.hebrew_consonants(job.qere).replace(" ", ""), "מןהסערה"
+        )
+        # The id that identifies a two-word reading is the longer word's.
+        self.assertEqual(job.qere_strongs, "H5591")
+
+    def test_an_editorial_note_never_reaches_the_reading(self):
+        # A `<note n="M">` inside a ketiv run is commentary, not scripture: it
+        # used to be swallowed into ketiv_text by a backtracking match.
+        pairs = build_db.parse_oshb_qere_ketiv(self.path)
+        for pair in pairs:
+            self.assertNotIn("Marks a word", pair.ketiv)
+            self.assertNotIn("\n", pair.ketiv)
+            self.assertNotIn("\n", pair.qere)
 
     def test_a_compound_lemma_keeps_its_own_number(self):
         self.assertEqual(build_db._oshb_strongs("c/269"), "H0269")
@@ -362,7 +391,9 @@ class WriteQereKetivTest(unittest.TestCase):
                 language TEXT NOT NULL DEFAULT 'heb',
                 qere_text TEXT,
                 ketiv_text TEXT,
-                qere_lemma TEXT
+                qere_lemma TEXT,
+                qere_anchor TEXT,
+                qere_span INTEGER
             );
             CREATE TABLE lexicon (lemma TEXT PRIMARY KEY, strongs_id TEXT);
             INSERT INTO verses (id, book_id, chapter, verse_number)
@@ -391,9 +422,40 @@ class WriteQereKetivTest(unittest.TestCase):
             written = build_db.build_qere_ketiv(self.conn, pairs)
         self.assertEqual(written, 1)
         row = self.conn.execute(
-            "SELECT qere_text, ketiv_text, qere_lemma FROM words WHERE id = 2"
+            "SELECT qere_text, ketiv_text, qere_lemma, qere_anchor, qere_span "
+            "FROM words WHERE id = 2"
         ).fetchone()
-        self.assertEqual(row, ("הַיְצֵ֣א", "הוצא", None))
+        # The word is two tokens here (הָ + יְצֵ֣א), so the pair is stored but
+        # cannot be shown beside one of them without repeating the other.
+        self.assertEqual(row, ("הַיְצֵ֣א", "הוצא", None, "qere", 2))
+
+    def test_a_word_split_across_tokens_is_marked_but_not_inline(self):
+        # Three tokens spelling one word, the way MACULA splits a proclitic and
+        # a suffix off the stem.
+        self.conn.execute("DELETE FROM words")
+        self.conn.executemany(
+            "INSERT INTO words (id, verse_id, position, word, strongs) "
+            "VALUES (?, 1, ?, ?, 'H3318')",
+            [(1, 1, "הָ"), (2, 2, "יְצֵ"), (3, 3, "א")],
+        )
+        pairs = [
+            build_db.QereKetiv(
+                book_id="GEN",
+                chapter=8,
+                verse=17,
+                ketiv="הוצא",
+                ketiv_strongs="H3318",
+                qere="הַיְצֵ֣א",
+                qere_strongs="H3318",
+            )
+        ]
+        with _quiet():
+            build_db.build_qere_ketiv(self.conn, pairs)
+        # Three tokens now spell the same word; the anchor is still the reading.
+        row = self.conn.execute(
+            "SELECT qere_span, qere_anchor FROM words WHERE qere_text IS NOT NULL"
+        ).fetchone()
+        self.assertEqual(row, (3, "qere"))
 
     def test_a_different_reading_carries_its_own_lemma(self):
         self.conn.execute(

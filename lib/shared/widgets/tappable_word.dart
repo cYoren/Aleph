@@ -321,19 +321,18 @@ class _TappableWordState extends ConsumerState<TappableWord> {
   /// The written or read form, whichever the verse is not showing.
   ///
   /// Only in the qere display mode: outside it the text reads as the tradition
-  /// reads, and a second form under every variant word would be noise.
+  /// reads, and a second form under every variant word would be noise. Which
+  /// form to show is the build's answer, not a guess from this token — the
+  /// token is often one affix of the word and matches neither form.
   String? _qereKetivLine() {
-    if (!widget.isOT || !widget.word.hasQereKetiv) return null;
+    if (!widget.isOT) return null;
+    final aside = widget.word.qereKetivAside;
+    if (aside == null) return null;
     final mode = ref.watch(
       settingsProvider.select((s) => s.hebrewTextDisplay),
     );
     if (mode != HebrewTextDisplay.qere) return null;
-
-    final qere = widget.word.qereText!;
-    final ketiv = widget.word.ketivText!;
-    final showingReading =
-        hebrewConsonants(widget.word.displayText) == hebrewConsonants(qere);
-    return showingReading ? 'כ $ketiv' : 'ק $qere';
+    return '${aside.siglum} ${aside.text}';
   }
 
   Widget _buildWordText(ColorScheme colorScheme) {
