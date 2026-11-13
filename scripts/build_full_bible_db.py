@@ -2585,7 +2585,7 @@ def main() -> None:
                 build_cross_references(conn, cross_references_txt)
             if macula_paths:
                 build_syntax_trees(conn, macula_paths)
-            coverage_report = build_open_bible_translation_verses(
+            translation_coverage = build_open_bible_translation_verses(
                 conn=conn,
                 cache_dir=cache_dir,
                 catalog=catalog,
@@ -2607,7 +2607,7 @@ def main() -> None:
                     "strict_coverage": bool(args.strict_coverage),
                     "fill_kjv_gaps": bool(args.fill_kjv_gaps),
                     "enabled_translations": enabled_translations,
-                    "coverage": coverage_report,
+                    "coverage": translation_coverage,
                 }
                 report_path.write_text(
                     json.dumps(report_payload, ensure_ascii=False, indent=2),

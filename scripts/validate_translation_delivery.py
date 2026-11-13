@@ -20,7 +20,7 @@ from lexicon_definitions_i18n import (
     unique_source_texts,
 )
 
-STRONGS = re.compile(r"(?<!\w)[HG]\d+[A-Z]?(?!\w)")
+STRONGS = re.compile(r"(?<![A-Za-z0-9_])[HG]\d+[A-Z]?(?![A-Za-z0-9_])")
 
 
 def _unique_keys(pairs):
@@ -33,20 +33,29 @@ def _unique_keys(pairs):
 
 
 def protected_tokens(text: str) -> Counter:
+    # Compare lexical identity, not orthography: the model re-points Hebrew and
+    # normalises final letter forms, which does not change the word. Consonants
+    # and Strong's numbers are what a citation must preserve.
+    text = unicodedata.normalize("NFD", text)
     tokens = Counter(STRONGS.findall(text))
     run = []
     for char in text + " ":
         code = ord(char)
+        if unicodedata.combining(char):
+            # Vowel points and accents belong to the letter before them; the
+            # comparison already excludes them.
+            continue
         original_letter = (
-            (0x0590 <= code <= 0x05FF or 0x0370 <= code <= 0x03FF
-             or 0x1F00 <= code <= 0x1FFF)
-            and unicodedata.category(char)[0] in "LM"
+            0x0590 <= code <= 0x05FF
+            or 0x0370 <= code <= 0x03FF
+            or 0x1F00 <= code <= 0x1FFF
         )
-        if original_letter or (run and unicodedata.category(char).startswith("M")):
+        if original_letter:
             run.append(char)
-        elif run:
+            continue
+        if len(run) >= 2:
             tokens["".join(run)] += 1
-            run = []
+        run = []
     return tokens
 
 
