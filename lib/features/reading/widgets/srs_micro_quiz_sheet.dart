@@ -271,6 +271,10 @@ class _SrsMicroQuizSheetState extends ConsumerState<SrsMicroQuizSheet> {
         await ref
             .read(srsDaoProvider)
             .recordReview(lookupKey, isCorrect: isCorrect);
+        // The reader's edge moved, so the gloss bar and every verse's glosses
+        // are stale: a word just learned should stop being explained.
+        ref.invalidate(readerThresholdProvider);
+        ref.invalidate(readerGlossesProvider);
       } catch (e) {
         if (kDebugMode) {
           debugPrint('SRS review recording failed: $e');

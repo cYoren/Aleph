@@ -205,10 +205,26 @@ class _FirstStepsScreenState extends ConsumerState<FirstStepsScreen> {
 
   Future<void> _review(FirstVerseData data) async {
     setState(() => _reviewing = true);
+    final srs = ref.read(srsDaoProvider);
+    final before = <String, DateTime?>{};
+    for (final item in data.reviewWords) {
+      before[item.lexiconKey] =
+          (await srs.getProgress(item.lexiconKey))?.lastReviewedAt;
+    }
+
     for (final item in data.reviewWords) {
       if (!mounted) return;
       await reviewDeckItem(context, item);
+      if (!mounted) return;
+      final after = await srs.getProgress(item.lexiconKey);
+      // Dismissing the card without answering ends the session: the closing
+      // card's number is only honest if the reviews actually happened.
+      if (after == null || after.lastReviewedAt == before[item.lexiconKey]) {
+        setState(() => _reviewing = false);
+        return;
+      }
     }
+
     await ref.read(firstRunProvider.notifier).completeReview();
     if (!mounted) return;
     setState(() {
