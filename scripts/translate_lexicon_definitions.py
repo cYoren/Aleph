@@ -97,6 +97,9 @@ not there.
 - Never return an entry unchanged when it contains English words. Even a short
   fragment such as "in Moab" or "the same" must be translated. Return an entry
   unchanged only when it has no English word at all.
+- Copy every Hebrew and Greek word character for character. Do not add or
+  remove vowel points, do not change final letter forms, do not re-point a word
+  and do not translate a book abbreviation written in Greek or Hebrew.
 
 Return ONLY a JSON object mapping each input id to its translated entry, with \
 no prose and no code fence."""
