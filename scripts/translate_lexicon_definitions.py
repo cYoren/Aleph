@@ -91,9 +91,12 @@ Targ, cf., q.v., Aram, cf. Syr) recognisable; translate only ordinary prose.
 distinctions between them. Do not merge senses and do not add senses that are \
 not there.
 - Keep parenthetical markers such as "(et)" or "(as)" exactly where they are.
-- Do not add commentary, exegesis, transliteration, or alternative readings \
-that the original does not contain. If a phrase is ambiguous, translate it \
-literally rather than guessing.
+- Do not add commentary, exegesis, transliteration, or alternative readings
+  that the original does not contain. If a phrase is ambiguous, translate it
+  literally rather than guessing.
+- Never return an entry unchanged when it contains English words. Even a short
+  fragment such as "in Moab" or "the same" must be translated. Return an entry
+  unchanged only when it has no English word at all.
 
 Return ONLY a JSON object mapping each input id to its translated entry, with \
 no prose and no code fence."""
