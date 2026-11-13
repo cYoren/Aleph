@@ -77,15 +77,33 @@ def sha256_text(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
-def source_needs_translation(text: str) -> bool:
-    """English prose needs translation; Greek-only cross-entries do not.
+# Grammatical and bibliographic labels that appear in BDB and Abbott-Smith.
+# They are not English prose, and counting them marked pure-notation entries as
+# untranslated.
+_SCHOLARLY_LABELS = {
+    "adj", "adv", "al", "ant", "aram", "cf", "cl", "cod", "conj", "cp",
+    "dem", "diod", "etc", "eur", "eus", "gent", "herod", "hom", "impf",
+    "inf", "ins", "jos", "lat", "loc", "lxx", "mm", "ms", "mss", "mt",
+    "part", "perf", "pl", "plat", "plut", "polyb", "prep", "pron", "qv",
+    "rec", "sing", "sq", "subst", "suff", "sv", "syr", "targ", "thuc", "wh",
+}
 
-    Some scholarly entries consist solely of original-language words and
-    single-letter Latin abbreviations (for example ``Βοσόρ v. Βεώρ.``).
-    Requiring a different string there would corrupt the source notation.
-    This narrow exception does not permit unchanged English words or prose.
+
+def source_needs_translation(text: str) -> bool:
+    """English prose needs translation; labels and cross-entries do not.
+
+    Scholarly entries are often nothing but original-language headwords,
+    grammatical labels and references (``כִּידֹן n.pr.m. 1 Ch 13:9``,
+    ``Πρίσκιλλα, v.s. Πρίσκα.``). Counting fragments such as ``Ch`` or ``adj``
+    as English marked hundreds of those as untranslated and made a complete
+    run impossible. Two ordinary Latin words is where a label turns into prose.
     """
-    return re.search(r"[A-Za-z]{2,}", text) is not None
+    words = [
+        word.lower()
+        for word in re.findall(r"[A-Za-z]{3,}", text)
+        if word.lower() not in _SCHOLARLY_LABELS
+    ]
+    return len(words) >= 2
 
 
 def read_source_rows(db: sqlite3.Connection) -> Iterator[tuple]:
