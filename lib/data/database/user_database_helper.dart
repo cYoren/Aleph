@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as path;
 import 'package:sqflite/sqflite.dart';
+import 'package:original_bible/data/database/migrations/srs_fsrs_migration.dart';
 import 'package:original_bible/shared/utils/async_once.dart';
 
 /// Separate database for user-generated content (bookmarks, notes, highlights)
@@ -26,7 +27,7 @@ class UserDatabaseHelper {
 
     return await openDatabase(
       dbFilePath,
-      version: 5,
+      version: 6,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -34,10 +35,10 @@ class UserDatabaseHelper {
 
   /// Per-review history, one row per answered card.
   ///
-  /// SM-2 only needs the current state, so this table changes nothing about
-  /// scheduling today. It exists so FSRS — which fits parameters from the grade
-  /// and the elapsed interval of every past review — becomes possible without
-  /// having to reconstruct history the app never kept.
+  /// Nothing schedules from this — FSRS keeps its own state on `srs_progress`.
+  /// It exists because fitting the FSRS weights to a reader needs the rating and
+  /// the elapsed interval of every past review, and history cannot be
+  /// reconstructed after the fact.
   Future<void> _createReviewLogTable(Database db) async {
     await db.execute('''
       CREATE TABLE IF NOT EXISTS srs_reviews (
@@ -45,6 +46,7 @@ class UserDatabaseHelper {
         strongs_id TEXT NOT NULL,
         reviewed_at INTEGER NOT NULL,
         grade INTEGER NOT NULL,
+        rating INTEGER,
         repetitions_before INTEGER NOT NULL DEFAULT 0,
         easiness_before REAL NOT NULL DEFAULT 2.5,
         interval_before REAL NOT NULL DEFAULT 0.0
@@ -150,6 +152,7 @@ class UserDatabaseHelper {
     // Spaced Repetition System table
     await _createSrsTable(db);
     await _createReviewLogTable(db);
+    await addFsrsColumns(db);
 
     // Passage memorization table
     await _createMemorizationTable(db);
@@ -189,6 +192,13 @@ class UserDatabaseHelper {
 
     if (oldVersion < 5) {
       await _createReviewLogTable(db);
+    }
+
+    if (oldVersion < 6) {
+      // FSRS replaced SM-2 as the scheduler. The SM-2 rows are the only thing
+      // that can seed it, so this runs after every earlier step has guaranteed
+      // the columns it reads.
+      await migrateSrsToFsrs(db);
     }
   }
 

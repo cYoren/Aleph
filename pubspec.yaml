@@ -27,6 +27,10 @@ dependencies:
   # Storage
   shared_preferences: ^2.3.4
   in_app_review: ^2.0.9
+
+  # Spaced repetition. FSRS ships pretrained weights, so it schedules correctly
+  # from the first review; only personalising those weights needs volume.
+  fsrs: ^2.0.1
   
   share_plus: ^10.0.0
 
