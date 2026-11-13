@@ -190,6 +190,8 @@
   "hebrewTextNoCantillation": "Только огласовки",
   "hebrewTextConsonantal": "Только согласные",
   "hebrewTextQere": "Кере / Кетив (написанное рядом с прочитанным)",
+  "otherEditions": "Другие издания",
+  "otherEditionsOmitted": "отсутствует",
   "qereTitle": "Кере / Кетив",
   "qereReadLabel": "Прочитано",
   "qereWrittenLabel": "Написано",

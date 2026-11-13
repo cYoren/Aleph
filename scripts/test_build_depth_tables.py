@@ -317,9 +317,7 @@ class QereKetivParseTest(unittest.TestCase):
         # Two words, and the same consonants as the source: comparing pointing
         # codepoint by codepoint would be testing the fixture, not the parser.
         self.assertEqual(len(job.qere.split()), 2)
-        self.assertEqual(
-            build_db.hebrew_consonants(job.qere).replace(" ", ""), "מןהסערה"
-        )
+        self.assertEqual(build_db.hebrew_consonants(job.qere), "מןהסערה")
         # The id that identifies a two-word reading is the longer word's.
         self.assertEqual(job.qere_strongs, "H5591")
 
@@ -500,6 +498,173 @@ class WriteQereKetivTest(unittest.TestCase):
             ).fetchone()[0],
             0,
         )
+
+
+BYZANTINE_CSV = """chapter,verse,text
+6,13,και μη εισενεγκης ημας εις πειρασμον αλλα ρυσαι ημας απο του πονηρου οτι σου εστιν η βασιλεια και η δυναμις και η δοξα εις τους αιωνας αμην
+6,14,εαν γαρ αφητε
+"""
+
+CNTR_TSV = """Verse\tModern\tKoine\tLemma\tESN\tRole\tMorphology
+40006013\t\u0318\u0398\u03b5\u1ff7,\t=θω\tθε\u03cc\u03c2\t23160\tN\t....DMS
+40006013\t\u1f21\t=η\t\u1f41\t35880\tRA\t....NFS
+40006013\t\u03b2\u03b1\u03c3\u03b9\u03bb\u03b5\u03af\u03b1\t=βασιλεια\t\u03b2\u03b1\u03c3\u03b9\u03bb\u03b5\u03af\u03b1\t9320\tN\t....NFS
+"""
+
+
+class OtherEditionsParseTest(unittest.TestCase):
+    """The two other editions, as verse-keyed word lists."""
+
+    def test_byzantine_csv_is_keyed_by_book_chapter_verse(self):
+        directory = Path(tempfile.mkdtemp())
+        self.addCleanup(lambda: __import__("shutil").rmtree(directory, ignore_errors=True))
+        path = directory / "MAT.csv"
+        path.write_text(BYZANTINE_CSV, encoding="utf-8")
+        verses = build_db.parse_byzantine_edition([path])
+        self.assertEqual(sorted(verses), [("MAT", 6, 13), ("MAT", 6, 14)])
+        self.assertEqual(verses[("MAT", 6, 13)][:3], ["\u03ba\u03b1\u03b9", "\u03bc\u03b7", "\u03b5\u03b9\u03c3\u03b5\u03bd\u03b5\u03b3\u03ba\u03b7\u03c2"])
+
+    def test_a_paragraph_mark_is_not_a_word(self):
+        directory = Path(tempfile.mkdtemp())
+        self.addCleanup(lambda: __import__("shutil").rmtree(directory, ignore_errors=True))
+        path = directory / "MAT.csv"
+        path.write_text(
+            'chapter,verse,text\n1,1,"\u00b6\u0392\u03af\u03b2\u03bb\u03bf\u03c2 \u03b3\u03b5\u03bd\u03ad\u03c3\u03b5\u03c9\u03c2."\n',
+            encoding="utf-8",
+        )
+        verses = build_db.parse_byzantine_edition([path])
+        self.assertEqual(verses[("MAT", 1, 1)], ["\u0392\u03af\u03b2\u03bb\u03bf\u03c2", "\u03b3\u03b5\u03bd\u03ad\u03c3\u03b5\u03c9\u03c2."])
+
+    def test_cntr_tsv_reads_the_eight_digit_verse_id(self):
+        path = _write(CNTR_TSV, ".tsv")
+        self.addCleanup(path.unlink)
+        verses = build_db.parse_cntr_edition(path)
+        self.assertEqual(list(verses), [("MAT", 6, 13)])
+        self.assertEqual(verses[("MAT", 6, 13)], ["\u0318\u0398\u03b5\u1ff7,", "\u1f21", "\u03b2\u03b1\u03c3\u03b9\u03bb\u03b5\u03af\u03b1"])
+
+    def test_a_verse_id_outside_the_new_testament_is_skipped(self):
+        path = _write(
+            "Verse\tModern\n19001001\t\u1f18\u03bd\n40006013\t\u03ba\u03b1\u03af\n",
+            ".tsv",
+        )
+        self.addCleanup(path.unlink)
+        verses = build_db.parse_cntr_edition(path)
+        self.assertEqual(list(verses), [("MAT", 6, 13)])
+
+
+class DiffVerseWordsTest(unittest.TestCase):
+    """What counts as a different reading."""
+
+    def test_pointing_and_punctuation_are_not_a_difference(self):
+        self.assertEqual(
+            build_db.diff_verse_words(
+                ["\u03ba\u03b1\u1f76", "\u1f10\u03c3\u03c4\u03af\u03bd,"],
+                ["\u03ba\u03b1\u03b9", "\u03b5\u03c3\u03c4\u03b9\u03bd"],
+            ),
+            [],
+        )
+
+    def test_final_sigma_is_not_a_difference(self):
+        self.assertEqual(
+            build_db.diff_verse_words(["\u03bb\u03cc\u03b3\u03bf\u03c2"], ["\u03bb\u03bf\u03b3\u03bf\u03c3"]),
+            [],
+        )
+
+    def test_a_different_word_is_a_difference(self):
+        self.assertEqual(
+            build_db.diff_verse_words(
+                ["\u03b5\u1f50\u03b4\u03bf\u03ba\u03af\u03b1\u03c2"],
+                ["\u03b5\u03c5\u03b4\u03bf\u03ba\u03b9\u03b1"],
+            ),
+            [("\u03b5\u1f50\u03b4\u03bf\u03ba\u03af\u03b1\u03c2", "\u03b5\u03c5\u03b4\u03bf\u03ba\u03b9\u03b1")],
+        )
+
+    def test_an_addition_has_an_empty_base_side(self):
+        self.assertEqual(
+            build_db.diff_verse_words(
+                ["\u03c0\u03bf\u03bd\u03b7\u03c1\u03bf\u1fe6"],
+                ["\u03c0\u03bf\u03bd\u03b7\u03c1\u03bf\u03c5", "\u03b1\u03bc\u03b7\u03bd"],
+            ),
+            [("", "\u03b1\u03bc\u03b7\u03bd")],
+        )
+
+    def test_stored_readings_drop_the_editions_punctuation(self):
+        # The comparison ignores punctuation, so the stored reading must too:
+        # one side with a trailing full stop and the other without reads as a
+        # difference that is not there.
+        self.assertEqual(
+            build_db.diff_verse_words(
+                ["\u03c4\u03b7\u03c1\u03ae\u03c3\u03b1\u03c4\u03b5"],
+                ["\u03c4\u03b7\u03c1\u03ae\u03c3\u03b1\u03c4\u03b5."],
+            ),
+            [],
+        )
+        self.assertEqual(
+            build_db.diff_verse_words(
+                ["\u03c0\u03bf\u03bd\u03b7\u03c1\u03bf\u1fe6"],
+                ["\u03c0\u03bf\u03bd\u03b7\u03c1\u03bf\u03c5.", "\u1f00\u03bc\u03ae\u03bd."],
+            ),
+            [("", "\u1f00\u03bc\u03ae\u03bd")],
+        )
+
+    def test_an_omission_has_an_empty_other_side(self):
+        self.assertEqual(
+            build_db.diff_verse_words(
+                ["\u03b1", "\u03b2", "\u03b3"],
+                ["\u03b1", "\u03b3"],
+            ),
+            [("\u03b2", "")],
+        )
+
+
+class WriteTextualVariantsTest(unittest.TestCase):
+    def setUp(self):
+        self.conn = sqlite3.connect(":memory:")
+        self.conn.executescript(
+            """
+            CREATE TABLE verses (id INTEGER PRIMARY KEY, book_id TEXT,
+                                 chapter INTEGER, verse_number INTEGER);
+            CREATE TABLE words (id INTEGER PRIMARY KEY, verse_id INTEGER,
+                                position INTEGER, word TEXT,
+                                language TEXT NOT NULL DEFAULT 'grc');
+            CREATE TABLE textual_variants (
+                id INTEGER PRIMARY KEY,
+                book_id TEXT NOT NULL,
+                chapter INTEGER NOT NULL,
+                verse INTEGER NOT NULL,
+                position INTEGER NOT NULL,
+                edition TEXT NOT NULL,
+                base_reading TEXT NOT NULL,
+                other_reading TEXT NOT NULL
+            );
+            INSERT INTO verses (id, book_id, chapter, verse_number)
+                VALUES (1, 'MAT', 6, 13);
+            INSERT INTO words (verse_id, position, word) VALUES
+                (1, 1, '\u03ba\u03b1\u1f76'),
+                (1, 2, '\u03bc\u1f74'),
+                (1, 3, '\u03c0\u03bf\u03bd\u03b7\u03c1\u03bf\u1fe6');
+            """
+        )
+        self.addCleanup(self.conn.close)
+
+    def test_differences_are_written_with_the_edition_named(self):
+        editions = {
+            "RP2018": {("MAT", 6, 13): ["\u03ba\u03b1\u03b9", "\u03bc\u03b7", "\u03c0\u03bf\u03bd\u03b7\u03c1\u03bf\u03c5", "\u03b1\u03bc\u03b7\u03bd"]}
+        }
+        with _quiet():
+            written = build_db.build_textual_variants(self.conn, editions)
+        self.assertEqual(written, 1)
+        row = self.conn.execute(
+            "SELECT book_id, chapter, verse, edition, base_reading, other_reading "
+            "FROM textual_variants"
+        ).fetchone()
+        self.assertEqual(row, ("MAT", 6, 13, "RP2018", "", "\u03b1\u03bc\u03b7\u03bd"))
+
+    def test_a_verse_the_base_text_lacks_writes_nothing(self):
+        editions = {"SR": {("MAT", 9, 9): ["\u03ba\u03b1\u03b9"]}}
+        with _quiet():
+            written = build_db.build_textual_variants(self.conn, editions)
+        self.assertEqual(written, 0)
 
 
 def _no_minimums():
