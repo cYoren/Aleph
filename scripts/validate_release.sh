@@ -279,6 +279,16 @@ if (( textual_variant_editions < 2 )); then
   exit 1
 fi
 
+# Each edition on its own: a total of 27 books passes even if one edition covers
+# only Matthew.
+for edition in $(sqlite3 "$DB_PATH" "SELECT DISTINCT edition FROM textual_variants;"); do
+  edition_books="$(sqlite3 "$DB_PATH" "SELECT COUNT(DISTINCT book_id) FROM textual_variants WHERE edition='${edition}';")"
+  if (( edition_books != 27 )); then
+    echo "ERROR: ${edition} covers ${edition_books} New Testament books, expected 27"
+    exit 1
+  fi
+done
+
 echo "Running lexicon enrichment unit tests..."
 python3 "$ROOT_DIR/scripts/test_build_lexicon_enrichment.py" > /dev/null
 

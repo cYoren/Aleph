@@ -40,6 +40,12 @@ class DatabaseHelper {
     'lexicon',
     'cross_references',
     'syntax_trees',
+    // The depth layers. A stale install that lacks one of these would show a
+    // sheet or a pane with nothing in it and report no error, which is the
+    // defect PAPERCUTS records for cross-references.
+    'lexicon_senses',
+    'lexicon_roots',
+    'textual_variants',
   };
 
   DatabaseHelper._init();

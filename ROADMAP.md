@@ -294,10 +294,15 @@ our data provides. Implemented in `lib/shared/utils/cantillation.dart`
       empty side is an omission or an addition (the Byzantine doxology of
       Matthew 6:13 has nothing on the base side). The reader shows a one-line
       **Other editions** row under the verse, only where a difference exists,
-      naming the edition; tapping opens the two readings. It is never called a
-      critical apparatus: no manuscripts, no claim about the original. Gates:
-      `build_textual_variants` + `validate_database` (8,000 readings, all 27
-      books, both editions) and `validate_release.sh`. Tests:
+      naming the edition; tapping opens the two readings. Stored readings carry
+      the words without the editions' punctuation, since the comparison ignores
+      it. It is never called a critical apparatus: no manuscripts, no claim
+      about the original. `textual_variants` is in `_requiredTables`, so an
+      install that predates the table recopies the bundled database instead of
+      showing an empty pane. Gates: `build_textual_variants` +
+      `validate_database` (8,000 readings, and **each** edition in all 27 books —
+      a total of 27 passes even if one edition covers only Matthew) and
+      `validate_release.sh` (the same, per edition). Tests:
       `scripts/test_build_depth_tables.py` (`OtherEditionsParseTest`,
       `DiffVerseWordsTest`, `WriteTextualVariantsTest`),
       `scripts/test_pipeline_gates.py`, `test/textual_variants_pane_test.dart`.
