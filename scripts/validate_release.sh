@@ -235,6 +235,30 @@ if (( participant_links_count < 40000 )); then
   exit 1
 fi
 
+# Qere/Ketiv: the ~1.2k places where the scroll writes one thing and the
+# tradition reads another. Both forms are stored per token; a build that skips
+# the OSHB pass ships a reader that cannot show them.
+qere_ketiv_count="$(sqlite3 "$DB_PATH" "SELECT COUNT(*) FROM words WHERE qere_text IS NOT NULL;")"
+if (( qere_ketiv_count < 1180 )); then
+  echo "ERROR: Expected at least 1,180 qere/ketiv tokens, found $qere_ketiv_count"
+  exit 1
+fi
+
+# A marked row must be Hebrew and pointing only. This is the check that catches
+# an OSHB editorial note (or a raw newline and its indentation) leaking into
+# scripture, which the reader would render in the Hebrew font.
+qere_dirty="$(sqlite3 "$DB_PATH" "SELECT COUNT(*) FROM words WHERE qere_text IS NOT NULL AND (qere_text GLOB '*[A-Za-z]*' OR ketiv_text GLOB '*[A-Za-z]*' OR qere_text LIKE '%' || char(10) || '%' OR ketiv_text LIKE '%' || char(10) || '%');")"
+if (( qere_dirty != 0 )); then
+  echo "ERROR: $qere_dirty qere/ketiv rows carry markup or editorial prose"
+  exit 1
+fi
+
+qere_ketiv_pairs="$(sqlite3 "$DB_PATH" "SELECT COUNT(*) FROM words WHERE qere_text IS NOT NULL AND ketiv_text IS NOT NULL;")"
+if (( qere_ketiv_pairs != qere_ketiv_count )); then
+  echo "ERROR: $((qere_ketiv_count - qere_ketiv_pairs)) qere tokens have no written form"
+  exit 1
+fi
+
 echo "Running lexicon enrichment unit tests..."
 python3 "$ROOT_DIR/scripts/test_build_lexicon_enrichment.py" > /dev/null
 
@@ -276,3 +300,4 @@ echo "  books=$books_count distinct_verse_books=$distinct_verse_books verses=$ve
 echo "  kjv_translation_verses=$kjv_translation_verses words=$words_count lexicon=$lexicon_count enabled_translations=$enabled_translations"
 echo "  enriched_lexicon=$enriched_lexicon"
 echo "  lexicon_senses=$lexicon_senses_count lexicon_roots=$lexicon_roots_count participant_links=$participant_links_count"
+echo "  qere_ketiv=$qere_ketiv_count"

@@ -264,8 +264,9 @@ class _TappableWordState extends ConsumerState<TappableWord> {
   Widget _buildWordStack(ColorScheme colorScheme, bool showTransliteration) {
     final hasGloss =
         widget.readerGloss != null && widget.readerGloss!.isNotEmpty;
+    final variant = _qereKetivLine();
 
-    if (!showTransliteration && !hasGloss) {
+    if (!showTransliteration && !hasGloss && variant == null) {
       return _buildWordText(colorScheme);
     }
 
@@ -287,6 +288,19 @@ class _TappableWordState extends ConsumerState<TappableWord> {
         ],
         // Original text
         _buildWordText(colorScheme),
+        if (variant != null) ...[
+          const SizedBox(height: 1),
+          // The other half of a qere/ketiv pair, marked with the siglum the
+          // printed editions use: כ what is written, ק what is read.
+          Text(
+            variant,
+            style: TextStyle(
+              fontFamily: 'EzraSIL',
+              fontSize: widget.fontSize * 0.6,
+              color: colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ],
         if (hasGloss) ...[
           const SizedBox(height: 1),
           // Reader-mode gloss below, always LTR (target-language text)
@@ -302,6 +316,23 @@ class _TappableWordState extends ConsumerState<TappableWord> {
         ],
       ],
     );
+  }
+
+  /// The written or read form, whichever the verse is not showing.
+  ///
+  /// Only in the qere display mode: outside it the text reads as the tradition
+  /// reads, and a second form under every variant word would be noise. Which
+  /// form to show is the build's answer, not a guess from this token — the
+  /// token is often one affix of the word and matches neither form.
+  String? _qereKetivLine() {
+    if (!widget.isOT) return null;
+    final aside = widget.word.qereKetivAside;
+    if (aside == null) return null;
+    final mode = ref.watch(
+      settingsProvider.select((s) => s.hebrewTextDisplay),
+    );
+    if (mode != HebrewTextDisplay.qere) return null;
+    return '${aside.siglum} ${aside.text}';
   }
 
   Widget _buildWordText(ColorScheme colorScheme) {
