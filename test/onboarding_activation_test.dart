@@ -151,10 +151,12 @@ Future<GoRouter> _start(
   final router = GoRouter(
     routes: [
       GoRoute(path: '/', builder: (context, state) => const OnboardingScreen()),
+      // Finishing onboarding lands on the on-ramp, not in the reader: a reader
+      // who has never sounded out a letter has nothing to do in a chapter yet.
       GoRoute(
-        path: '/reading',
+        path: '/start',
         builder: (context, state) =>
-            const Scaffold(body: Text('Reader destination')),
+            const Scaffold(body: Text('On-ramp destination')),
       ),
     ],
   );
@@ -203,7 +205,7 @@ void main() {
     expect(find.text('The beginning.'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
-  testWidgets('two steps persist completion and enter the reader', (
+  testWidgets('two steps persist completion and enter the on-ramp', (
     tester,
   ) async {
     await _start(tester);
@@ -212,17 +214,17 @@ void main() {
     expect(find.text('Which scriptures are you reading?'), findsOneWidget);
     await tester.tap(find.text('Get Started'));
     await tester.pumpAndSettle();
-    expect(find.text('Reader destination'), findsOneWidget);
+    expect(find.text('On-ramp destination'), findsOneWidget);
     expect(
       (await SharedPreferences.getInstance()).getBool('hasCompletedOnboarding'),
       isTrue,
     );
   });
-  testWidgets('skip enters the reader', (tester) async {
+  testWidgets('skip enters the on-ramp', (tester) async {
     await _start(tester);
     await tester.tap(find.text('Skip'));
     await tester.pumpAndSettle();
-    expect(find.text('Reader destination'), findsOneWidget);
+    expect(find.text('On-ramp destination'), findsOneWidget);
   });
   testWidgets('configured AI still presents its choice and privacy note', (
     tester,
@@ -251,6 +253,6 @@ void main() {
     expect(tester.takeException(), isNull);
     await tester.tap(find.text(l10n.getStarted));
     await tester.pumpAndSettle();
-    expect(find.text('Reader destination'), findsOneWidget);
+    expect(find.text('On-ramp destination'), findsOneWidget);
   });
 }

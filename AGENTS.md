@@ -17,10 +17,18 @@ Offline-first original-language Bible reader for iOS, Android, and macOS with He
 flutter pub get
 python3 scripts/build_full_bible_db.py --output assets/bible.db --cache-dir /tmp/original_bible_db_cache --strict-coverage --fill-kjv-gaps --emit-coverage-report build/coverage_report.json
 python3 scripts/prepare_bible_db.py         # compacts bible.db and writes bible.db.gz
-./scripts/validate_release.sh
+./scripts/validate_release.sh               # data gates + the python pipeline tests
 flutter analyze
 flutter test
 ```
+
+The release database carries five layers the definition sheet reads directly:
+`lexicon` (flattened entry text), `lexicon_senses` (numbered senses from BDB and
+Abbott-Smith), `lexicon_roots` (TWOT root per Strong's id), the participant
+columns on `words` (`subject_text`/`referent_text`), and `syntax_trees`.
+`validate_release.sh` fails if senses, roots or participant links are thin, so a
+build that skips the extended lexicon (or a source that moved) stops there rather
+than shipping a sheet with nothing in it.
 
 Release artifacts require separate verification for Android, iOS, and macOS. Do not claim a store release from a successful local build alone. Never commit keystores, provisioning files, credentials, generated databases, or private exports.
 

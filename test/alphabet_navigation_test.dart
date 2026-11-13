@@ -39,7 +39,13 @@ void main() {
   testWidgets('the alphabet guide is reachable from home and shows both scripts',
       (tester) async {
     SharedPreferences.setMockInitialValues({
-      'hasCompletedOnboarding': true, 'appLanguage': 'en', 'translation': 'KJV',
+      'hasCompletedOnboarding': true,
+      'appLanguage': 'en',
+      'translation': 'KJV',
+      // An installed reader who is past the on-ramp: without these the startup
+      // gate routes to /start by design.
+      'firstRunVerseAt': 1,
+      'firstRunReviewAt': 1,
     });
     await tester.pumpWidget(ProviderScope(
       overrides: [bibleDaoProvider.overrideWithValue(_FakeDao())],

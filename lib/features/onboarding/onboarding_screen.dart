@@ -7,6 +7,7 @@ import '../explain/explain_provider.dart';
 import '../../providers/word_provider.dart';
 import '../../shared/widgets/tappable_word.dart';
 import '../../shared/utils/vocabulary_filter.dart';
+import 'first_run.dart';
 import '../settings/settings_provider.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
@@ -72,7 +73,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   Future<void> _completeOnboarding() async {
     await ref.read(settingsProvider.notifier).completeOnboarding();
-    if (mounted) context.go('/reading');
+    if (!mounted) return;
+    // Straight into the on-ramp: a reader who has never seen these letters has
+    // nothing to do in a reader full of books and decks yet.
+    final firstRun = ref.read(firstRunProvider);
+    context.go(firstRun.isComplete ? '/' : '/start');
   }
 
   @override

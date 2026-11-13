@@ -1267,4 +1267,120 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get diagnosticsHealthy => '정상 작동 중';
+
+  @override
+  String get sensesLabel => '의미';
+
+  @override
+  String get sensesUnavailable => '이 항목에는 사전에 번호가 매겨진 의미가 없습니다.';
+
+  @override
+  String get rootLabel => '어근';
+
+  @override
+  String get rootWordsTitle => '이 어근의 단어들';
+
+  @override
+  String rootWordCount(int count) {
+    return '$count개 단어';
+  }
+
+  @override
+  String get formsInTextLabel => '본문에 나오는 형태';
+
+  @override
+  String get formsInTextNote => '본문에 실제로 나오는 형태만 보여 줍니다.';
+
+  @override
+  String showAllCount(int count) {
+    return '전체 $count개 보기';
+  }
+
+  @override
+  String get markAsKnown => '아는 단어로 표시';
+
+  @override
+  String get markedAsKnown => '아는 단어';
+
+  @override
+  String get markAsKnownDone => '아는 단어로 표시했습니다. 읽기 모드에서 더 이상 뜻을 붙이지 않습니다.';
+
+  @override
+  String get transliterationLabel => '음역';
+
+  @override
+  String get refersToLabel => '가리키는 말';
+
+  @override
+  String get subjectLabel => '주어';
+
+  @override
+  String get firstStepsHomeTitle => '여기서 시작';
+
+  @override
+  String get firstStepsHomeDesc => '글자 세 개, 한 절, 다섯 단어.';
+
+  @override
+  String get firstStepsTitle => '첫 번째 절';
+
+  @override
+  String get firstStepsLettersTitle => '글자 세 개';
+
+  @override
+  String get firstStepsLettersDesc =>
+      '이 세 글자면 실제 단어를 읽을 수 있습니다. 글자를 눌러 소리를 들어 보세요.';
+
+  @override
+  String get firstStepsWordTitle => '한 단어';
+
+  @override
+  String get firstStepsWordDesc => '방금 만난 글자가 성경의 한 단어 안에 있습니다.';
+
+  @override
+  String get firstStepsVerseTitle => '한 절';
+
+  @override
+  String get firstStepsVerseDesc => '모든 단어에 소리와 뜻이 붙어 있습니다. 여기에는 시험이 없습니다.';
+
+  @override
+  String get firstStepsVerseHint => '단어를 누르면 사전 항목 전체를 볼 수 있습니다.';
+
+  @override
+  String get firstStepsReviewTitle => '다섯 단어';
+
+  @override
+  String get firstStepsReviewDesc => '이 절에서 남겨 둘 만한 다섯 단어입니다. 한 번만 지나가면 끝납니다.';
+
+  @override
+  String get firstStepsReviewButton => '이 다섯 단어 복습';
+
+  @override
+  String get firstStepsStart => '시작';
+
+  @override
+  String get firstStepsContinue => '계속';
+
+  @override
+  String get firstStepsRestart => '다시 시작';
+
+  @override
+  String firstVerseInMinutes(int minutes) {
+    return '첫 절까지 $minutes분 걸렸습니다.';
+  }
+
+  @override
+  String get firstVerseUnderMinute => '첫 절까지 1분이 채 걸리지 않았습니다.';
+
+  @override
+  String get firstStepsDoneTitle => '들어오는 길입니다';
+
+  @override
+  String get firstStepsDoneDesc =>
+      '글자, 단어 하나, 절 하나, 다시 만날 다섯 단어. 이제 읽기가 열렸습니다.';
+
+  @override
+  String get firstStepsDoneReader => '읽기 열기';
+
+  @override
+  String get verseLabel => '절';
 }

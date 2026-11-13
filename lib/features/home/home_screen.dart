@@ -11,6 +11,7 @@ import '../../shared/utils/transliterator.dart';
 import '../../shared/utils/reading_tradition.dart';
 import '../../shared/utils/readable_width.dart';
 import '../../providers/book_names_provider.dart';
+import '../onboarding/first_run.dart';
 
 const _fallbackTranslationId = 'KJV';
 const _oldTestamentBooks = {
@@ -146,6 +147,7 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context)!;
+    final firstRun = ref.watch(firstRunProvider);
 
     return Scaffold(
       body: SafeArea(
@@ -158,11 +160,65 @@ class HomeScreen extends ConsumerWidget {
             32,
           ),
           children: [
-            _buildContinueReadingCard(context, ref, colorScheme, l10n),
+            // Before the reader has read one verse, the first thing on this
+            // page is the way in, not a library they cannot read yet.
+            if (!firstRun.isComplete)
+              _buildFirstStepsCard(context, colorScheme, l10n)
+            else
+              _buildContinueReadingCard(context, ref, colorScheme, l10n),
             const SizedBox(height: 32),
             _buildVerseOfDayCard(context, ref, colorScheme, l10n),
             const SizedBox(height: 32),
             _buildStudyRow(context, colorScheme, l10n),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// The on-ramp, until it is done: three letters, one verse, five words.
+  Widget _buildFirstStepsCard(
+    BuildContext context,
+    ColorScheme colorScheme,
+    AppLocalizations l10n,
+  ) {
+    return InkWell(
+      onTap: () => context.push('/start'),
+      borderRadius: BorderRadius.circular(14),
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(18, 18, 16, 18),
+        decoration: BoxDecoration(
+          color: colorScheme.primaryContainer.withValues(alpha: 0.4),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    l10n.firstStepsHomeTitle.toUpperCase(),
+                    style: TextStyle(
+                      fontSize: 11,
+                      letterSpacing: 1.6,
+                      fontWeight: FontWeight.w600,
+                      color: colorScheme.primary,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    l10n.firstStepsHomeDesc,
+                    style: TextStyle(
+                      fontSize: 16,
+                      height: 1.45,
+                      color: colorScheme.onSurface,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(Icons.arrow_forward, color: colorScheme.primary, size: 22),
           ],
         ),
       ),

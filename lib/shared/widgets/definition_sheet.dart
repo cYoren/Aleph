@@ -4,6 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../providers/word_provider.dart';
+import '../../providers/database_provider.dart';
+import '../utils/reader_mode.dart';
+import 'lexicon_depth_sections.dart';
 import '../../providers/books_provider.dart';
 import '../utils/morphology_decoder.dart';
 import '../utils/morphology_labels.dart';
@@ -86,7 +89,12 @@ class DefinitionSheet extends ConsumerWidget {
                             ),
                           ),
                           const SizedBox(height: 4),
-                          Row(
+                          // Wrap, not Row: two chips plus a long Strong's label
+                          // overflow a narrow phone once the header also carries
+                          // the mark-known action.
+                          Wrap(
+                            spacing: 8,
+                            runSpacing: 4,
                             children: [
                               if (word.strongs != null)
                                 _buildStrongsChip(
@@ -94,20 +102,20 @@ class DefinitionSheet extends ConsumerWidget {
                                   colorScheme,
                                   l10n,
                                 ),
-                              if (word.morphCode != null) ...[
-                                const SizedBox(width: 8),
+                              if (word.morphCode != null)
                                 _buildPartOfSpeechChip(
                                   word.morphCode!,
                                   isHebrew,
                                   colorScheme,
                                   l10n,
                                 ),
-                              ],
                             ],
                           ),
                         ],
                       ),
                     ),
+                    if (usageLookupKey != null)
+                      _MarkKnownButton(lexiconKey: usageLookupKey),
                     SpeakWordButton(
                       text: word.displayText,
                       isHebrew: isHebrew,
@@ -173,6 +181,8 @@ class DefinitionSheet extends ConsumerWidget {
                             colorScheme,
                           ),
 
+                        SensesSection(lexiconKey: usageLookupKey ?? ''),
+
                         if (lexicon.definition != null) ...[
                           _buildSection(
                             l10n.fullDefinition,
@@ -222,6 +232,15 @@ class DefinitionSheet extends ConsumerWidget {
                             _sourceNote(l10n.contentSourceNote, colorScheme),
                         ],
 
+                        // Who the subject is, or what a pronoun points back to
+                        ParticipantSection(
+                          subjectText: word.subjectText,
+                          subjectStrongs: word.subjectStrongs,
+                          referentText: word.referentText,
+                          referentStrongs: word.referentStrongs,
+                          isHebrew: isHebrew,
+                        ),
+
                         // Decoded morphology
                         if (word.morphCode != null)
                           _buildMorphologySection(
@@ -230,6 +249,16 @@ class DefinitionSheet extends ConsumerWidget {
                             colorScheme,
                             l10n,
                           ),
+
+                        RootSection(
+                          lexiconKey: usageLookupKey ?? '',
+                          isHebrew: isHebrew,
+                        ),
+
+                        AttestedFormsSection(
+                          lemma: lexicon.lemma,
+                          isHebrew: isHebrew,
+                        ),
 
                         // Visual Context Engine: Top usage books graph
                         if (usageLookupKey != null)
@@ -919,6 +948,52 @@ class _ExpandableSectionState extends State<_ExpandableSection> {
             ),
         ],
       ),
+    );
+  }
+}
+
+
+/// "I know this one" from the definition sheet.
+///
+/// Reading is where a reader finds out they already know a word; making them
+/// wait for a review card to say so is the reason decks fill with words nobody
+/// studies. The claim is recorded at a mastery the reader-mode gloss respects,
+/// so the word quietly stops being glossed, and the existing review history is
+/// left alone.
+class _MarkKnownButton extends ConsumerWidget {
+  const _MarkKnownButton({required this.lexiconKey});
+
+  final String lexiconKey;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
+    final progress = ref.watch(selectedWordProgressProvider).valueOrNull;
+    final known =
+        (progress?.masteryScore ?? 0) >= kReaderModeMasterySuppression;
+
+    return IconButton(
+      tooltip: known ? l10n.markedAsKnown : l10n.markAsKnown,
+      icon: Icon(
+        known ? Icons.check_circle : Icons.check_circle_outline,
+        color: known ? colorScheme.primary : colorScheme.onSurfaceVariant,
+      ),
+      onPressed: known
+          ? null
+          : () async {
+              await ref.read(srsDaoProvider).markKnown(lexiconKey);
+              ref.invalidate(selectedWordProgressProvider);
+              ref.invalidate(readerGlossesProvider);
+              if (!context.mounted) return;
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(l10n.markAsKnownDone),
+                  duration: const Duration(seconds: 2),
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+            },
     );
   }
 }

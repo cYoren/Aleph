@@ -6,6 +6,8 @@ import '../../models/verse.dart';
 import '../../models/word.dart';
 import '../../models/cross_reference.dart';
 import '../../models/lexicon_entry.dart';
+import '../../models/lexicon_root.dart';
+import '../../models/lexicon_sense.dart';
 import '../../models/translation.dart';
 import '../../../shared/utils/vocabulary_filter.dart';
 import '../database_helper.dart';
@@ -565,8 +567,7 @@ class BibleDAO {
   }
 
   /// Total number of verses containing a word keyed by Strong's id or lemma.
-  Future<int> countOccurrencesForLexiconKey(String key) async {
-    if (key.isEmpty) return 0;
+  Future<int> countOccurrencesForLexiconKey(String key) async {    if (key.isEmpty) return 0;
 
     try {
       final db = await _dbHelper.database;
@@ -592,31 +593,42 @@ class BibleDAO {
   /// Whole-Bible occurrence counts for a batch of lexicon keys (Strong's ids
   /// or lemmas). Used by reader mode to decide which words are rare enough
   /// to gloss inline.
+  ///
+  /// Batched in chunks: the adaptive reader bar can ask about every word the
+  /// reader has in review, and a single statement with thousands of bound
+  /// variables fails outright on builds whose SQLite keeps the older cap.
   Future<Map<String, int>> getFrequenciesForLexiconKeys(
     List<String> keys,
   ) async {
     final requested = keys.where((k) => k.isNotEmpty).toSet().toList();
     if (requested.isEmpty) return {};
 
+    const chunkSize = 500;
     final result = <String, int>{};
     try {
       final db = await _dbHelper.database;
-      final placeholders = requested.map((_) => '?').join(',');
 
-      final strongsRows = await db.rawQuery(
-        'SELECT strongs AS k, COUNT(*) AS c FROM words '
-        'WHERE strongs IN ($placeholders) GROUP BY strongs',
-        requested,
-      );
-      for (final row in strongsRows) {
-        final key = row['k']?.toString() ?? '';
-        if (key.isNotEmpty) {
-          result[key] = (row['c'] as num?)?.toInt() ?? 0;
+      for (var start = 0; start < requested.length; start += chunkSize) {
+        final chunk = requested.sublist(
+          start,
+          (start + chunkSize).clamp(0, requested.length),
+        );
+        final placeholders = chunk.map((_) => '?').join(',');
+
+        final strongsRows = await db.rawQuery(
+          'SELECT strongs AS k, COUNT(*) AS c FROM words '
+          'WHERE strongs IN ($placeholders) GROUP BY strongs',
+          chunk,
+        );
+        for (final row in strongsRows) {
+          final key = row['k']?.toString() ?? '';
+          if (key.isNotEmpty) {
+            result[key] = (row['c'] as num?)?.toInt() ?? 0;
+          }
         }
-      }
 
-      final remaining = requested.where((k) => !result.containsKey(k)).toList();
-      if (remaining.isNotEmpty) {
+        final remaining = chunk.where((k) => !result.containsKey(k)).toList();
+        if (remaining.isEmpty) continue;
         final remainingPlaceholders = remaining.map((_) => '?').join(',');
         final lemmaRows = await db.rawQuery(
           'SELECT lemma AS k, COUNT(*) AS c FROM words '
@@ -1157,6 +1169,183 @@ class BibleDAO {
       }
     }
     return null;
+  }
+
+  // ========== SENSES, ROOTS AND ATTESTED FORMS ==========
+
+  /// Numbered senses of one entry, in the source dictionary's order.
+  ///
+  /// Returns [] for databases built before `lexicon_senses` existed and for
+  /// entries the source left as plain prose, so the sheet keeps working with
+  /// the flattened text.
+  Future<List<LexiconSense>> getSensesForStrongs(
+    String key, {
+    int limit = 120,
+  }) async {
+    if (key.isEmpty) return const [];
+    try {
+      final db = await _dbHelper.database;
+      final rows = await db.rawQuery(
+        '''
+        SELECT strongs_id, source, level, number, heading, summary
+        FROM lexicon_senses
+        WHERE strongs_id = ?
+           OR strongs_id = (
+                SELECT strongs_id FROM lexicon WHERE lemma = ? LIMIT 1
+              )
+        ORDER BY id
+        LIMIT ?
+        ''',
+        [key, key, limit],
+      );
+      return rows.map(LexiconSense.fromMap).toList();
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('BibleDAO senses error: $e');
+      }
+      return const [];
+    }
+  }
+
+  /// The Hebrew root behind a Strong's number, or null for Greek and for
+  /// databases without the root layer.
+  Future<LexiconRoot?> getRootForStrongs(String key) async {
+    if (key.isEmpty) return null;
+    try {
+      final db = await _dbHelper.database;
+      final rows = await db.rawQuery(
+        '''
+        SELECT strongs_id, root, root_gloss, twot
+        FROM lexicon_roots
+        WHERE strongs_id = ?
+           OR strongs_id = (
+                SELECT strongs_id FROM lexicon WHERE lemma = ? LIMIT 1
+              )
+        LIMIT 1
+        ''',
+        [key, key],
+      );
+      if (rows.isEmpty) return null;
+      return LexiconRoot.fromMap(rows.first);
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('BibleDAO root error: $e');
+      }
+      return null;
+    }
+  }
+
+  /// Every word built on one root, most frequent first.
+  Future<List<RootMember>> getRootMembers(String twot) async {
+    if (twot.isEmpty) return const [];
+    try {
+      final db = await _dbHelper.database;
+      final rows = await db.rawQuery(
+        '''
+        SELECT r.strongs_id,
+               COALESCE(lx.lemma, '') AS lemma,
+               COALESCE(lx.gloss, '') AS gloss,
+               COUNT(w.id) AS count
+        FROM lexicon_roots r
+        LEFT JOIN lexicon lx ON lx.strongs_id = r.strongs_id
+        LEFT JOIN words w ON w.strongs = r.strongs_id
+        WHERE r.twot = ?
+        GROUP BY r.strongs_id
+        ORDER BY count DESC, lemma ASC
+        ''',
+        [twot],
+      );
+      return rows.map(RootMember.fromMap).toList();
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('BibleDAO root members error: $e');
+      }
+      return const [];
+    }
+  }
+
+  /// Verses containing any word built on a root, in canonical order.
+  Future<List<Verse>> getOccurrencesForRoot(
+    String twot, {
+    int limit = 300,
+  }) async {
+    if (twot.isEmpty) return const [];
+    try {
+      final db = await _dbHelper.database;
+      final rows = await db.rawQuery(
+        '''
+        SELECT DISTINCT v.id, v.book_id, v.chapter, v.verse_number, v.text
+        FROM words w
+        JOIN lexicon_roots r ON r.strongs_id = w.strongs
+        JOIN verses v ON w.verse_id = v.id
+        WHERE r.twot = ?
+        ORDER BY v.id
+        LIMIT ?
+        ''',
+        [twot, limit],
+      );
+      return rows.map(Verse.fromMap).toList();
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('BibleDAO root occurrences error: $e');
+      }
+      return const [];
+    }
+  }
+
+  /// How many distinct verses contain a word built on this root.
+  Future<int> countOccurrencesForRoot(String twot) async {
+    if (twot.isEmpty) return 0;
+    try {
+      final db = await _dbHelper.database;
+      final rows = await db.rawQuery(
+        '''
+        SELECT COUNT(DISTINCT w.verse_id) AS total
+        FROM words w
+        JOIN lexicon_roots r ON r.strongs_id = w.strongs
+        WHERE r.twot = ?
+        ''',
+        [twot],
+      );
+      if (rows.isNotEmpty) {
+        return (rows.first['total'] as num?)?.toInt() ?? 0;
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('BibleDAO root occurrence count error: $e');
+      }
+    }
+    return 0;
+  }
+
+  /// Attested forms of one lemma with their morphology and counts.
+  ///
+  /// This is the honest version of a paradigm table: every form that actually
+  /// occurs in the corpus, not a generated paradigm.
+  Future<List<Map<String, dynamic>>> getAttestedForms(
+    String lemma, {
+    int limit = 400,
+  }) async {
+    if (lemma.isEmpty) return const [];
+    try {
+      final db = await _dbHelper.database;
+      return await db.rawQuery(
+        '''
+        SELECT word AS form, morph, COUNT(*) AS count
+        FROM words
+        WHERE lemma = ? AND morph IS NOT NULL AND morph != ''
+        GROUP BY word, morph
+        ORDER BY count DESC
+        LIMIT ?
+        ''',
+        [lemma, limit],
+      );
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('BibleDAO attested forms error: $e');
+      }
+      return const [];
+    }
   }
 
   // ========== TRANSLATIONS ==========

@@ -1309,4 +1309,128 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get diagnosticsHealthy => 'Fonctionne bien';
+
+  @override
+  String get sensesLabel => 'Sens';
+
+  @override
+  String get sensesUnavailable =>
+      'Cette entrée n\'a pas de sens numérotés dans le dictionnaire.';
+
+  @override
+  String get rootLabel => 'Racine';
+
+  @override
+  String get rootWordsTitle => 'Mots de cette racine';
+
+  @override
+  String rootWordCount(int count) {
+    return '$count mots';
+  }
+
+  @override
+  String get formsInTextLabel => 'Formes dans le texte';
+
+  @override
+  String get formsInTextNote =>
+      'Uniquement les formes réellement présentes dans le texte.';
+
+  @override
+  String showAllCount(int count) {
+    return 'Voir les $count';
+  }
+
+  @override
+  String get markAsKnown => 'Marquer comme connu';
+
+  @override
+  String get markedAsKnown => 'Connu';
+
+  @override
+  String get markAsKnownDone =>
+      'Marqué comme connu. Il ne sera plus glosé en mode lecture.';
+
+  @override
+  String get transliterationLabel => 'Translittération';
+
+  @override
+  String get refersToLabel => 'Renvoie à';
+
+  @override
+  String get subjectLabel => 'Sujet';
+
+  @override
+  String get firstStepsHomeTitle => 'Commencer ici';
+
+  @override
+  String get firstStepsHomeDesc => 'Trois lettres, un verset, cinq mots.';
+
+  @override
+  String get firstStepsTitle => 'Votre premier verset';
+
+  @override
+  String get firstStepsLettersTitle => 'Trois lettres';
+
+  @override
+  String get firstStepsLettersDesc =>
+      'Ces trois suffisent pour lire un vrai mot. Touchez une lettre pour l\'entendre.';
+
+  @override
+  String get firstStepsWordTitle => 'Un mot';
+
+  @override
+  String get firstStepsWordDesc =>
+      'Les lettres que vous venez de voir, dans un mot de la Bible.';
+
+  @override
+  String get firstStepsVerseTitle => 'Un verset';
+
+  @override
+  String get firstStepsVerseDesc =>
+      'Chaque mot porte son son et son sens. Rien ici n\'est un examen.';
+
+  @override
+  String get firstStepsVerseHint =>
+      'Touchez un mot pour voir son entrée complète.';
+
+  @override
+  String get firstStepsReviewTitle => 'Cinq mots';
+
+  @override
+  String get firstStepsReviewDesc =>
+      'Les cinq mots à retenir de ce verset. Une seule passe, et c\'est fini.';
+
+  @override
+  String get firstStepsReviewButton => 'Revoir ces cinq';
+
+  @override
+  String get firstStepsStart => 'Commencer';
+
+  @override
+  String get firstStepsContinue => 'Continuer';
+
+  @override
+  String get firstStepsRestart => 'Recommencer';
+
+  @override
+  String firstVerseInMinutes(int minutes) {
+    return 'Votre premier verset en $minutes minutes.';
+  }
+
+  @override
+  String get firstVerseUnderMinute =>
+      'Votre premier verset en moins d\'une minute.';
+
+  @override
+  String get firstStepsDoneTitle => 'Voilà l\'entrée';
+
+  @override
+  String get firstStepsDoneDesc =>
+      'Des lettres, un mot, un verset, cinq mots que vous retrouverez. Le lecteur vous est ouvert.';
+
+  @override
+  String get firstStepsDoneReader => 'Ouvrir le lecteur';
+
+  @override
+  String get verseLabel => 'Verset';
 }

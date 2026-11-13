@@ -253,9 +253,9 @@ void main() {
       await tester.tap(find.text('Skip'));
       await tester.pumpAndSettle();
 
-      // Home itself has no settings button; the bar underneath it does, and
-      // its unselected icon is the outlined one.
-      expect(find.byIcon(Icons.settings_outlined), findsOneWidget);
+      // Finishing onboarding lands on the on-ramp, not on home: a reader who
+      // has never read a verse of Hebrew has nothing to do in a library yet.
+      expect(find.text('Your first verse'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
   });
