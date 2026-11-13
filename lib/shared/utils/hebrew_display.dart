@@ -10,7 +10,12 @@ enum HebrewTextDisplay {
   noCantillation,
 
   /// Consonantal text only, as in a Torah scroll.
-  consonantal;
+  consonantal,
+
+  /// Full text, plus the other half of every qere/ketiv pair: where the scroll
+  /// writes one thing and the reading tradition says another, the reader sees
+  /// what is written beside what is read.
+  qere;
 
   static HebrewTextDisplay fromName(String? name) {
     return HebrewTextDisplay.values.firstWhere(
@@ -18,6 +23,11 @@ enum HebrewTextDisplay {
       orElse: () => HebrewTextDisplay.full,
     );
   }
+}
+
+/// The consonants of [text], for comparing two spellings of the same word.
+String hebrewConsonants(String text) {
+  return applyHebrewDisplay(text, HebrewTextDisplay.consonantal);
 }
 
 bool _isCantillation(int codeUnit) {
@@ -39,7 +49,9 @@ bool _isVocalization(int codeUnit) {
 /// Applies a [HebrewTextDisplay] mode to Hebrew [text].
 /// Non-Hebrew characters pass through untouched.
 String applyHebrewDisplay(String text, HebrewTextDisplay mode) {
-  if (mode == HebrewTextDisplay.full || text.isEmpty) {
+  if (mode == HebrewTextDisplay.full ||
+      mode == HebrewTextDisplay.qere ||
+      text.isEmpty) {
     return text;
   }
 

@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import html
 import json
 import re
 import shutil
@@ -66,6 +67,19 @@ OSIS_TO_ABBR = {
     "Jas": "JAS", "1Pet": "1PE", "2Pet": "2PE", "1John": "1JN",
     "2John": "2JN", "3John": "3JN", "Jude": "JUD", "Rev": "REV",
 }
+
+# Qere/Ketiv: what the scroll says (ketiv) against what is read aloud (qere).
+# Open Scriptures Hebrew Bible, CC BY 4.0. The WLC files mark a written word
+# `<w type="x-ketiv">` and carry the reading in the variant note beside it.
+OSHB_RAW = "https://raw.githubusercontent.com/openscriptures/morphhb"
+DEFAULT_OSHB_COMMIT = "d4265dfa93b78d82765a557e12d965528c17c1a9"
+OSHB_WLC_FILES = (
+    "Gen", "Exod", "Lev", "Num", "Deut", "Josh", "Judg", "1Sam", "2Sam",
+    "1Kgs", "2Kgs", "Isa", "Jer", "Ezek", "Hos", "Joel", "Amos", "Obad",
+    "Jonah", "Mic", "Nah", "Hab", "Zeph", "Hag", "Zech", "Mal", "Ps",
+    "Prov", "Job", "Song", "Ruth", "Lam", "Eccl", "Esth", "Dan", "Ezra",
+    "Neh", "1Chr", "2Chr",
+)
 
 # MACULA treebanks (Clear Bible, CC BY 4.0): real syntax trees.
 MACULA_GREEK_RAW = "https://raw.githubusercontent.com/Clear-Bible/macula-greek"
@@ -144,6 +158,10 @@ EXPECTED_COUNTS = {
     # MACULA participant links ("who is he"): ~59k tokens carry a subject or
     # referent pointer; nearly all resolve to a surface form.
     "participant_links_min": 40000,
+    # Qere/Ketiv: OSHB marks 1,244 pairs, every one of which aligns to a token
+    # in the MACULA-derived text. Measured 2026-11-13: 1,244 marked tokens.
+    # The gate sits under that so a parser or alignment regression fails loudly.
+    "qere_ketiv_min": 1100,
 }
 
 _REF_WHITESPACE_RE = re.compile(r"\s+")
@@ -445,6 +463,18 @@ def parse_args() -> argparse.Namespace:
         help="Pinned commit for translatable-exegetical-tools/Abbott-Smith",
     )
     parser.add_argument(
+        "--no-qere-ketiv",
+        dest="qere_ketiv",
+        action="store_false",
+        default=True,
+        help="Skip the qere/ketiv layer from the Open Scriptures Hebrew Bible",
+    )
+    parser.add_argument(
+        "--oshb-commit",
+        default=DEFAULT_OSHB_COMMIT,
+        help="Pinned commit for openscriptures/morphhb",
+    )
+    parser.add_argument(
         "--no-syntax-trees",
         dest="syntax_trees",
         action="store_false",
@@ -642,7 +672,14 @@ def init_schema(conn: sqlite3.Connection) -> None:
             subject_text TEXT,
             subject_strongs TEXT,
             referent_text TEXT,
-            referent_strongs TEXT
+            referent_strongs TEXT,
+            -- Qere/Ketiv: the reading (qere) and the written form (ketiv) for
+            -- the ~1.2k places where the scroll and the reading tradition
+            -- differ. qere_lemma is the dictionary form of the reading when it
+            -- is a different word from the one written.
+            qere_text TEXT,
+            ketiv_text TEXT,
+            qere_lemma TEXT
         );
 
         CREATE TABLE lexicon (
@@ -1226,6 +1263,266 @@ def download_macula_files(
         paths.append(dst)
 
     return paths
+
+
+@dataclass(frozen=True)
+class QereKetiv:
+    """One place where the written text and the read text differ."""
+
+    book_id: str
+    chapter: int
+    verse: int
+    ketiv: str
+    ketiv_strongs: Optional[str]
+    qere: str
+    qere_strongs: Optional[str]
+
+
+# `<w type="x-ketiv">…</w>` immediately followed by the variant note that holds
+# the reading. Anything else in the note (a `<catchWord>`, other readings) is
+# ignored: only the qere is a reading of the same word.
+_OSHB_KETIV_RE = re.compile(
+    r'<w\b(?P<kattr>[^>]*\btype="x-ketiv"[^>]*)>(?P<ketiv>.*?)</w>\s*'
+    r'<note\b[^>]*\btype="variant"[^>]*>(?P<note>.*?)</note>',
+    re.S,
+)
+_OSHB_QERE_RE = re.compile(
+    r'<rdg\b[^>]*\btype="x-qere"[^>]*>\s*<w\b(?P<attr>[^>]*)>(?P<text>.*?)</w>',
+    re.S,
+)
+_OSHB_VERSE_RE = re.compile(r'<verse\b[^>]*\bosisID="(?P<id>[^"]+)"[^>]*>(?P<body>.*?)</verse>', re.S)
+_XML_ATTR_RE = re.compile(r'([\w:-]+)="([^"]*)"')
+
+
+def _xml_attrs(raw: str) -> Dict[str, str]:
+    return {key: value for key, value in _XML_ATTR_RE.findall(raw or "")}
+
+
+def _oshb_strongs(lemma: str) -> Optional[str]:
+    """The Strong's id out of an OSHB lemma ('c/269' -> 'H269').
+
+    OSHB writes a compound lemma as slash-separated parts, so the reading's own
+    number is the last part. Only a bare number is a Strong's id; anything else
+    is a form the dictionary does not key on.
+    """
+    parts = [part.strip() for part in (lemma or "").split("/") if part.strip()]
+    if not parts:
+        return None
+    last = parts[-1].split()[0] if parts[-1].split() else ""
+    if not last.isdigit():
+        return None
+    return f"H{int(last):04d}"
+
+
+def parse_oshb_qere_ketiv(path: Path) -> List[QereKetiv]:
+    """Every qere/ketiv pair in one OSHB WLC book file."""
+    text = path.read_text(encoding="utf-8")
+    pairs: List[QereKetiv] = []
+
+    for verse_match in _OSHB_VERSE_RE.finditer(text):
+        osis_id = verse_match.group("id")
+        parts = osis_id.split(".")
+        if len(parts) != 3:
+            continue
+        book_id = OSIS_TO_ABBR.get(parts[0])
+        if book_id is None:
+            continue
+        try:
+            chapter, verse = int(parts[1]), int(parts[2])
+        except ValueError:
+            continue
+
+        body = verse_match.group("body")
+        for ketiv_match in _OSHB_KETIV_RE.finditer(body):
+            qere_match = _OSHB_QERE_RE.search(ketiv_match.group("note"))
+            if qere_match is None:
+                continue
+            ketiv = _strip_xml_markup(ketiv_match.group("ketiv"))
+            qere = _strip_xml_markup(qere_match.group("text"))
+            if not ketiv or not qere:
+                continue
+            pairs.append(
+                QereKetiv(
+                    book_id=book_id,
+                    chapter=chapter,
+                    verse=verse,
+                    ketiv=ketiv,
+                    ketiv_strongs=_oshb_strongs(
+                        _xml_attrs(ketiv_match.group("kattr")).get("lemma", "")
+                    ),
+                    qere=qere,
+                    qere_strongs=_oshb_strongs(
+                        _xml_attrs(qere_match.group("attr")).get("lemma", "")
+                    ),
+                )
+            )
+
+    return pairs
+
+
+def _strip_xml_markup(raw: str) -> str:
+    """Inline text of a word, without nested tags, entities or morpheme marks.
+
+    OSHB separates morphemes inside a word with a slash (וְ/אַחְיוֹתֵי/הֶ֖ם);
+    the slash is markup, not part of what is written.
+    """
+    text = html.unescape(re.sub(r"<[^>]+>", "", raw or "")).strip()
+    return text.replace("/", "")
+
+
+def download_oshb_wlc_files(cache_dir: Path, commit: str) -> List[Path]:
+    paths: List[Path] = []
+    wlc_dir = cache_dir / "oshb_wlc"
+    wlc_dir.mkdir(parents=True, exist_ok=True)
+    for name in OSHB_WLC_FILES:
+        dst = wlc_dir / f"{name}.xml"
+        download_file(f"{OSHB_RAW}/{commit}/wlc/{name}.xml", dst, expect_xml=True)
+        paths.append(dst)
+    return paths
+
+
+# Marks that belong to the verse or the phrase rather than to the word: see
+# `hebrew_lexical_form`. Qere/ketiv alignment compares consonants only, because
+# the two forms are pointed differently by definition.
+_HEBREW_CONSONANT_RE = re.compile(r"[\u0591-\u05C7\u05BE\u05C0/]")
+
+
+def hebrew_consonants(text: str) -> str:
+    """Hebrew letters only, for aligning two traditions' spellings."""
+    return _HEBREW_CONSONANT_RE.sub("", text or "").strip()
+
+
+def find_token_span(
+    token_texts: List[str],
+    target: str,
+    strongs: Optional[str] = None,
+    token_strongs: Optional[List[Optional[str]]] = None,
+) -> Optional[Tuple[int, int]]:
+    """The contiguous run of tokens whose consonants spell [target].
+
+    MACULA and OSHB split proclitics differently (ו/אחיותי/הם against
+    ואחיותיהם), so a word is matched on the concatenated consonants of the
+    verse, never on token index.
+
+    When the same consonants occur more than once in a verse, [strongs] breaks
+    the tie: the reading's own Strong's id says which occurrence is this word.
+    A tie that still cannot be broken is refused — attaching a reading to the
+    wrong word is worse than leaving it unmarked.
+    """
+    target = hebrew_consonants(target)
+    if not target:
+        return None
+
+    letters: List[str] = []
+    owners: List[int] = []
+    for index, token in enumerate(token_texts):
+        for letter in hebrew_consonants(token):
+            letters.append(letter)
+            owners.append(index)
+
+    haystack = "".join(letters)
+    spans: List[Tuple[int, int]] = []
+    start = haystack.find(target)
+    while start >= 0:
+        spans.append((owners[start], owners[start + len(target) - 1]))
+        start = haystack.find(target, start + 1)
+
+    if not spans:
+        return None
+    if len(spans) == 1:
+        return spans[0]
+
+    if strongs and token_strongs:
+        def matches(span: Tuple[int, int]) -> bool:
+            return any(
+                (token_strongs[index] or "").startswith(strongs)
+                for index in range(span[0], span[1] + 1)
+            )
+
+        narrowed = [span for span in spans if matches(span)]
+        if len(narrowed) == 1:
+            return narrowed[0]
+
+    return None
+
+
+def build_qere_ketiv(conn: sqlite3.Connection, pairs: List[QereKetiv]) -> int:
+    """Marks the tokens that carry a qere/ketiv difference.
+
+    The pair is attached to the one token that holds most of the word: when the
+    reading spans a proclitic and a suffix, the stem is where a reader looks it
+    up. Both forms are stored, so the app can show what is written beside what
+    is read without guessing which of the two the flowing text carries.
+    """
+    print("Building qere/ketiv layer from the Open Scriptures Hebrew Bible...")
+
+    tokens_by_verse: Dict[Tuple[str, int, int], List[Tuple[int, str, Optional[str]]]] = {}
+    for book_id, chapter, verse, word_id, text, strongs in conn.execute(
+        """
+        SELECT v.book_id, v.chapter, v.verse_number, w.id, w.word, w.strongs
+        FROM words w JOIN verses v ON v.id = w.verse_id
+        WHERE w.language = 'heb'
+        ORDER BY v.book_id, v.chapter, v.verse_number, w.position
+        """
+    ):
+        tokens_by_verse.setdefault((book_id, chapter, verse), []).append(
+            (word_id, text, strongs)
+        )
+
+    lemma_by_strongs = {
+        strongs: lemma
+        for strongs, lemma in conn.execute(
+            "SELECT strongs_id, lemma FROM lexicon WHERE strongs_id IS NOT NULL"
+        )
+        if strongs
+    }
+
+    updates: List[Tuple[str, str, Optional[str], int]] = []
+    unresolved = 0
+    for pair in pairs:
+        tokens = tokens_by_verse.get((pair.book_id, pair.chapter, pair.verse))
+        if not tokens:
+            unresolved += 1
+            continue
+
+        texts = [text for _, text, _ in tokens]
+        strongs_ids = [strongs for _, _, strongs in tokens]
+        # The flowing text follows the reading in almost every case, so the
+        # reading is the anchor; the written form is the fallback.
+        span = find_token_span(
+            texts, pair.qere, pair.qere_strongs, strongs_ids
+        )
+        if span is None:
+            span = find_token_span(
+                texts, pair.ketiv, pair.ketiv_strongs, strongs_ids
+            )
+        if span is None:
+            unresolved += 1
+            continue
+
+        start, end = span
+        core = max(
+            range(start, end + 1),
+            key=lambda index: len(hebrew_consonants(texts[index])),
+        )
+        word_id, _, token_strongs = tokens[core]
+
+        qere_lemma = None
+        if pair.qere_strongs and pair.qere_strongs != (token_strongs or ""):
+            qere_lemma = lemma_by_strongs.get(pair.qere_strongs)
+
+        updates.append((pair.qere, pair.ketiv, qere_lemma, word_id))
+
+    conn.executemany(
+        "UPDATE words SET qere_text = ?, ketiv_text = ?, qere_lemma = ? WHERE id = ?",
+        updates,
+    )
+
+    print(
+        f"  marked {len(updates):,} tokens with a qere/ketiv pair "
+        f"({unresolved:,} of {len(pairs):,} pairs could not be aligned)"
+    )
+    return len(updates)
 
 
 def _local_name(tag: str) -> str:
@@ -2774,6 +3071,10 @@ def get_counts(conn: sqlite3.Connection) -> Dict[str, int]:
         "OR referent_text IS NOT NULL"
     ).fetchone()[0]
 
+    table_counts["qere_ketiv"] = conn.execute(
+        "SELECT COUNT(*) FROM words WHERE qere_text IS NOT NULL"
+    ).fetchone()[0]
+
     return table_counts
 
 
@@ -2952,6 +3253,13 @@ def validate_database(conn: sqlite3.Connection) -> None:
             f"{counts['participant_links']}"
         )
 
+    if counts["qere_ketiv"] < EXPECTED_COUNTS["qere_ketiv_min"]:
+        raise RuntimeError(
+            "Expected at least "
+            f"{EXPECTED_COUNTS['qere_ketiv_min']} qere/ketiv tokens, found "
+            f"{counts['qere_ketiv']}"
+        )
+
 
 def print_summary(conn: sqlite3.Connection, source_commit: str, open_bibles_commit: str) -> None:
     counts = get_counts(conn)
@@ -2970,6 +3278,7 @@ def print_summary(conn: sqlite3.Connection, source_commit: str, open_bibles_comm
         "lexicon_senses",
         "lexicon_roots",
         "participant_links",
+        "qere_ketiv",
         "distinct_verse_books",
         "kjv_translation_verses",
         "enabled_translations",
@@ -3091,6 +3400,13 @@ def main() -> None:
         if args.cross_references:
             cross_references_txt = download_cross_references(cache_dir)
 
+        qere_ketiv_pairs: List[QereKetiv] = []
+        if args.qere_ketiv:
+            qere_paths = download_oshb_wlc_files(cache_dir, args.oshb_commit)
+            for path in qere_paths:
+                qere_ketiv_pairs.extend(parse_oshb_qere_ketiv(path))
+            print(f"Parsed {len(qere_ketiv_pairs):,} qere/ketiv pairs from OSHB")
+
         macula_paths: List[Path] = []
         if args.syntax_trees:
             macula_paths = download_macula_files(
@@ -3119,6 +3435,8 @@ def main() -> None:
             if args.extended_lexicon:
                 build_lexicon_senses(conn, hebrew_senses, greek_senses)
                 build_lexicon_roots(conn, roots)
+            if qere_ketiv_pairs:
+                build_qere_ketiv(conn, qere_ketiv_pairs)
             build_kjv_translation_verses(
                 conn,
                 ot_tsv=cache_dir / "ot_BSB.tsv",

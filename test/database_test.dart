@@ -118,6 +118,30 @@ void main() {
         greaterThanOrEqualTo(40000),
       );
 
+      // Qere/Ketiv: the written form and the reading, both stored.
+      expect(
+        await count(
+          'SELECT COUNT(*) FROM words WHERE qere_text IS NOT NULL '
+          'AND ketiv_text IS NOT NULL',
+        ),
+        greaterThanOrEqualTo(1100),
+      );
+      // The reading is a different word in a few dozen places; the sheet names
+      // its dictionary form, so those rows must carry one.
+      expect(
+        await count('SELECT COUNT(*) FROM words WHERE qere_lemma IS NOT NULL'),
+        greaterThanOrEqualTo(20),
+      );
+      final qere = await db.query(
+        'words',
+        columns: ['word', 'qere_text', 'ketiv_text'],
+        where: 'qere_text IS NOT NULL AND ketiv_text IS NOT NULL',
+        orderBy: 'id ASC',
+        limit: 1,
+      );
+      expect(qere, hasLength(1));
+      expect(qere.first['qere_text'], isNot(qere.first['ketiv_text']));
+
       await db.close();
     });
 

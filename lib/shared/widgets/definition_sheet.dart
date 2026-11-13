@@ -232,6 +232,15 @@ class DefinitionSheet extends ConsumerWidget {
                             _sourceNote(l10n.contentSourceNote, colorScheme),
                         ],
 
+                        // Where the scroll writes one thing and the tradition
+                        // reads another.
+                        QereKetivSection(
+                          qereText: word.qereText,
+                          ketivText: word.ketivText,
+                          qereLemma: word.qereLemma,
+                          isHebrew: isHebrew,
+                        ),
+
                         // Who the subject is, or what a pronoun points back to
                         ParticipantSection(
                           subjectText: word.subjectText,

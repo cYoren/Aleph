@@ -377,6 +377,80 @@ class _AttestedFormsSectionState extends ConsumerState<AttestedFormsSection> {
 }
 
 
+/// Where the scroll and the reading tradition disagree about a word.
+///
+/// The written form (ketiv) and the reading (qere) are both shown, labelled,
+/// with the reading's own dictionary form when it is a different word — the
+/// one place where the reader can see that the text in front of them is a
+/// decision the tradition made, not a transcription.
+class QereKetivSection extends ConsumerWidget {
+  const QereKetivSection({
+    super.key,
+    required this.qereText,
+    required this.ketivText,
+    required this.qereLemma,
+    required this.isHebrew,
+  });
+
+  final String? qereText;
+  final String? ketivText;
+  final String? qereLemma;
+  final bool isHebrew;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (qereText == null || ketivText == null) return const SizedBox.shrink();
+    final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
+
+    final rows = <({String label, String text})>[
+      (label: l10n.qereReadLabel, text: qereText!),
+      (label: l10n.qereWrittenLabel, text: ketivText!),
+      if (qereLemma != null)
+        (label: l10n.qereLemmaLabel, text: qereLemma!),
+    ];
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          DepthSectionLabel(l10n.qereTitle),
+          const SizedBox(height: 8),
+          for (final row in rows)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 6),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 104,
+                    child: Text(
+                      row.label.toUpperCase(),
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1,
+                        color: colorScheme.primary,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    row.text,
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontFamily: isHebrew ? 'EzraSIL' : 'Gentium',
+                      color: colorScheme.onSurface,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
 /// "Who is he in this verse": the subject of a verb, or the word a pronoun
 /// points back to, from MACULA's participant data.
 class ParticipantSection extends ConsumerWidget {
