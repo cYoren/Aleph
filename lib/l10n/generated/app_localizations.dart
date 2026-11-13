@@ -2353,6 +2353,222 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Working well'**
   String get diagnosticsHealthy;
+
+  /// No description provided for @sensesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Senses'**
+  String get sensesLabel;
+
+  /// No description provided for @sensesUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'This entry has no numbered senses in the dictionary.'**
+  String get sensesUnavailable;
+
+  /// No description provided for @rootLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Root'**
+  String get rootLabel;
+
+  /// No description provided for @rootWordsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Words on this root'**
+  String get rootWordsTitle;
+
+  /// No description provided for @rootWordCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} words'**
+  String rootWordCount(int count);
+
+  /// No description provided for @formsInTextLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Forms in the text'**
+  String get formsInTextLabel;
+
+  /// No description provided for @formsInTextNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Only the forms that actually occur in the text.'**
+  String get formsInTextNote;
+
+  /// No description provided for @showAllCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Show all {count}'**
+  String showAllCount(int count);
+
+  /// No description provided for @markAsKnown.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as known'**
+  String get markAsKnown;
+
+  /// No description provided for @markedAsKnown.
+  ///
+  /// In en, this message translates to:
+  /// **'Known'**
+  String get markedAsKnown;
+
+  /// No description provided for @markAsKnownDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Marked as known. It stops being glossed in reading mode.'**
+  String get markAsKnownDone;
+
+  /// No description provided for @transliterationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Transliteration'**
+  String get transliterationLabel;
+
+  /// No description provided for @refersToLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Refers to'**
+  String get refersToLabel;
+
+  /// No description provided for @subjectLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Subject'**
+  String get subjectLabel;
+
+  /// No description provided for @firstStepsHomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Start here'**
+  String get firstStepsHomeTitle;
+
+  /// No description provided for @firstStepsHomeDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Three letters, one verse, five words.'**
+  String get firstStepsHomeDesc;
+
+  /// No description provided for @firstStepsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your first verse'**
+  String get firstStepsTitle;
+
+  /// No description provided for @firstStepsLettersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Three letters'**
+  String get firstStepsLettersTitle;
+
+  /// No description provided for @firstStepsLettersDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'These three are enough to read a real word. Tap a letter to hear it.'**
+  String get firstStepsLettersDesc;
+
+  /// No description provided for @firstStepsWordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'One word'**
+  String get firstStepsWordTitle;
+
+  /// No description provided for @firstStepsWordDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'The letters you just met, inside a word from the Bible.'**
+  String get firstStepsWordDesc;
+
+  /// No description provided for @firstStepsVerseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'One verse'**
+  String get firstStepsVerseTitle;
+
+  /// No description provided for @firstStepsVerseDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Every word carries its sound and its meaning. Nothing here is a test.'**
+  String get firstStepsVerseDesc;
+
+  /// No description provided for @firstStepsVerseHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap any word for its full dictionary entry.'**
+  String get firstStepsVerseHint;
+
+  /// No description provided for @firstStepsReviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Five words'**
+  String get firstStepsReviewTitle;
+
+  /// No description provided for @firstStepsReviewDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'The five words worth keeping from this verse. One pass, then you are done.'**
+  String get firstStepsReviewDesc;
+
+  /// No description provided for @firstStepsReviewButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Review these five'**
+  String get firstStepsReviewButton;
+
+  /// No description provided for @firstStepsStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get firstStepsStart;
+
+  /// No description provided for @firstStepsContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get firstStepsContinue;
+
+  /// No description provided for @firstStepsRestart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start again'**
+  String get firstStepsRestart;
+
+  /// No description provided for @firstVerseInMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'Your first verse in {minutes} minutes.'**
+  String firstVerseInMinutes(int minutes);
+
+  /// No description provided for @firstVerseUnderMinute.
+  ///
+  /// In en, this message translates to:
+  /// **'Your first verse in under a minute.'**
+  String get firstVerseUnderMinute;
+
+  /// No description provided for @firstStepsDoneTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'That is the way in'**
+  String get firstStepsDoneTitle;
+
+  /// No description provided for @firstStepsDoneDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Letters, a word, a verse, five words you will meet again. The reader is open to you now.'**
+  String get firstStepsDoneDesc;
+
+  /// No description provided for @firstStepsDoneReader.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the reader'**
+  String get firstStepsDoneReader;
+
+  /// No description provided for @verseLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Verse'**
+  String get verseLabel;
 }
 
 class _AppLocalizationsDelegate

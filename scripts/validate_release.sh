@@ -276,4 +276,3 @@ echo "  books=$books_count distinct_verse_books=$distinct_verse_books verses=$ve
 echo "  kjv_translation_verses=$kjv_translation_verses words=$words_count lexicon=$lexicon_count enabled_translations=$enabled_translations"
 echo "  enriched_lexicon=$enriched_lexicon"
 echo "  lexicon_senses=$lexicon_senses_count lexicon_roots=$lexicon_roots_count participant_links=$participant_links_count"
-echo "  lexicon_senses=$lexicon_senses_count lexicon_roots=$lexicon_roots_count participant_links=$participant_links_count"

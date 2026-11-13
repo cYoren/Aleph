@@ -717,5 +717,62 @@
   "diagnosticsUnreliable": "Unreliable. Consider switching.",
   "diagnosticsSlow": "Very slow. Consider switching.",
   "diagnosticsMostlyGood": "Mostly fine. Some poor answers.",
-  "diagnosticsHealthy": "Working well"
+  "diagnosticsHealthy": "Working well",
+  "sensesLabel": "Senses",
+  "sensesUnavailable": "This entry has no numbered senses in the dictionary.",
+  "rootLabel": "Root",
+  "rootWordsTitle": "Words on this root",
+  "rootWordCount": "{count} words",
+  "@rootWordCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "formsInTextLabel": "Forms in the text",
+  "formsInTextNote": "Only the forms that actually occur in the text.",
+  "showAllCount": "Show all {count}",
+  "@showAllCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "markAsKnown": "Mark as known",
+  "markedAsKnown": "Known",
+  "markAsKnownDone": "Marked as known. It stops being glossed in reading mode.",
+  "transliterationLabel": "Transliteration",
+  "refersToLabel": "Refers to",
+  "subjectLabel": "Subject",
+  "firstStepsHomeTitle": "Start here",
+  "firstStepsHomeDesc": "Three letters, one verse, five words.",
+  "firstStepsTitle": "Your first verse",
+  "firstStepsLettersTitle": "Three letters",
+  "firstStepsLettersDesc": "These three are enough to read a real word. Tap a letter to hear it.",
+  "firstStepsWordTitle": "One word",
+  "firstStepsWordDesc": "The letters you just met, inside a word from the Bible.",
+  "firstStepsVerseTitle": "One verse",
+  "firstStepsVerseDesc": "Every word carries its sound and its meaning. Nothing here is a test.",
+  "firstStepsVerseHint": "Tap any word for its full dictionary entry.",
+  "firstStepsReviewTitle": "Five words",
+  "firstStepsReviewDesc": "The five words worth keeping from this verse. One pass, then you are done.",
+  "firstStepsReviewButton": "Review these five",
+  "firstStepsStart": "Start",
+  "firstStepsContinue": "Continue",
+  "firstStepsRestart": "Start again",
+  "firstVerseInMinutes": "Your first verse in {minutes} minutes.",
+  "@firstVerseInMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "firstVerseUnderMinute": "Your first verse in under a minute.",
+  "firstStepsDoneTitle": "That is the way in",
+  "firstStepsDoneDesc": "Letters, a word, a verse, five words you will meet again. The reader is open to you now.",
+  "firstStepsDoneReader": "Open the reader",
+  "verseLabel": "Verse"
 }

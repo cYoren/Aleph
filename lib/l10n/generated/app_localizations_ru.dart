@@ -1324,4 +1324,127 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get diagnosticsHealthy => 'Работает хорошо';
+
+  @override
+  String get sensesLabel => 'Значения';
+
+  @override
+  String get sensesUnavailable =>
+      'У этой словарной статьи нет нумерованных значений.';
+
+  @override
+  String get rootLabel => 'Корень';
+
+  @override
+  String get rootWordsTitle => 'Слова этого корня';
+
+  @override
+  String rootWordCount(int count) {
+    return '$count слов';
+  }
+
+  @override
+  String get formsInTextLabel => 'Формы в тексте';
+
+  @override
+  String get formsInTextNote =>
+      'Только формы, которые действительно встречаются в тексте.';
+
+  @override
+  String showAllCount(int count) {
+    return 'Показать все ($count)';
+  }
+
+  @override
+  String get markAsKnown => 'Отметить как известное';
+
+  @override
+  String get markedAsKnown => 'Известно';
+
+  @override
+  String get markAsKnownDone =>
+      'Отмечено как известное. В режиме чтения оно больше не поясняется.';
+
+  @override
+  String get transliterationLabel => 'Транслитерация';
+
+  @override
+  String get refersToLabel => 'Относится к';
+
+  @override
+  String get subjectLabel => 'Подлежащее';
+
+  @override
+  String get firstStepsHomeTitle => 'Начните здесь';
+
+  @override
+  String get firstStepsHomeDesc => 'Три буквы, один стих, пять слов.';
+
+  @override
+  String get firstStepsTitle => 'Ваш первый стих';
+
+  @override
+  String get firstStepsLettersTitle => 'Три буквы';
+
+  @override
+  String get firstStepsLettersDesc =>
+      'Этих трёх хватит, чтобы прочесть настоящее слово. Коснитесь буквы, чтобы услышать её.';
+
+  @override
+  String get firstStepsWordTitle => 'Одно слово';
+
+  @override
+  String get firstStepsWordDesc =>
+      'Только что встреченные буквы внутри слова из Библии.';
+
+  @override
+  String get firstStepsVerseTitle => 'Один стих';
+
+  @override
+  String get firstStepsVerseDesc =>
+      'У каждого слова есть звучание и значение. Здесь нет проверки.';
+
+  @override
+  String get firstStepsVerseHint =>
+      'Коснитесь любого слова, чтобы открыть статью словаря.';
+
+  @override
+  String get firstStepsReviewTitle => 'Пять слов';
+
+  @override
+  String get firstStepsReviewDesc =>
+      'Пять слов из этого стиха, которые стоит сохранить. Один проход, и всё.';
+
+  @override
+  String get firstStepsReviewButton => 'Повторить эти пять';
+
+  @override
+  String get firstStepsStart => 'Начать';
+
+  @override
+  String get firstStepsContinue => 'Продолжить';
+
+  @override
+  String get firstStepsRestart => 'Начать заново';
+
+  @override
+  String firstVerseInMinutes(int minutes) {
+    return 'Ваш первый стих за $minutes минут.';
+  }
+
+  @override
+  String get firstVerseUnderMinute => 'Ваш первый стих меньше чем за минуту.';
+
+  @override
+  String get firstStepsDoneTitle => 'Вход найден';
+
+  @override
+  String get firstStepsDoneDesc =>
+      'Буквы, слово, стих, пять слов, которые встретятся снова. Читатель открыт для вас.';
+
+  @override
+  String get firstStepsDoneReader => 'Открыть чтение';
+
+  @override
+  String get verseLabel => 'Стих';
 }

@@ -89,7 +89,12 @@ class DefinitionSheet extends ConsumerWidget {
                             ),
                           ),
                           const SizedBox(height: 4),
-                          Row(
+                          // Wrap, not Row: two chips plus a long Strong's label
+                          // overflow a narrow phone once the header also carries
+                          // the mark-known action.
+                          Wrap(
+                            spacing: 8,
+                            runSpacing: 4,
                             children: [
                               if (word.strongs != null)
                                 _buildStrongsChip(
@@ -97,15 +102,13 @@ class DefinitionSheet extends ConsumerWidget {
                                   colorScheme,
                                   l10n,
                                 ),
-                              if (word.morphCode != null) ...[
-                                const SizedBox(width: 8),
+                              if (word.morphCode != null)
                                 _buildPartOfSpeechChip(
                                   word.morphCode!,
                                   isHebrew,
                                   colorScheme,
                                   l10n,
                                 ),
-                              ],
                             ],
                           ),
                         ],
