@@ -242,7 +242,10 @@ our data provides. Implemented in `lib/shared/utils/cantillation.dart`
   accent frequencies match the known Masoretic distribution.
 - [ ] Next: use the same phrase structure to pace recitation, and let a learner
       tap a break to hear just that phrase. **Deferred** — it needs the recitation
-      player to own a phrase queue, which is a design change to the audio bar.
+      player to own a phrase queue, which is a design change to the audio bar,
+      and it must not land in the same build as a release: 1.0.7+30 is still
+      unshipped (build 30 is free on App Store Connect), so the audio bar would
+      be rewritten under a release that has not gone out.
 
 - [x] Display controls for the Hebrew text: full / vowels-only / consonantal modes —
       reading unpointed text is itself a learning progression.
@@ -413,10 +416,21 @@ features. YouVersion wins that game; our niche is *actually engaging the origina
 - **Phrase-paced recitation** (tap a break to hear just that phrase). The data is
   there — `senseUnits` already splits the verse — but pacing the player means the
   recitation bar needs a phrase queue, highlighting, and a stop rule for a queue
-  that changes under the user. That is an audio-bar redesign, worth doing on its
-  own rather than bolted onto this pass.
-- **Bundled Hebrew recitation voice.** Unchanged from the embedded-voice work: no
-  redistributable Hebrew model has been validated.
+  that changes under the user. That is an audio-bar redesign, and the task's own
+  precondition ("after 1.0.7 ships") is unmet: `pubspec.yaml` is 1.0.7+30 and
+  AGENTS.md records build 30 as still free on App Store Connect, so no release
+  carries the embedded-voice bar yet.
+- **Bundled Hebrew recitation voice.** The model question is answered and the
+  gate is not. `thewh1teagle/piper-he-noa` (`he_IL-noa-medium.onnx`, 73.5 MB,
+  CC BY 4.0, 22,050 Hz, piper 1.8.0, espeak voice `he`) is licence-clean and
+  runs on the sherpa-onnx runtime already in the app; its phoneme set is
+  espeak-ng's Hebrew IPA (157 symbols, including the β/ε/θ/χ espeak uses for
+  Hebrew), so build-time phonemisation is the right path and **espeak-ng code
+  and data stay out of the bundle**. Two facts block it: espeak-ng is not
+  installed on the build machine, and the acceptance test is by ear — 20
+  rendered verses (Genesis 1, Psalm 23, one narrative, one poetic) judged by a
+  person, on the rule that a silent Hebrew voice beats one that teaches the
+  wrong stress or vowels. An agent cannot pass that gate, so it is not passed.
 
 ---
 
@@ -439,3 +453,18 @@ features. YouVersion wins that game; our niche is *actually engaging the origina
 | Beginner on-ramp + time to first verse | `/start`, `first_run.dart`, `test/first_steps_widget_test.dart`, `test/first_run_test.dart` |
 
 `kBundledDatabaseVersion` 4 → 5 for the new layers.
+
+---
+
+## Report — 2026-11-13, second pass (the rest of the depth work)
+
+| Item | Evidence |
+|---|---|
+| FSRS replaced SM-2 | `fsrs` 2.0.1, migration v6 seeds stability from `interval_days` and writes nothing else; the first review after it is floored at SM-2's interval (`fsrs_floor_pending`), a guard rather than the mechanism. `test/srs_fsrs_test.dart` (40-review replay gate at due time and early, v5 → v6 upgrade through `UserDatabaseHelper`, log columns), `test/srs_sm2_test.dart` |
+| Qere/Ketiv | 1,192 tokens of 1,245 OSHB pairs (53 refused: ambiguous, or a second pair on a token that already holds one); `qere_text` + `ketiv_text` + `qere_lemma` + `qere_anchor` + `qere_span`; 424 shown inline, all 1,192 in the sheet; gates in `build_qere_ketiv`, `validate_database`, `validate_release.sh`; `scripts/test_build_depth_tables.py`, `test/qere_ketiv_reader_test.dart`, `test/definition_depth_sheet_test.dart` |
+| Other editions (RP2018, SR) | 9,354 readings across all 27 NT books; `textual_variants`; gates in `build_textual_variants`, `validate_database`, `validate_release.sh`; `scripts/test_build_depth_tables.py`, `scripts/test_pipeline_gates.py`, `test/textual_variants_pane_test.dart` |
+| STEPBible / SDBH | evaluated, not imported — `docs/tasks/steptbible-sdbh-evaluation.md` |
+| Phrase-paced recitation | deferred — 1.0.7+30 is unshipped, so the audio bar is not rewritten under a release |
+| Hebrew voice | deferred — model validated as usable (`piper-he-noa`, CC BY 4.0), but espeak-ng is not on the build machine and the acceptance gate is a human listen |
+
+`kBundledDatabaseVersion` 5 → 6 for the qere/ketiv and other-editions layers.
