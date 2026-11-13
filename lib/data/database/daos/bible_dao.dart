@@ -593,31 +593,42 @@ class BibleDAO {
   /// Whole-Bible occurrence counts for a batch of lexicon keys (Strong's ids
   /// or lemmas). Used by reader mode to decide which words are rare enough
   /// to gloss inline.
+  ///
+  /// Batched in chunks: the adaptive reader bar can ask about every word the
+  /// reader has in review, and a single statement with thousands of bound
+  /// variables fails outright on builds whose SQLite keeps the older cap.
   Future<Map<String, int>> getFrequenciesForLexiconKeys(
     List<String> keys,
   ) async {
     final requested = keys.where((k) => k.isNotEmpty).toSet().toList();
     if (requested.isEmpty) return {};
 
+    const chunkSize = 500;
     final result = <String, int>{};
     try {
       final db = await _dbHelper.database;
-      final placeholders = requested.map((_) => '?').join(',');
 
-      final strongsRows = await db.rawQuery(
-        'SELECT strongs AS k, COUNT(*) AS c FROM words '
-        'WHERE strongs IN ($placeholders) GROUP BY strongs',
-        requested,
-      );
-      for (final row in strongsRows) {
-        final key = row['k']?.toString() ?? '';
-        if (key.isNotEmpty) {
-          result[key] = (row['c'] as num?)?.toInt() ?? 0;
+      for (var start = 0; start < requested.length; start += chunkSize) {
+        final chunk = requested.sublist(
+          start,
+          (start + chunkSize).clamp(0, requested.length),
+        );
+        final placeholders = chunk.map((_) => '?').join(',');
+
+        final strongsRows = await db.rawQuery(
+          'SELECT strongs AS k, COUNT(*) AS c FROM words '
+          'WHERE strongs IN ($placeholders) GROUP BY strongs',
+          chunk,
+        );
+        for (final row in strongsRows) {
+          final key = row['k']?.toString() ?? '';
+          if (key.isNotEmpty) {
+            result[key] = (row['c'] as num?)?.toInt() ?? 0;
+          }
         }
-      }
 
-      final remaining = requested.where((k) => !result.containsKey(k)).toList();
-      if (remaining.isNotEmpty) {
+        final remaining = chunk.where((k) => !result.containsKey(k)).toList();
+        if (remaining.isEmpty) continue;
         final remainingPlaceholders = remaining.map((_) => '?').join(',');
         final lemmaRows = await db.rawQuery(
           'SELECT lemma AS k, COUNT(*) AS c FROM words '
