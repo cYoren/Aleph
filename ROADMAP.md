@@ -26,6 +26,37 @@ read `queue.md` before starting anything that looks like mass content work.
 
 ---
 
+## Phase 0 — The on-ramp (the current priority) — **shipped 2026-11-13**
+
+What someone who has never read a Hebrew letter sees in the first ten minutes is
+now a path, not a library: `/start`, reached automatically when onboarding ends
+(and from a card at the top of the home screen until it is done).
+
+1. **Three letters** — alef, bet, gimel (or alpha, beta, gamma) with the sound
+   each makes and the example word the alphabet guide already teaches.
+2. **One word** — those letters inside a real word, with its transliteration and
+   meaning.
+3. **One verse** — Genesis 1:1 (Hebrew) or John 1:1 (Greek): every single word
+   carries its sound and its gloss, the translation sits underneath, and any word
+   opens its full entry on tap.
+4. **Five words** — the five worth keeping from that verse become real SM-2 cards
+   through the same quiz sheet the vocabulary deck uses.
+
+**It can say how long it took.** The clock starts at the first launch of the app
+(`firstRunLaunchAt`), not at the reading screen, and the closing card prints the
+number ("Your first verse in 7 minutes"). `test/first_run_test.dart` pins the
+measurement, including the "under a minute" case and the fact that restarting the
+steps never rewrites the first time. Completing each step records an opt-in
+anonymous event (`first_verse_read`, `first_review_done`) with no text and no
+timing.
+
+Tests: `test/first_steps_widget_test.dart` (each step renders what it promises),
+`test/first_run_test.dart` (the clock), plus the startup gate change covered by
+`test/release_readiness_widget_test.dart` and
+`test/onboarding_activation_test.dart`.
+
+---
+
 ## Phase 1 — Make the depth claim true (data quality)
 
 The foundation is right (word-level tokens, Strong's, morphology, offline SQLite), but two
@@ -41,8 +72,15 @@ things currently undercut the "in depth" promise:
       and **Abbott-Smith** (Greek, `translatable-exegetical-tools/Abbott-Smith`) entries
       attached to ~14k lexicon rows, shown as an expandable section in the definition
       sheet.
-- [ ] Structured senses: parse the numbered sense hierarchy into a `lexicon_senses`
-      table instead of one flattened text blob.
+- [x] **Structured senses.** `lexicon_senses` holds numbered, nested sense rows
+      parsed from BDB and Abbott-Smith (1,807 Hebrew + 5,249 Greek entries;
+      42.6% of Hebrew and 86.8% of Greek tokens). The definition sheet renders the
+      dictionary's own numbering, headings and indentation instead of one blob,
+      and falls back to the flattened entry where the dictionary left prose only.
+      Gates: `build_lexicon_senses` and `validate_database`.
+      Tests: `scripts/test_build_depth_tables.py`, `test/lexicon_senses_test.dart`,
+      `test/definition_depth_sheet_test.dart`, release-DB checks in
+      `test/database_test.dart`.
 
 ### 1.2 Real syntax trees — **shipped**
 - [x] Imported the **MACULA Greek** (SBLGNT lowfat) and **MACULA Hebrew** (WLC lowfat)
@@ -51,7 +89,10 @@ things currently undercut the "in depth" promise:
 - [x] The syntax screen renders the real trees as an indented outline with role/phrase
       labels; the POS-heuristic sketch remains only as a fallback for old DBs, still
       labeled as a sketch.
-- [ ] Tap a tree word to open its lexicon entry; collapsible nodes for long sentences.
+- [x] Tap a tree word to open its lexicon entry; collapsible nodes for long
+      sentences. `onLeafTap` was already wired in `syntax_tree_view`; the
+      behaviour is now pinned by `test/syntax_tree_view_widget_test.dart` (leaf
+      tap reports the word, internal nodes fold, punctuation is inert).
 
 ### 1.3 Concordance / word study — **in progress**
 - [x] "See all occurrences" of a word from the definition sheet: every verse containing a
@@ -60,7 +101,12 @@ things currently undercut the "in depth" promise:
       note; true pagination still open for hyper-frequent particles).
 - [x] Word search: by Strong's id, lemma (pointing/accent-insensitive),
       transliteration, or English gloss — results open the concordance.
-- [ ] True root (shoresh) search across binyanim.
+- [x] **True root (shoresh) search.** `lexicon_roots` maps Strong's ids onto
+      TWOT roots, with BDB's own root letters and gloss. The definition sheet
+      shows the root and opens `/root`, which lists every word built on it with
+      counts and every verse the family appears in: searching בָּרַךְ finds
+      בְּרָכָה too. Tests: `test/root_study_widget_test.dart`,
+      `test_build_depth_tables.py`, release-DB checks.
 
 ---
 
@@ -69,7 +115,10 @@ things currently undercut the "in depth" promise:
 ### 2.1 Proper spaced repetition — **in progress**
 - [x] Replace the linear ±0.2 mastery bump with the SM-2 algorithm
       (easiness factor, expanding intervals) in `SrsDao`.
-- [ ] Upgrade to FSRS once review volume justifies it.
+- [ ] Upgrade to FSRS once review volume justifies it. **Deferred** — see the
+      deferred list at the end. The data it needs is now being collected:
+      `srs_reviews` records grade, elapsed interval and pre-review state on every
+      answered card, and `SrsDao.countReviews` is the trigger metric.
 - [x] Frequency-ordered vocabulary decks with live text-coverage stats and an SRS
       review queue (`/vocabulary`).
 
@@ -77,7 +126,16 @@ things currently undercut the "in depth" promise:
 - [x] v1 shipped: reading mode where mastered words render plain and rare words
       (below 30 whole-Bible occurrences) get an inline gloss — a printed Reader's
       Greek NT, but personalized and adaptive. Reading itself becomes the SRS loop.
-- [ ] Next: adaptive per-user threshold and marking words known from reading exposure.
+- [x] **Adaptive per-user threshold.** The gloss bar starts at the printed-reader
+      convention (30 occurrences) and rises to the most frequent word the reader
+      has met in review but not mastered, capped at 500 — the help follows the
+      reader rather than the average. `adaptiveReaderThreshold` in
+      `lib/shared/utils/reader_mode.dart`, tested in `test/reader_mode_test.dart`.
+- [x] **Marking words known from reading exposure.** The definition sheet has a
+      "mark as known" action that records mastery above the reader-mode
+      suppression threshold, schedules it 180 days out, and keeps whatever
+      history the word already had (`SrsDao.markKnown`,
+      `test/srs_mark_known_test.dart`).
 - [x] **Readability map shipped** (`/readability`, `lib/features/readability/`):
       ranks every book by the share of its tokens the user has mastered, and
       recommends what to read next. Progress shown as capability rather than a
@@ -93,8 +151,10 @@ things currently undercut the "in depth" promise:
 - [x] v1 shipped: pick any chapter (Psalms default) → progressive word hiding
       (warm-up/challenge/first-letters) → self-graded recall, scheduled by the shared
       SM-2 engine (`/memorization`).
-- [ ] Add transliteration/pronunciation support inside practice mode (Hebrew niqqud
-      display modes already apply).
+- [x] Transliteration inside practice mode: a toggle in the app bar adds the
+      verse as it sounds (`bə·rēʾ·ˈšîṯ`, stress from the accents, Greek folded the
+      same way the reader folds it), so reciting from memory is not also an
+      alphabet test.
 - [x] **Audio recitation shipped** (`lib/features/audio/`): a bundled offline
       Greek voice, with the device voice for Hebrew. Synthesized audio avoids
       the recording-licensing question entirely. Continuous chapter
@@ -127,12 +187,18 @@ things currently undercut the "in depth" promise:
         `flutter build ios` (simulator) rather than analyze alone; not yet
         verified on a physical device — see PAPERCUTS.
 - [ ] Bundled recordings remain an option later if a properly licensed set is
-      found; the player interface would not need to change.
+      found; the player interface would not need to change. Still deferred, for
+      the same licensing reason.
 
 ### 2.4 Morphology as a learning tool
 - [x] Parsing quizzes ("what form is this?") driven by the morphology decoder —
       from the vocabulary screen, Hebrew and Greek.
-- [ ] Paradigm tables (show the full conjugation/declension a form belongs to).
+- [x] **Paradigms, as far as the data honestly goes.** The sheet lists every form
+      of the word that actually occurs, grouped the way a paradigm is read —
+      Hebrew by binyan, Greek by tense and voice — with counts and the same
+      morphology decoding used elsewhere. It is labelled "forms in the text", not
+      "paradigm", because a generated table would print forms nobody ever wrote.
+      `lib/shared/utils/paradigm.dart`, `test/paradigm_test.dart`.
 
 ---
 
@@ -158,22 +224,32 @@ our data provides. Implemented in `lib/shared/utils/cantillation.dart`
   (which is what lets us tell silluq from meteg — they share glyph U+05BD), and
   accent frequencies match the known Masoretic distribution.
 - [ ] Next: use the same phrase structure to pace recitation, and let a learner
-      tap a break to hear just that phrase.
+      tap a break to hear just that phrase. **Deferred** — it needs the recitation
+      player to own a phrase queue, which is a design change to the audio bar.
 
 - [x] Display controls for the Hebrew text: full / vowels-only / consonantal modes —
       reading unpointed text is itself a learning progression.
-- [ ] Qere/Ketiv display.
+- [ ] Qere/Ketiv display. **Deferred** — no licence-clean qere/ketiv layer exists
+      in the pipeline yet; see the deferred list.
 - [x] Cross-references: OpenBible.info dataset (CC-BY, ~340k pairs), per-verse
       sheet in the reader with previews, best-voted first.
-- [ ] Participant/referent data from MACULA (who is "he" in this verse?).
-- [ ] Textual variants (NT: NA/Byz differences) — long-term.
+- [x] **Participant/referent data from MACULA.** Hebrew verbs carry their subject
+      and Greek pronouns their referent, resolved to surface text and Strong's id
+      at build time and shown in the sheet as "subject" / "refers to". Tests:
+      `test/definition_depth_sheet_test.dart`; participant gate in
+      `build_full_bible_db.py` and `scripts/validate_release.sh`.
+- [ ] Textual variants (NT: NA/Byz differences) — long-term, **deferred**: the
+      collation is the copyrighted work even where both texts are free.
 
 ---
 
 ## Engineering foundation
 
-- [ ] Test coverage for the data pipeline first (versification mapping, coverage gates,
-      lexicon enrichment) — every depth feature builds on that layer.
+- [x] Test coverage for the data pipeline: versification mapping and the coverage
+      gates (`scripts/test_pipeline_gates.py`), lexicon enrichment
+      (`test_build_lexicon_enrichment.py`), structured senses and roots
+      (`test_build_depth_tables.py`). `scripts/validate_release.sh` runs them and
+      gates the release database on senses, roots and participants.
 - [x] Widget test for the tap word → definition flow (gloss, Strong's definition,
       BDB expandable section, concordance entry point).
 - [ ] Keep 100% offline as a hard constraint; any future sync must be opt-in and E2E
@@ -242,3 +318,54 @@ features. YouVersion wins that game; our niche is *actually engaging the origina
 | Cross-references | OpenBible.info (TSK-derived) | CC Attribution |
 | Bundled TTS voice (Greek) | Piper `el_GR/rapunzelina` via sherpa-onnx | MIT weights / CC0 data / GPL-3.0 eSpeak NG |
 | Long-form lexicon translations | machine-translated, cached in `data/lexicon_translations/` | derived from the CC BY-SA Strong's / public-domain BDB & Abbott-Smith originals |
+
+---
+
+## Deferred, and why
+
+- **FSRS scheduler.** SM-2 is in place and its state is persisted. FSRS fits its
+  parameters (and beats SM-2's defaults) only with a per-review history of grade
+  and elapsed interval, which the app did not keep. That history is now being
+  appended to `srs_reviews` on every answered card, so the migration path exists;
+  what is missing is *volume*. With the daily session capped at 10 due reviews, a
+  beginner reaches the few hundred reviews per user where FSRS differs measurably
+  in about a month of daily use. Revisit when `SrsDao.countReviews()` is in the
+  hundreds for real installs; nothing has to be rewritten to get there.
+- **Qere/Ketiv display.** The shipped WLC text carries the ketiv consonants and
+  the qere vowels in the standard convention, and nothing in the pipeline marks
+  which verses even have a qere. A real display needs a dedicated qere/ketiv
+  dataset (Tanach.us publishes one) added to `build_full_bible_db.py` with its
+  licence recorded in `assets/attributions.txt`, plus a column per token. A
+  "qere" toggle over unmarked data would be a guess presented as scholarship.
+- **Textual variants (NA/Byz).** The Byzantine text is free; the *collation* is
+  the copyrighted work (NA28 apparatus). Deferred until a licence-clean collation
+  is verified.
+- **Phrase-paced recitation** (tap a break to hear just that phrase). The data is
+  there — `senseUnits` already splits the verse — but pacing the player means the
+  recitation bar needs a phrase queue, highlighting, and a stop rule for a queue
+  that changes under the user. That is an audio-bar redesign, worth doing on its
+  own rather than bolted onto this pass.
+- **Bundled Hebrew recitation voice.** Unchanged from the embedded-voice work: no
+  redistributable Hebrew model has been validated.
+
+---
+
+## Report — 2026-11-13
+
+| Item | Evidence |
+|---|---|
+| Structured senses (`lexicon_senses`) | 1,807 Hebrew + 5,249 Greek entries; gates in `build_lexicon_senses` + `validate_database`; `test/lexicon_senses_test.dart`, `test/definition_depth_sheet_test.dart`, `scripts/test_build_depth_tables.py` |
+| Tree word → lexicon entry, collapsible nodes | `test/syntax_tree_view_widget_test.dart` |
+| Root (shoresh) search | `lexicon_roots` + `/root`; `test/root_study_widget_test.dart`, release-DB root check in `test/database_test.dart` |
+| Paradigm tables (attested forms) | `lib/shared/utils/paradigm.dart`; `test/paradigm_test.dart`; sheet pane in `test/definition_depth_sheet_test.dart` |
+| Qere/Ketiv | deferred, why written above |
+| MACULA participants ("who is he") | 53,097 subject + 12,859 referent links; `participant_links` gate; `test/definition_depth_sheet_test.dart` |
+| Textual variants | deferred |
+| Adaptive reader threshold | `adaptiveReaderThreshold`; `test/reader_mode_test.dart` |
+| Marking words known from reading | `SrsDao.markKnown`; `test/srs_mark_known_test.dart` |
+| FSRS | deferred; `srs_reviews` log ships (`test/srs_mark_known_test.dart`) |
+| Transliteration in practice mode | `_transliterate` in `memorization_practice_screen.dart` |
+| Pipeline tests | `scripts/test_pipeline_gates.py`, `scripts/test_build_depth_tables.py` |
+| Beginner on-ramp + time to first verse | `/start`, `first_run.dart`, `test/first_steps_widget_test.dart`, `test/first_run_test.dart` |
+
+`kBundledDatabaseVersion` 4 → 5 for the new layers.
