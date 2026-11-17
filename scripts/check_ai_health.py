@@ -20,7 +20,7 @@ to decide what to switch to.
 
     export OPENROUTER_API_KEY=sk-or-v1-...
     python3 scripts/check_ai_health.py
-    python3 scripts/check_ai_health.py --model deepseek/deepseek-v4-pro-0813
+    python3 scripts/check_ai_health.py --model deepseek/deepseek-v4.1-flash-1017
     python3 scripts/check_ai_health.py --compare
 
 Exits non-zero if a model fails the bar, so it can gate a release in CI.
@@ -41,7 +41,7 @@ import urllib.request
 ENDPOINT = "https://openrouter.ai/api/v1/chat/completions"
 
 FREE_MODEL = "nvidia/nemotron-3.5-lightning:free"
-PRO_MODEL = "deepseek/deepseek-v4-pro-0813"
+PRO_MODEL = "deepseek/deepseek-v4.1-flash-1017"
 
 # Mirrors lib/features/explain/explain_model.dart. The two models want opposite
 # treatment: deepseek honours reasoning effort (low roughly halves latency and
