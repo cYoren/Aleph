@@ -86,7 +86,7 @@ const ExplainModelConfig kFreeModel = ExplainModelConfig(
 /// is actually selling.
 const ExplainModelConfig kProModel = ExplainModelConfig(
   tier: ExplainTier.pro,
-  modelId: 'deepseek/deepseek-v4-pro-0813',
+  modelId: 'deepseek/deepseek-v4.1-flash-1017',
   maxTokens: 3000,
   dailyLimit: null,
   typicalSeconds: 8,
