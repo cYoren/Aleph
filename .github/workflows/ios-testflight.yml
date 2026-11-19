@@ -179,6 +179,19 @@ jobs:
             -archivePath build/ios/archive/Runner.xcarchive \
             archive
 
+      # The archive carries the dSYMs; without them every native crash and app
+      # hang arrives with unsymbolicated App.framework frames (ALEPH-1,
+      # 7856177326, shipped 1.0.7+30 with sixteen `missing` Dart frames). Fail
+      # the release here rather than upload binaries whose symbols cannot be
+      # read back.
+      - name: Upload dSYMs to Sentry
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        run: |
+          set -euo pipefail
+          brew list sentry-cli >/dev/null 2>&1 || brew install getsentry/tools/sentry-cli
+          bash ./scripts/upload_ios_symbols.sh --archive build/ios/archive/Runner.xcarchive
+
       - name: Export and upload
         env:
           FASTLANE_SKIP_UPDATE_CHECK: "1"
