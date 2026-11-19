@@ -12,12 +12,18 @@ Covers the properties the symbol gate depends on:
 * an archive without dSYMs, without App.framework.dSYM, or with a hollow
   App.framework.dSYM is refused instead of uploading nothing useful,
 * a real run with a token calls `sentry-cli debug-files upload --wait` for the
-  configured org/project and reads the debug id back,
+  configured org/project and then reads the debug id back from the project on
+  the Sentry API, not from local files,
+* the read-back fails the release when Sentry does not list the debug id, when
+  the API cannot be queried, or when no debug id could be read from the dSYM,
 * a missing token fails loudly rather than skipping the upload.
 
-The fake archive mirrors `xcodebuild archive` layout: dSYM bundles are named
-after the bundle (Runner.app.dSYM) while the DWARF file inside is named after
-the executable (Runner), which is the detail a naive implementation gets wrong.
+Both stubs mirror real tool output: `debug-files check` prints identifiers as
+`> Debug ID: <uuid>` (sentry-cli src/commands/debug_files/check.rs) and the
+debug-file endpoint answers with `[{"debugId": ...}]` objects. The fake archive
+mirrors `xcodebuild archive` layout: dSYM bundles are named after the bundle
+(Runner.app.dSYM) while the DWARF file inside is named after the executable
+(Runner), which is the detail a naive implementation gets wrong.
 """
 
 from __future__ import annotations
@@ -34,7 +40,9 @@ SCRIPT = REPO_ROOT / "scripts" / "upload_ios_symbols.sh"
 WORKFLOW = REPO_ROOT / ".github" / "workflows" / "ios-testflight.yml"
 BASH = shutil.which("bash") or "/bin/bash"
 
+# The debug ids Sentry reported missing for ALEPH-1 (7856177326).
 APP_DEBUG_ID = "939fc33b-7f57-b2d1-7e91-df907fbe4e88"
+ARM64E_DEBUG_ID = "0f9d0e2c-2c33-3d4e-8a51-6a6d1c58d0aa"
 
 FAKE_SENTRY_CLI = """#!/usr/bin/env bash
 set -u
@@ -46,25 +54,46 @@ case "${1:-}" in
         echo "Debug Info File Check"
         echo "  Type: macho"
         echo "  Contained debug identifiers:"
-        echo "    > __APP_DEBUG_ID__ (arm64)"
+        for id in ${SENTRY_STUB_IDS-__APP_DEBUG_ID__}; do
+          echo "    > Debug ID: $id"
+          echo "      Arch:     arm64"
+        done
         echo "  Contained debug information:"
         echo "    > symtab, debug"
-        echo "  Usable: yes"
+        echo "  Usable: ${SENTRY_STUB_USABLE:-yes}"
         ;;
       upload)
         echo "Uploaded 3 missing debug information files"
         echo "File processing complete:"
-        echo "      OK __APP_DEBUG_ID__ (App; arm64 debug companion)"
-        ;;
-      find)
-        echo "Found 1 debug information file(s):"
-        echo "  __APP_DEBUG_ID__ (App; arm64 debug companion)"
         ;;
     esac
     ;;
 esac
 exit 0
 """.replace("__APP_DEBUG_ID__", APP_DEBUG_ID)
+
+# Sentry's project debug-file endpoint, stubbed at the HTTP boundary.
+FAKE_CURL = """#!/usr/bin/env bash
+set -u
+printf '%s\\n' "$*" >> "$CURL_STUB_LOG"
+url=""
+for arg in "$@"; do
+  case "$arg" in
+    http*) url="$arg" ;;
+  esac
+done
+id="${url##*query=}"
+if [[ "${CURL_STUB_STATE:-ok}" == "error" ]]; then
+  exit 22
+fi
+present_ids="${CURL_STUB_PRESENT_IDS:-}"
+if [[ -z "$present_ids" || " $present_ids " == *" $id "* ]]; then
+  printf '[{"id":"1","debugId":"%s","objectName":"App","cpuName":"arm64","symbolType":"macho"}]\\n' "$id"
+else
+  printf '[]\\n'
+fi
+exit 0
+"""
 
 DWARF_NAME = {
     "App.framework.dSYM": "App",
@@ -96,19 +125,27 @@ class SymbolUploadTest(unittest.TestCase):
     def stub_dir(self):
         directory = self.tmp / "bin"
         directory.mkdir(exist_ok=True)
-        stub = directory / "sentry-cli"
-        stub.write_text(FAKE_SENTRY_CLI)
-        stub.chmod(0o755)
+        for name, body in (("sentry-cli", FAKE_SENTRY_CLI), ("curl", FAKE_CURL)):
+            stub = directory / name
+            stub.write_text(body)
+            stub.chmod(0o755)
         return directory
 
-    def run_script(self, *args, token=True, path=None):
+    def run_script(self, *args, token=True, path=None, env_extra=None):
         env = dict(os.environ)
         env["SENTRY_STUB_LOG"] = str(self.tmp / "sentry-cli.log")
+        env["CURL_STUB_LOG"] = str(self.tmp / "curl.log")
         env.pop("SENTRY_ORG", None)
         env.pop("SENTRY_PROJECT", None)
+        env.pop("SENTRY_URL", None)
         env.pop("SENTRY_AUTH_TOKEN", None)
+        env.pop("SENTRY_STUB_IDS", None)
+        env.pop("SENTRY_STUB_USABLE", None)
+        env.pop("CURL_STUB_STATE", None)
+        env.pop("CURL_STUB_PRESENT_IDS", None)
         if token:
             env["SENTRY_AUTH_TOKEN"] = "test-token"
+        env.update(env_extra or {})
         if path is None:
             env["PATH"] = f"{self.stub_dir()}:{env['PATH']}"
         else:
@@ -123,6 +160,10 @@ class SymbolUploadTest(unittest.TestCase):
 
     def calls(self):
         log = self.tmp / "sentry-cli.log"
+        return log.read_text().splitlines() if log.exists() else []
+
+    def curl_calls(self):
+        log = self.tmp / "curl.log"
         return log.read_text().splitlines() if log.exists() else []
 
     # -- the workflow wiring ---------------------------------------------
@@ -177,19 +218,61 @@ class SymbolUploadTest(unittest.TestCase):
 
     # -- upload path -----------------------------------------------------
 
-    def test_upload_calls_sentry_cli_for_the_configured_project(self):
+    def test_upload_is_read_back_from_the_project_api(self):
         archive = self.make_archive()
         result = self.run_script("--archive", str(archive))
         self.assertEqual(result.returncode, 0, result.stderr)
-        calls = self.calls()
         self.assertTrue(
-            any("debug-files upload --org medhub-ba --project aleph --wait" in call for call in calls),
-            calls,
+            any("debug-files upload --org medhub-ba --project aleph --wait" in call for call in self.calls()),
+            self.calls(),
+        )
+        read_back = self.curl_calls()
+        self.assertTrue(
+            any(
+                f"/api/0/projects/medhub-ba/aleph/files/dsyms/?query={APP_DEBUG_ID}" in call
+                for call in read_back
+            ),
+            f"the upload must be read back from the project API: {read_back}",
         )
         self.assertTrue(
-            any(f"debug-files find {APP_DEBUG_ID}" in call for call in calls),
-            f"upload must be read back by debug id: {calls}",
+            any("Authorization: Bearer test-token" in call for call in read_back),
+            f"the read-back must authenticate: {read_back}",
         )
+
+    def test_read_back_fails_when_sentry_does_not_list_the_debug_id(self):
+        archive = self.make_archive()
+        result = self.run_script("--archive", str(archive), env_extra={"CURL_STUB_STATE": "ok",
+                                                                      "CURL_STUB_PRESENT_IDS": ARM64E_DEBUG_ID})
+        self.assertEqual(result.returncode, 1, result.stdout)
+        self.assertIn(APP_DEBUG_ID, result.stderr)
+        self.assertIn("none of its debug ids", " ".join(result.stderr.split()))
+
+    def test_read_back_fails_when_the_api_cannot_be_queried(self):
+        archive = self.make_archive()
+        result = self.run_script("--archive", str(archive), env_extra={"CURL_STUB_STATE": "error"})
+        self.assertEqual(result.returncode, 1, result.stdout)
+        self.assertIn("could not query", result.stdout)
+        self.assertIn("none of its debug ids", " ".join(result.stderr.split()))
+
+    def test_second_debug_id_confirms_the_upload(self):
+        """A multi-arch dSYM only needs one of its ids on the server."""
+        archive = self.make_archive()
+        result = self.run_script(
+            "--archive", str(archive),
+            env_extra={
+                "SENTRY_STUB_IDS": f"{APP_DEBUG_ID} {ARM64E_DEBUG_ID}",
+                "CURL_STUB_PRESENT_IDS": ARM64E_DEBUG_ID,
+            },
+        )
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("present", result.stdout)
+
+    def test_unreadable_debug_id_fails_instead_of_skipping_the_read_back(self):
+        archive = self.make_archive()
+        result = self.run_script("--archive", str(archive), env_extra={"SENTRY_STUB_IDS": ""})
+        self.assertEqual(result.returncode, 1, result.stdout)
+        self.assertIn("cannot be", result.stderr)
+        self.assertEqual(self.curl_calls(), [], "nothing can be confirmed without ids")
 
     def test_missing_token_fails_instead_of_skipping(self):
         archive = self.make_archive()

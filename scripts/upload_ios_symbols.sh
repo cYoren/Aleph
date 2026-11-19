@@ -17,11 +17,13 @@
 #   scripts/upload_ios_symbols.sh --archive ... --dry-run
 #
 # Environment:
-#   SENTRY_AUTH_TOKEN  required unless --dry-run. Must be an org token with
-#                      `project:releases`; the iOS workflow passes it from the
-#                      repository secret of the same name.
+#   SENTRY_AUTH_TOKEN  required unless --dry-run. Needs `project:releases` to
+#                      upload and `project:read` to read the upload back; the
+#                      iOS workflow passes it from the repository secret of the
+#                      same name.
 #   SENTRY_ORG         default medhub-ba
 #   SENTRY_PROJECT     default aleph
+#   SENTRY_URL         default https://sentry.io (self-hosted installs)
 #
 # Written for the bash 3.2 that ships with macOS: no mapfile, no associative
 # arrays, no ${var,,}.
@@ -31,6 +33,7 @@ ARCHIVE=""
 DRY_RUN=0
 ORG="${SENTRY_ORG:-medhub-ba}"
 PROJECT="${SENTRY_PROJECT:-aleph}"
+SENTRY_URL="${SENTRY_URL:-https://sentry.io}"
 
 usage() {
   cat <<'EOF'
@@ -129,34 +132,58 @@ fi
 
 : "${SENTRY_AUTH_TOKEN:?SENTRY_AUTH_TOKEN is not set. Add it as a repository secret (Sentry org medhub-ba, project aleph) or run with --dry-run.}"
 
+command -v curl >/dev/null 2>&1 \
+  || { printf 'error: curl is required to read the upload back\n' >&2; exit 2; }
+
 echo "Uploading $count dSYM bundle(s) to $ORG/$PROJECT and waiting for analysis:"
 sentry-cli debug-files upload --org "$ORG" --project "$PROJECT" --wait "$DSYM_DIR"
 
-# Read the upload back. `debug-files find` queries the API by debug id, so this
-# is proof the symbols exist server-side rather than proof the command exited 0.
-# A dSYM can hold several ids (arm64, arm64e), and Sentry only needs to know the
-# one the crash reports use, so one confirmed id is enough.
+# Read the upload back from the server. `sentry-cli debug-files find` is not a
+# remote lookup: its own `--no-cwd` flag ("Do not look for debug symbols in the
+# current working directory") says it searches local files, so it would confirm
+# the archive we just checked and pass whatever the server holds. This asks the
+# project's debug-file endpoint for each debug id instead, which is the only
+# evidence that the symbols Sentry needs are actually there.
+#
+# A dSYM can hold several ids (arm64, arm64e) and Sentry only needs the one the
+# crash reports carry, so one confirmed id is enough.
 APP_DWARF="${APP_DWARF:-$(dwarf_file "$APP_DSYM")}"
-APP_IDS="$(printf '%s\n' "${CHECK_OUTPUT:-}" | sed -n 's/.*> \([0-9a-f-]\{36\}\).*/\1/p')"
+# `debug-files check` prints one line per identifier as `> Debug ID: <uuid>`
+# (sentry-cli src/commands/debug_files/check.rs).
+APP_IDS="$(printf '%s\n' "${CHECK_OUTPUT:-}" | sed -n 's/.*> Debug ID: \([0-9a-f]\{8\}-[0-9a-f]\{4\}-[0-9a-f]\{4\}-[0-9a-f]\{4\}-[0-9a-f]\{12\}\).*/\1/p')"
+
+# Is this debug id registered for the project? 0 = yes, 1 = no, 2 = could not ask.
+debug_id_on_server() {
+  local debug_id="$1" body
+  if ! body="$(curl -fsS \
+      -H "Authorization: Bearer $SENTRY_AUTH_TOKEN" \
+      "$SENTRY_URL/api/0/projects/$ORG/$PROJECT/files/dsyms/?query=$debug_id")"; then
+    echo "warning: could not query $SENTRY_URL for debug id $debug_id (the token needs project:read)."
+    return 2
+  fi
+  printf '%s\n' "$body" | grep -Eq "\"debugId\"[[:space:]]*:[[:space:]]*\"$debug_id\""
+}
+
 CONFIRMED=0
-if [[ -n "$APP_IDS" ]]; then
-  while IFS= read -r debug_id; do
-    [[ -n "$debug_id" ]] || continue
-    echo "Confirming $debug_id is registered in Sentry:"
-    if ! FIND_OUTPUT="$(sentry-cli debug-files find "$debug_id" 2>&1)"; then
-      echo "warning: debug-files find failed for $debug_id; not counting it."
-      continue
-    fi
-    printf '%s\n' "$FIND_OUTPUT"
-    if printf '%s\n' "$FIND_OUTPUT" | grep -q 'Nothing found'; then
-      echo "warning: Sentry has no file for debug id $debug_id yet."
-    else
-      CONFIRMED=1
-    fi
-  done <<< "$APP_IDS"
-  [[ "$CONFIRMED" -eq 1 ]] || die "the App.framework dSYM uploaded but Sentry reports none of its debug ids ($(printf '%s' "$APP_IDS" | tr '\n' ' '))."
-else
-  echo "warning: no debug id parsed from the dSYM check; skipping the read-back."
+if [[ -z "$APP_IDS" ]]; then
+  die "sentry-cli read no debug id from App.framework.dSYM, so the upload cannot be
+  verified. Refusing to report success on an unverified symbol upload."
 fi
+
+while IFS= read -r debug_id; do
+  [[ -n "$debug_id" ]] || continue
+  echo "Confirming $debug_id is registered in $ORG/$PROJECT:"
+  if debug_id_on_server "$debug_id"; then
+    echo "  present"
+    CONFIRMED=1
+  else
+    echo "  absent"
+  fi
+done <<< "$APP_IDS"
+
+[[ "$CONFIRMED" -eq 1 ]] || die "the App.framework dSYM uploaded but none of its debug ids
+  ($(printf '%s' "$APP_IDS" | tr '\n' ' ')) is registered in $ORG/$PROJECT. Sentry cannot
+  symbolicate this build until it is: check that SENTRY_AUTH_TOKEN can read the project
+  (project:read) and that the upload reached the same Sentry instance ($SENTRY_URL)."
 
 echo "OK: uploaded $count dSYM bundle(s) from $ARCHIVE to $ORG/$PROJECT"
