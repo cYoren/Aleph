@@ -134,17 +134,27 @@ sentry-cli debug-files upload --org "$ORG" --project "$PROJECT" --wait "$DSYM_DI
 
 # Read the upload back. `debug-files find` queries the API by debug id, so this
 # is proof the symbols exist server-side rather than proof the command exited 0.
+# A dSYM can hold several ids (arm64, arm64e), and Sentry only needs to know the
+# one the crash reports use, so one confirmed id is enough.
 APP_DWARF="${APP_DWARF:-$(dwarf_file "$APP_DSYM")}"
-APP_ID="$(printf '%s\n' "$CHECK_OUTPUT" | sed -n 's/.*> \([0-9a-f-]\{36\}\).*/\1/p' | head -n 1)"
-if [[ -n "$APP_ID" ]]; then
-  echo "Confirming $APP_ID is registered in Sentry:"
-  if FIND_OUTPUT="$(sentry-cli debug-files find "$APP_ID" 2>&1)"; then
+APP_IDS="$(printf '%s\n' "${CHECK_OUTPUT:-}" | sed -n 's/.*> \([0-9a-f-]\{36\}\).*/\1/p')"
+CONFIRMED=0
+if [[ -n "$APP_IDS" ]]; then
+  while IFS= read -r debug_id; do
+    [[ -n "$debug_id" ]] || continue
+    echo "Confirming $debug_id is registered in Sentry:"
+    if ! FIND_OUTPUT="$(sentry-cli debug-files find "$debug_id" 2>&1)"; then
+      echo "warning: debug-files find failed for $debug_id; not counting it."
+      continue
+    fi
     printf '%s\n' "$FIND_OUTPUT"
-    printf '%s\n' "$FIND_OUTPUT" | grep -q 'Nothing found' \
-      && die "Sentry still reports nothing for debug id $APP_ID after upload."
-  else
-    echo "warning: could not read the debug id back from Sentry; the upload exited 0."
-  fi
+    if printf '%s\n' "$FIND_OUTPUT" | grep -q 'Nothing found'; then
+      echo "warning: Sentry has no file for debug id $debug_id yet."
+    else
+      CONFIRMED=1
+    fi
+  done <<< "$APP_IDS"
+  [[ "$CONFIRMED" -eq 1 ]] || die "the App.framework dSYM uploaded but Sentry reports none of its debug ids ($(printf '%s' "$APP_IDS" | tr '\n' ' '))."
 else
   echo "warning: no debug id parsed from the dSYM check; skipping the read-back."
 fi
