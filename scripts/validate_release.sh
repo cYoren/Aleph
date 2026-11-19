@@ -304,6 +304,11 @@ echo "Running lexicon i18n pipeline tests..."
 python3 "$ROOT_DIR/scripts/test_lexicon_i18n.py" > /dev/null
 python3 "$ROOT_DIR/scripts/test_translation_delivery.py" > /dev/null
 
+# The dSYM upload step is part of the release: without it the build ships
+# unsymbolicated and no crash or app hang can be attributed (ALEPH-1, 7856177326).
+echo "Running iOS symbol-upload tests..."
+python3 "$ROOT_DIR/scripts/test_upload_ios_symbols.py" > /dev/null
+
 # Long-form translated content (definition + extended_definition). This reports
 # per-language, per-field coverage and fails on genuine integrity problems
 # (empty or stale rows). Missing translations are reported as a gap rather than
