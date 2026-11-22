@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -953,7 +954,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get usageSharingTitle => '分享匿名使用统计';
 
   @override
-  String get usageSharingSubtitle => '只统计哪些功能被使用。绝不包括你读的内容，也没有任何能识别你的信息。';
+  String get usageSharingSubtitle =>
+      '哪些功能被使用，以及打开的是圣经哪一卷。绝不会是章或节，也没有任何能识别你的信息。';
 
   @override
   String get supportTitle => '支持 Aleph';

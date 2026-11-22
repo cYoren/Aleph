@@ -9,6 +9,7 @@ import '../../shared/widgets/tappable_word.dart';
 import '../../shared/utils/vocabulary_filter.dart';
 import 'first_run.dart';
 import '../settings/settings_provider.dart';
+import '../../core/usage_events.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
@@ -73,6 +74,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   Future<void> _completeOnboarding() async {
     await ref.read(settingsProvider.notifier).completeOnboarding();
+    // Whatever route brought them here, onboarding is behind them. No answers
+    // travel: the tradition they chose stays on the device.
+    UsageEvents.record(UsageEvent.onboardingCompleted);
     if (!mounted) return;
     // Straight into the on-ramp: a reader who has never seen these letters has
     // nothing to do in a reader full of books and decks yet.

@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -1006,7 +1007,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get usageSharingSubtitle =>
-      'Qué funciones se usan. Nunca lo que lees ni nada que te identifique.';
+      'Qué funciones se usan y qué libro de la Biblia se abre. Nunca el capítulo ni el versículo, y nada que te identifique.';
 
   @override
   String get supportTitle => 'Apoyar Aleph';

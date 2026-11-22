@@ -12,8 +12,16 @@ import 'package:go_router/go_router.dart';
 
 import '../../data/models/lexicon_sense.dart';
 import '../../l10n/generated/app_localizations.dart';
+import '../../core/usage_events.dart';
 import '../../providers/word_provider.dart';
 import '../utils/paradigm.dart';
+
+/// Which depth pane under a tapped word was opened. Only the pane name travels.
+void _recordDepthLayer(String layer) =>
+    UsageEvents.record(
+      UsageEvent.depthLayerOpened,
+      properties: {'layer': layer},
+    );
 
 /// Section heading, styled like the rest of the sheet.
 class DepthSectionLabel extends StatelessWidget {
@@ -102,7 +110,10 @@ class _SensesSectionState extends ConsumerState<SensesSection> {
             ),
           if (rows.length > _previewRows)
             TextButton(
-              onPressed: () => setState(() => _expanded = !_expanded),
+              onPressed: () {
+                if (!_expanded) _recordDepthLayer('senses');
+                setState(() => _expanded = !_expanded);
+              },
               style: TextButton.styleFrom(
                 padding: EdgeInsets.zero,
                 minimumSize: const Size(0, 32),
@@ -187,14 +198,17 @@ class RootSection extends ConsumerWidget {
       padding: const EdgeInsets.only(bottom: 16),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
-        onTap: () => context.push(
-          '/root',
-          extra: {
-            'root': root.root,
-            'gloss': root.gloss,
-            'twot': root.twot,
-          },
-        ),
+        onTap: () {
+          _recordDepthLayer('root');
+          context.push(
+            '/root',
+            extra: {
+              'root': root.root,
+              'gloss': root.gloss,
+              'twot': root.twot,
+            },
+          );
+        },
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           decoration: BoxDecoration(
@@ -354,7 +368,10 @@ class _AttestedFormsSectionState extends ConsumerState<AttestedFormsSection> {
           ],
           if (groups.length > _previewGroups)
             TextButton(
-              onPressed: () => setState(() => _expanded = !_expanded),
+              onPressed: () {
+                if (!_expanded) _recordDepthLayer('forms');
+                setState(() => _expanded = !_expanded);
+              },
               style: TextButton.styleFrom(
                 padding: EdgeInsets.zero,
                 minimumSize: const Size(0, 32),

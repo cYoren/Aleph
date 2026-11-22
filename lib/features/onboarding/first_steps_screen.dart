@@ -24,6 +24,7 @@ import '../../shared/utils/hebrew_syllables.dart';
 import '../../shared/utils/transliterator.dart';
 import '../../shared/utils/vocabulary_filter.dart';
 import '../../shared/widgets/definition_sheet.dart';
+import '../../core/usage_events.dart';
 import '../alphabet/alphabet_provider.dart';
 import '../settings/settings_provider.dart';
 import '../vocabulary/vocabulary_item_tile.dart';
@@ -192,11 +193,19 @@ class _FirstStepsScreenState extends ConsumerState<FirstStepsScreen> {
     switch (_stage) {
       case 0:
         await firstRun.completeLetters();
+        UsageEvents.record(
+          UsageEvent.beginnerLessonCompleted,
+          properties: const {'lesson': 'letters'},
+        );
       case 1:
         // Nothing to record: seeing the word is not a claim about knowing it.
         break;
       case 2:
         await firstRun.completeVerse();
+        UsageEvents.record(
+          UsageEvent.beginnerLessonCompleted,
+          properties: const {'lesson': 'first_verse'},
+        );
       default:
         break;
     }
@@ -226,6 +235,10 @@ class _FirstStepsScreenState extends ConsumerState<FirstStepsScreen> {
     }
 
     await ref.read(firstRunProvider.notifier).completeReview();
+    UsageEvents.record(
+      UsageEvent.beginnerLessonCompleted,
+      properties: const {'lesson': 'first_review'},
+    );
     if (!mounted) return;
     setState(() {
       _reviewing = false;

@@ -7,6 +7,7 @@ import '../../providers/word_provider.dart';
 import '../../providers/database_provider.dart';
 import '../utils/reader_mode.dart';
 import 'lexicon_depth_sections.dart';
+import '../../core/usage_events.dart';
 import '../../providers/books_provider.dart';
 import '../utils/morphology_decoder.dart';
 import '../utils/morphology_labels.dart';
@@ -809,6 +810,7 @@ class DefinitionSheet extends ConsumerWidget {
       child: OutlinedButton.icon(
         onPressed: () {
           ref.read(selectedWordProvider.notifier).state = null;
+          UsageEvents.record(UsageEvent.wordStudyOpened);
           Navigator.of(context).pop(); // close the definition sheet
           context.push(
             '/word-study',
@@ -855,6 +857,11 @@ class DefinitionSheet extends ConsumerWidget {
             wordsForVerseProvider(word.verseId).future,
           );
           if (!context.mounted) return;
+
+          UsageEvents.record(
+            UsageEvent.depthLayerOpened,
+            properties: const {'layer': 'syntax_tree'},
+          );
 
           // Build verse reference label
           final verseRef = word.verseId.toString();
