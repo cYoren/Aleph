@@ -382,7 +382,7 @@
   "nameNotFound": "名单中暂时没有这个名字。试试别的写法。",
   "nameShare": "分享",
   "usageSharingTitle": "分享匿名使用统计",
-  "usageSharingSubtitle": "只统计哪些功能被使用。绝不包括你读的内容，也没有任何能识别你的信息。",
+  "usageSharingSubtitle": "哪些功能被使用，以及打开的是圣经哪一卷。绝不会是章或节，也没有任何能识别你的信息。",
   "supportTitle": "支持 Aleph",
   "supportBody": "Aleph 由一个人完成：没有广告，没有订阅，没有追踪。一次性的捐赠让经文、语音和更新得以继续。",
   "supportNote": "捐赠不解锁任何内容。Aleph 的每一句话本来就属于你。",

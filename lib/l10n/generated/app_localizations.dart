@@ -1757,7 +1757,7 @@ abstract class AppLocalizations {
   /// No description provided for @usageSharingSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Which features get used. Never what you read, and nothing that identifies you.'**
+  /// **'Which features get used, and which book of the Bible is opened. Never the chapter or the verse, and nothing that identifies you.'**
   String get usageSharingSubtitle;
 
   /// Aleph support (donation) sheet

@@ -24,6 +24,7 @@ import '../explain/explain_provider.dart';
 import '../explain/widgets/explain_sheet.dart';
 import '../audio/widgets/recitation_bar.dart';
 import '../../shared/utils/readable_width.dart';
+import '../../core/usage_events.dart';
 
 class ReadingScreen extends ConsumerStatefulWidget {
   const ReadingScreen({super.key});
@@ -42,6 +43,24 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
   /// The verse list itself, so playback can tell which verse the reader is
   /// actually looking at.
   final GlobalKey _verseListKey = GlobalKey();
+
+  /// The last `book:chapter` counted, so a rebuild or a translation reload does
+  /// not report the same chapter twice.
+  String? _recordedChapter;
+
+  /// One `chapter_read` per chapter the reader actually lands on, plus
+  /// `first_value` the first time ever. The book is an enum id and the testament
+  /// a two-letter tag; the chapter number and everything on screen stay home.
+  void _recordChapterRead(ReadingState state, bool isOldTestament) {
+    if (state.isLoading || state.verses.isEmpty) return;
+    final key = '${state.bookId}:${state.chapter}';
+    if (_recordedChapter == key) return;
+    _recordedChapter = key;
+    UsageEvents.recordChapterRead(
+      bookId: state.bookId,
+      isOldTestament: isOldTestament,
+    );
+  }
 
   @override
   void initState() {
@@ -147,6 +166,8 @@ class _ReadingScreenState extends ConsumerState<ReadingScreen> {
     );
     final maxChapter = currentBook?.effectiveChapterCount ?? 999;
     final isOT = _isOldTestament(readingState.bookId);
+
+    _recordChapterRead(readingState, isOT);
 
     // Book names come from the localized asset, not the English-only database.
     final bookTitle = ref

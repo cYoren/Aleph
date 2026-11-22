@@ -11,7 +11,6 @@ import 'package:go_router/go_router.dart';
 import '../explain/explain_provider.dart';
 import '../../core/review_reminder.dart';
 import '../../core/usage_events.dart';
-import '../explain/explain_service.dart';
 import 'support_sheet.dart';
 
 const _interfaceLanguages = <String, String>{
@@ -262,8 +261,9 @@ class SettingsScreen extends ConsumerWidget {
               ref.read(reviewReminderProvider.notifier).set(value);
             },
           ),
-          // Only when this build has somewhere to send the counts.
-          if (kAiProxyUrl.isNotEmpty)
+          // Only when this build has somewhere to send the counts: the proxy,
+          // or PostHog (whose key always ships). Never a dead switch.
+          if (UsageEvents.isConfigured)
             SwitchListTile(
               secondary: const Icon(Icons.bar_chart_outlined),
               title: Text(l10n.usageSharingTitle),
