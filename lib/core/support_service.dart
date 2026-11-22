@@ -180,7 +180,10 @@ class SupportService extends ChangeNotifier {
     final product = _state.products[tier];
     if (product == null || _state.buying) return;
 
-    await UsageEvents.record(UsageEvent.supportStarted);
+    await UsageEvents.record(
+      UsageEvent.supportStarted,
+      properties: {'tier': tier.name},
+    );
     _state = _state.copyWith(buying: true, error: null);
     notifyListeners();
 
@@ -192,6 +195,10 @@ class SupportService extends ChangeNotifier {
         autoConsume: true,
       );
     } catch (error) {
+      await UsageEvents.record(
+        UsageEvent.supportFailed,
+        properties: {'tier': tier.name, 'reason': 'start_failed'},
+      );
       _state = _state.copyWith(
         buying: false,
         error: 'The purchase could not be started.',
@@ -211,13 +218,23 @@ class SupportService extends ChangeNotifier {
         case PurchaseStatus.purchased:
         case PurchaseStatus.restored:
           if (tier != null) {
-            await UsageEvents.record(UsageEvent.supportCompleted);
+            await UsageEvents.record(
+              UsageEvent.supportCompleted,
+              properties: {'tier': tier.name},
+            );
             _state = _state.copyWith(buying: false, thanked: true, error: null);
           } else {
             _state = _state.copyWith(buying: false);
           }
           notifyListeners();
         case PurchaseStatus.error:
+          await UsageEvents.record(
+            UsageEvent.supportFailed,
+            properties: {
+              if (tier != null) 'tier': tier.name,
+              'reason': 'store_error',
+            },
+          );
           _state = _state.copyWith(
             buying: false,
             error: 'The purchase did not go through.',

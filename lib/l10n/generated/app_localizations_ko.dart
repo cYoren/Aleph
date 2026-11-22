@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -967,7 +968,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get usageSharingSubtitle =>
-      '어떤 기능이 쓰이는지만 보냅니다. 읽는 내용이나 신원을 알 수 있는 정보는 절대 보내지 않아요.';
+      '어떤 기능이 쓰이는지, 그리고 성경 어느 권이 열리는지를 보냅니다. 장이나 절은 절대 보내지 않으며, 신원을 알 수 있는 정보도 보내지 않아요.';
 
   @override
   String get supportTitle => 'Aleph 후원하기';

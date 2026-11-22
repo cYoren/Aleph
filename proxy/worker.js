@@ -72,7 +72,25 @@ const EVENT_NAMES = new Set([
   'path_started',
   'card_shared',
   'reminder_enabled',
+  'first_verse_read',
+  'first_review_done',
+  'support_opened',
+  'support_started',
+  'support_completed',
+  'support_failed',
+  'onboarding_completed',
+  'chapter_read',
+  'first_value',
+  'depth_layer_opened',
+  'word_study_opened',
+  'beginner_lesson_completed',
+  'analytics_opt_out',
 ]);
+
+// Every name above is a `UsageEvent.wireName` in lib/core/usage_events.dart.
+// `test/proxy_event_names_test.dart` reads this file and fails if the two lists
+// drift apart, because a name missing here is refused with 400 and the count is
+// lost without a trace.
 
 async function recordEvent(request, env) {
   let e;

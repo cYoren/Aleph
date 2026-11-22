@@ -585,7 +585,7 @@
     }
   },
   "usageSharingTitle": "Share anonymous usage counts",
-  "usageSharingSubtitle": "Which features get used. Never what you read, and nothing that identifies you.",
+  "usageSharingSubtitle": "Which features get used, and which book of the Bible is opened. Never the chapter or the verse, and nothing that identifies you.",
   "supportTitle": "Support Aleph",
   "@supportTitle": {
     "description": "Aleph support (donation) sheet"
