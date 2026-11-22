@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:isolate';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart' as path;
@@ -136,14 +137,7 @@ class DatabaseHelper {
         // Ensure directory exists
         await Directory(path.dirname(dbFilePath)).create(recursive: true);
 
-        // Load the compressed asset and stream it through the decoder straight
-        // to disk. The asset is ~1/6th of the unpacked database, so this holds
-        // far less in memory than copying the raw file would.
-        final ByteData data = await rootBundle.load(kBundledDatabaseAsset);
-        final compressed = Stream<List<int>>.value(
-          data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes),
-        );
-        await gzip.decoder.bind(compressed).pipe(File(dbFilePath).openWrite());
+        await unpackBundledDatabase(dbFilePath);
 
         // Written only after the copy succeeds, so an interrupted copy is
         // retried on the next launch rather than being trusted.
@@ -172,4 +166,34 @@ class DatabaseHelper {
       return null;
     }
   }
+}
+
+/// Unpacks the bundled database into [targetPath], off the UI isolate.
+///
+/// The asset is ~78 MB compressed and ~234 MB on disk. Decompressing and writing
+/// it on the main isolate blocks the Flutter UI for 2.5–4.1 s: Sentry ALEPH-1
+/// and ALEPH-2 are exactly that, "App Hang Fully Blocked" on iPads, once per
+/// fresh install. The bytes are handed to the isolate as
+/// [TransferableTypedData] so the 78 MB is not copied a second time.
+Future<void> unpackBundledDatabase(String targetPath) async {
+  final ByteData data = await rootBundle.load(kBundledDatabaseAsset);
+  await unpackGzipBytes(
+    data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes),
+    targetPath,
+  );
+}
+
+/// Writes the gunzipped [bytes] to [targetPath] in a background isolate.
+///
+/// Exposed for tests: it is the part that used to block the UI thread, and it
+/// must produce the same file the streaming copy did.
+@visibleForTesting
+Future<void> unpackGzipBytes(Uint8List bytes, String targetPath) {
+  final transferable = TransferableTypedData.fromList(<Uint8List>[bytes]);
+  return Isolate.run(() async {
+    final compressed = Stream<List<int>>.value(
+      transferable.materialize().asUint8List(),
+    );
+    await gzip.decoder.bind(compressed).pipe(File(targetPath).openWrite());
+  });
 }
