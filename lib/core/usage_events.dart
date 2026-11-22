@@ -169,11 +169,17 @@ class UsageEvents {
   /// only then, so it is never a dead control.
   static bool get isConfigured => kAiProxyUrl.isNotEmpty || postHogEnabled();
 
-  /// The first chapter ever read. Stamped once per device; `firstValue` is the
-  /// one event in here that must never repeat.
-  static const _firstChapterKey = 'firstChapterReadAt';
+  /// Set when `firstValue` has actually been dispatched. It is deliberately not
+  /// the same thing as "the reader has read a chapter": a chapter read before
+  /// the reader opted in was not counted, and must not use up the one event
+  /// that says they reached the product. So a reader who tried the reader first
+  /// and opted in later still reports activation, on their first counted
+  /// chapter, instead of being quietly left out of the funnel.
+  static const _firstValueKey = 'firstValueAt';
 
-  /// Records a chapter on screen, and `first_value` the first time.
+  /// Records a chapter on screen, and `first_value` the first time a chapter is
+  /// read with consent. The milestone is the first chapter we are allowed to
+  /// measure, not the first chapter ever opened.
   static Future<void> recordChapterRead({
     required String bookId,
     required bool isOldTestament,
@@ -184,8 +190,12 @@ class UsageEvents {
     );
     try {
       final prefs = await SharedPreferences.getInstance();
-      if (prefs.getInt(_firstChapterKey) != null) return;
-      await prefs.setInt(_firstChapterKey, DateTime.now().millisecondsSinceEpoch);
+      if (prefs.getInt(_firstValueKey) != null) return;
+      // Nothing is reported before consent, so nothing is stamped either.
+      final optedIn = prefs.getBool(_enabledKey) ?? false;
+      if (!optedIn) return;
+      // Mark before dispatching, so two chapters in flight cannot both send it.
+      await prefs.setInt(_firstValueKey, DateTime.now().millisecondsSinceEpoch);
       await record(UsageEvent.firstValue);
     } catch (e) {
       if (kDebugMode) debugPrint('UsageEvents: $e');

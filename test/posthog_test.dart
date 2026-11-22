@@ -213,6 +213,66 @@ void main() {
         () {
       expect(UsageEvents.isConfigured, isTrue);
     });
+
+    test('a chapter read before consent does not use up first_value', () async {
+      SharedPreferences.setMockInitialValues({
+        'usageSharingEnabled': false,
+        'installDay': '2026-11-01',
+        'appLanguage': 'en',
+      });
+      final client = _RecordingClient();
+      debugPostHogClient = client;
+      addTearDown(() => debugPostHogClient = null);
+
+      // Reads before opting in: nothing is sent, and the funnel event is kept.
+      await UsageEvents.recordChapterRead(
+        bookId: 'GEN',
+        isOldTestament: true,
+      );
+      await _settle(client);
+      expect(client.events, isEmpty);
+
+      // Then they opt in in Settings, and read again.
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('usageSharingEnabled', true);
+      await UsageEvents.recordChapterRead(
+        bookId: 'JHN',
+        isOldTestament: false,
+      );
+      await _settle(client, atLeast: 2);
+      expect(client.events, ['chapter_read', 'first_value']);
+
+      // A third chapter is just another chapter.
+      await UsageEvents.recordChapterRead(
+        bookId: 'PSA',
+        isOldTestament: true,
+      );
+      await _settle(client, atLeast: 3);
+      expect(client.events, ['chapter_read', 'first_value', 'chapter_read']);
+    });
+
+    test('first_value fires once for a reader who opted in first', () async {
+      SharedPreferences.setMockInitialValues({
+        'usageSharingEnabled': true,
+        'installDay': '2026-11-01',
+        'appLanguage': 'en',
+      });
+      final client = _RecordingClient();
+      debugPostHogClient = client;
+      addTearDown(() => debugPostHogClient = null);
+
+      for (final book in ['GEN', 'EXO', 'LEV']) {
+        await UsageEvents.recordChapterRead(
+          bookId: book,
+          isOldTestament: true,
+        );
+        await _settle(client, atLeast: client.events.length + 1);
+        await Future<void>.delayed(Duration.zero);
+      }
+
+      expect(client.events.where((e) => e == 'first_value'), hasLength(1));
+      expect(client.events.where((e) => e == 'chapter_read'), hasLength(3));
+    });
   });
 
   group('constants', () {
@@ -240,6 +300,28 @@ class _CountingClient extends http.BaseClient {
   Future<http.StreamedResponse> send(http.BaseRequest request) async {
     calls++;
     return http.StreamedResponse(const Stream<List<int>>.empty(), 200);
+  }
+}
+
+/// Keeps the event names it was asked to deliver, so a test can see what would
+/// have left the device.
+class _RecordingClient extends http.BaseClient {
+  final List<String> events = [];
+
+  @override
+  Future<http.StreamedResponse> send(http.BaseRequest request) async {
+    final body = jsonDecode(await request.finalize().bytesToString());
+    for (final entry in (body['batch'] as List)) {
+      events.add((entry as Map)['event'] as String);
+    }
+    return http.StreamedResponse(const Stream<List<int>>.empty(), 200);
+  }
+}
+
+/// Delivery is dispatched, not awaited, so give it a few turns to arrive.
+Future<void> _settle(_RecordingClient client, {int atLeast = 1}) async {
+  for (var i = 0; i < 100 && client.events.length < atLeast; i++) {
+    await Future<void>.delayed(Duration.zero);
   }
 }
 
