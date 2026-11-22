@@ -11,6 +11,7 @@
 /// sends `settings_analytics_opt_out` first, then stops everything.
 library;
 
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -99,6 +100,11 @@ class UsageEvents {
   /// Two destinations, one gate: the proxy (when this build has one) and
   /// PostHog (always, since its key ships in the app). Either can fail alone
   /// without affecting the other, and neither can affect reading.
+  ///
+  /// The network work is dispatched, not awaited. Callers await this method
+  /// before opening the tip jar sheet or marking a purchase in progress, and a
+  /// slow analytics endpoint must never be visible as the app hanging. Both
+  /// senders swallow their own failures and time out at 5 s.
   static Future<void> record(
     UsageEvent event, {
     Map<String, Object?> properties = const {},
@@ -119,15 +125,17 @@ class UsageEvents {
       final language = prefs.getString('appLanguage') ?? 'en';
       final day = DateTime.now().difference(DateTime.parse(installDay)).inDays;
 
-      await Future.wait([
-        if (kAiProxyUrl.isNotEmpty) _sendToProxy(event, language, day),
+      if (kAiProxyUrl.isNotEmpty) {
+        unawaited(_sendToProxy(event, language, day));
+      }
+      unawaited(
         sendToPostHog(
           optedIn: true, // checked above: nothing gets here otherwise
           event: event.postHogName,
           properties: {...properties, 'days_since_install': day},
           locale: language,
         ),
-      ]);
+      );
     } catch (e) {
       if (kDebugMode) debugPrint('UsageEvents: $e');
     }

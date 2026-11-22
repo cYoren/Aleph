@@ -1,9 +1,12 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:original_bible/core/posthog.dart';
+import 'package:original_bible/core/usage_events.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// The one gate that matters: nothing leaves the device unless the reader
 /// turned the switch on, and when it does leave, it carries no text.
@@ -170,6 +173,48 @@ void main() {
     });
   });
 
+  group('the wrapper', () {
+    test('record() returns without waiting for delivery', () async {
+      // Opted in, so both senders would fire. One of them is pointed at a client
+      // that never answers: if `record` awaited delivery, this test would hang
+      // until the 5 s timeout instead of returning.
+      SharedPreferences.setMockInitialValues({
+        'usageSharingEnabled': true,
+        'installDay': '2026-11-01',
+        'appLanguage': 'en',
+      });
+      debugPostHogClient = _NeverAnsweringClient();
+      addTearDown(() => debugPostHogClient = null);
+
+      final watch = Stopwatch()..start();
+      await UsageEvents.record(UsageEvent.supportOpened);
+      watch.stop();
+
+      expect(watch.elapsedMilliseconds, lessThan(1000));
+    });
+
+    test('record() sends nothing when the reader opted out', () async {
+      SharedPreferences.setMockInitialValues({
+        'usageSharingEnabled': false,
+        'installDay': '2026-11-01',
+      });
+      final client = _CountingClient();
+      debugPostHogClient = client;
+      addTearDown(() => debugPostHogClient = null);
+
+      await UsageEvents.record(UsageEvent.chapterRead);
+      // Give a wrongly dispatched send a chance to reach the client.
+      await Future<void>.delayed(Duration.zero);
+
+      expect(client.calls, 0);
+    });
+
+    test('the Settings switch is live in every build now that PostHog is in',
+        () {
+      expect(UsageEvents.isConfigured, isTrue);
+    });
+  });
+
   group('constants', () {
     test('kAnalyticsAppVersion matches pubspec.yaml', () {
       final pubspec = File('pubspec.yaml').readAsStringSync();
@@ -196,4 +241,11 @@ class _CountingClient extends http.BaseClient {
     calls++;
     return http.StreamedResponse(const Stream<List<int>>.empty(), 200);
   }
+}
+
+/// A client that never answers, so a caller waiting on delivery would hang.
+class _NeverAnsweringClient extends http.BaseClient {
+  @override
+  Future<http.StreamedResponse> send(http.BaseRequest request) =>
+      Completer<http.StreamedResponse>().future;
 }

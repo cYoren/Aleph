@@ -159,6 +159,11 @@ Map<String, Object?> buildPostHogBody(
   String projectKey = kPostHogProjectKey,
 }) => {'api_key': projectKey, 'batch': events};
 
+/// Test seam: a client that never answers, so a test can prove a caller does
+/// not wait for delivery. Always null in a shipped build.
+@visibleForTesting
+http.Client? debugPostHogClient;
+
 /// Fire and forget. Never throws, never blocks the reader, 5 s at most.
 ///
 /// Returns whether a request was attempted, which is what the tests assert.
@@ -189,9 +194,10 @@ Future<bool> sendToPostHog({
     final uri = Uri.parse('$kPostHogHost/batch/');
     final encoded = jsonEncode(body);
     // A test can inject a client; shipping code never does, and never retries.
-    final call = client == null
+    final effective = client ?? debugPostHogClient;
+    final call = effective == null
         ? http.post(uri, headers: headers, body: encoded)
-        : client.post(uri, headers: headers, body: encoded);
+        : effective.post(uri, headers: headers, body: encoded);
     await call.timeout(const Duration(seconds: 5));
     return true;
   } catch (e) {
