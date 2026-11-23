@@ -1,2 +1,3 @@
-New: a tip jar in Settings, for anyone who wants to give something back. It unlocks nothing: Aleph stays free, offline and unsubscribed.
-Also in this release: book paths for Ruth, Jonah and John, name meanings in Hebrew and Greek, and Today's 5 minutes with a streak and an optional evening reminder.
+Fixed: Aleph no longer freezes for a few seconds the first time you open it after an update. The offline database now unpacks in the background instead of on the screen you are looking at.
+
+Also in this release: better crash reports, and the optional anonymous usage counts in Settings.
