@@ -7,7 +7,9 @@ first frame. The 234 MB bundled database unpacks on first launch, so on a
 debug simulator build the first frame legitimately takes minutes; what must never
 happen is that it never arrives at all.
 
-What it checks, per device, twice (cold start each time):
+The app is uninstalled before installing, so the first launch is a real first
+launch (no database on disk, the bundled one unpacks). It checks, per device,
+twice (cold start each time):
   1. the process is still running 20 s after launch,
   2. the screen paints something other than a single flat colour,
 
@@ -88,6 +90,10 @@ def check_device(udid: str, name: str, app: Path, bundle: str, out: Path) -> dic
     # error that does not matter; bootstatus is the authority.
     subprocess.run(["xcrun", "simctl", "boot", udid], capture_output=True)
     run(["xcrun", "simctl", "bootstatus", udid, "-b"], 600)
+    # Uninstall first: a real first launch has no database and must unpack the
+    # bundled one, which is the slow path a reviewer's device takes. Installing
+    # over an existing copy would only ever test the second launch.
+    subprocess.run(["xcrun", "simctl", "uninstall", udid, bundle], capture_output=True)
     run(["xcrun", "simctl", "install", udid, str(app)])
 
     record: dict = {"device": name, "udid": udid, "launches": []}
@@ -166,15 +172,28 @@ def main() -> int:
             numbers = [p for p in parts if p.isdigit()]
             return tuple(int(p) for p in numbers) or (0,)
 
-        runtime = max((r for r in listing if "iOS" in r), key=major)
+        # Newest runtime per device family: a machine can have the iPhone on one
+        # iOS runtime and the iPad on another.
         for prefix in ("iPhone", "iPad"):
-            match = next(
-                (device["udid"] for device in listing[runtime] if device["name"].startswith(prefix)),
-                None,
-            )
-            if not match:
-                print(f"sim_launch_check: no {prefix} simulator on this machine.")
+            runtimes = [
+                runtime
+                for runtime, devices in listing.items()
+                if "iOS" in runtime
+                and any(device["name"].startswith(prefix) for device in devices)
+            ]
+            if not runtimes:
+                families = sorted(
+                    {device["name"].split()[0] for devices in listing.values() for device in devices}
+                )
+                print(
+                    f"sim_launch_check: no {prefix} simulator on this machine "
+                    f"(available families: {families})."
+                )
                 return 2
+            runtime = max(runtimes, key=major)
+            match = next(
+                device["udid"] for device in listing[runtime] if device["name"].startswith(prefix)
+            )
             udids.append(match)
 
     # App Review runs both, so a pass on two iPhones is not a pass.
