@@ -30,6 +30,16 @@ columns on `words` (`subject_text`/`referent_text`), and `syntax_trees`.
 build that skips the extended lexicon (or a source that moved) stops there rather
 than shipping a sheet with nothing in it.
 
+Before any store build, run `scripts/release_preflight.sh`: release data
+gates, `flutter analyze`, `flutter test`, the bundled-database asset, and (on a
+Mac) a simulator launch pass that fails unless the app actually paints on an
+iPhone and an iPad. `scripts/sim_launch_check.py` is the launch pass on its own.
+
+Telemetry is release-only by construction (`lib/core/telemetry_gate.dart` and
+`lib/core/telemetry_startup.dart`): a release build reports, every other build is
+silent. A build that must stay silent skips `SentryFlutter.init` entirely, because
+the SDK throws on a null DSN rather than ignoring it.
+
 Release artifacts require separate verification for Android, iOS, and macOS. Do not claim a store release from a successful local build alone. Never commit keystores, provisioning files, credentials, generated databases, or private exports.
 
 ## Data and product safety

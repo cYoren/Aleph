@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:isolate';
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -39,6 +40,47 @@ void main() {
     await unpackGzipBytes(Uint8List.fromList(gzip.encode(payload)), target);
 
     expect(await File(target).readAsBytes(), payload);
+  });
+
+  // The bug ALEPH-1/ALEPH-2 reported was not "the unpack is slow" but "the unpack
+  // is slow *on the screen the reader is looking at*". Counting timer ticks is
+  // the wrong probe: awaiting file I/O yields even when a synchronous gunzip is
+  // on the caller's isolate, so a reverted implementation could still look fine.
+  // Asking the production runner to report its own isolate id cannot be faked.
+  test('the production runner really runs on another isolate', () async {
+    final callerIsolate = Isolate.current.hashCode;
+    final workIsolate =
+        await defaultOffIsolateRunner(() async => Isolate.current.hashCode);
+    expect(workIsolate, isNot(callerIsolate));
+  });
+
+  // Deterministic version of the test above, so the guarantee does not depend on
+  // how fast this machine decompresses. If the unpack ever runs before (or
+  // instead of) the off-isolate runner, the file exists and this fails.
+  test('writes nothing unless the off-isolate runner runs the work', () async {
+    final payload = Uint8List.fromList(List<int>.filled(2048, 7));
+    final target = '${temp.path}/bible.db';
+    var requests = 0;
+
+    await expectLater(
+      unpackGzipBytes(
+        Uint8List.fromList(gzip.encode(payload)),
+        target,
+        runOffIsolate: <T>(Future<T> Function() action) async {
+          requests++;
+          // Refuse the work, the way a dead isolate would.
+          throw StateError('not run');
+        },
+      ),
+      throwsA(isA<StateError>()),
+    );
+
+    expect(requests, 1, reason: 'the decode must be handed to the runner');
+    expect(
+      await File(target).exists(),
+      isFalse,
+      reason: 'the caller isolate decompressed instead of the runner',
+    );
   });
 
   test('surfaces a corrupt asset instead of reporting success', () async {

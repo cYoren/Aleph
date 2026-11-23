@@ -183,14 +183,29 @@ Future<void> unpackBundledDatabase(String targetPath) async {
   );
 }
 
+/// Runs `action` somewhere other than the isolate that is painting the screen.
+typedef OffIsolateRunner = Future<T> Function<T>(Future<T> Function() action);
+
+/// The production runner, exposed so a test can prove it really is a different
+/// isolate rather than trust the call site.
+@visibleForTesting
+OffIsolateRunner defaultOffIsolateRunner = _runOffIsolate;
+
+Future<T> _runOffIsolate<T>(Future<T> Function() action) =>
+    Isolate.run(action);
+
 /// Writes the gunzipped [bytes] to [targetPath] in a background isolate.
 ///
 /// Exposed for tests: it is the part that used to block the UI thread, and it
 /// must produce the same file the streaming copy did.
 @visibleForTesting
-Future<void> unpackGzipBytes(Uint8List bytes, String targetPath) {
+Future<void> unpackGzipBytes(
+  Uint8List bytes,
+  String targetPath, {
+  OffIsolateRunner runOffIsolate = _runOffIsolate,
+}) {
   final transferable = TransferableTypedData.fromList(<Uint8List>[bytes]);
-  return Isolate.run(() async {
+  return runOffIsolate(() async {
     final compressed = Stream<List<int>>.value(
       transferable.materialize().asUint8List(),
     );
