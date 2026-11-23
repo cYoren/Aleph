@@ -10,7 +10,6 @@ happen is that it never arrives at all.
 What it checks, per device, twice (cold start each time):
   1. the process is still running 20 s after launch,
   2. the screen paints something other than a single flat colour,
-  3. the app's data container holds the unpacked database.
 
 Usage:
     scripts/sim_launch_check.py --app build/ios/iphonesimulator/Runner.app \
@@ -43,14 +42,27 @@ def run(args: list[str], timeout: int = 300) -> str:
     return finished.stdout
 
 
+class MissingDependency(RuntimeError):
+    pass
+
+
 def flat_screen(path: Path) -> tuple[bool, int]:
-    """True when the screenshot is one flat colour, plus how many colours it had."""
+    """True when the screenshot is one flat colour, plus how many colours it had.
+
+    A missing Pillow raises: a check that cannot run must never report "painted".
+    """
     try:
         from PIL import Image  # type: ignore
-    except ImportError:  # pragma: no cover - the gate must not depend on Pillow
-        return (False, -1)
+    except ImportError as error:  # pragma: no cover - depends on the machine
+        raise MissingDependency(
+            "Pillow is required to tell a blank screen from a painted one: "
+            "python3 -m pip install pillow"
+        ) from error
     with Image.open(path) as image:
-        colours = image.convert("RGB").getcolors(maxcolors=1 << 24) or []
+        colours = image.convert("RGB").getcolors(maxcolors=1 << 24)
+    if colours is None:
+        # More colours than maxcolors cannot be a flat screen.
+        return (False, 1 << 24)
     return (len(colours) < MIN_DISTINCT_COLOURS, len(colours))
 
 
@@ -72,39 +84,44 @@ def paint_budget(udid: str, timeout: int = PAINT_BUDGET_SECONDS) -> tuple[bool, 
 
 def check_device(udid: str, name: str, app: Path, bundle: str, out: Path) -> dict:
     subprocess.run(["xcrun", "simctl", "shutdown", udid], capture_output=True)
-    run(["xcrun", "simctl", "boot", udid])
+    # A device already booted (or still shutting down) answers boot with an
+    # error that does not matter; bootstatus is the authority.
+    subprocess.run(["xcrun", "simctl", "boot", udid], capture_output=True)
     run(["xcrun", "simctl", "bootstatus", udid, "-b"], 600)
     run(["xcrun", "simctl", "install", udid, str(app)])
 
     record: dict = {"device": name, "udid": udid, "launches": []}
-    for attempt in range(2):
-        if attempt:
-            subprocess.run(["xcrun", "simctl", "terminate", udid, bundle], capture_output=True)
-            time.sleep(3)
-        launch = run(["xcrun", "simctl", "launch", udid, bundle])
-        time.sleep(ALIVE_SECONDS)
-        jobs = run(["xcrun", "simctl", "spawn", udid, "launchctl", "list"])
-        alive = [line for line in jobs.splitlines() if bundle in line and line.split()[0].isdigit()]
-        painted, seconds, shot = paint_budget(udid)
-        record["launches"].append(
-            {
-                "launch": launch.strip(),
-                "aliveAfterSeconds": ALIVE_SECONDS,
-                "alive": bool(alive),
-                "painted": painted,
-                "secondsToFirstFrame": seconds,
-                "screenshot": str(shot),
-                "screenshotCopy": str(Path(out) / f"{name.replace(' ', '-')}-coldstart-{attempt}.png"),
-            }
-        )
-        if not alive:
-            raise RuntimeError(f"{name}: not running {ALIVE_SECONDS} s after cold start {attempt}")
-        if not painted:
-            raise RuntimeError(
-                f"{name}: the screen was still one flat colour after {seconds} s, so the app never painted"
+    try:
+        for attempt in range(2):
+            if attempt:
+                subprocess.run(["xcrun", "simctl", "terminate", udid, bundle], capture_output=True)
+                time.sleep(3)
+            launch = run(["xcrun", "simctl", "launch", udid, bundle])
+            time.sleep(ALIVE_SECONDS)
+            jobs = run(["xcrun", "simctl", "spawn", udid, "launchctl", "list"])
+            alive = [line for line in jobs.splitlines() if bundle in line and line.split()[0].isdigit()]
+            painted, seconds, shot = paint_budget(udid)
+            copy = Path(out) / f"{name.replace(' ', '-')}-coldstart-{attempt}.png"
+            # Copy the evidence first: a failing run is the one worth looking at.
+            copy.write_bytes(shot.read_bytes())
+            record["launches"].append(
+                {
+                    "launch": launch.strip(),
+                    "aliveAfterSeconds": ALIVE_SECONDS,
+                    "alive": bool(alive),
+                    "painted": painted,
+                    "secondsToFirstFrame": seconds,
+                    "screenshot": str(copy),
+                }
             )
-        (Path(out) / f"{name.replace(' ', '-')}-coldstart-{attempt}.png").write_bytes(shot.read_bytes())
-    subprocess.run(["xcrun", "simctl", "shutdown", udid], capture_output=True)
+            if not alive:
+                raise RuntimeError(f"{name}: not running {ALIVE_SECONDS} s after cold start {attempt}")
+            if not painted:
+                raise RuntimeError(
+                    f"{name}: the screen stayed one flat colour for {seconds} s, so the app never painted"
+                )
+    finally:
+        subprocess.run(["xcrun", "simctl", "shutdown", udid], capture_output=True)
     return record
 
 
@@ -138,13 +155,19 @@ def main() -> int:
         "startedAt": datetime.datetime.now(datetime.timezone.utc).isoformat(),
     }
 
-    udids = args.device
+    listing = json.loads(run(["xcrun", "simctl", "list", "devices", "available", "--json"]))["devices"]
+    by_udid = {device["udid"]: device for devices in listing.values() for device in devices}
+
+    udids = args.device or []
     if not udids:
-        listing = json.loads(run(["xcrun", "simctl", "list", "devices", "available", "--json"]))["devices"]
-        runtime = max(runtime for runtime in listing if "iOS" in runtime)
-        wanted = ("iPhone", "iPad")
-        udids = []
-        for prefix in wanted:
+        # Numeric, not lexicographic: "iOS-9-0" would beat "iOS-26-0" as a string.
+        def major(runtime_id: str) -> tuple[int, ...]:
+            parts = runtime_id.rsplit("-", 3)
+            numbers = [p for p in parts if p.isdigit()]
+            return tuple(int(p) for p in numbers) or (0,)
+
+        runtime = max((r for r in listing if "iOS" in r), key=major)
+        for prefix in ("iPhone", "iPad"):
             match = next(
                 (device["udid"] for device in listing[runtime] if device["name"].startswith(prefix)),
                 None,
@@ -154,19 +177,17 @@ def main() -> int:
                 return 2
             udids.append(match)
 
+    # App Review runs both, so a pass on two iPhones is not a pass.
+    names = [by_udid.get(udid, {}).get("name", "") for udid in udids]
+    if not any(name.startswith("iPhone") for name in names) or not any(
+        name.startswith("iPad") for name in names
+    ):
+        print(f"sim_launch_check: needs an iPhone and an iPad, got {names}")
+        return 2
+
     try:
         for udid in udids:
-            name = next(
-                (
-                    device["name"]
-                    for devices in json.loads(
-                        run(["xcrun", "simctl", "list", "devices", "available", "--json"])
-                    )["devices"].values()
-                    for device in devices
-                    if device["udid"] == udid
-                ),
-                udid,
-            )
+            name = by_udid.get(udid, {}).get("name", udid)
             result["devices"].append(check_device(udid, name, app, args.bundle, out))
         result["passed"] = True
     except BaseException as error:

@@ -32,7 +32,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Public by design (write-only ingestion, ships in every build), same as the
-/// Sentry DSN in `main.dart`. Never a `phx_` personal key.
+/// Sentry DSN in `core/telemetry_gate.dart`. Never a `phx_` personal key.
 const String kPostHogProjectKey =
     'phc_xiF5C5q2NPD6oMh5A2VdUWT7UULDUW8SCGTKZVM7i7mm';
 

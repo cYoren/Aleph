@@ -20,10 +20,27 @@ const String kSentryDsn =
 
 /// The DSN a build reports to, or null when it must stay silent.
 ///
-/// A null DSN makes the SDK a no-op, so no event, breadcrumb or transaction is
-/// ever sent. Expressed as a function of `release` rather than read from
-/// [kReleaseMode] directly so both answers can be tested.
+/// A null DSN is not something the SDK accepts (it throws), it is the signal to
+/// skip initialisation entirely: see `core/telemetry_startup.dart`. Expressed as
+/// a function of `release` rather than read from [kReleaseMode] directly so both
+/// answers can be tested.
 String? sentryDsnFor({required bool release}) => release ? kSentryDsn : null;
+
+/// One decision, in one object, so `main.dart` cannot mix and match: the DSN and
+/// the environment a build reports with.
+class SentryConfig {
+  const SentryConfig({required this.dsn, required this.environment});
+
+  /// Null means "this build must not initialise the SDK at all". It must never
+  /// be handed to the SDK: sentry 10 throws on a null DSN.
+  final String? dsn;
+  final String environment;
+}
+
+SentryConfig sentryConfigFor({required bool release}) => SentryConfig(
+      dsn: sentryDsnFor(release: release),
+      environment: sentryEnvironmentFor(release: release),
+    );
 
 /// Labels the environment on every event, so a release report is never confused
 /// with a development one.
@@ -44,10 +61,7 @@ bool? debugUsageCountsOverride;
 class TelemetryGate {
   const TelemetryGate._();
 
-  static String? get sentryDsn => sentryDsnFor(release: kReleaseMode);
-
-  static String get sentryEnvironment =>
-      sentryEnvironmentFor(release: kReleaseMode);
+  static SentryConfig get sentry => sentryConfigFor(release: kReleaseMode);
 
   static bool get usageCounts =>
       debugUsageCountsOverride ?? usageCountsFor(release: kReleaseMode);

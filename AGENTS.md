@@ -35,9 +35,10 @@ gates, `flutter analyze`, `flutter test`, the bundled-database asset, and (on a
 Mac) a simulator launch pass that fails unless the app actually paints on an
 iPhone and an iPad. `scripts/sim_launch_check.py` is the launch pass on its own.
 
-Telemetry is release-only by construction (`lib/core/telemetry_gate.dart`): a
-debug or simulator build gets a null Sentry DSN and dispatches no usage counts,
-so a local run can never write into the production projects.
+Telemetry is release-only by construction (`lib/core/telemetry_gate.dart` and
+`lib/core/telemetry_startup.dart`): a release build reports, every other build is
+silent. A build that must stay silent skips `SentryFlutter.init` entirely, because
+the SDK throws on a null DSN rather than ignoring it.
 
 Release artifacts require separate verification for Android, iOS, and macOS. Do not claim a store release from a successful local build alone. Never commit keystores, provisioning files, credentials, generated databases, or private exports.
 
