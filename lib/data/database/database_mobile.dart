@@ -187,10 +187,20 @@ Future<void> unpackBundledDatabase(String targetPath) async {
 ///
 /// Exposed for tests: it is the part that used to block the UI thread, and it
 /// must produce the same file the streaming copy did.
+/// Runs `action` somewhere other than the isolate that is painting the screen.
+typedef OffIsolateRunner = Future<T> Function<T>(Future<T> Function() action);
+
+Future<T> _runOffIsolate<T>(Future<T> Function() action) =>
+    Isolate.run(action);
+
 @visibleForTesting
-Future<void> unpackGzipBytes(Uint8List bytes, String targetPath) {
+Future<void> unpackGzipBytes(
+  Uint8List bytes,
+  String targetPath, {
+  OffIsolateRunner runOffIsolate = _runOffIsolate,
+}) {
   final transferable = TransferableTypedData.fromList(<Uint8List>[bytes]);
-  return Isolate.run(() async {
+  return runOffIsolate(() async {
     final compressed = Stream<List<int>>.value(
       transferable.materialize().asUint8List(),
     );

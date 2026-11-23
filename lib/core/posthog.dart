@@ -43,7 +43,7 @@ const String kAnalyticsApp = 'aleph';
 
 /// Kept in step with `version:` in `pubspec.yaml`; `test/posthog_test.dart`
 /// fails the build if the two drift.
-const String kAnalyticsAppVersion = '1.0.7';
+const String kAnalyticsAppVersion = '1.0.8';
 
 const String _distinctIdKey = 'analyticsDistinctId';
 

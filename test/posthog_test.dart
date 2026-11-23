@@ -5,12 +5,19 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:original_bible/core/posthog.dart';
+import 'package:original_bible/core/telemetry_gate.dart';
 import 'package:original_bible/core/usage_events.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// The one gate that matters: nothing leaves the device unless the reader
 /// turned the switch on, and when it does leave, it carries no text.
 void main() {
+  // A test process is a debug build, and a debug build is silenced in production
+  // code (see core/telemetry_gate.dart). These tests are about what happens
+  // *after* that gate, so they open it explicitly and reset it afterwards.
+  setUp(() => debugUsageCountsOverride = true);
+  tearDown(() => debugUsageCountsOverride = null);
+
   group('postHogEnabled', () {
     test('is off with an empty project key', () {
       expect(postHogEnabled(projectKey: ''), isFalse);

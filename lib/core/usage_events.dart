@@ -22,6 +22,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../features/explain/explain_service.dart';
 import 'posthog.dart';
+import 'telemetry_gate.dart';
 
 const _enabledKey = 'usageSharingEnabled';
 const _installKey = 'installDay';
@@ -110,6 +111,10 @@ class UsageEvents {
     Map<String, Object?> properties = const {},
   }) async {
     if (kIsWeb) return;
+    // A development build must not write into the production counts: a
+    // simulator pass or a test boot is not a reader. Consent below is a second,
+    // independent gate.
+    if (!TelemetryGate.usageCounts) return;
     try {
       final prefs = await SharedPreferences.getInstance();
       final installDay = prefs.getString(_installKey) ?? _today();
