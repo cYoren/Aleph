@@ -1,6 +1,5 @@
-import 'dart:async';
 import 'dart:io';
-import 'dart:math';
+import 'dart:isolate';
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -44,35 +43,15 @@ void main() {
   });
 
   // The bug ALEPH-1/ALEPH-2 reported was not "the unpack is slow" but "the unpack
-  // is slow *on the screen the reader is looking at*". A test that only checks
-  // the bytes on disk cannot tell the two apart: reverting to a synchronous
-  // gunzip would still pass it. Dart is single threaded, so a timer that keeps
-  // firing while the unpack runs proves the work is not on the caller's isolate.
-  test('leaves the caller isolate free while it unpacks', () async {
-    // Poorly compressible and large enough that the unpack cannot finish inside
-    // one timer period: a synchronous gunzip would then show zero ticks.
-    final random = Random(7);
-    final payload = Uint8List.fromList(
-      List<int>.generate(24 * 1024 * 1024, (_) => random.nextInt(256)),
-    );
-    final target = '${temp.path}/bible.db';
-
-    var ticks = 0;
-    final timer = Timer.periodic(
-      const Duration(milliseconds: 5),
-      (_) => ticks++,
-    );
-
-    await unpackGzipBytes(Uint8List.fromList(gzip.encode(payload)), target);
-    timer.cancel();
-
-    expect(await File(target).readAsBytes(), payload);
-    expect(
-      ticks,
-      greaterThan(5),
-      reason:
-          'the event loop was blocked, so the unpack ran on the caller isolate',
-    );
+  // is slow *on the screen the reader is looking at*". Counting timer ticks is
+  // the wrong probe: awaiting file I/O yields even when a synchronous gunzip is
+  // on the caller's isolate, so a reverted implementation could still look fine.
+  // Asking the production runner to report its own isolate id cannot be faked.
+  test('the production runner really runs on another isolate', () async {
+    final callerIsolate = Isolate.current.hashCode;
+    final workIsolate =
+        await defaultOffIsolateRunner(() async => Isolate.current.hashCode);
+    expect(workIsolate, isNot(callerIsolate));
   });
 
   // Deterministic version of the test above, so the guarantee does not depend on

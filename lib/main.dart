@@ -1,6 +1,6 @@
 import 'dart:io' show Platform;
 
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kIsWeb, kReleaseMode;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,7 +11,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // ignore: depend_on_referenced_packages
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:original_bible/shared/constants/app_identity.dart';
 import 'l10n/generated/app_localizations.dart';
 import '../app/router.dart';
@@ -19,7 +18,7 @@ import 'core/review_reminder.dart';
 import 'core/usage_events.dart';
 import 'core/licenses.dart';
 import '../app/theme.dart';
-import 'core/telemetry_gate.dart';
+import 'core/telemetry_startup.dart';
 import '../features/settings/settings_provider.dart';
 import '../providers/translations_provider.dart';
 
@@ -31,30 +30,21 @@ Future<void> main() async {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
   }
-  await SentryFlutter.init(
-    (options) {
-      // Release builds only, and only through the gate: see
-      // core/telemetry_gate.dart. A null DSN makes the SDK a no-op, so a
-      // simulator run or a test boot never lands in the production project.
-      options.dsn = TelemetryGate.sentryDsn;
-      options.environment = TelemetryGate.sentryEnvironment;
-      // 10% of sessions: enough to see a slow screen without paying for all of them.
-      options.tracesSampleRate = 0.1;
-      // Never attach IPs or account emails on its own.
-      options.sendDefaultPii = false;
-    },
-    appRunner: () {
-      ReviewReminder.init(router.push).then((_) => ReviewReminder.reschedule());
-      // Recount due words whenever the learner leaves, so tonight's reminder
-      // reflects the reviews they just did.
-      AppLifecycleListener(
-        onPause: ReviewReminder.reschedule,
-        onResume: () => UsageEvents.record(UsageEvent.appOpen),
-      );
-      UsageEvents.record(UsageEvent.appOpen);
-      runApp(const ProviderScope(child: OriginalBibleApp()));
-    },
+  await startWithTelemetry(release: kReleaseMode, runApp: _runApp);
+}
+
+/// Everything that used to live in the Sentry `appRunner`: the app must start
+/// the same way whether or not this build reports.
+Future<void> _runApp() async {
+  ReviewReminder.init(router.push).then((_) => ReviewReminder.reschedule());
+  // Recount due words whenever the learner leaves, so tonight's reminder
+  // reflects the reviews they just did.
+  AppLifecycleListener(
+    onPause: ReviewReminder.reschedule,
+    onResume: () => UsageEvents.record(UsageEvent.appOpen),
   );
+  UsageEvents.record(UsageEvent.appOpen);
+  runApp(const ProviderScope(child: OriginalBibleApp()));
 }
 
 class OriginalBibleApp extends ConsumerWidget {
