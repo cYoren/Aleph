@@ -55,11 +55,15 @@ it reads `SHOREBIRD_TOKEN` from the ops vault, so
 `bwenv .config/shorebird/env -- shorebird …`):
 
 ```bash
-shorebird release android --release-version 1.0.8+31
-shorebird release ios     --release-version 1.0.8+31
+shorebird release android
+shorebird release ios
 ```
 
-Once that build is live, a Dart-only or asset-only fix ships without a review:
+The release takes its version from `pubspec.yaml` (`--release-version` is only for aar and
+ios-framework releases), so bump the version before releasing, not on the command line.
+
+Once that build is live, a Dart-only fix ships without a review (an asset change needs `--allow-asset-diffs` and the
+warning that comes with it):
 
 ```bash
 shorebird patch android --release-version 1.0.8+31
@@ -74,7 +78,9 @@ time of writing), not the local SDK, so treat it as a Flutter bump: run
 `scripts/release_preflight.sh` against the Shorebird build too, including the
 simulator launch pass.
 
-A Shorebird release build asks Shorebird's servers for a patch at launch. There
+A Shorebird release build asks Shorebird's servers for a patch at launch. `android/app/src/main/AndroidManifest.xml`
+declares `android.permission.INTERNET` for exactly that reason: the CLI refuses to release or
+patch a manifest without it (the debug and profile manifests already had it). There
 is no privacy file in this repo: the policy is published per locale through
 `fastlane/metadata/*/privacy_url.txt`, so the update check has to be disclosed
 there and in the store privacy answers before such a build ships.
