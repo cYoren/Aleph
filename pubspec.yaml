@@ -11,6 +11,11 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+  # Over-the-air code push. A release build packages a Shorebird updater only
+  # when the build is produced by the Shorebird CLI (`shorebird release`, see
+  # the OTA section in AGENTS.md); this package lets the app read patch state
+  # and ask for an update on demand instead of waiting for the next launch.
+  shorebird_code_push: ^2.0.7
   intl: any
   
   # Navigation
@@ -82,6 +87,10 @@ flutter:
   uses-material-design: true
   
   assets:
+    # Read by the Shorebird updater at launch; without this entry a
+    # `shorebird release` build cannot find its app id and never checks for a
+    # patch. Harmless in a plain `flutter build`, which has no updater.
+    - shorebird.yaml
     # Named individually instead of `- assets/`, so the raw generated
     # `assets/bible.db` the build leaves on disk is never packaged. Only the
     # packed asset further down ships; without this, iOS and macOS would carry

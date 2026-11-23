@@ -42,6 +42,43 @@ the SDK throws on a null DSN rather than ignoring it.
 
 Release artifacts require separate verification for Android, iOS, and macOS. Do not claim a store release from a successful local build alone. Never commit keystores, provisioning files, credentials, generated databases, or private exports.
 
+## Over-the-air updates (Shorebird)
+
+`shorebird.yaml` is committed, bundled as an asset, and carries the id of the
+`Aleph` app in our Shorebird organisation (`3ed447b0-…`, created 2026-11-23).
+`shorebird_code_push` is a dependency so the app can read patch state.
+
+**A patch only reaches a build made by the Shorebird CLI.** `flutter build`
+produces a binary with no updater in it, so the first OTA-capable build is the
+next store release, built like this on the Mac (CLI at `~/.local/bin/shorebird`;
+it reads `SHOREBIRD_TOKEN` from the ops vault, so
+`bwenv .config/shorebird/env -- shorebird …`):
+
+```bash
+shorebird release android --release-version 1.0.8+31
+shorebird release ios     --release-version 1.0.8+31
+```
+
+Once that build is live, a Dart-only or asset-only fix ships without a review:
+
+```bash
+shorebird patch android --release-version 1.0.8+31
+shorebird patch ios     --release-version 1.0.8+31
+```
+
+What a patch cannot do: change native code, the plist or manifest, or the
+version the store shows. It has to name the exact release version it targets,
+so never delete a release whose patches are still in the wild. `shorebird
+release` builds with the Flutter bundled in the CLI (3.50.1, Dart 3.14, at the
+time of writing), not the local SDK, so treat it as a Flutter bump: run
+`scripts/release_preflight.sh` against the Shorebird build too, including the
+simulator launch pass.
+
+A Shorebird release build asks Shorebird's servers for a patch at launch. There
+is no privacy file in this repo: the policy is published per locale through
+`fastlane/metadata/*/privacy_url.txt`, so the update check has to be disclosed
+there and in the store privacy answers before such a build ships.
+
 ## Data and product safety
 
 Treat translation, morphology, lexicon, and attribution changes as content correctness changes. Read the relevant source and coverage report before changing generated data. Keep the product positioned as an offline Bible reader, not a clinical or general-purpose app.
