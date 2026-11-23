@@ -1,6 +1,6 @@
 import 'dart:io' show Platform;
 
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kIsWeb, kReleaseMode;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -36,7 +36,13 @@ Future<void> main() async {
   }
   await SentryFlutter.init(
     (options) {
-      options.dsn = _sentryDsn;
+      // Release only. A debug build reports from the simulator, from a local
+      // device run and from every test that boots the app, and none of that is a
+      // user. Sentry ALEPH-3 and ALEPH-4 were exactly that: one debug simulator
+      // pass on 1.0.8+31 whose app hangs were our own launch and terminate calls.
+      // A null DSN turns the SDK into a no-op.
+      options.dsn = kReleaseMode ? _sentryDsn : null;
+      options.environment = kReleaseMode ? 'production' : 'debug';
       // 10% of sessions: enough to see a slow screen without paying for all of them.
       options.tracesSampleRate = 0.1;
       // Never attach IPs or account emails on its own.
