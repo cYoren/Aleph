@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -39,6 +41,67 @@ void main() {
     await unpackGzipBytes(Uint8List.fromList(gzip.encode(payload)), target);
 
     expect(await File(target).readAsBytes(), payload);
+  });
+
+  // The bug ALEPH-1/ALEPH-2 reported was not "the unpack is slow" but "the unpack
+  // is slow *on the screen the reader is looking at*". A test that only checks
+  // the bytes on disk cannot tell the two apart: reverting to a synchronous
+  // gunzip would still pass it. Dart is single threaded, so a timer that keeps
+  // firing while the unpack runs proves the work is not on the caller's isolate.
+  test('leaves the caller isolate free while it unpacks', () async {
+    // Poorly compressible and large enough that the unpack cannot finish inside
+    // one timer period: a synchronous gunzip would then show zero ticks.
+    final random = Random(7);
+    final payload = Uint8List.fromList(
+      List<int>.generate(24 * 1024 * 1024, (_) => random.nextInt(256)),
+    );
+    final target = '${temp.path}/bible.db';
+
+    var ticks = 0;
+    final timer = Timer.periodic(
+      const Duration(milliseconds: 5),
+      (_) => ticks++,
+    );
+
+    await unpackGzipBytes(Uint8List.fromList(gzip.encode(payload)), target);
+    timer.cancel();
+
+    expect(await File(target).readAsBytes(), payload);
+    expect(
+      ticks,
+      greaterThan(5),
+      reason:
+          'the event loop was blocked, so the unpack ran on the caller isolate',
+    );
+  });
+
+  // Deterministic version of the test above, so the guarantee does not depend on
+  // how fast this machine decompresses. If the unpack ever runs before (or
+  // instead of) the off-isolate runner, the file exists and this fails.
+  test('writes nothing unless the off-isolate runner runs the work', () async {
+    final payload = Uint8List.fromList(List<int>.filled(2048, 7));
+    final target = '${temp.path}/bible.db';
+    var requests = 0;
+
+    await expectLater(
+      unpackGzipBytes(
+        Uint8List.fromList(gzip.encode(payload)),
+        target,
+        runOffIsolate: <T>(Future<T> Function() action) async {
+          requests++;
+          // Refuse the work, the way a dead isolate would.
+          throw StateError('not run');
+        },
+      ),
+      throwsA(isA<StateError>()),
+    );
+
+    expect(requests, 1, reason: 'the decode must be handed to the runner');
+    expect(
+      await File(target).exists(),
+      isFalse,
+      reason: 'the caller isolate decompressed instead of the runner',
+    );
   });
 
   test('surfaces a corrupt asset instead of reporting success', () async {

@@ -1,6 +1,6 @@
 import 'dart:io' show Platform;
 
-import 'package:flutter/foundation.dart' show kIsWeb, kReleaseMode;
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,12 +19,9 @@ import 'core/review_reminder.dart';
 import 'core/usage_events.dart';
 import 'core/licenses.dart';
 import '../app/theme.dart';
+import 'core/telemetry_gate.dart';
 import '../features/settings/settings_provider.dart';
 import '../providers/translations_provider.dart';
-
-// Public by design: it ships inside the app and cannot read anything.
-const _sentryDsn =
-    'https://e39562958e8e46bfef713a8c56fd91b5@o4510739590742016.ingest.us.sentry.io/4512405014183936';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,13 +33,11 @@ Future<void> main() async {
   }
   await SentryFlutter.init(
     (options) {
-      // Release only. A debug build reports from the simulator, from a local
-      // device run and from every test that boots the app, and none of that is a
-      // user. Sentry ALEPH-3 and ALEPH-4 were exactly that: one debug simulator
-      // pass on 1.0.8+31 whose app hangs were our own launch and terminate calls.
-      // A null DSN turns the SDK into a no-op.
-      options.dsn = kReleaseMode ? _sentryDsn : null;
-      options.environment = kReleaseMode ? 'production' : 'debug';
+      // Release builds only, and only through the gate: see
+      // core/telemetry_gate.dart. A null DSN makes the SDK a no-op, so a
+      // simulator run or a test boot never lands in the production project.
+      options.dsn = TelemetryGate.sentryDsn;
+      options.environment = TelemetryGate.sentryEnvironment;
       // 10% of sessions: enough to see a slow screen without paying for all of them.
       options.tracesSampleRate = 0.1;
       // Never attach IPs or account emails on its own.
