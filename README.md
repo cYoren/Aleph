@@ -168,4 +168,8 @@ Contributions are welcome! Please check out [CONTRIBUTING.md](CONTRIBUTING.md) f
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+AGPL-3.0. See [LICENSE](LICENSE). A modified copy that people reach over a network has to publish its
+source to those users.
+
+The name, the app icon and the store listings are not part of the grant, so a fork ships under its
+own name.
